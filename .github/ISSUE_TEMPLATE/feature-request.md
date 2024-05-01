@@ -1,7 +1,7 @@
 ---
-name: "[Feature-MMDD] - {수정파일명} 간단설명"
+name: Feature request
 about: Suggest an idea for this project
-title: ''
+title: "[Feature-MMDD] - {수정파일명} 간단설명"
 labels: ''
 assignees: ''
 
