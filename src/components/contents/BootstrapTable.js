@@ -6,9 +6,9 @@ const BootstrapTable = ({ data, columns }) => {
     <div class="card-body">
     <Table className="table">
         <thead>
-            <tr>
+            <tr style={{ textAlign: 'center' }}>
             {columns.map((column, index) => (
-                <th scope='col' style={column === '제목' ? { width: "400px", padding: "10px" } : { padding: "10px" }} key={index}>{column}</th>
+                <th scope='col' style={column === '제목' ? { width: "600px", padding: "10px" } : { padding: "10px" }} key={index}>{column}</th>
             ))}
             </tr>
         </thead>
@@ -16,7 +16,7 @@ const BootstrapTable = ({ data, columns }) => {
             {data.map((item, index) => (
             <tr key={index}>
             {columns.map((column, columnIndex) => (
-              <td  style={{ padding: "15px" }} key={columnIndex}>{item[column]}</td>
+              <td  style={{ padding: "15px", textAlign: column === '제목' ? 'left' : 'center' }} key={columnIndex}>{item[column]}</td>
             ))}
           </tr>
             ))}

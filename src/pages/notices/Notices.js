@@ -23,38 +23,37 @@ const Notices = () => {
   // 컬럼 제목 목록
   const columns = ['번호', '제목', '작성자', '작성일'];
 
-  const handleAddNotice = () => {
-    // 등록 버튼 클릭 시 실행되는 함수
-    console.log('공지사항 등록');
-  };
-
   const buttons = [
-    // { label: '취소', onClick: 'handleBack', styleClass: 'back' },
-    { label: '등록', onClick: 'handleSubmit', styleClass: 'move' },
+    // { label: '취소', onClick: 'handleAddNotice', styleClass: 'back' },
+    { label: '등록', onClick: 'handleAddNotice', styleClass: 'move' },
     // 다른 버튼에 대한 정보 추가
   ];
+
+  const handleAddNotice = () => {
+    
+  };
 
   return (
     <main id="main" class="main">
 
-      <div class="title">
-        <h2>공지사항</h2>
-        <SearchBar />
-      </div>
+    <div class="title">
+      <h2>공지사항</h2>
+      <SearchBar />
+    </div>
 
-      <div class="col-lg-12">
-      <div class="row"></div>
+    <div class="col-lg-12">
+    <div class="row"></div>
 
-      <div class="list">
-          <Link to="/notices">
-            <ButtonGroup buttons={ buttons } />
-          </Link>
-        {/* 테이블 컴포넌트에 컬럼 제목 목록을 props로 전달 */}
-        <BootstrapTable data={notices} columns={columns} />
-        <PaginationButtons />
-      </div>
-      </div>
-    </main>
+    <div class="list">
+        <Link to="/insert">
+          <ButtonGroup buttons={ buttons } />
+        </Link>
+      {/* 테이블 컴포넌트에 컬럼 제목 목록을 props로 전달 */}
+      <BootstrapTable data={notices} columns={columns} />
+      <PaginationButtons />
+    </div>
+    </div>
+  </main>
   );
 };
 
