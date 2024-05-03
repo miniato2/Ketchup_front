@@ -3,8 +3,12 @@ import BootstrapTable from '../../components/contents/BootstrapTable';
 import PaginationButtons from '../../components/contents/PaginationButtons';
 import ButtonGroup from '../../components/contents/ButtonGroup';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const Notices = () => {
+  const result = useSelector(state => state.noticeReducer);
+
   // 테이블에 사용될 데이터
   const notices = [
     { '번호': 10, '제목': '[ 필독 📢 ] 사내규정 변경의 건', '작성자': '남윤진 대표', '작성일': '2024-04-25' },
@@ -25,13 +29,16 @@ const Notices = () => {
 
   const buttons = [
     // { label: '취소', onClick: 'handleAddNotice', styleClass: 'back' },
-    { label: '등록', onClick: 'handleAddNotice', styleClass: 'move' },
+    { label: '등록', styleClass: 'move' },
     // 다른 버튼에 대한 정보 추가
   ];
-
-  const handleAddNotice = () => {
-    
-  };
+  
+  useEffect(
+    () => {
+      console.log('공지 등록')
+    }, 
+    [result]
+  );
 
   return (
     <main id="main" class="main">
@@ -45,7 +52,7 @@ const Notices = () => {
     <div class="row"></div>
 
     <div class="list">
-        <Link to="/insert">
+        <Link to="/notices/insert">
           <ButtonGroup buttons={ buttons } />
         </Link>
       {/* 테이블 컴포넌트에 컬럼 제목 목록을 props로 전달 */}

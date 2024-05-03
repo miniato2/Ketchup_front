@@ -9,7 +9,7 @@ function Sidebar() {
         <aside id="sidebar" className="sidebar">
             <ul className="sidebar-nav" id="sidebar-nav">
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" to="/noties/noticeList">
+                    <Link className="nav-link collapsed" to="/notices">
                         <i className="bi bi-megaphone"></i><span>공지사항</span>
                     </Link>
                 </li>
