@@ -9,7 +9,7 @@ function Header() {
         <header id="header" className="header fixed-top d-flex align-items-center">
 
             <div className="d-flex align-items-center justify-content-between">
-                <Link to="/index" className="logo d-flex align-items-center">
+                <Link to="/main" className="logo d-flex align-items-center">
                     <img style={{width: '180px', height: '150px'}} src="img/logo.png" alt="Logo" />
                 </Link>
             </div>

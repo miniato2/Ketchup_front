@@ -1,6 +1,6 @@
 import '../../style.css';
 
-const ButtonGroup = ({ buttons }) => {
+const ButtonGroup = ({ buttons, handler }) => {
     return (
         <div className="btn-group">
             {buttons.map((button, index) => (
