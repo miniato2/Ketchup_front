@@ -14,32 +14,32 @@ function Sidebar() {
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" href="#">
+                    <Link className="nav-link collapsed" to="#">
                         <i className="bi bi-pencil-square"></i><span>전자결재</span>
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" href="#">
+                    <Link className="nav-link collapsed" to="/calendar">
                         <i className="bi bi-calendar-event"></i><span>일정</span>
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" href="/content/boards">
+                    <Link className="nav-link collapsed" to="/content/boards">
                         <i className="bi bi-file-text"></i><span>자료실</span>
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" href="#">
+                    <Link className="nav-link collapsed" to="#">
                         <i className="bi bi-clock"></i><span>자원예약</span>
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" href="#">
+                    <Link className="nav-link collapsed" to="#">
                         <i className="bi bi-diagram-3"></i><span>조직도</span>
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" href="#">
+                    <Link className="nav-link collapsed" to="#">
                         <i className="bi bi-person-badge"></i><span>사원</span>
                     </Link>
                 </li>

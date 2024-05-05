@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Notices from './pages/notices/Notices';
 import InsertNotice from './pages/notices/InsertNotice';
+import Calendar from './pages/schedules/calendar';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path='insert' element={<InsertNotice />} />
           </Route>
           {/* <Route path='board' element={<Boards />} /> */}
+          <Route path='calendar' element={<Calendar />} />
         </Route>
       </Routes>
     </BrowserRouter>
