@@ -8,8 +8,8 @@ function Layout() {
         <>
             <Header />
             <Sidebar />
-            <Footer />
             <Outlet />
+            <Footer />
         </>
     );
 }
