@@ -48,7 +48,6 @@ const Calendar = () => {
             console.log("API call successful!")
             alert("일정이 정상적으로 등록되었습니다.");
 
-            // FullCalendar 컴포넌트를 참조하여 calendarApi에 액세스
             const calendarApi = calendarRef.current.getApi();
             calendarApi.unselect();
 
@@ -58,11 +57,10 @@ const Calendar = () => {
                 end: newScheduleData.skdEndDttm,
             });
 
-            // 새로운 일정을 현재 이벤트 목록에 추가
             const updatedEvents = [
                 ...currentEvents,
                 {
-                    id: Math.random().toString(), // 임의의 ID 생성
+                    id: Math.random().toString(),
                     title: newScheduleData.skdName,
                     start: newScheduleData.skdStartDttm,
                     end: newScheduleData.skdEndDttm,
@@ -75,7 +73,6 @@ const Calendar = () => {
             console.error("Error submitting schedule data:", error);
             alert("일정 등록에 실패하였습니다.");
         }
-
         onCloseDialogHandler();
     };
 
