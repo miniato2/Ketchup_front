@@ -2,7 +2,7 @@
 npm i @mui/material @emotion/react @emotion/styled @mui/icons-material
 
 # Fullcalendar install
-npm i @fullcalendar/core @fullcalender/daygrid @fullcalendar/timegrid @fullcalendar/list
+npm i @fullcalendar/core @fullcalendar/daygrid @fullcalendar/timegrid @fullcalendar/list
 
 # Getting Started with Create React App
 
