@@ -1,3 +1,12 @@
+# material UI install
+npm i @mui/material @emotion/react @emotion/styled @mui/icons-material
+
+# Fullcalendar install
+npm i @fullcalendar/core @fullcalendar/react @fullcalendar/daygrid @fullcalendar/timegrid @fullcalendar/list @fullcalendar/interaction
+
+# axios 설치 필요
+npm install axios
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
