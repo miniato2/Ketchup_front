@@ -59,7 +59,7 @@ function Main() {
                 <div className="card recent-sales overflow-auto">
                     <h2 className="card-title" style={{ fontWeight: 'bold', fontSize: '20px', display: 'flex', justifyContent: 'space-between',  alignItems: 'center', paddingLeft: '20px', paddingRight: '20px'}}>
                         공지사항
-                        <Link to={`/notices`} style={{ color: '#EC0B0B' }}>
+                        <Link to={`/notices`} style={{ fontSize: '18px', color: '#EC0B0B' }}>
                             더보기
                         </Link>
                     </h2>

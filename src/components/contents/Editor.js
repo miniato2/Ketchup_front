@@ -11,7 +11,7 @@ function Editor() {
     return (
       <>
         <ReactQuill
-          style={{ height: "400px", margin: "4px" }}
+          style={{ height: "350px", margin1: "4px",  overflowY: 'auto' }}
           ref={quillRef}
           theme="snow"
           value={value}
