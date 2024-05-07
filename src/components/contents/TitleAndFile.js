@@ -3,6 +3,10 @@ import '../../style.css';
 
 const TitleAndFile = () => {
 
+    const [title, setTitle] = useState("");
+
+    const handleTitleChange = (e) => { setTitle(e.currentTarget.value); };
+
     const [files, setFiles] = useState([]);
 
     const handleFileChange = e => {
@@ -14,13 +18,11 @@ const TitleAndFile = () => {
         setFiles(fileList);
     };
 
-
     return (
         <>
-
             <div class="input-container">
                 <label htmlFor="title">제목</label>
-                <input type="text" id="title" placeholder=" 공지 제목을 입력하세요" />
+                <input type="text" id="title" placeholder=" 공지 제목을 입력하세요" onChange={handleTitleChange} />
             </div>
             <div class="input-container">
                 <label htmlFor="file">첨부파일</label>
@@ -31,8 +33,6 @@ const TitleAndFile = () => {
                     ))}
                 </div>
             </div>
-
-    
         </>
   );
 }

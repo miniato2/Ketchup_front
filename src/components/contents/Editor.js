@@ -6,13 +6,23 @@ import "react-quill/dist/quill.snow.css";
 function Editor() {
 
     const [value, setValue] = useState("");
-    const quillRef = useRef(null);
+
+    const quillRef = useRef(null);const modules = {
+      toolbar: {
+        container: [
+          ["image"],
+          [{ header: [1, 2, 3, 4, 5, false] }],
+          ["bold", "underline"],
+        ],
+      },
+    };
     
     return (
       <>
         <ReactQuill
           style={{ height: "350px", margin1: "4px",  overflowY: 'auto' }}
           ref={quillRef}
+          modules={modules}
           theme="snow"
           value={value}
           onChange={setValue}

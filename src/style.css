@@ -925,7 +925,6 @@ tbody th a {
 
 .file-input input[type="file"] {
   display: inline-block;
-  float: right;
   width: 70%; /* 라벨 너비 조정 */
   left: -9999px;
   padding: 2px;

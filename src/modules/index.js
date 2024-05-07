@@ -1,9 +1,8 @@
 import { combineReducers } from "redux";
-
+import noticeReducer from './NoticeModule';
 
 const rootReducer = combineReducers({
-    // userReducer,
-    // menuReducer
+    noticeReducer 
 });
 
 export default rootReducer;
