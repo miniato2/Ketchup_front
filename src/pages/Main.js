@@ -2,6 +2,9 @@ import { Link } from "react-router-dom";
 import BootstrapTable from "../components/contents/BootstrapTable";
 import ApprovalBox from "../components/contents/ApprovalBox";
 import ScheduleBox from "../components/contents/ScheduleBox";
+import { useDispatch, useSelector } from "react-redux";
+import { callGetNoticeListAPI } from "../apis/NoticeAPICalls";
+import { useEffect } from "react";
 
 function Main() {
     // 결재 
@@ -13,13 +16,38 @@ function Main() {
     ];
 
     // 공지사항
-    const notices = [
-        { '제목': '[ 필독 📢 ] 사내규정 변경의 건', '작성자': '남윤진 대표', '작성일': '2024-04-25' },
-        { '제목': '[ 필독 📢 ][공지] 무선 네트워크 패스워드 변경작업 안내 (변경일시 4/26 금...', '작성자': '이후영 차장', '작성일': '2024-04-21' },
-        { '제목': '[공지] 무선 네트워크 패스워드 변경작업 안내 (변경일시 4/26 금요일 20시)', '작성자': '이후영 차장', '작성일': '2024-04-19' }
-    ];
+    const dispatch = useDispatch();
+    const result = useSelector(state => state.noticeReducer);
+    const noticeList = result.noticelist?.data?.data?.content || [];
+
+    useEffect(() => {
+        dispatch(callGetNoticeListAPI());
+    }, [dispatch]);
+
     // 공지사항 컬럼 제목 목록
-    const columns = ['제목', '작성자', '작성일'];
+    const formatDateTime = dateTimeString => {
+        const dateTime = new Date(dateTimeString);
+        const year = dateTime.getFullYear();
+        const month = String(dateTime.getMonth() + 1).padStart(2, '0');
+        const day = String(dateTime.getDate()).padStart(2, '0');
+        const hours = String(dateTime.getHours()).padStart(2, '0');
+        const minutes = String(dateTime.getMinutes()).padStart(2, '0');
+        const seconds = String(dateTime.getSeconds()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      };
+    
+      const formattedNoticeList = noticeList.slice(0, 3).map(item => ({
+        ...item,
+        noticeCreateDttm: formatDateTime(item.noticeCreateDttm)
+      }));
+
+      // 컬럼 제목 목록
+      const columns = [
+        ['noticeTitle', '제목'],
+        ['memberNo', '작성자'],
+        ['noticeCreateDttm', '등록일']
+      ];
+    
 
     // 일정
     const scheduleData = [
@@ -57,13 +85,14 @@ function Main() {
             {/* 공지사항 */}
             <div className="col-12">
                 <div className="card recent-sales overflow-auto">
-                    <h2 className="card-title" style={{ fontWeight: 'bold', fontSize: '20px', display: 'flex', justifyContent: 'space-between',  alignItems: 'center', paddingLeft: '20px', paddingRight: '20px'}}>
+                    <h2 className="card-title" 
+                        style={{ fontWeight: 'bold', fontSize: '20px', display: 'flex', justifyContent: 'space-between',  alignItems: 'center', paddingLeft: '20px', paddingRight: '20px'}}>
                         공지사항
                         <Link to={`/notices`} style={{ fontSize: '18px', color: '#EC0B0B' }}>
                             더보기
                         </Link>
                     </h2>
-                    <BootstrapTable data={notices} columns={columns} />
+                    <BootstrapTable data={formattedNoticeList} columns={columns} />
                 </div>
             </div>
 
