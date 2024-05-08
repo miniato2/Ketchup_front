@@ -9,10 +9,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BsMegaphone } from 'react-icons/bs';
 
 const Notices = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch(); 
   const result = useSelector(state => state.noticeReducer);
   const noticeList = result.noticelist || [];
+  const navigate = useNavigate();
 
   console.log("noticeList : ", noticeList);
 
@@ -56,6 +56,7 @@ const Notices = () => {
     ['memberNo', '작성자'],
     ['noticeCreateDttm', '등록일']
   ];
+
   const [title, setTitle] = useState('');
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
   const itemsPerPage = 10; // 페이지당 아이템 수
@@ -63,6 +64,14 @@ const Notices = () => {
     { label: '등록', styleClass: 'move' },
   ];
 
+  const handleRowClick = (index) => {
+    // 클릭된 행의 noticeNo를 가져와서 상세 페이지로 이동합니다.
+    const noticeNo = sortedNoticeList[index]?.noticeNo;
+
+    console.log('handleRowClick [ noticeNo ] : ' , noticeNo);
+
+    navigate(`/notices/${noticeNo}`);
+  };
 
   useEffect(
     () => {
@@ -94,7 +103,7 @@ const Notices = () => {
             <ButtonGroup buttons={buttons} /> 
           </Link>
           {/* 테이블 컴포넌트에 컬럼 제목 목록을 props로 전달 */}
-          <BootstrapTable data={currentItems} columns={columns} onRowClick={(index) => navigate(`/notices/${currentItems[index]?.noticeNo}`)} />
+          <BootstrapTable data={currentItems} columns={columns} onRowClick={handleRowClick} />
           <PaginationButtons
             totalItems={sortedNoticeList.length}
             itemsPerPage={itemsPerPage}

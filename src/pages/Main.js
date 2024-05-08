@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import BootstrapTable from "../components/contents/BootstrapTable";
 import ApprovalBox from "../components/contents/ApprovalBox";
 import ScheduleBox from "../components/contents/ScheduleBox";
@@ -8,6 +8,7 @@ import { useEffect } from "react";
 
 function Main() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
 
     // 결재 
@@ -32,10 +33,7 @@ function Main() {
         const year = dateTime.getFullYear();
         const month = String(dateTime.getMonth() + 1).padStart(2, '0');
         const day = String(dateTime.getDate()).padStart(2, '0');
-        const hours = String(dateTime.getHours()).padStart(2, '0');
-        const minutes = String(dateTime.getMinutes()).padStart(2, '0');
-        const seconds = String(dateTime.getSeconds()).padStart(2, '0');
-        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        return `${year}-${month}-${day}`;
       };
     
       const formattedNoticeList = noticeList ? noticeList.slice(0, 3).map(item => ({
@@ -49,6 +47,12 @@ function Main() {
         ['memberNo', '작성자'],
         ['noticeCreateDttm', '등록일']
       ];
+
+      const handleRowClick = (index) => {
+        // 클릭된 행의 noticeNo를 가져와서 상세 페이지로 이동합니다.
+        const noticeNo = noticeList[index]?.noticeNo;
+        navigate(`/notices/${noticeNo}`);
+      };
     
       
     
@@ -106,7 +110,7 @@ function Main() {
                             더보기
                         </Link>
                     </h2>
-                    <BootstrapTable data={formattedNoticeList} columns={columns} />
+                    <BootstrapTable data={formattedNoticeList} columns={columns} onRowClick={handleRowClick} />
                 </div>
             </div>
 

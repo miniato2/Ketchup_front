@@ -35,15 +35,18 @@ export function callSearchNoticeListAPI({ title }) {
 }
 
 
-export function callGetNoticeAPI({ noticeNo }) {
+export function callGetNoticeAPI(noticeNo) {
     console.log('callGetNoticeAPI...');
+    console.log('callGetNoticeAPI [ noticeNo ] : ', noticeNo)
 
     return async (dispatch, getState) => {
         try {
+            console.log('callGetNoticeAPI [ noticeNo ] : ', noticeNo)
+
             const result = await request('GET', `/notices/${noticeNo}`);
             console.log('getNotice result : ', result);
 
-            dispatch(getNotice(result.data.data.content));
+            dispatch(getNotice(result.data));
         } catch (error) {
             console.error('Error notice :', error);
             // 에러가 발생한 경우에 대한 처리를 추가할 수 있습니다.
