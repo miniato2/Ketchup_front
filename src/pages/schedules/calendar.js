@@ -9,6 +9,7 @@ import { Box, Dialog, DialogTitle } from "@mui/material";
 import ScheduleForm from "../../components/form/ScheduleForm";
 import { getScheduleAPI, insertScheduleAPI } from "../../apis/ScheduleAPICalls";
 import moment from "moment";
+import { getDepartmentFromToken } from "../../utils/tokenUtils";
 
 const Calendar = () => {
     const schedules = useSelector(state => state.scheduleReducer);
@@ -16,9 +17,16 @@ const Calendar = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const dptNo = 5;
-        dispatch(getScheduleAPI(dptNo));
+        const token = localStorage.getItem("token");
+        const dptNo = getDepartmentFromToken(token);
+
+        console.log("dptNo", dptNo);
+
+        if (dptNo) {
+            dispatch(getScheduleAPI(dptNo));
+        }
     }, [dispatch]);
+
 
     const [openDialog, setOpenDialog] = useState(false);
     const [newScheduleData, setNewScheduleData] = useState({
