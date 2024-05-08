@@ -2,7 +2,8 @@ import Table from 'react-bootstrap/Table';
 import '../../style.css';
 
 
-const BootstrapTable = ({ data, columns }) => {
+const BootstrapTable = ({ data, columns, onRowClick }) => {
+  
   return (
     <div class="card-body">
     <Table className="table">
@@ -15,7 +16,7 @@ const BootstrapTable = ({ data, columns }) => {
         </thead>
         <tbody>
         {Array.isArray(data) && data.map((item, index) => (
-            <tr key={index}>
+            <tr key={index} onClick={() => onRowClick(index)} style={{ cursor: 'pointer' }}>
             {columns.map(([key], columnIndex) => (
               <td style={{ padding: "15px", textAlign: key === '제목' ? 'left' : 'center' }} key={columnIndex}>{item[key]}</td>
             ))}

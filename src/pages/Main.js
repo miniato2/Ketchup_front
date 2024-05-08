@@ -1,23 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import BootstrapTable from "../components/contents/BootstrapTable";
 import ApprovalBox from "../components/contents/ApprovalBox";
 import ScheduleBox from "../components/contents/ScheduleBox";
-import { useDispatch, useSelector } from "react-redux";
-import { callGetNoticeListAPI } from "../apis/NoticeAPICalls";
-import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { decodeJwt } from '../utils/tokenUtils';
 
 function Main() {
 
-
-   const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
-   console.log(loginToken);
-   
-
-
-
-
-
+    const navigate = useNavigate();
+    const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
+    console.log(loginToken);
 
     // 결재 
     const approvalData = [
@@ -28,11 +20,8 @@ function Main() {
     ];
 
     // 공지사항
-    const dispatch = useDispatch();
     const result = useSelector(state => state.noticeReducer);
-    const noticeList = result.noticelist?.data?.data?.content || [];
-
-
+    const noticeList = result.noticelist;
 
     // 공지사항 컬럼 제목 목록
     const formatDateTime = dateTimeString => {
@@ -46,10 +35,10 @@ function Main() {
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     };
 
-    const formattedNoticeList = noticeList.slice(0, 3).map(item => ({
+    const formattedNoticeList = noticeList ? noticeList.slice(0, 3).map(item => ({
         ...item,
         noticeCreateDttm: formatDateTime(item.noticeCreateDttm)
-    }));
+    })) : [];
 
     // 컬럼 제목 목록
     const columns = [
@@ -58,7 +47,14 @@ function Main() {
         ['noticeCreateDttm', '등록일']
     ];
 
+    const handleRowClick = (index) => {
+        // 클릭된 행의 noticeNo를 가져와서 상세 페이지로 이동합니다.
+        const noticeNo = noticeList[index]?.noticeNo;
 
+        console.log('handleRowClick [ noticeNo ] : ', noticeNo);
+
+        navigate(`/notices/${noticeNo}`);
+    };
 
     //   const jwt = require('jsonwebtoken');
     //   const decodedToken = jwt.decode(token);
@@ -81,7 +77,7 @@ function Main() {
     ];
 
     return (
-       
+
 
         <main id="main" className="main">
 
@@ -114,7 +110,7 @@ function Main() {
                             더보기
                         </Link>
                     </h2>
-                    <BootstrapTable data={formattedNoticeList} columns={columns} />
+                    <BootstrapTable data={formattedNoticeList} columns={columns} onRowClick={handleRowClick} />
                 </div>
             </div>
 
