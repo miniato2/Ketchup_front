@@ -7,6 +7,9 @@ import { callGetNoticeListAPI } from "../apis/NoticeAPICalls";
 import { useEffect } from "react";
 
 function Main() {
+    const dispatch = useDispatch();
+
+
     // 결재 
     const approvalData = [
         { title: "내가 결재해야 하는 문서", count: 3 },
@@ -16,9 +19,8 @@ function Main() {
     ];
 
     // 공지사항
-    const dispatch = useDispatch();
     const result = useSelector(state => state.noticeReducer);
-    const noticeList = result.noticelist?.data?.data?.content || [];
+    const noticeList = result.noticelist;
 
     useEffect(() => {
         dispatch(callGetNoticeListAPI());
@@ -36,10 +38,10 @@ function Main() {
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
       };
     
-      const formattedNoticeList = noticeList.slice(0, 3).map(item => ({
+      const formattedNoticeList = noticeList ? noticeList.slice(0, 3).map(item => ({
         ...item,
         noticeCreateDttm: formatDateTime(item.noticeCreateDttm)
-      }));
+    })) : [];
 
       // 컬럼 제목 목록
       const columns = [

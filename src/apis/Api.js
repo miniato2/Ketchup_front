@@ -11,7 +11,8 @@ export const request = async (method, url, data) => {
             url: `${DOMAIN}${url}`,
             data: data,
             headers: {
-                'Authorization': `Bearer ${TEST_TOKEN}` // 테스트용 토큰 사용
+                'Authorization': `Bearer ${TEST_TOKEN}`, // 테스트용 토큰 사용
+                // 'Content-Type': 'multipart/form-data' // 파일 업로드를 위한 Content-Type 설정
             }
         });
         return response.data;
@@ -20,5 +21,3 @@ export const request = async (method, url, data) => {
         throw error;
     }
 }
-
-

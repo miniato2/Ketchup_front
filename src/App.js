@@ -6,6 +6,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Notices from './pages/notices/Notices';
 import InsertNotice from './pages/notices/InsertNotice';
 import Calendar from './pages/schedules/calendar';
+import NoticeDetail from './pages/notices/NoticeDetail';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path='main' element={<Main />} />
           <Route path='notices'>
             <Route index element={<Notices />} />
+            <Route path=':noticeNo' element={<NoticeDetail />} />
             <Route path='insert' element={<InsertNotice />} />
           </Route>
           {/* <Route path='board' element={<Boards />} /> */}

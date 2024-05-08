@@ -12,8 +12,7 @@ import { BsMegaphone } from 'react-icons/bs';
 const Notices = () => {
   const dispatch = useDispatch(); // useDispatch 훅 추가
   const result = useSelector(state => state.noticeReducer);
-  // const noticeList = result.noticelist.data.data.content;
-  const noticeList = result.noticelist?.data?.data?.content || [];
+  const noticeList = result.noticelist || [];
 
   console.log("noticeList : ", noticeList);
 
@@ -46,23 +45,23 @@ const Notices = () => {
 
   // 등록된 시간의 역순으로 정렬하되 noticeFix가 "Y"인 행을 상단에 위치하도록 정렬
   const sortedNoticeList = [...formattedNoticeList]
-  .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm))
-  .sort((a, b) => (a.noticeFix === 'Y' ? -1 : 1))
-  .map(item => ({
-    ...item,
-    noticeTitle: item.noticeFix === 'Y' ? (
-      <>
-        <span style={{ marginRight: '5px' }}>
-          [ 필독 
-          <span style={{ color: '#EC0B0B' }}>
-            <BsMegaphone />
-          </span> 
-          ]
-        </span>
-        {item.noticeTitle}
-      </>
-    ) : item.noticeTitle
-  }));
+    .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm))
+    .sort((a, b) => (a.noticeFix === 'Y' ? -1 : 1))
+    .map(item => ({
+      ...item,
+      noticeTitle: item.noticeFix === 'Y' ? (
+        <>
+          <span style={{ marginRight: '5px' }}>
+            [ 필독&nbsp;
+            <span style={{ color: '#EC0B0B' }}>
+              <BsMegaphone />
+            </span>
+            &nbsp;]
+          </span>
+          {item.noticeTitle}
+        </>
+      ) : item.noticeTitle
+    }));
 
   // 컬럼 제목 목록
   const columns = [
@@ -72,43 +71,54 @@ const Notices = () => {
     ['noticeCreateDttm', '등록일']
   ];
   const [title, setTitle] = useState('');
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
+  const itemsPerPage = 10; // 페이지당 아이템 수
 
   const buttons = [
     { label: '등록', styleClass: 'move' },
   ];
 
-  
-  
-  useEffect( 
+  useEffect(
     () => {
       if (title !== '') {
         dispatch(callSearchNoticeListAPI({ title }));
       } else {
-          dispatch(callGetNoticeListAPI());
+        dispatch(callGetNoticeListAPI());
       }
     }, [dispatch, title]
   );
 
+  // 현재 페이지에 보여질 아이템 구하기
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = sortedNoticeList.slice(indexOfFirstItem, indexOfLastItem);
+
+
   return (
     <main id="main" className="main">
 
-    <div className="title">
-      <h2>공지사항</h2>
-      <SearchBar onChange={(e) => setTitle(e.target.value)} />
-    </div>
+      <div className="title">
+        <h2>공지사항</h2>
+        <SearchBar onChange={(e) => setTitle(e.target.value)} />
+      </div>
 
-    <div className="col-lg-12">
-    <div className="row"></div>
-    <div className="list">
-        <Link to="/notices/insert">
-          <ButtonGroup buttons={ buttons } />
-        </Link>
-      {/* 테이블 컴포넌트에 컬럼 제목 목록을 props로 전달 */}
-      <BootstrapTable data={sortedNoticeList} columns={columns} />
-      <PaginationButtons />
-    </div>
-    </div>
-  </main>
+      <div className="col-lg-12">
+        <div className="row"></div>
+        <div className="list">
+          <Link to="/notices/insert">
+            <ButtonGroup buttons={buttons} />
+          </Link>
+          {/* 테이블 컴포넌트에 컬럼 제목 목록을 props로 전달 */}
+          <BootstrapTable data={currentItems} columns={columns} />
+          <PaginationButtons
+            totalItems={sortedNoticeList.length}
+            itemsPerPage={itemsPerPage}
+            currentPage={currentPage}
+            onPageChange={(pageNumber) => setCurrentPage(pageNumber)} // 페이지 변경 핸들러 전달
+          />
+        </div>
+      </div>
+    </main>
   );
 };
 
