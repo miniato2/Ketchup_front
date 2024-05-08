@@ -8,8 +8,10 @@ import InsertNotice from './pages/notices/InsertNotice';
 import Calendar from './pages/schedules/calendar';
 import Mail from './pages/mails/Mail';
 import MailDetail from './pages/mails/MailDetail';
+import Login from './pages/members/Login';
 
 function App() {
+
   return (
     <BrowserRouter>
       <Routes>
@@ -29,6 +31,7 @@ function App() {
           </Route>
 
         </Route>
+        <Route path='login' element={<Login/>} />
       </Routes>
     </BrowserRouter>
   );

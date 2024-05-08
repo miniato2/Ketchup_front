@@ -48,7 +48,19 @@ function Main() {
         ['noticeCreateDttm', '등록일']
       ];
     
+      
+    
+    //   const jwt = require('jsonwebtoken');
+    //   const decodedToken = jwt.decode(token);
+    //   const memberNo = decodedToken.memberNo;
+    //     console.log('memberNo: ', memberNo);
 
+    //     const memberName = decodedToken.memberName;
+
+    //     console.log('memberName: ', memberName);
+        
+
+      
     // 일정
     const scheduleData = [
         { dayOfWeek: "일요일", schedules: [] },
