@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import noticeReducer from './NoticeModule';
+
 import scheduleReducer from "./ScheduleModule";
 
 const rootReducer = combineReducers({
@@ -7,6 +8,7 @@ const rootReducer = combineReducers({
     // menuReducer
     noticeReducer,
     scheduleReducer
+
 });
 
 export default rootReducer;
