@@ -4,9 +4,21 @@ import ApprovalBox from "../components/contents/ApprovalBox";
 import ScheduleBox from "../components/contents/ScheduleBox";
 import { useDispatch, useSelector } from "react-redux";
 import { callGetNoticeListAPI } from "../apis/NoticeAPICalls";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { decodeJwt } from '../utils/tokenUtils';
 
 function Main() {
+
+
+   const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
+   console.log(loginToken);
+   
+
+
+
+
+
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -23,9 +35,7 @@ function Main() {
     const result = useSelector(state => state.noticeReducer);
     const noticeList = result.noticelist;
 
-    useEffect(() => {
-        dispatch(callGetNoticeListAPI());
-    }, [dispatch]);
+
 
     // 공지사항 컬럼 제목 목록
     const formatDateTime = dateTimeString => {
@@ -33,26 +43,23 @@ function Main() {
         const year = dateTime.getFullYear();
         const month = String(dateTime.getMonth() + 1).padStart(2, '0');
         const day = String(dateTime.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
+        const hours = String(dateTime.getHours()).padStart(2, '0');
+        const minutes = String(dateTime.getMinutes()).padStart(2, '0');
+        const seconds = String(dateTime.getSeconds()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
       };
     
-      const formattedNoticeList = noticeList ? noticeList.slice(0, 3).map(item => ({
+      const formattedNoticeList = noticeList.slice(0, 3).map(item => ({
         ...item,
         noticeCreateDttm: formatDateTime(item.noticeCreateDttm)
-    })) : [];
+      }));
 
-      // 컬럼 제목 목록
-      const columns = [
+    // 컬럼 제목 목록
+    const columns = [
         ['noticeTitle', '제목'],
         ['memberNo', '작성자'],
         ['noticeCreateDttm', '등록일']
       ];
-
-      const handleRowClick = (index) => {
-        // 클릭된 행의 noticeNo를 가져와서 상세 페이지로 이동합니다.
-        const noticeNo = noticeList[index]?.noticeNo;
-        navigate(`/notices/${noticeNo}`);
-      };
     
       
     
@@ -60,13 +67,11 @@ function Main() {
     //   const decodedToken = jwt.decode(token);
     //   const memberNo = decodedToken.memberNo;
     //     console.log('memberNo: ', memberNo);
-
     //     const memberName = decodedToken.memberName;
-
     //     console.log('memberName: ', memberName);
-        
 
-      
+
+
     // 일정
     const scheduleData = [
         { dayOfWeek: "일요일", schedules: [] },
@@ -79,13 +84,15 @@ function Main() {
     ];
 
     return (
+       
+
         <main id="main" className="main">
 
             {/* 메인 환영 */}
             <div className="pagetitle">
                 <div id="mainbox" className="p-4 p-md-5 mb-4 rounded text-body-emphasis" style={{ backgroundColor: "rgb(236, 11, 11, 0.17)" }}>
                     <div className="col-lg-6 px-0">
-                        <h1 className="display-1" style={{ fontSize: "45px" }}>안녕하세요, 김현지 사원님!</h1>
+                        <h1 className="display-1" style={{ fontSize: "45px" }}>안녕하세요, {loginToken.memberName} 사원님!</h1>
                         <h2 className="lead my-3" style={{ fontSize: "30px" }}>오늘 하루도 화이팅하세요🤩</h2>
                     </div>
                 </div>
@@ -94,7 +101,7 @@ function Main() {
             {/* 전자결재 */}
             <div className="col-lg-12">
                 <div className="row">
-                {approvalData.map(({ title, count }) => (
+                    {approvalData.map(({ title, count }) => (
                         <ApprovalBox title={title} count={count} />
                     ))}
                 </div>
@@ -103,8 +110,8 @@ function Main() {
             {/* 공지사항 */}
             <div className="col-12">
                 <div className="card recent-sales overflow-auto">
-                    <h2 className="card-title" 
-                        style={{ fontWeight: 'bold', fontSize: '20px', display: 'flex', justifyContent: 'space-between',  alignItems: 'center', paddingLeft: '20px', paddingRight: '20px'}}>
+                    <h2 className="card-title"
+                        style={{ fontWeight: 'bold', fontSize: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingLeft: '20px', paddingRight: '20px' }}>
                         공지사항
                         <Link to={`/notices`} style={{ fontSize: '18px', color: '#EC0B0B' }}>
                             더보기

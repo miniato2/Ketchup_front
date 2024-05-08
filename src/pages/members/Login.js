@@ -25,18 +25,18 @@ function Login() {
 
     useEffect(() => {
         
-        // if(loginMember.status === 200){
-        //     console.log("[Login] Login SUCCESS {}", loginMember);
-        //     navigate("/", { replace: true });
-        // }
+        if(loginMember.status === 200){
+            console.log("[Login] Login SUCCESS {}", loginMember);
+            navigate("/", { replace: true });
+        }
     }
     ,[loginMember]);
     
     // 로그인 상태일 시 로그인페이지로 접근 방지
-    // if(loginMember.length > 0) {
-    //     console.log("[Login] Login is already authenticated by the server");        
-    //     return <Navigate to="/"/>
-    // }
+    if(loginMember.length > 0) {
+        console.log("[Login] Login is already authenticated by the server");        
+        return <Navigate to="/"/>
+    }
 
     const onChangeHandler = (e) => {
         setForm({
@@ -54,8 +54,12 @@ function Login() {
         dispatch(callLoginAPI({	// 로그인
             form: form
         }));
-        console.log("로그인 진행");
-        navigate("/main",{replace: true});
+        if (window.localStorage.getItem('accessToken')) {
+            console.log("로그인 진행");
+            navigate("/main", { replace: true });
+        } 
+     
+       
     }
 
 

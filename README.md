@@ -11,7 +11,7 @@ npm install axios
 npm install moment
 
 # toekn 복호화 라이브러리 설치 필요
-npm install jsonwebtoken
+npm install jwt-decode@3.1.2
 
 # toekn 복호화 라이브러리 설치 필요
 npm install jsonwebtoken

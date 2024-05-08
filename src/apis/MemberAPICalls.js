@@ -43,16 +43,14 @@ export const callLoginAPI = ({ form }) => {
         }).then((response) => response.json());
 
         console.log('[MemberAPICalls] callLoginAPI RESULT : ', result);
-        
-       
-     
-        if (result.status === 200) {
+      if(result.status === 200){
             window.localStorage.setItem('accessToken', result.token);
-            console.log("토큰토큰 토큰"+localStorage.accessToken);
-        }
+   
         dispatch({ type: POST_LOGIN, payload: result });
+    }
     };
 };
+
 
 export const callLogoutAPI = () => {
     return async (dispatch, getState) => {
