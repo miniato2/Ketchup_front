@@ -14,7 +14,7 @@ function Sidebar() {
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" to="#">
+                    <Link className="nav-link collapsed" to="/approvals">
                         <i className="bi bi-pencil-square"></i><span>전자결재</span>
                     </Link>
                 </li>
