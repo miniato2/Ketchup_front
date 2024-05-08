@@ -21,5 +21,3 @@ export const request = async (method, url, data) => {
         throw error;
     }
 }
-
-
