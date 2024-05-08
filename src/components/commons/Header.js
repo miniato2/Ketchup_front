@@ -1,9 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Nav } from 'react-bootstrap'
 import '../../style.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { callLogoutAPI } from '../../apis/MemberAPICalls';
+import { decodeJwt } from '../../utils/tokenUtils';
 
 
 
@@ -13,14 +14,22 @@ function Header() {
     
 const dispatch = useDispatch();
 
-const Navigate = useNavigate();
+const navigate = useNavigate();
+
+ 
+ 
+ 
 
 const onClickLogoutHandler = () => {
-    dispatch(callLogoutAPI(
-        //로그아웃
-    ));
-    Navigate("/login");
+    window.localStorage.removeItem('accessToken');  
+    //로그아웃
+    dispatch(callLogoutAPI());
+    
+    alert('로그아웃이 되어 로그인화면 으로 이동합니다.');
+    navigate("login", { replace: true })
+    window.location.reload();
 }
+
    
 
 
