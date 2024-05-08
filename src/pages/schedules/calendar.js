@@ -72,22 +72,6 @@ const Calendar = () => {
         });
     };
 
-    // const fetchEvents = async () => {
-    //     try {
-    //         const events = schedules.results.schedule.map(schedule => ({
-    //             title: schedule.skdName,
-    //             start: schedule.skdStartDttm.replace(' ', 'T'),
-    //             end: schedule.skdEndDttm.replace(' ', 'T'),
-    //             id: schedule.skdNo
-    //         }));
-    //         console.log("fetchEvents로 받아오는 event: ", events);
-    //         return events;
-    //     } catch (error) {
-    //         console.error('Error fetching events:', error);
-    //         return [];
-    //     }
-    // };
-
     const fetchEvents = async () => {
         try {
             const events = schedules.results.schedule.map(schedule => ({

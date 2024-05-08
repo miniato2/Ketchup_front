@@ -897,18 +897,21 @@ tbody th a {
 --------------------------------------------------------------*/
 
 .input-container {
-  margin-bottom: 15px;
+  margin-bottom: 30px;
 }
 
 .input-container label {
   color:#000;
   display: inline-block;
-  width: 100px; /* 라벨 너비 조정 */
+  vertical-align: middle;
+  width: 100px;;
 }
+
 .input-container input {
   display: inline-block;
-  float: right;
-  width: 90%; /* 라벨 너비 조정 */
+  width: calc(100% - 100px); /* 제목 input의 너비에 맞춤 */
+  vertical-align: middle;
+  padding: 2px;
 }
 
 .file-input {
@@ -916,17 +919,19 @@ tbody th a {
   position: relative;
   width: calc(100% - 100px); /* 제목 input의 너비에 맞춤 */
   border: 1px dashed #ccc; /* 점선 테두리 */
+  padding: 15px 0; /* 세로 중앙 정렬을 위한 패딩 추가 */
+  vertical-align: middle;
 }
 
 .file-input input[type="file"] {
   display: inline-block;
-  float: right;
-  width: 80%; /* 라벨 너비 조정 */
-  /* position: absolute; */
+  width: 70%; /* 라벨 너비 조정 */
   left: -9999px;
+  padding: 2px;
+  vertical-align: middle;
 }
 
-.file-label {
+/* .file-label {
   display: inline-block;
   padding: 6px 12px;
 
@@ -936,7 +941,7 @@ tbody th a {
 
 .file-label:hover {
   background-color: #f5f5f5;
-}
+} */
 
 /*--------------------------------------------------------------
 # Dashboard

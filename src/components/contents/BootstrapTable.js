@@ -1,22 +1,23 @@
 import Table from 'react-bootstrap/Table';
 import '../../style.css';
 
+
 const BootstrapTable = ({ data, columns }) => {
   return (
     <div class="card-body">
     <Table className="table">
         <thead>
             <tr style={{ textAlign: 'center' }}>
-            {columns.map((column, index) => (
-                <th scope='col' style={column === '제목' ? { width: "600px", padding: "10px" } : { padding: "10px" }} key={index}>{column}</th>
+            {columns.map(([key, label], index) => (
+                <th scope='col' style={key === '제목' ? { width: "600px", padding: "10px" } : { padding: "10px" }} key={index}>{label}</th>
             ))}
             </tr>
         </thead>
         <tbody>
-            {data.map((item, index) => (
+        {Array.isArray(data) && data.map((item, index) => (
             <tr key={index}>
-            {columns.map((column, columnIndex) => (
-              <td  style={{ padding: "15px", textAlign: column === '제목' ? 'left' : 'center' }} key={columnIndex}>{item[column]}</td>
+            {columns.map(([key], columnIndex) => (
+              <td style={{ padding: "15px", textAlign: key === '제목' ? 'left' : 'center' }} key={columnIndex}>{item[key]}</td>
             ))}
           </tr>
             ))}

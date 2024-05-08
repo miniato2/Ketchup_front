@@ -32,5 +32,6 @@ root.render(
 // npm install redux-actions  (createActions, handleActions 등 사용을 위해)
 // npm install react-redux@8.1.3
 // npm install redux-logger
+// npm install react-quill
 
 /* npm uninstall ~ (install된 npm 삭제) */

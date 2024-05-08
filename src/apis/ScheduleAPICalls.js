@@ -17,9 +17,6 @@ export const getScheduleAPI = (dptNo) => {
   }; 
 };
 
-
-  
-
 export const insertScheduleAPI = async (newScheduleData) => {
     try {
         alert("[ScheduleAPICalls] 성공했습니다.")
