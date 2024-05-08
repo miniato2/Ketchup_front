@@ -2,15 +2,15 @@ import SearchBar from '../../components/contents/SearchBar';
 import BootstrapTable from '../../components/contents/BootstrapTable';
 import PaginationButtons from '../../components/contents/PaginationButtons';
 import ButtonGroup from '../../components/contents/ButtonGroup';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { callGetNoticeListAPI, callSearchNoticeListAPI } from '../../apis/NoticeAPICalls';
 import { useDispatch, useSelector } from 'react-redux';
 import { BsMegaphone } from 'react-icons/bs';
 
-
 const Notices = () => {
-  const dispatch = useDispatch(); // useDispatch 훅 추가
+  const navigate = useNavigate();
+  const dispatch = useDispatch(); 
   const result = useSelector(state => state.noticeReducer);
   const noticeList = result.noticelist || [];
 
@@ -21,27 +21,13 @@ const Notices = () => {
     const year = dateTime.getFullYear();
     const month = String(dateTime.getMonth() + 1).padStart(2, '0');
     const day = String(dateTime.getDate()).padStart(2, '0');
-    const hours = String(dateTime.getHours()).padStart(2, '0');
-    const minutes = String(dateTime.getMinutes()).padStart(2, '0');
-    const seconds = String(dateTime.getSeconds()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    return `${year}-${month}-${day}`;
   };
 
   const formattedNoticeList = noticeList.map(item => ({
     ...item,
     noticeCreateDttm: formatDateTime(item.noticeCreateDttm)
   }));
-
-  // const getMemberInfo = memberNo => {
-  //   // 여기서 실제로 토큰에서 사용자 정보를 가져오는 API 호출 또는 Redux 상태에서 사용자 정보를 가져오는 등의 로직이 들어갈 수 있습니다.
-  //   // 임시로 예시를 제공합니다.
-  //   const member = {
-  //     memberNo: 5,
-  //     memberName: "김현지",
-  //     positionName: "팀장"
-  //   };
-  //   return member;
-  // };
 
   // 등록된 시간의 역순으로 정렬하되 noticeFix가 "Y"인 행을 상단에 위치하도록 정렬
   const sortedNoticeList = [...formattedNoticeList]
@@ -73,10 +59,10 @@ const Notices = () => {
   const [title, setTitle] = useState('');
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
   const itemsPerPage = 10; // 페이지당 아이템 수
-
   const buttons = [
     { label: '등록', styleClass: 'move' },
   ];
+
 
   useEffect(
     () => {
@@ -93,7 +79,6 @@ const Notices = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = sortedNoticeList.slice(indexOfFirstItem, indexOfLastItem);
 
-
   return (
     <main id="main" className="main">
 
@@ -106,10 +91,10 @@ const Notices = () => {
         <div className="row"></div>
         <div className="list">
           <Link to="/notices/insert">
-            <ButtonGroup buttons={buttons} />
+            <ButtonGroup buttons={buttons} /> 
           </Link>
           {/* 테이블 컴포넌트에 컬럼 제목 목록을 props로 전달 */}
-          <BootstrapTable data={currentItems} columns={columns} />
+          <BootstrapTable data={currentItems} columns={columns} onRowClick={(index) => navigate(`/notices/${currentItems[index]?.noticeNo}`)} />
           <PaginationButtons
             totalItems={sortedNoticeList.length}
             itemsPerPage={itemsPerPage}

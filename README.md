@@ -10,7 +10,22 @@ npm install axios
 # moment 라이브러리 설치 필요
 npm install moment
 
+# vs.code 클론 후 (install 설정) 
+npm install
+npm install react-router-dom
+npm install react-bootstrap bootstrap
+npm install react-icons
 
+# reducx install 설정 
+npm install redux@4.2.1
+npm install redux-devtools-extension
+npm install redux-thunk@2.4.2
+npm install redux-actions  (createActions, handleActions 등 사용을 위해)
+npm install react-redux@8.1.3
+npm install redux-logger
+npm install react-quill
+
+npm uninstall ~ (install된 npm 삭제)
 
 # Getting Started with Create React App
 

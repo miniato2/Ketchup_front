@@ -66,8 +66,10 @@ export function callInsertNoticeAPI(formData) {
             }));
 
             // 파일이 있는 경우에만 추가
-            if (insertNotice.noticeImgUrl && insertNotice.noticeImgUrl[0]) {
-                formData.append("files", insertNotice.noticeImgUrl[0], insertNotice.noticeImgUrl[0].name);
+            if (formData.noticeImgUrl && formData.noticeImgUrl[0]) {
+                const file = formData.noticeImgUrl[0];
+                noticeData.append("files", file, file.name);
+                // 파일의 Content-Type 설정은 별도로 필요 없습니다.
             }
 
             const result = await request('POST', '/notices', noticeData);
@@ -80,6 +82,37 @@ export function callInsertNoticeAPI(formData) {
         }
     }
 }
+
+
+// export function callInsertNoticeAPI(formData) {
+//     console.log('callInsertNoticeAPI...');
+
+//     return async (dispatch, getState) => {
+//         try {
+//             const noticeData = new FormData();
+
+//             // 필요한 데이터 추가
+//             noticeData.append("noticeDTO", JSON.stringify({
+//                 noticeTitle: formData.noticeTitle,
+//                 noticeFix: formData.noticeFix,
+//                 noticeContent: formData.noticeContent
+//             }));
+
+//             // 파일이 있는 경우에만 추가
+//             if (insertNotice.noticeImgUrl && insertNotice.noticeImgUrl[0]) {
+//                 formData.append("files", insertNotice.noticeImgUrl[0], insertNotice.noticeImgUrl[0].name);
+//             }
+
+//             const result = await request('POST', '/notices', noticeData);
+//             console.log('insertNotice result : ', result);
+
+//             dispatch(insertNotice(result));
+//         } catch (error) {
+//             console.error('Error inserting notice:', error);
+//             // 에러가 발생한 경우에 대한 처리를 추가할 수 있습니다.
+//         }
+//     }
+// }
 
 export function callDeleteNoticeAPI({ noticeNo }) {
     console.log('callDeleteNoticeAPI...');

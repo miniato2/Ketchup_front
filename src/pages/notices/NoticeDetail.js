@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { callDeleteNoticeAPI } from "../../apis/NoticeAPICalls";
 import Notice from "./Notice";
+import { Button } from "react-bootstrap";
 
 function NoticeDetail() {
 
@@ -17,17 +18,16 @@ function NoticeDetail() {
 
     useEffect(
         () => {
-            /* 메뉴 삭제 완료 확인 후 /menu로 이동 */
             if (result.delete) {
                 alert('공지 삭제');
                 navigate(`/notices`);
             }
-        }, 
+        },
         [result.delete, navigate]
     );
 
     const updateHandler = () => navigate(`/notices/${noticeNo}`);
-    const deleteHandler = () => dispatch(callDeleteNoticeAPI(noticeNo));
+    const deleteHandler = () => dispatch(callDeleteNoticeAPI({noticeNo}));
 
 
     return (
@@ -39,21 +39,22 @@ function NoticeDetail() {
                 <div className="row">
 
                     <div className="archive-body">
-                        <div id="button-item">
-                            <button className="group-list" onClick={() => navigate('/notices')}>
-                                <i className="bi bi-list"></i><span> 목록</span>
-                            </button>
+                        <div>
+                            <Button variant="outline-dark" style={{ float: 'right' }}  onClick={() => navigate('/notices') } >목록</Button>
                         </div>
-                        { /* 로그인 된 상황에만 button이 보이도록 조건부 랜더링 */ }
+                        
+                        <div>
+                        { /* 로그인 된 상황에만 button이 보이도록 조건부 랜더링 */}
                         {/* { (loginStatus) &&  */}
-                            <ButtonGroup
-                                buttons={[
-                                    { label: '수정', styleClass: 'back', onClick: updateHandler },
-                                    { label: '삭제', styleClass: 'move', onClick: deleteHandler }
-                                ]}
-                            />
+                        <ButtonGroup
+                            buttons={[
+                                { label: '수정', styleClass: 'back', onClick: updateHandler },
+                                { label: '삭제', styleClass: 'move', onClick: deleteHandler }
+                            ]}
+                        />
                         {/* } */}
-                        <Notice noticeNo={noticeNo}/>
+                        </div>
+                        <Notice noticeNo={noticeNo} />
                     </div>
                 </div>
             </div>
