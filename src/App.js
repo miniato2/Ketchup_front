@@ -6,9 +6,12 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Notices from './pages/notices/Notices';
 import InsertNotice from './pages/notices/InsertNotice';
 import Calendar from './pages/schedules/calendar';
+import Login from './pages/members/Login';
+
 import NoticeDetail from './pages/notices/NoticeDetail';
 
 function App() {
+
   return (
     <BrowserRouter>
       <Routes>
@@ -23,6 +26,7 @@ function App() {
           {/* <Route path='board' element={<Boards />} /> */}
           <Route path='calendar' element={<Calendar />} />
         </Route>
+        <Route path='login' element={<Login/>} />
       </Routes>
     </BrowserRouter>
   );

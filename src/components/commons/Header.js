@@ -1,25 +1,44 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { Nav } from 'react-bootstrap'
 import '../../style.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { callLogoutAPI } from '../../apis/MemberAPICalls';
+
+
 
 
 function Header() {
+
+    
+const dispatch = useDispatch();
+
+const Navigate = useNavigate();
+
+const onClickLogoutHandler = () => {
+    dispatch(callLogoutAPI(
+        //로그아웃
+    ));
+    Navigate("/login");
+}
+   
+
+
     return (
         <header id="header" className="header fixed-top d-flex align-items-center">
 
             <div className="d-flex align-items-center justify-content-between">
                 <Link to="/main" className="logo d-flex align-items-center">
-                    <img style={{width: '180px', height: '150px'}} src="img/logo.png" alt="Logo" />
+                    <img style={{ width: '180px', height: '150px' }} src="img/logo.png" alt="Logo" />
                 </Link>
             </div>
 
             <Nav className="header-nav ms-auto">
                 <ul className="d-flex align-items-center">
-                    
+
                     <li className="nav-item dropdown">
                         <a className="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                            <Link className="bi-envelope" style={{color: '#EC0B0B'}}></Link>
+                            <Link className="bi-envelope" style={{ color: '#EC0B0B' }}></Link>
                         </a>
                         <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
                             <li className="dropdown-header">
@@ -90,10 +109,10 @@ function Header() {
                                 </Link>
                             </li>
                             <li>
-                                <Link className="dropdown-item d-flex align-items-center" to="#">
+                                <button className="dropdown-item d-flex align-items-center" onClick={onClickLogoutHandler}>
                                     <i className="bi bi-box-arrow-right"></i>
                                     <span>Sign Out</span>
-                                </Link>
+                                </button>
                             </li>
                         </ul>
                     </li>

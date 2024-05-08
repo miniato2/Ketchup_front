@@ -10,6 +10,12 @@ npm install axios
 # moment 라이브러리 설치 필요
 npm install moment
 
+# toekn 복호화 라이브러리 설치 필요
+npm install jsonwebtoken
+
+# toekn 복호화 라이브러리 설치 필요
+npm install jsonwebtoken
+
 # vs.code 클론 후 (install 설정) 
 npm install
 npm install react-router-dom

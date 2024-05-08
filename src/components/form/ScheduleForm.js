@@ -1,7 +1,7 @@
+import React from 'react';
 import { Grid, TextField, Box, ButtonGroup, Button, List, ListItem, ListItemText } from "@mui/material";
 
 export default function ScheduleForm({ newScheduleData, onCloseDialogHandler, handleSubmit, handleInputChange }) {
-
     return (
         <form onSubmit={(e) => { e.preventDefault(); handleSubmit(newScheduleData); }}>
             <Grid container spacing={2} justifyContent="center">
@@ -9,11 +9,37 @@ export default function ScheduleForm({ newScheduleData, onCloseDialogHandler, ha
                     <Box display="flex" alignItems="center">
                         <List>
                             <ListItem sx={{ py: 1, px: 0, display: 'flex', alignItems: 'center' }}>
+                                <ListItemText sx={{ width: '30%', pr: '2%' }}>일정 번호</ListItemText>
+                                <Box sx={{ flex: 1 }}>
+                                    <TextField
+                                        fullWidth
+                                        label="일정 번호"
+                                        variant="outlined"
+                                        name="skdNo"
+                                        value={newScheduleData.skdNo}
+                                        onChange={handleInputChange}
+                                    />
+                                </Box>
+                            </ListItem>
+                            <ListItem sx={{ py: 1, px: 0, display: 'flex', alignItems: 'center' }}>
+                                <ListItemText sx={{ width: '30%', pr: '2%' }}>부서 번호</ListItemText>
+                                <Box sx={{ flex: 1 }}>
+                                    <TextField
+                                        fullWidth
+                                        label="부서 번호"
+                                        variant="outlined"
+                                        name="dptNo"
+                                        value={newScheduleData.dptNo}
+                                        onChange={handleInputChange}
+                                    />
+                                </Box>
+                            </ListItem>
+                            <ListItem sx={{ py: 1, px: 0, display: 'flex', alignItems: 'center' }}>
                                 <ListItemText sx={{ width: '30%', pr: '2%' }}>일정 이름</ListItemText>
                                 <Box sx={{ flex: 1 }}>
                                     <TextField
                                         fullWidth
-                                        label="skdName"
+                                        label="일정 이름"
                                         variant="outlined"
                                         name="skdName"
                                         value={newScheduleData.skdName}
@@ -26,6 +52,7 @@ export default function ScheduleForm({ newScheduleData, onCloseDialogHandler, ha
                                 <Box sx={{ flex: 1 }}>
                                     <TextField
                                         fullWidth
+                                        type="datetime-local" // date 형식으로 변경
                                         label="시작 일시"
                                         variant="outlined"
                                         name="skdStartDttm"
@@ -39,6 +66,7 @@ export default function ScheduleForm({ newScheduleData, onCloseDialogHandler, ha
                                 <Box sx={{ flex: 1 }}>
                                     <TextField
                                         fullWidth
+                                        type="datetime-local" // date 형식으로 변경
                                         label="종료 일시"
                                         variant="outlined"
                                         name="skdEndDttm"
