@@ -1,0 +1,28 @@
+.appCategory{
+    display: flex;
+    /* border: solid 1px black; */
+    justify-content: space-evenly;
+
+}
+
+.categoryBox{
+    padding: 0px 20px 20px 20px;
+    width: 250px;
+    height: 75px;
+    border: solid 1px black;
+}
+.title {
+    padding: 10px 0 10px 0;
+    font-size: 18px;
+}
+
+.cateogryCount{
+    justify-content: end;
+    width: fit-content;
+}
+
+.categoryDiv{
+    width: 250px;
+    height: 75px;
+    border: solid 1px black;
+}
