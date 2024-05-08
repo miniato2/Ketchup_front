@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 import noticeReducer from './NoticeModule';
 import approvalReducer from "./ApprovalModule";
+import mailReducer from "./MailModule";
 import memberReducer from "./MemberModule";
 import scheduleReducer from "./ScheduleModule";
 
@@ -10,7 +11,8 @@ const rootReducer = combineReducers({
     noticeReducer,
     memberReducer,
     scheduleReducer,
-    approvalReducer
+    approvalReducer,
+    mailReducer
 });
 
 export default rootReducer;
