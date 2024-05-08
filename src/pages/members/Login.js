@@ -54,6 +54,7 @@ function Login() {
         dispatch(callLoginAPI({	// 로그인
             form: form
         }));
+        console.log("로그인 진행");
         navigate("/main",{replace: true});
     }
 

@@ -1,6 +1,25 @@
 import { GET_MEMBER, POST_LOGIN, POST_REGISTER } from '../modules/MemberModule';
 
+export const callGetMemberAPI = ({ memberNo }) => {
+    const requestURL = `http://${process.env.REACT_APP_RESTAPI_IP}:8080/members/${memberNo}`;
 
+    return async (dispatch, getState) => {
+        // 클라이언트 fetch mode : no-cors 사용시 application/json 방식으로 요청이 불가능
+        // 서버에서 cors 허용을 해주어야 함
+        const result = await fetch(requestURL, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: '*/*',
+                Authorization: 'Bearer ' + window.localStorage.getItem('accessToken'),
+            },
+        }).then((response) => response.json());
+
+        console.log('[MemberAPICalls] callGetMemberAPI RESULT : ', result);
+
+        dispatch({ type: GET_MEMBER, payload: result });
+    };
+};
 
 export const callLoginAPI = ({ form }) => {
     const requestURL = `http://localhost:8080/login`;
@@ -37,10 +56,10 @@ export const callLoginAPI = ({ form }) => {
 
 export const callLogoutAPI = () => {
     return async (dispatch, getState) => {
-        console.log("로그아웃 시작은 해??");
+       
         dispatch({ type: POST_LOGIN, payload: '' });
         console.log('[MemberAPICalls] callLogoutAPI RESULT : SUCCESS');
-        localStorage.removeItem('accessToken');
+        
     
     };
 };
@@ -56,10 +75,21 @@ export const callRegisterAPI = ({ form }) => {
                 Accept: '*/*',
             },
             body: JSON.stringify({
-                memberId: form.memberId,
-                memberPassword: form.memberPassword,
+                memberNo: form.memberNo,
                 memberName: form.memberName,
-                memberEmail: form.memberEmail,
+                memberPW: form.memberPW,
+                phone: form.phone,
+                birthDate: form.birthDate,
+                gender: form.gender,
+                address: form.address,
+                privateEmail: form.privateEmail,
+                companyEmail: form.companyEmail,
+                department: form.department,
+                position: form.position,
+                account: form.account,
+                status: form.status,
+                imgUrl: form.imgUrl,
+                resignDateTime: form.resignDateTime,
             }),
         }).then((response) => response.json());
 
