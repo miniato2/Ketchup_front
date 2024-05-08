@@ -8,6 +8,7 @@ import InsertNotice from './pages/notices/InsertNotice';
 import Calendar from './pages/schedules/calendar';
 
 function App() {
+
   return (
     <BrowserRouter>
       <Routes>
