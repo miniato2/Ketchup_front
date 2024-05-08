@@ -27,7 +27,7 @@ const onClickLogoutHandler = () => {
     
     alert('로그아웃이 되어 로그인화면 으로 이동합니다.');
     navigate("login", { replace: true })
-    window.location.reload();
+   
 }
 
    
