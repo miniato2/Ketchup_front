@@ -7,6 +7,14 @@ npm i @fullcalendar/core @fullcalendar/react @fullcalendar/daygrid @fullcalendar
 # axios 설치 필요
 npm install axios
 
+# moment 라이브러리 설치 필요
+npm install moment
+
+# toekn 복호화 라이브러리 설치 필요
+npm install jsonwebtoken
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

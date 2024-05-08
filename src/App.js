@@ -9,8 +9,10 @@ import Calendar from './pages/schedules/calendar';
 import Approvals from './pages/approvals/Approvals';
 import InsertApproval from './pages/approvals/InsertApproval';
 import ApprovalDetail from './pages/approvals/ApprovalDetail';
+import Login from './pages/members/Login';
 
 function App() {
+
   return (
     <BrowserRouter>
       <Routes>
@@ -29,6 +31,7 @@ function App() {
           {/* <Route path='board' element={<Boards />} /> */}
           <Route path='calendar' element={<Calendar />} />
         </Route>
+        <Route path='login' element={<Login/>} />
       </Routes>
     </BrowserRouter>
   );
