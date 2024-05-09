@@ -1,18 +1,51 @@
 import '../../style.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-const PaginationButtons = () => {
+const PaginationButtons = ({ totalItems, itemsPerPage, currentPage, onPageChange }) => {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const pageNumbers = [];
+
+    for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+    }
+
+    const handleClick = (pageNumber) => {
+        onPageChange(pageNumber);
+    };
+
     return (
         <div id="paging-btn">
-            <button class="bi bi-chevron-double-left"></button>
-            <button class="bi bi-chevron-compact-left"></button>
-            <block >
-                <button > 1 </button>
-                <button > 2 </button>
-                <button > 3 </button>
-            </block>
-            <button class="bi bi-chevron-compact-right"></button>
-            <button class="bi bi-chevron-double-right"></button>
+            <button 
+                onClick={() => handleClick(1)} 
+            >
+                &lt;&lt;
+            </button>
+            <button 
+                onClick={() => handleClick(currentPage > 1 ? currentPage - 1 : 1)} 
+            >
+                &lt;
+            </button>
+            <div>
+                {pageNumbers.map(number => (
+                    <button 
+                        key={number} 
+                        onClick={() => handleClick(number)} 
+                        className={currentPage === number ? "selected" : ""}
+                    >
+                        {number}
+                    </button>
+                ))}
+            </div>
+            <button 
+                onClick={() => handleClick(currentPage < totalPages ? currentPage + 1 : totalPages)} 
+            >
+                &gt;
+            </button>
+            <button 
+                onClick={() => handleClick(totalPages)} 
+            >
+                &gt;&gt;
+            </button>
         </div>
     );
 };

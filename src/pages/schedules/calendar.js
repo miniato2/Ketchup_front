@@ -101,7 +101,7 @@ const Calendar = () => {
     return (
         <main id="main" className="main">
             {calendarReady && ( 
-                <Box flex="1 1 100%" ml="15px" sx={{ a: { textDecoration: 'none', color: '#444444' } }}>
+                <Box flex="1 1 100%" ml="15px" mt="15px" sx={{ a: { textDecoration: 'none', color: '#444444' } }}>
                     <FullCalendar
                         locale="ko"
                         height="100vh"
