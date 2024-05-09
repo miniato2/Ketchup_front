@@ -13,6 +13,23 @@
 .appCategory .card-body{
     width: 250px;
     height: 75px;
+}
 
+.appTable{
+    margin-bottom: 20px;
+    width: 100%;
+    border: solid 0.5px #999797;
+}
+.appTable td{
+    text-align: left;
+    border: solid 0.5px #999797;
+}
+.appTable th {
+    text-align: center;
+    border: solid 0.5px #999797;
+    background-color: #f5f5f5;
+}
+.appBtn {
+    margin-left: auto;
 }
   

@@ -826,16 +826,16 @@ h6 {
 
 .back-btn {
   margin-right: 15px;
-  width: 80px;          /* 버튼 넓이*/
-  height: 35px;         /* 버튼 높이*/
+  width: 90px;          /* 버튼 넓이*/
+  height: 38px;         /* 버튼 높이*/
   border-radius: 5px;   /* 버튼 둥글기*/
   background-color: white;
   
 }
 
 .move-btn {
-  width: 80px;          /* 버튼 넓이*/
-  height: 35px;         /* 버튼 높이*/
+  width: 90px;          /* 버튼 넓이*/
+  height: 38px;         /* 버튼 높이*/
   border-radius: 5px;   /* 버튼 둥글기*/
   border: none;
   background-color: #EC0B0B;
