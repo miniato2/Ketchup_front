@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, TextField, Box, ButtonGroup, Button, ListItem, ListItemText } from "@mui/material";
 import { Textbox } from 'react-inputs-validation';
 
-export default function ScheduleForm({ newScheduleData, onCloseDialogHandler, handleSubmit, handleInputChange }) {
+export default function ScheduleForm({ newScheduleData, onInsertCancelHandler, handleSubmit, handleInputChange }) {
     // 날짜와 시간을 ISO 8601 형식으로 변환하는 함수
     const convertToISO8601 = (datetimeString) => {
         const date = new Date(datetimeString);
@@ -130,7 +130,7 @@ export default function ScheduleForm({ newScheduleData, onCloseDialogHandler, ha
                 </Grid>
                 <Grid item xs={12}>
                     <ButtonGroup>
-                        <Button color="error" onClick={onCloseDialogHandler}>취소</Button>
+                        <Button color="error" onClick={onInsertCancelHandler}>취소</Button>
                         <Button type="submit">등록</Button>
                     </ButtonGroup>
                 </Grid>
