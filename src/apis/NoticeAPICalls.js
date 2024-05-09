@@ -34,7 +34,6 @@ export function callSearchNoticeListAPI({ title }) {
     }
 }
 
-
 export function callGetNoticeAPI(noticeNo) {
     console.log('callGetNoticeAPI...');
     console.log('callGetNoticeAPI [ noticeNo ] : ', noticeNo)
@@ -59,63 +58,36 @@ export function callInsertNoticeAPI(formData) {
 
     return async (dispatch, getState) => {
         try {
-            const noticeData = new FormData();
+             // 요청을 보낼 때의 헤더 설정
+             const headers = {
+                'Content-Type': 'multipart/form-data' // 파일이 포함된 요청을 보낼 때는 multipart/form-data로 설정
+            };
 
-            // 필요한 데이터 추가
-            noticeData.append("noticeDTO", JSON.stringify({
-                noticeTitle: formData.noticeTitle,
-                noticeFix: formData.noticeFix,
-                noticeContent: formData.noticeContent
-            }));
+             // FormData 생성
+             const formDataToSend = new FormData();
+             formDataToSend.append('noticeDTO', JSON.stringify(formData)); // formData.noticeTitle 등으로 접근하지 않고, 바로 formData를 사용해야 합니다.
 
-            // 파일이 있는 경우에만 추가
+             // 파일이 있는 경우 FormData에 추가
             if (formData.noticeImgUrl && formData.noticeImgUrl[0]) {
-                const file = formData.noticeImgUrl[0];
-                noticeData.append("files", file, file.name);
-                // 파일의 Content-Type 설정은 별도로 필요 없습니다.
+                formDataToSend.append("files", formData.noticeImgUrl[0], formData.noticeImgUrl[0].name);
+            } else {
+                // 파일이 없는 경우에도 FormData에 noticeImgUrl을 추가해야 합니다.
+                formDataToSend.append("files", ""); // 파일이 없을 때는 빈 문자열을 추가하거나 다른 기본값을 지정할 수 있습니다.
             }
+ 
+             // 요청 보내기
+             const result = await request('POST', '/notices', formDataToSend, headers);
+             console.log('insertNotice result : ', result);
+             dispatch(insertNotice(result));
 
-            const result = await request('POST', '/notices', noticeData);
-            console.log('insertNotice result : ', result);
 
-            dispatch(insertNotice(result));
         } catch (error) {
             console.error('Error inserting notice:', error);
             // 에러가 발생한 경우에 대한 처리를 추가할 수 있습니다.
         }
     }
+
 }
-
-
-// export function callInsertNoticeAPI(formData) {
-//     console.log('callInsertNoticeAPI...');
-
-//     return async (dispatch, getState) => {
-//         try {
-//             const noticeData = new FormData();
-
-//             // 필요한 데이터 추가
-//             noticeData.append("noticeDTO", JSON.stringify({
-//                 noticeTitle: formData.noticeTitle,
-//                 noticeFix: formData.noticeFix,
-//                 noticeContent: formData.noticeContent
-//             }));
-
-//             // 파일이 있는 경우에만 추가
-//             if (insertNotice.noticeImgUrl && insertNotice.noticeImgUrl[0]) {
-//                 formData.append("files", insertNotice.noticeImgUrl[0], insertNotice.noticeImgUrl[0].name);
-//             }
-
-//             const result = await request('POST', '/notices', noticeData);
-//             console.log('insertNotice result : ', result);
-
-//             dispatch(insertNotice(result));
-//         } catch (error) {
-//             console.error('Error inserting notice:', error);
-//             // 에러가 발생한 경우에 대한 처리를 추가할 수 있습니다.
-//         }
-//     }
-// }
 
 export function callDeleteNoticeAPI({ noticeNo }) {
     console.log('callDeleteNoticeAPI...');

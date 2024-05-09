@@ -15,7 +15,7 @@ function InsertNoticeForm() {
     const [insertNotice, setInsertNotice] = useState(
         {
             noticeTitle: '',
-            noticeImgUrl: '',
+            noticeImgUrl: null,
             noticeFix: false,
             noticeContent: '',
         }
@@ -23,21 +23,33 @@ function InsertNoticeForm() {
 
     const onChangeHandler = (e) => {
         let { name, value, type, checked } = e.target;
-
-        if (name === 'noticeFix') {
-            value = type === 'checkbox' ? checked : value;
-        }
-
+    
+        // 체크박스의 경우 checked 값을 사용하고, 그 외에는 value 값을 사용합니다.
+        value = type === 'checkbox' ? checked : value;
+    
         setInsertNotice({
             ...insertNotice,
             [name]: value
         });
     }
 
+    // const onChangeHandler = (e) => {
+    //     let { name, value, type, checked } = e.target;
+
+    //     if (name === 'noticeFix') {
+    //         value = type === 'checkbox' ? checked : value;
+    //     }
+
+    //     setInsertNotice({
+    //         ...insertNotice,
+    //         [name]: value
+    //     });
+    // }
+
     useEffect(
         () => {
             if (result.insert) {
-                alert('메뉴 등록');
+                alert('공지 등록');
                 navigate(`/notices`);
             }
         },
@@ -50,29 +62,28 @@ function InsertNoticeForm() {
 
         try {
             const formData = new FormData();
-    
+
             // 필요한 데이터 추가
             formData.append("noticeTitle", insertNotice.noticeTitle);
             formData.append("noticeFix", insertNotice.noticeFix);
             formData.append("noticeContent", insertNotice.noticeContent);
-    
+
             console.log("formData", formData);
-    
+
             // 파일이 있는 경우에만 추가
-            if (insertNotice.noticeImgUrl && insertNotice.noticeImgUrl.length > 0) {
+            if (insertNotice.noticeImgUrl && insertNotice.noticeImgUrl[0]) {
                 // 파일을 FormData에 추가
-                formData.append("files", insertNotice.noticeImgUrl[0]);
+                formData.append("noticeImgUrl", insertNotice.noticeImgUrl[0]);
             }
-    
+
             const result = await dispatch(callInsertNoticeAPI(formData));
-            console.log('insertNotice result : ', result);
-    
+            console.log('insertNotice [ result ] ', result);
+
         } catch (error) {
             console.error('Error inserting notice:', error);
             // 에러가 발생한 경우에 대한 처리를 추가할 수 있습니다.
         }
     }
-
 
     const buttons = [
         { label: '취소', onClick: () => navigate('/notices'), styleClass: 'back' },
