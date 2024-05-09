@@ -8,10 +8,15 @@ function AppCategory(){
         { title: "반려된 나의 문서", count: 2 }
     ];
 
+    const changeCategory = () => {
+        // 카테고리 변경
+
+    }
+
     return(
         <div className={AppCatCss.appCategory}>
             {approvalData.map(({ title, count }) => (
-                    <div className={AppCatCss.categoryBox}>
+                    <div className={AppCatCss.categoryBox} onClick={changeCategory}>
                             <h5 className={AppCatCss.title}>{title}</h5>
                             <div className="d-flex justify-content-end">
                                 <h3>{count}</h3>

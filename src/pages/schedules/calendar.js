@@ -9,16 +9,31 @@ import { Box, Dialog, DialogTitle } from "@mui/material";
 import ScheduleForm from "../../components/form/ScheduleForm";
 import { getScheduleAPI, insertScheduleAPI } from "../../apis/ScheduleAPICalls";
 import moment from "moment";
+import { decodeJwt } from "../../utils/tokenUtils";
 
 const Calendar = () => {
     const schedules = useSelector(state => state.scheduleReducer);
     const [calendarReady, setCalendarReady] = useState(false);
+    const [neScheduleAdded, setNewScheduleAdded] = useState(false);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const dptNo = 5;
-        dispatch(getScheduleAPI(dptNo));
-    }, [dispatch]);
+        const fetchSchedules = async () => {
+            try {
+                const token = decodeJwt(window.localStorage.getItem("accessToken"));
+                const dptNo = token.depNo;
+
+                if (dptNo) {
+                    await dispatch(getScheduleAPI(dptNo));
+                    setCalendarReady(true);
+                }
+            } catch (error) {
+                console.error("fetchSchedules 도중 에러 발생: ", error);
+            }
+        };
+        fetchSchedules();
+    }, [dispatch, neScheduleAdded]);
+
 
     const [openDialog, setOpenDialog] = useState(false);
     const [newScheduleData, setNewScheduleData] = useState({
@@ -57,6 +72,7 @@ const Calendar = () => {
         try {
             await insertScheduleAPI(newScheduleData);
             alert("일정이 정상적으로 등록되었습니다.");
+            setNewScheduleAdded(!neScheduleAdded);
         } catch (error) {
             console.error("Error submitting schedule data:", error);
             alert("일정 등록에 실패하였습니다.");
@@ -72,22 +88,6 @@ const Calendar = () => {
         });
     };
 
-    // const fetchEvents = async () => {
-    //     try {
-    //         const events = schedules.results.schedule.map(schedule => ({
-    //             title: schedule.skdName,
-    //             start: schedule.skdStartDttm.replace(' ', 'T'),
-    //             end: schedule.skdEndDttm.replace(' ', 'T'),
-    //             id: schedule.skdNo
-    //         }));
-    //         console.log("fetchEvents로 받아오는 event: ", events);
-    //         return events;
-    //     } catch (error) {
-    //         console.error('Error fetching events:', error);
-    //         return [];
-    //     }
-    // };
-
     const fetchEvents = async () => {
         try {
             const events = schedules.results.schedule.map(schedule => ({
@@ -96,10 +96,8 @@ const Calendar = () => {
                 end: moment(schedule.skdEndDttm, "YYYY-MM-DD A h:mm").toISOString(),
                 id: schedule.skdNo
             }));
-            console.log("fetchEvents로 받아오는 event: ", events);
             return events;
         } catch (error) {
-            console.error('Error fetching events:', error);
             return [];
         }
     };
@@ -107,7 +105,7 @@ const Calendar = () => {
     return (
         <main id="main" className="main">
             {calendarReady && (
-                <Box flex="1 1 100%" ml="15px" sx={{ a: { textDecoration: 'none', color: '#444444' } }}>
+                <Box flex="1 1 100%" ml="15px" mt="15px" sx={{ a: { textDecoration: 'none', color: '#444444' } }}>
                     <FullCalendar
                         locale="ko"
                         height="100vh"
