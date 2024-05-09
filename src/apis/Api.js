@@ -1,7 +1,8 @@
 import axios from 'axios';
 const DOMAIN = 'http://localhost:8080';
 const token = window.localStorage.getItem('accessToken')
-// const TEST_TOKEN = 'eyJkYXRlIjoxNzE1MTMwMjc4MjI4LCJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJwb3NpdGlvbk5hbWUiOiLtjIDsnqUiLCJkZXBObyI6NSwibWVtYmVyTm8iOiI1IiwicG9zaXRpb25MZXZlbCI6Miwic3ViIjoia2V0Y2h1cCB0b2tlbiA6IDUiLCJyb2xlIjoiTFYyIiwicG9zaXRpb25TdGF0dXMiOiJZIiwicG9zaXRpb25ObyI6MiwiZXhwIjoxNzE1MjE2Njc4fQ.4KtDg3lZ7bdgJWSpEY6tNkqB-cQYRcI8kwncwqYBKMc';
+// const TEST_TOKEN = 'eyJkYXRlIjoxNzE1MTU4MTM4ODM3LCJ0eXBlIjoiand0IiwiYW…UzOH0.zS2eSUFu3yyN9EMvDzVMkCtYnt4XjGqX0l13V-YhsXE';
+
 
 
 export const request = async (method, url, data) => {
