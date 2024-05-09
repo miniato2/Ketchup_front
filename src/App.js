@@ -12,6 +12,7 @@ import ApprovalDetail from './pages/approvals/ApprovalDetail';
 import Mail from './pages/mails/Mail';
 import MailDetail from './pages/mails/MailDetail';
 import Login from './pages/members/Login';
+import NoticeDetail from './pages/notices/NoticeDetail';
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
           <Route path='main' element={<Main />} />
           <Route path='notices'>
             <Route index element={<Notices />} />
+            <Route path=':noticeNo' element={<NoticeDetail />} />
             <Route path='insert' element={<InsertNotice />} />
           </Route>
           <Route path='approvals'>
