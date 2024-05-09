@@ -12,6 +12,7 @@ import ApprovalDetail from './pages/approvals/ApprovalDetail';
 import Mail from './pages/mails/Mail';
 import MailDetail from './pages/mails/MailDetail';
 import Login from './pages/members/Login';
+import MyPage from './pages/members/MyPage';
 
 function App() {
 
@@ -37,7 +38,7 @@ function App() {
             <Route index element={<Mail />} />
             <Route path=':mailNo' element={<MailDetail />} />
           </Route>
-
+        < Route path="mypage" element={<MyPage />}/>
         </Route>
         <Route path='login' element={<Login/>} />
       </Routes>
