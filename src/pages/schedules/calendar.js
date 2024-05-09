@@ -9,7 +9,7 @@ import { Box, Dialog, DialogTitle } from "@mui/material";
 import ScheduleForm from "../../components/form/ScheduleForm";
 import { getScheduleAPI, insertScheduleAPI } from "../../apis/ScheduleAPICalls";
 import moment from "moment";
-import { getDepartmentFromToken } from "../../utils/tokenUtils";
+import { decodeJwt } from "../../utils/tokenUtils";
 
 const Calendar = () => {
     const schedules = useSelector(state => state.scheduleReducer);
@@ -17,12 +17,13 @@ const Calendar = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        const dptNo = getDepartmentFromToken(token);
+        const token = decodeJwt(window.localStorage.getItem("accessToken"));
+        const dptNo = token.depNo;
 
         console.log("dptNo", dptNo);
 
         if (dptNo) {
+
             dispatch(getScheduleAPI(dptNo));
         }
     }, [dispatch]);
@@ -61,6 +62,7 @@ const Calendar = () => {
         }
     };
 
+    // 다시 렌더링되게 변경 필요함!!!!!!
     const handleSubmit = async (newScheduleData) => {
         try {
             await insertScheduleAPI(newScheduleData);
@@ -98,7 +100,7 @@ const Calendar = () => {
 
     return (
         <main id="main" className="main">
-            {calendarReady && (
+            {calendarReady && ( 
                 <Box flex="1 1 100%" ml="15px" sx={{ a: { textDecoration: 'none', color: '#444444' } }}>
                     <FullCalendar
                         locale="ko"

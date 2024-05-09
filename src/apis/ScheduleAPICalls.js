@@ -23,6 +23,7 @@ export const insertScheduleAPI = async (newScheduleData) => {
         const response = await request('post', '/schedules/schedules', newScheduleData);
         return response;
     } catch (error) {
-        throw new Error('[ScheduleAPICalls] 오류: ', error);
+      const errorMessage = error.response ? error.response.data.message : error.message;
+        throw new Error(`[ScheduleAPICalls] 오류: ${errorMessage}`);
     }
 };
