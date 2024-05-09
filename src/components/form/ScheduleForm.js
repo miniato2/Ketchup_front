@@ -2,6 +2,12 @@ import React from 'react';
 import { Grid, TextField, Box, ButtonGroup, Button, List, ListItem, ListItemText } from "@mui/material";
 
 export default function ScheduleForm({ newScheduleData, onCloseDialogHandler, handleSubmit, handleInputChange }) {
+     // 날짜와 시간을 ISO 8601 형식으로 변환하는 함수
+     const convertToISO8601 = (datetimeString) => {
+        const date = new Date(datetimeString);
+        return date.toISOString();
+    };
+
     return (
         <form onSubmit={(e) => { e.preventDefault(); handleSubmit(newScheduleData); }}>
             <Grid container spacing={2} justifyContent="center">
@@ -56,7 +62,8 @@ export default function ScheduleForm({ newScheduleData, onCloseDialogHandler, ha
                                         label="시작 일시"
                                         variant="outlined"
                                         name="skdStartDttm"
-                                        value={newScheduleData.skdStartDttm}
+                                        // value에는 변환된 ISO 8601 형식으로 입력
+                                        value={newScheduleData.skdStartDttm ? newScheduleData.skdStartDttm.replace(" ", "T") : ""}
                                         onChange={handleInputChange}
                                     />
                                 </Box>
@@ -70,7 +77,8 @@ export default function ScheduleForm({ newScheduleData, onCloseDialogHandler, ha
                                         label="종료 일시"
                                         variant="outlined"
                                         name="skdEndDttm"
-                                        value={newScheduleData.skdEndDttm}
+                                        // value에는 변환된 ISO 8601 형식으로 입력
+                                        value={newScheduleData.skdEndDttm ? newScheduleData.skdEndDttm.replace(" ", "T") : ""}
                                         onChange={handleInputChange}
                                     />
                                 </Box>

@@ -9,6 +9,7 @@ import { Box, Dialog, DialogTitle } from "@mui/material";
 import ScheduleForm from "../../components/form/ScheduleForm";
 import { getScheduleAPI, insertScheduleAPI } from "../../apis/ScheduleAPICalls";
 import moment from "moment";
+import { decodeJwt } from "../../utils/tokenUtils";
 
 const Calendar = () => {
     const schedules = useSelector(state => state.scheduleReducer);
@@ -16,9 +17,17 @@ const Calendar = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const dptNo = 5;
-        dispatch(getScheduleAPI(dptNo));
+        const token = decodeJwt(window.localStorage.getItem("accessToken"));
+        const dptNo = token.depNo;
+
+        console.log("dptNo", dptNo);
+
+        if (dptNo) {
+
+            dispatch(getScheduleAPI(dptNo));
+        }
     }, [dispatch]);
+
 
     const [openDialog, setOpenDialog] = useState(false);
     const [newScheduleData, setNewScheduleData] = useState({
@@ -53,6 +62,7 @@ const Calendar = () => {
         }
     };
 
+    // 다시 렌더링되게 변경 필요함!!!!!!
     const handleSubmit = async (newScheduleData) => {
         try {
             await insertScheduleAPI(newScheduleData);
@@ -72,22 +82,6 @@ const Calendar = () => {
         });
     };
 
-    // const fetchEvents = async () => {
-    //     try {
-    //         const events = schedules.results.schedule.map(schedule => ({
-    //             title: schedule.skdName,
-    //             start: schedule.skdStartDttm.replace(' ', 'T'),
-    //             end: schedule.skdEndDttm.replace(' ', 'T'),
-    //             id: schedule.skdNo
-    //         }));
-    //         console.log("fetchEvents로 받아오는 event: ", events);
-    //         return events;
-    //     } catch (error) {
-    //         console.error('Error fetching events:', error);
-    //         return [];
-    //     }
-    // };
-
     const fetchEvents = async () => {
         try {
             const events = schedules.results.schedule.map(schedule => ({
@@ -106,7 +100,7 @@ const Calendar = () => {
 
     return (
         <main id="main" className="main">
-            {calendarReady && (
+            {calendarReady && ( 
                 <Box flex="1 1 100%" ml="15px" sx={{ a: { textDecoration: 'none', color: '#444444' } }}>
                     <FullCalendar
                         locale="ko"
