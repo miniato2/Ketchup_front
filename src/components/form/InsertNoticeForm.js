@@ -19,7 +19,7 @@ function InsertNoticeForm() {
     const [content, setContent] = useState('');
     const quillRef = useRef();
 
-    let memberNo = ''; 
+    let memberNo = '';
     // let name = '';
 
     const isLogin = window.localStorage.getItem("accessToken");
@@ -53,26 +53,44 @@ function InsertNoticeForm() {
             console.log(fix);
             console.log(memberNo);
 
-            // formData.append('noticeDTO', new Blob([JSON.stringify({ noticeTitle: title, memeberNo: memberNo, noticeFix: fix, noticeContent: htmlContent })], { type: 'application/json' }));
-            formData.append('noticeDTO',  JSON.stringify({ noticeTitle: title, memberNo: memberNo, noticeFix: fix ? 'Y' : 'N',  noticeContent: htmlContent }));
-            files.forEach(file => formData.append('uploadFile', file)); // 모든 파일을 FormData에 추가
+            formData.append('noticeTitle', title);
+            formData.append('memberNo', memberNo);
+            formData.append('noticeFix', fix? 'Y' : 'N');
+            formData.append('noticeContent', htmlContent);
+            files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
+            // formData.append('noticeDTO', JSON.stringify({ 
+            //     noticeTitle: title, 
+            //     memberNo: memberNo, 
+            //     noticeFix: fix ? 'Y' : 'N',  
+            //     noticeContent: htmlContent 
+            // }));
+    
+            // files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
+    
 
-        
-            console.log('handleSubmit [ formData ] : ', formData.get('noticeDTO'));
+            // formData.append('noticeDTO',  JSON.stringify({ noticeTitle: title, memberNo: memberNo, noticeFix: fix ? 'Y' : 'N',  noticeContent: htmlContent }, { type: 'application/json' } ));
+            // if (files.length > 0) {
+            //     files.forEach(file => {
+            //         formData.append('files', file); // 파일 이름 추가하지 않음
+            //     })          
+            // } 
 
-            dispatch(callInsertNoticeAPI(formData));
+            // console.log('handleSubmit [ formData ] : ', formData.get('noticeDTO'));
+            // console.log('handleSubmit [ formData ] : ', formData.get('files'));
+
+
+            dispatch(callInsertNoticeAPI(formData, files));
             // navigate('/notices');
         } catch (error) {
             console.error(error);
             // 등록 실패 시 처리
         }
     };
-    
+
     const handleChangeFiles = (e) => {
         setFiles([...e.target.files]); // 모든 파일을 파일 목록에 추가
+        console.log('setFiles : ', setFiles)
     };
-
-
 
 
     const buttons = [
@@ -80,18 +98,6 @@ function InsertNoticeForm() {
         { label: '등록', onClick: handleSubmit, styleClass: 'move' }
     ];
 
-    const modules = {
-        toolbar: [
-            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            [{ 'font': [] }],
-            [{ 'align': [] }],
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            [{ 'color': [] }, { 'background': [] }],
-            ['link', 'image', 'video'],
-            ['clean']
-        ]
-    };
 
     // useEffect(() => {
     //     const plainTextContent = content.replace(/(<([^>]+)>)/gi, "");
