@@ -9,10 +9,7 @@ function formatDate(dateString) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    const hour = String(date.getHours()).padStart(2, '0');
-    const minute = String(date.getMinutes()).padStart(2, '0');
-    const second = String(date.getSeconds()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+    return `${year}-${month}-${day}`;
 }
 
 // 파일명 추출 함수
@@ -57,19 +54,12 @@ function Notice({ noticeNo }) {
 ;
 
 const downloadFile = (fileName) => {
-    const binary = atob(fileName.fileContent);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
-    }
-    const blob = new Blob([bytes], { type: 'multipart/form-data' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = getOriginalFileName(fileName); // 파일 이름 설정
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const downloadLink = document.createElement('a');
+    downloadLink.href = `data:application/octet-stream;base64,${fileName.fileContent}`;
+    downloadLink.download = getOriginalFileName(fileName);
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
 };
 
     return (

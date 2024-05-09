@@ -12,6 +12,7 @@ const Notices = () => {
   const dispatch = useDispatch(); 
   const result = useSelector(state => state.noticeReducer);
   const noticeList = result.noticelist || [];
+
   const navigate = useNavigate();
 
   console.log("noticeList : ", noticeList);
