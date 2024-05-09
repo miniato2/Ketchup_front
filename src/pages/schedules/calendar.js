@@ -14,19 +14,25 @@ import { decodeJwt } from "../../utils/tokenUtils";
 const Calendar = () => {
     const schedules = useSelector(state => state.scheduleReducer);
     const [calendarReady, setCalendarReady] = useState(false);
+    const [neScheduleAdded, setNewScheduleAdded] = useState(false);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const token = decodeJwt(window.localStorage.getItem("accessToken"));
-        const dptNo = token.depNo;
+        const fetchSchedules = async () => {
+            try {
+                const token = decodeJwt(window.localStorage.getItem("accessToken"));
+                const dptNo = token.depNo;
 
-        console.log("dptNo", dptNo);
-
-        if (dptNo) {
-
-            dispatch(getScheduleAPI(dptNo));
-        }
-    }, [dispatch]);
+                if (dptNo) {
+                    await dispatch(getScheduleAPI(dptNo));
+                    setCalendarReady(true);
+                }
+            } catch (error) {
+                console.error("fetchSchedules 도중 에러 발생: ", error);
+            }
+        };
+        fetchSchedules();
+    }, [dispatch, neScheduleAdded]);
 
 
     const [openDialog, setOpenDialog] = useState(false);
@@ -62,11 +68,11 @@ const Calendar = () => {
         }
     };
 
-    // 다시 렌더링되게 변경 필요함!!!!!!
     const handleSubmit = async (newScheduleData) => {
         try {
             await insertScheduleAPI(newScheduleData);
             alert("일정이 정상적으로 등록되었습니다.");
+            setNewScheduleAdded(!neScheduleAdded);
         } catch (error) {
             console.error("Error submitting schedule data:", error);
             alert("일정 등록에 실패하였습니다.");
@@ -90,17 +96,15 @@ const Calendar = () => {
                 end: moment(schedule.skdEndDttm, "YYYY-MM-DD A h:mm").toISOString(),
                 id: schedule.skdNo
             }));
-            console.log("fetchEvents로 받아오는 event: ", events);
             return events;
         } catch (error) {
-            console.error('Error fetching events:', error);
             return [];
         }
     };
 
     return (
         <main id="main" className="main">
-            {calendarReady && ( 
+            {calendarReady && (
                 <Box flex="1 1 100%" ml="15px" mt="15px" sx={{ a: { textDecoration: 'none', color: '#444444' } }}>
                     <FullCalendar
                         locale="ko"

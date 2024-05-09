@@ -17,6 +17,7 @@ function Approvals() {
 
     const apps = useSelector(state => state.approvalReducer);
     const appList = apps.data?.content;
+    console.log('apps', apps);
 
     let statusList = [];
     switch(category){
@@ -47,13 +48,6 @@ function Approvals() {
     const statusChangeHandler = (e) => {
         setStatus(e.target.value);
     } //드랍박스
-
-    
-
-    // 전체 대기 진행
-    // 전체 완료 반려 회수
-    // 전체 대기 진행
-    // 전체
 
     return (
         <main id="main" className={'main'}>
