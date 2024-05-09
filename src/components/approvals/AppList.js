@@ -1,12 +1,17 @@
 import Table from 'react-bootstrap/Table';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from "react-redux";
+import { callAppAPI } from "../../apis/ApprovalAPICalls";
 
 function AppList({ data }) {
     const column = ['상태', '구분', '제목', '기안자', '기안일자', '결재일자'];
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const onClickHandler = (approvalNo) => {
-        navigate(`/approvals/${approvalNo}`, {replace:false})
+        console.log('applist에서 onClick동작');
+        dispatch(callAppAPI({ approvalNo: approvalNo }))
+        .then(() => navigate(`/approvals/${approvalNo}`, {replace:false}));
     }
 
     return (
