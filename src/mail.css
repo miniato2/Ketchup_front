@@ -1,0 +1,10 @@
+.mail-btn button {
+    border:none;
+    background-color: #ffffff;
+}
+.focus-btn {
+    color:#EC0B0B;
+}
+.non-focus-btn {
+    color:#000000;
+}

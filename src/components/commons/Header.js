@@ -45,7 +45,7 @@ const onClickLogoutHandler = () => {
             <Nav className="header-nav ms-auto">
                 <ul className="d-flex align-items-center">
                     <li className="nav-item">
-                        <Link to="/mails" className="bi-envelope nav-icon" style={{color: '#EC0B0B'}}></Link>
+                        <Link to="/mails?part=receive" className="bi-envelope nav-icon" style={{color: '#EC0B0B'}}></Link>
                     </li>
                     <li className="nav-item dropdown pe-2">
                         <a className="nav-link nav-profile d-flex align-items-center pe-6" href="#" data-bs-toggle="dropdown">
