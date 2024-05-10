@@ -1,3 +1,6 @@
+# react-inputs-validation 설치 필요
+npm i react-inputs-validation 
+
 # material UI install
 npm i @mui/material @emotion/react @emotion/styled @mui/icons-material
 

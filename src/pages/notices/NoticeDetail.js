@@ -8,6 +8,7 @@ function NoticeDetail() {
     // const loginStatus = !!localStorage.getItem('isLogin');
     const navigate = useNavigate();
     const { noticeNo } = useParams();
+    
 
     return (
         <main id="main" className="main">

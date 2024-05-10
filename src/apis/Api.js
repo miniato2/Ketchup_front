@@ -5,7 +5,6 @@ const DOMAIN = 'http://localhost:8080';
 
 
 
-
 export const request = async (method, url, data) => {
     try {
         // API 요청
@@ -15,7 +14,10 @@ export const request = async (method, url, data) => {
             url: `${DOMAIN}${url}`,
             data: data,
             headers: {
-                'Authorization': `Bearer ${token}` 
+
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data' // 추가
+
             }
         });
         return response.data;

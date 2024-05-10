@@ -5,8 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { callAppListAPI } from "../../apis/ApprovalAPICalls";
 import ApprovalCss from "./Approvals.module.css";
 import AppList from "../../components/approvals/AppList";
+import { decodeJwt } from "../../utils/tokenUtils";
 
 function Approvals() {
+    const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
 
     const [category, setCategory] = useState(1); //카테고리를 state로 관리 초기값 1
     const [status, setStatus] = useState('전체'); //문서 상태 관리 초기값 전체 
@@ -14,6 +16,7 @@ function Approvals() {
     const [search, setSearch] = useState('');
 
     const dispatch = useDispatch();
+    
 
     const apps = useSelector(state => state.approvalReducer);
     const appList = apps.data?.content;
@@ -31,7 +34,7 @@ function Approvals() {
     useEffect(() => {
         dispatch(
             callAppListAPI({
-                memberNo: '4',
+                memberNo: loginToken.memberNo,
                 category: category,
                 status: status,
                 search: search,
