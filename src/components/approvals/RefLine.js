@@ -9,7 +9,7 @@ function RefLine({refline}){
                     <tr>
                         <th scope='col' width={'12%'}>구분</th>
                         {refline.map(() => (
-                            <th width={'12%'}>참조자</th>
+                            <th width={'12%'} >참조자</th>
                         ))}
                         <th></th>
                     </tr>
@@ -18,7 +18,7 @@ function RefLine({refline}){
                     <tr>
                         <th scope='row'>성명</th>
                         {refline.map((item) => (
-                            <td>{item.refMember.memberName}</td>
+                            <td key={item.index}>{item.refMember.memberName}</td>
                         ))}
                         <td></td>
                     </tr>
