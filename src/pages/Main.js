@@ -2,14 +2,17 @@ import { Link, useNavigate } from "react-router-dom";
 import BootstrapTable from "../components/contents/BootstrapTable";
 import ApprovalBox from "../components/contents/ApprovalBox";
 import ScheduleBox from "../components/contents/ScheduleBox";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { decodeJwt } from '../utils/tokenUtils';
+import { useEffect, useState } from "react";
+import { callGetMemberNameAPI } from "../apis/MemberAPICalls";
 
 function Main() {
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
-    console.log(loginToken);
+    console.log('[ loginToken ] : ', loginToken);
 
     // 결재 
     const approvalData = [
@@ -32,15 +35,48 @@ function Main() {
         return `${year}-${month}-${day}`;
     };
 
-    const formattedNoticeList = noticeList ? noticeList.slice(0, 3).map(item => ({
-        ...item,
-        noticeCreateDttm: formatDateTime(item.noticeCreateDttm)
-    })) : [];
+    // 상태 변수
+    const [formattedNoticeList, setFormattedNoticeList] = useState([]);
+
+    // 컴포넌트가 마운트될 때 공지사항 목록을 가져와서 작성자의 이름을 추가
+    useEffect(() => {
+        const fetchNoticeList = async () => {
+            if (noticeList) {
+                const formattedList = await Promise.all(noticeList.slice(0, 3).map(async (item) => {
+                    try {
+                        const memberInfo = await dispatch(callGetMemberNameAPI({ memberNo: item.memberNo }));
+                        console.log('[ memberInfo ] : ', memberInfo);
+
+                        return {
+                            ...item,
+                            noticeCreateDttm: formatDateTime(item.noticeCreateDttm),
+                            memberName: memberInfo
+                        }
+
+                    } catch (error) {
+                        console.error('Failed to fetch member name:', error);
+                        return {
+                            ...item,
+                            noticeCreateDttm: formatDateTime(item.noticeCreateDttm),
+                            memberName: 'Unknown'
+                        };
+                    }
+                }));
+                setFormattedNoticeList(formattedList);
+            }
+        };
+        fetchNoticeList();
+    }, [dispatch, noticeList]);
+
+    // const formattedNoticeList = noticeList ? noticeList.slice(0, 3).map(item => ({
+    //     ...item,
+    //     noticeCreateDttm: formatDateTime(item.noticeCreateDttm)
+    // })) : [];
 
     // 컬럼 제목 목록
     const columns = [
         ['noticeTitle', '제목'],
-        ['memberNo', '작성자'],
+        ['memberName', '작성자'],
         ['noticeCreateDttm', '등록일']
     ];
 

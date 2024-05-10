@@ -30,7 +30,6 @@ function InsertNoticeForm() {
         decoded = decodedTokenInfo.role;
 
         memberNo = decodedTokenInfo.memberNo; // 함수 내부에서 memberId 할당
-        // name = decodedTokenInfo.name;
     }
 
     const handleChangeColor = (color) => {
@@ -45,38 +44,14 @@ function InsertNoticeForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('noticeDTO', new Blob([JSON.stringify({ noticeTitle: title, memberNo: memberNo, noticeFix: fix ? 'Y' : 'N', noticeContent: content })], { type: 'application/json' }));
+        files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
+        
         try {
-            const formData = new FormData();
-            // const htmlContent = content;
-            console.log(title);
-            console.log(content);
-            console.log(fix);
-            console.log(memberNo);
-
-            // const noticeData = {
-            //     noticeTitle: title,
-            //     memberNo: memberNo,
-            //     noticeFix: fix ? 'Y' : 'N',
-            //     noticeContent: content,
-            // };
-
-            formData.append('noticeTitle', title);
-            formData.append('memberNo', memberNo);
-            formData.append('noticeFix', fix? 'Y' : 'N');
-            formData.append('noticeContent', content);
-            files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
-            // formData.append('noticeDTO', JSON.stringify({ 
-            //     noticeTitle: title, 
-            //     memberNo: memberNo, 
-            //     noticeFix: fix ? 'Y' : 'N',  
-            //     noticeContent: htmlContent 
-            // }));
-    
-            // files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
-    
-
-            await dispatch(callInsertNoticeAPI(formData));
-            // navigate('/notices');
+            const data = await dispatch(callInsertNoticeAPI(formData));
+            navigate('/notices');
         } catch (error) {
             console.error(error);
             // 등록 실패 시 처리
@@ -93,16 +68,6 @@ function InsertNoticeForm() {
         { label: '취소', onClick: () => navigate(-1), styleClass: 'back' },
         { label: '등록', onClick: handleSubmit, styleClass: 'move' }
     ];
-
-
-    // useEffect(() => {
-    //     const plainTextContent = content.replace(/(<([^>]+)>)/gi, "");
-    //     const markdownContent = `# \n${plainTextContent}`;
-    //     remark().use(remarkHtml).process(markdownContent, function (err, file) {
-    //         if (err) throw err;
-    //         setPreviewContent(String(file));
-    //     });
-    // }, [content, title]);
 
     return (
         <main id="main" className="main">

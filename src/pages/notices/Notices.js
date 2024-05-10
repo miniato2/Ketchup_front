@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { callGetNoticeListAPI, callSearchNoticeListAPI } from '../../apis/NoticeAPICalls';
 import { useDispatch, useSelector } from 'react-redux';
 import { BsMegaphone } from 'react-icons/bs';
+import { callGetMemberNameAPI } from '../../apis/MemberAPICalls';
 
 const Notices = () => {
   const dispatch = useDispatch(); 
@@ -25,36 +26,82 @@ const Notices = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const formattedNoticeList = noticeList.map(item => ({
-    ...item,
-    noticeCreateDttm: formatDateTime(item.noticeCreateDttm)
-  }));
+      const [formattedNoticeList, setFormattedNoticeList] = useState([]);
 
-  // 등록된 시간의 역순으로 정렬하되 noticeFix가 "Y"인 행을 상단에 위치하도록 정렬
-  const sortedNoticeList = [...formattedNoticeList]
-    .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm))
-    .sort((a, b) => (a.noticeFix === 'Y' ? -1 : 1))
-    .map(item => ({
-      ...item,
-      noticeTitle: item.noticeFix === 'Y' ? (
-        <>
-          <span style={{ marginRight: '5px' }}>
-            [ 필독&nbsp;
-            <span style={{ color: '#EC0B0B' }}>
-              <BsMegaphone />
-            </span>
-            &nbsp;]
+      useEffect(() => {
+        const fetchNoticeList = async () => {
+            if (noticeList) {
+              const formattedList = await Promise.all(noticeList.map(async (item) => {
+                try {
+                        const memberInfo = await dispatch(callGetMemberNameAPI({ memberNo: item.memberNo }));
+                        console.log('[ memberInfo ] : ', memberInfo);
+
+                        return {
+                            ...item,
+                            noticeCreateDttm: formatDateTime(item.noticeCreateDttm),
+                            memberName: memberInfo // memberName 추가
+                        }
+
+                    } catch (error) {
+                        console.error('Failed to fetch member name:', error);
+                        return {
+                            ...item,
+                            noticeCreateDttm: formatDateTime(item.noticeCreateDttm),
+                            memberName: 'Unknown'
+                        };
+                    }
+                }));
+                setFormattedNoticeList(formattedList);
+            }
+        };
+        fetchNoticeList();
+    }, []); // 빈 배열을 전달하여 컴포넌트가 처음 렌더링될 때만 호출되도록 함
+
+  // const formattedNoticeList = noticeList.map(item => ({
+  //   ...item,
+  //   noticeCreateDttm: formatDateTime(item.noticeCreateDttm)
+  // }));
+
+  // 중복된 noticeNo 제거
+const uniqueNoticeList = formattedNoticeList.filter((item, index, self) =>
+index === self.findIndex((t) => (
+  t.noticeNo === item.noticeNo
+))
+);
+
+// 등록된 시간의 역순으로 정렬하되 noticeFix가 "Y"인 행을 상단에 위치하도록 정렬
+const sortedNoticeList = [...uniqueNoticeList]
+.sort((a, b) => {
+  if (a.noticeFix === 'Y' && b.noticeFix !== 'Y') {
+    return -1; // a가 필독 공지이고 b가 필독 공지가 아닌 경우, a를 먼저 배치
+  } else if (a.noticeFix !== 'Y' && b.noticeFix === 'Y') {
+    return 1; // a가 필독 공지가 아니고 b가 필독 공지인 경우, b를 먼저 배치
+  } else {
+    // a와 b가 모두 필독 공지이거나 아닌 경우 등록된 시간의 역순으로 정렬
+    return new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm);
+  }
+})  
+.map(item => ({
+    ...item,
+    noticeTitle: item.noticeFix === 'Y' ? (
+      <>
+        <span style={{ marginRight: '5px' }}>
+          [ 필독&nbsp;
+          <span style={{ color: '#EC0B0B' }}>
+            <BsMegaphone />
           </span>
-          {item.noticeTitle}
-        </>
-      ) : item.noticeTitle
-    }));
+          &nbsp;]
+        </span>
+        {item.noticeTitle}
+      </>
+    ) : item.noticeTitle
+  }));
 
   // 컬럼 제목 목록
   const columns = [
     ['noticeNo', '공지번호'],
     ['noticeTitle', '제목'],
-    ['memberNo', '작성자'],
+    ['memberName', '작성자'],
     ['noticeCreateDttm', '등록일']
   ];
 
@@ -109,6 +156,7 @@ const Notices = () => {
             totalItems={sortedNoticeList.length}
             itemsPerPage={itemsPerPage}
             currentPage={currentPage}
+            
             onPageChange={(pageNumber) => setCurrentPage(pageNumber)} // 페이지 변경 핸들러 전달
           />
         </div>
