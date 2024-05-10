@@ -5,7 +5,7 @@ import { decodeJwt } from '../../utils/tokenUtils';
 
 import { callGetMemberAPI } from '../../apis/MemberAPICalls';
 
-function MyPage(){
+function Member({selectMemberNo}){
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -23,7 +23,7 @@ function MyPage(){
             console.log('마이페이지token',token);
 
             if(token){
-                dispatch(callGetMemberAPI({memberNo: token.memberNo}));
+                dispatch(callGetMemberAPI({memberNo: selectMemberNo}));
             }
 
         },[]
@@ -32,7 +32,7 @@ function MyPage(){
    
 
     return (
-        <main id="main">
+       
         <div 
             
             style={ { backgroundColor: 'white' } }
@@ -41,7 +41,7 @@ function MyPage(){
             { memberDetail&& memberDetail?.department?.depName &&
             
              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <h1 style={{marginLeft: '-1400px'}}>내 정보</h1>
+              
 
                 <label style={{color: '#878787'}}>사번
                 <input 
@@ -152,11 +152,11 @@ function MyPage(){
 
             }
         </div>
-        </main>
+       
     );
 
 
 
 }
 
-export default MyPage;
+export default Member;
