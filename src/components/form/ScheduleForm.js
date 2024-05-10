@@ -25,22 +25,6 @@ export default function ScheduleForm({ newScheduleData, onInsertCancelHandler, h
                                 value={newScheduleData.skdNo}
                                 onChange={handleInputChange}
                             />
-                            {/* <Textbox
-                            attributesInput={{
-                                id: 'skdNo',
-                                name: 'skdNo',
-                                type: 'number',
-                                placeholder: '일정 번호를 입력해주세요.',
-                            }}
-                            value={newScheduleData.skdNo}
-                            onChange={(name, e) => {handleInputChange()}}
-                            onBlur={e=>{ }}
-                            validationOption={{
-                                name: '일정 번호',
-                                check: true,
-                                required: true,
-                            }}
-                            /> */}
                         </ListItem>
                         <ListItem sx={{ px: 0, flex: 1 }}>
                             <ListItemText sx={{ maxWidth: 100 }}>부서 번호</ListItemText>
@@ -129,10 +113,8 @@ export default function ScheduleForm({ newScheduleData, onInsertCancelHandler, h
                     </Box>
                 </Grid>
                 <Grid item xs={12}>
-                    <ButtonGroup>
-                        <Button color="error" onClick={onInsertCancelHandler}>취소</Button>
-                        <Button type="submit">등록</Button>
-                    </ButtonGroup>
+                    <Button color="error" onClick={onInsertCancelHandler}>취소</Button>
+                    <Button type="submit">등록</Button>
                 </Grid>
             </Grid>
         </form>
