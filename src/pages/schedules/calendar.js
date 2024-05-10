@@ -7,14 +7,18 @@ import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from '@fullcalendar/list';
 import { Box, Dialog, DialogTitle } from "@mui/material";
 import ScheduleForm from "../../components/form/ScheduleForm";
-import { getScheduleAPI, insertScheduleAPI } from "../../apis/ScheduleAPICalls";
+import { getScheduleAPI, insertScheduleAPI, deleteScheduleAPI } from "../../apis/ScheduleAPICalls";
 import moment from "moment";
 import { decodeJwt } from "../../utils/tokenUtils";
+import ScheduleDetail from "../../components/form/ScheduleDetail";
 
 const Calendar = () => {
     const schedules = useSelector(state => state.scheduleReducer);
     const [calendarReady, setCalendarReady] = useState(false);
-    const [neScheduleAdded, setNewScheduleAdded] = useState(false);
+    const [newScheduleAdded, setNewScheduleAdded] = useState(false);
+    const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [scheduleDetail, setScheduleDetail] = useState(null);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -32,10 +36,9 @@ const Calendar = () => {
             }
         };
         fetchSchedules();
-    }, [dispatch, neScheduleAdded]);
+    }, [dispatch, newScheduleAdded]);
 
-
-    const [openDialog, setOpenDialog] = useState(false);
+    const [insertScheduleDialogOpen, setInsertScheduleDialogOpen] = useState(false);
     const [newScheduleData, setNewScheduleData] = useState({
         skdNo: "",
         dptNo: "",
@@ -53,31 +56,67 @@ const Calendar = () => {
     }, [schedules]);
 
     const onDateClickHandler = () => {
-        setOpenDialog(true);
+        setInsertScheduleDialogOpen(true);
     };
 
-    const onCloseDialogHandler = () => {
-        setOpenDialog(false);
+    const onInsertCancelHandler = () => {
+        setInsertScheduleDialogOpen(false);
     };
 
-    const onEventClickHandler = (selected) => {
-        if (window.confirm(
-            `정말 '${selected.event.title}'을 삭제하시겠습니까?`
-        )) {
-            selected.event.remove();
+    const openDetailDialog = () => {
+        setDetailDialogOpen(true);
+    };
+
+    const closeDetailDialog = () => {
+        setDetailDialogOpen(false);
+    };
+
+    const handleDateClick = () => {
+        onDateClickHandler();
+    };
+
+    const onEventClickHandler = (info) => {
+        setSelectedEvent(info.event);
+        openDetailDialog();
+    };
+
+    const handleDelete = async () => {
+        if (selectedEvent) {
+            try {
+                await deleteScheduleAPI(selectedEvent.id);
+                alert("일정이 정상적으로 삭제되었습니다.");
+                setCalendarReady(false);
+            } catch (error) {
+                console.error("일정 삭제 중 에러 발생: ", error);
+                alert("일정 삭제에 실패했습니다.");
+            }
+            closeDetailDialog();
         }
     };
+
+    useEffect(() => {
+        if (selectedEvent) {
+            const skdNo = selectedEvent.id;
+            const detail = schedules.results.schedule.find(schedule => schedule.skdNo === skdNo);
+            setScheduleDetail(detail);
+        }
+    }, [selectedEvent, schedules]);
+
+
+    // const handleUpdate = async () => {
+    //     // TODO LIST: 수정 로직 구현 필요함
+    // };
 
     const handleSubmit = async (newScheduleData) => {
         try {
             await insertScheduleAPI(newScheduleData);
             alert("일정이 정상적으로 등록되었습니다.");
-            setNewScheduleAdded(!neScheduleAdded);
+            setNewScheduleAdded(!newScheduleAdded);
         } catch (error) {
             console.error("Error submitting schedule data:", error);
             alert("일정 등록에 실패하였습니다.");
         }
-        onCloseDialogHandler();
+        onInsertCancelHandler();
     };
 
     const handleInputChange = (e) => {
@@ -88,7 +127,7 @@ const Calendar = () => {
         });
     };
 
-    const fetchEvents = async () => {
+    const fetchEvents = () => {
         try {
             const events = schedules.results.schedule.map(schedule => ({
                 title: schedule.skdName,
@@ -126,7 +165,7 @@ const Calendar = () => {
                         dayMaxEvents={true}
                         select={onDateClickHandler}
                         eventClick={onEventClickHandler}
-                        events={fetchEvents}
+                        events={fetchEvents()}
                         buttonText={{
                             today: '오늘',
                             month: '월',
@@ -138,14 +177,22 @@ const Calendar = () => {
                 </Box>
             )}
 
-            <Dialog open={openDialog} onClose={onCloseDialogHandler}>
+            <Dialog open={insertScheduleDialogOpen} onClose={onInsertCancelHandler}>
                 <DialogTitle>일정 등록</DialogTitle>
                 <ScheduleForm
                     newScheduleData={newScheduleData}
-                    onCloseDialogHandler={onCloseDialogHandler}
+                    onInsertCancelHandler={onInsertCancelHandler}
                     handleSubmit={handleSubmit}
                     handleInputChange={handleInputChange}
                 />
+            </Dialog>
+
+
+            <Dialog open={detailDialogOpen} onClose={closeDetailDialog}>
+                <DialogTitle>상세 정보</DialogTitle>
+                    <ScheduleDetail
+                    handleInputChange={handleInputChange}
+                    />
             </Dialog>
         </main>
     );

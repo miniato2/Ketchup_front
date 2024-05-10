@@ -1,6 +1,6 @@
 import axios from 'axios';
 const DOMAIN = 'http://localhost:8080';
-const token = window.localStorage.getItem('accessToken')
+// const token = window.localStorage.getItem('accessToken')
 // const TEST_TOKEN = 'eyJkYXRlIjoxNzE1MTU4MTM4ODM3LCJ0eXBlIjoiand0IiwiYW…UzOH0.zS2eSUFu3yyN9EMvDzVMkCtYnt4XjGqX0l13V-YhsXE';
 
 
@@ -8,12 +8,14 @@ const token = window.localStorage.getItem('accessToken')
 export const request = async (method, url, data) => {
     try {
         // API 요청
+        const token = window.localStorage.getItem('accessToken')
         const response = await axios({
             method: method,
             url: `${DOMAIN}${url}`,
             data: data,
             headers: {
-                'Authorization': `Bearer ${token}` // 테스트용 토큰 사용
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data' // 추가
             }
         });
         return response.data;
