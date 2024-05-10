@@ -2,14 +2,20 @@ import { Link, useNavigate } from "react-router-dom";
 import BootstrapTable from "../components/contents/BootstrapTable";
 import ApprovalBox from "../components/contents/ApprovalBox";
 import ScheduleBox from "../components/contents/ScheduleBox";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { decodeJwt } from '../utils/tokenUtils';
+import { useEffect, useState } from "react";
+import { callGetMemberNameAPI } from "../apis/MemberAPICalls";
+import { callGetNoticeListAPI } from "../apis/NoticeAPICalls";
+import FormatDateTime from "../components/contents/FormatDateTime";
+import { BsMegaphone } from "react-icons/bs";
 
 function Main() {
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
-    console.log(loginToken);
+    console.log('[ loginToken ] : ', loginToken);
 
     // 결재 
     const approvalData = [
@@ -19,31 +25,40 @@ function Main() {
         { title: "반려된 나의 문서", count: 2 },
     ];
 
-    // 공지사항
-    const result = useSelector(state => state.noticeReducer);
-    const noticeList = result.noticelist;
+    // 공지사항 목록 가져오기
+    useEffect(() => {
+        dispatch(callGetNoticeListAPI());
+    }, [dispatch]);
 
-    // 공지사항 컬럼 제목 목록
-    const formatDateTime = dateTimeString => {
-        const dateTime = new Date(dateTimeString);
-        const year = dateTime.getFullYear();
-        const month = String(dateTime.getMonth() + 1).padStart(2, '0');
-        const day = String(dateTime.getDate()).padStart(2, '0');
-        const hours = String(dateTime.getHours()).padStart(2, '0');
-        const minutes = String(dateTime.getMinutes()).padStart(2, '0');
-        const seconds = String(dateTime.getSeconds()).padStart(2, '0');
-        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    };
+    // 공지사항 목록 Redux store에서 가져오기
+    const noticeList = useSelector(state => state.noticeReducer.noticelist);
 
-    const formattedNoticeList = noticeList ? noticeList.slice(0, 3).map(item => ({
-        ...item,
-        noticeCreateDttm: formatDateTime(item.noticeCreateDttm)
+    const formattedNoticeList = noticeList ? noticeList
+    .slice(0, 3) // 최신 3개의 공지만 표시
+    .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
+    .map(item => ({
+      ...item,
+      noticeTitle: (
+        <>
+          {item.noticeFix === 'Y' && ( // 필독 공지인 경우에만 [ 필독 ]을 붙임
+            <span style={{ marginRight: '5px' }}>
+              [ 필독&nbsp;
+              <span style={{ color: '#EC0B0B' }}>
+                <BsMegaphone />
+              </span>
+              &nbsp;]
+            </span>
+          )}
+          {item.noticeTitle}
+        </>
+      ),
+      noticeCreateDttm: FormatDateTime(item.noticeCreateDttm)
     })) : [];
-
     // 컬럼 제목 목록
     const columns = [
+        ['noticeNo', '공지번호'],
         ['noticeTitle', '제목'],
-        ['memberNo', '작성자'],
+        ['memberName', '작성자'],
         ['noticeCreateDttm', '등록일']
     ];
 

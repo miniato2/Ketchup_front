@@ -1,0 +1,45 @@
+.appModal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+.appModalBox{
+    padding: 10px 10px 10px 10px;
+    background-color: white;
+    width: 600px;
+    height: 400px;
+}
+.appModalBox h1{
+    font-size: 20px;
+}
+.appModalBox h5{
+    font-size: 18px;
+}
+.appModalContents{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.members{
+    width: 150px;
+    height: 300px;
+    overflow: auto;
+    border: solid 0.5px #999797;
+}
+.appMem{
+    width: 350px;
+    height: 300px;
+    border: solid 0.5px #999797;
+}
+.appBtns{
+    width: fit-content;
+    margin-left: auto;
+}

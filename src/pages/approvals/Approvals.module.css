@@ -30,6 +30,7 @@
     background-color: #f5f5f5;
 }
 .appBtn {
+    width: fit-content;
     margin-left: auto;
 }
   
