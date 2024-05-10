@@ -1,7 +1,7 @@
 import axios from 'axios';
 const DOMAIN = 'http://localhost:8080';
-// const token = window.localStorage.getItem('accessToken')
-// const TEST_TOKEN = 'eyJkYXRlIjoxNzE1MTU4MTM4ODM3LCJ0eXBlIjoiand0IiwiYW…UzOH0.zS2eSUFu3yyN9EMvDzVMkCtYnt4XjGqX0l13V-YhsXE';
+
+
 
 
 
@@ -14,8 +14,10 @@ export const request = async (method, url, data) => {
             url: `${DOMAIN}${url}`,
             data: data,
             headers: {
+
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data' // 추가
+
             }
         });
         return response.data;
