@@ -29,7 +29,6 @@ function Approvals() {
     };
 
     useEffect(() => {
-        
         dispatch(
             callAppListAPI({
                 memberNo: '4',

@@ -11,7 +11,7 @@ export const getScheduleAPI = (dptNo) => {
         payload: schedules
       });
     } catch (error) {
-      console.error('[ScheduleAPICalls중에서 getScheduleAPI 호출 오류: ]', error);
+      // console.error('[ScheduleAPICalls중에서 getScheduleAPI 호출 오류: ]', error);
       throw error;
     }
   };

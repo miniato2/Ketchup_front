@@ -12,7 +12,6 @@ import ApprovalDetail from './pages/approvals/ApprovalDetail';
 import Mail from './pages/mails/Mail';
 import MailDetail from './pages/mails/MailDetail';
 import Login from './pages/members/Login';
-import NoticeDetail from './pages/notices/NoticeDetail';
 
 function App() {
 
@@ -34,12 +33,13 @@ function App() {
           </Route>
           {/* <Route path='board' element={<Boards />} /> */}
           <Route path='calendar' element={<Calendar />} />
-          {/* <Route path='mails' element={<Mail />} /> */}
+
           <Route path='mails'>
             <Route index element={<Mail />} />
+            <Route path='insert' element={<InsertMail />} />
             <Route path=':mailNo' element={<MailDetail />} />
           </Route>
-
+        < Route path="mypage" element={<MyPage />}/>
         </Route>
         <Route path='login' element={<Login/>} />
       </Routes>

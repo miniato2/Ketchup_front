@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { callGetReceiveMailAPI } from "../../../apis/MailAPICalls";
-import BootstrapTable from "../../contents/BootstrapTable";
+import CheckBootstrapTable from "../../contents/CheckBootstrapTable copy";
 
 function ReceiveMail() {
     const result = useSelector(state => state.mailReducer);
@@ -15,7 +15,6 @@ function ReceiveMail() {
     );
 
     const columns = [
-        [],
         ['mailNo', '번호'],
         ['readTime', '읽음'],
         ['mailTitle', '제목'],
@@ -26,7 +25,7 @@ function ReceiveMail() {
     return (
         receiveMail && (
         <div>
-            <BootstrapTable data={receiveMail} columns={columns} />
+            <CheckBootstrapTable data={receiveMail} columns={columns} />
         </div>
         )
     );

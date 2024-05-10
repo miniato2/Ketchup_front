@@ -1,7 +1,7 @@
 import { GET_MEMBER, POST_LOGIN, POST_REGISTER } from '../modules/MemberModule';
 
 export const callGetMemberAPI = ({ memberNo }) => {
-    const requestURL = `http://${process.env.REACT_APP_RESTAPI_IP}:8080/members/${memberNo}`;
+    const requestURL = `http://localhost:8080/members/${memberNo}`;
 
     return async (dispatch, getState) => {
         // 클라이언트 fetch mode : no-cors 사용시 application/json 방식으로 요청이 불가능

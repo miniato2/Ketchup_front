@@ -13,8 +13,7 @@ export const request = async (method, url, data) => {
             url: `${DOMAIN}${url}`,
             data: data,
             headers: {
-                'Authorization': `Bearer ${token}`
-                // 'Authorization': `Bearer ${TEST_TOKEN}`, // 테스트용 토큰
+                'Authorization': `Bearer ${token}` // 테스트용 토큰 사용
             }
         });
         return response.data;
