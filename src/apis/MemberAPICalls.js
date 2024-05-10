@@ -1,4 +1,5 @@
-import { GET_MEMBER, POST_LOGIN, POST_REGISTER } from '../modules/MemberModule';
+import { GET_MEMBER, GET_MEMBERS, POST_LOGIN, POST_REGISTER } from '../modules/MemberModule';
+import { request } from './Api';
 
 export const callGetMemberAPI = ({ memberNo }) => {
     const requestURL = `http://localhost:8080/members/${memberNo}`;
@@ -43,22 +44,22 @@ export const callLoginAPI = ({ form }) => {
         }).then((response) => response.json());
 
         console.log('[MemberAPICalls] callLoginAPI RESULT : ', result);
-      if(result.status === 200){
+        if (result.status === 200) {
             window.localStorage.setItem('accessToken', result.token);
-   
-        dispatch({ type: POST_LOGIN, payload: result });
-    }
+
+            dispatch({ type: POST_LOGIN, payload: result });
+        }
     };
 };
 
 
 export const callLogoutAPI = () => {
     return async (dispatch, getState) => {
-       
+
         dispatch({ type: POST_LOGIN, payload: '' });
         console.log('[MemberAPICalls] callLogoutAPI RESULT : SUCCESS');
-        
-    
+
+
     };
 };
 
@@ -98,3 +99,14 @@ export const callRegisterAPI = ({ form }) => {
         }
     };
 };
+
+export function callMembersAPI() {
+    console.log("=============전체 사원 호출=============");
+
+    return async(dispatch, getState) => {
+        const result = await request('GET', '/members');
+        console.log("전체 사원 호출 API 결과:   ",result.data);
+
+        dispatch({ type: GET_MEMBERS, payload: result.data});
+    };
+}

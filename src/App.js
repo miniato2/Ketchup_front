@@ -11,7 +11,12 @@ import InsertApproval from './pages/approvals/InsertApproval';
 import ApprovalDetail from './pages/approvals/ApprovalDetail';
 import Mail from './pages/mails/Mail';
 import MailDetail from './pages/mails/MailDetail';
+import InsertMail from './pages/mails/InsertMail';
 import Login from './pages/members/Login';
+import MyPage from './pages/members/MyPage';
+import NoticeDetail from './pages/notices/NoticeDetail';
+import Members from './pages/members/Members';
+import MemberDetail from './pages/members/MemberDetail';
 
 function App() {
 
@@ -40,6 +45,10 @@ function App() {
             <Route path=':mailNo' element={<MailDetail />} />
           </Route>
         < Route path="mypage" element={<MyPage />}/>
+        <Route path='members'>
+            <Route index element={<Members />} />
+            <Route path=':memberNo' element={<MemberDetail />} />
+          </Route>
         </Route>
         <Route path='login' element={<Login/>} />
       </Routes>

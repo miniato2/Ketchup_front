@@ -39,7 +39,7 @@ function Sidebar() {
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" to="#">
+                    <Link className="nav-link collapsed" to="/members">
                         <i className="bi bi-person-badge"></i><span>사원</span>
                     </Link>
                 </li>
