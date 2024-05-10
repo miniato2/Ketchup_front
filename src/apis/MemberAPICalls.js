@@ -22,35 +22,6 @@ export const callGetMemberAPI = ({ memberNo }) => {
     };
 };
 
-export const callGetMemberNameAPI = ({ memberNo }) => {
-    const requestURL = `http://localhost:8080/members/${memberNo}`;
-
-    return async (dispatch, getState) => {
-        try {
-            const response  = await fetch(requestURL, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: '*/*',
-                    Authorization: 'Bearer ' + window.localStorage.getItem('accessToken'),
-                },
-            }); 
-            if (!response.ok) {
-                throw new Error('Failed to fetch member name: ' + response.status);
-            }
-            const result = await response.json();
-            console.log('[MemberAPICalls] callGetMemberNameAPI RESULT : ', result);
-
-            // 가져온 회원 정보에서 회원 이름만 추출하여 dispatch
-            const memberName = result.data.memberName;
-            return memberName;
-        } catch (error) {
-            console.error('Failed to fetch member name:', error);
-            // 에러 처리
-        }
-    };
-};
-
 export const callLoginAPI = ({ form }) => {
     const requestURL = `http://localhost:8080/login`;
     console.log("========로그인 api 호출========");

@@ -10,7 +10,6 @@ import Approvals from './pages/approvals/Approvals';
 import InsertApproval from './pages/approvals/InsertApproval';
 import ApprovalDetail from './pages/approvals/ApprovalDetail';
 import Mail from './pages/mails/Mail';
-import InsertMail from './pages/mails/Mail';
 import MailDetail from './pages/mails/MailDetail';
 import InsertMail from './pages/mails/InsertMail';
 import Login from './pages/members/Login';
