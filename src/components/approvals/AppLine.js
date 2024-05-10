@@ -20,21 +20,21 @@ function AppLine({appline}){
                     <tr>
                         <th scope='row'>직급</th>
                         {appline.map((item) => (
-                            <td className='ap'>{item.alMember.position.positionName}</td>
+                            <td key={item.index}>{item.alMember.position.positionName}</td>
                         ))}
                         <td></td>
                     </tr>
                     <tr>
                         <th scope='row'>성명</th>
                         {appline.map((item) => (
-                            <td className='ap'>{item.alMember.memberName}</td>
+                            <td key={item.index}>{item.alMember.memberName}</td>
                         ))}
                         <td></td>
                     </tr>
                     <tr>
                         <th scope='row'>결재일자</th>
                         {appline.map((item) => (
-                            <td className='ap'>{item.alDate}</td>
+                            <td key={item.index}>{item.alDate}</td>
                         ))}
                         <td></td>
                     </tr>

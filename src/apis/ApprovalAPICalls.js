@@ -23,7 +23,7 @@ export const callAppListAPI = ({memberNo, category, status, search, currentPage}
 
 export const callAppAPI = ({approvalNo}) => {
     let requestURL = `/approvals/${approvalNo}`;
-    console.log('api 도착');
+    console.log('api 도착', approvalNo);
 
     return async (dispatch, getState) => {
         const result = await request('GET', requestURL);
@@ -32,4 +32,18 @@ export const callAppAPI = ({approvalNo}) => {
             dispatch(getApproval(result.data));
         }
     }
+}
+
+export const callInsertAppAPI = ({data}) => {
+    let requestURL = `/approvals`;
+    console.log(`api 도착`, data);
+    return async(dispatch, getState) => {
+        const result = await request('POST', requestURL, data); // => data에 바디
+        if(result.status == 200){
+            console.log('성공')
+        }else{
+            console.log('실패')
+        }
+    }
+
 }

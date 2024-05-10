@@ -12,6 +12,9 @@ import ApprovalDetail from './pages/approvals/ApprovalDetail';
 import Mail from './pages/mails/Mail';
 import MailDetail from './pages/mails/MailDetail';
 import Login from './pages/members/Login';
+import NoticeDetail from './pages/notices/NoticeDetail';
+import InsertMail from './pages/mails/InsertMail';
+import MyPage from './pages/members/MyPage';
 
 function App() {
 

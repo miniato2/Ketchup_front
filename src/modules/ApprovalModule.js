@@ -2,7 +2,16 @@ import { createActions, handleActions } from 'redux-actions';
 
 /* 초기값 */
 // 초기값
-const initialState = [];
+const initialState = {
+    appLineList: [],
+    refLineList: [],
+    form: { formName: '' }, 
+    member: { department: { depName: '' }, memberName: '' },
+    appFileList: [],
+    appTitle: '',
+    appDate: '',
+    appContents: ''
+};
 
 // 액션 
 const GET_APPROVALS = 'app/GET_APPROVALS';
