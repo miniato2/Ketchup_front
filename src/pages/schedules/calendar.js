@@ -10,8 +10,6 @@ import ScheduleForm from "../../components/form/ScheduleForm";
 import { getScheduleAPI, insertScheduleAPI, deleteScheduleAPI } from "../../apis/ScheduleAPICalls";
 import moment from "moment";
 import { decodeJwt } from "../../utils/tokenUtils";
-import { Tooltip } from "bootstrap";
-import { OverlayTrigger } from "react-bootstrap";
 import ScheduleDetail from "../../components/form/ScheduleDetail";
 
 const Calendar = () => {
@@ -175,29 +173,6 @@ const Calendar = () => {
                             day: '일',
                             list: '목록'
                         }}
-                        // eventDidMount={(info) => {
-                        //     return new Tooltip(info.el, {
-                        //         title: info.event.title,
-                        //         placement: "auto",
-                        //         trigger: "hover",
-                        //         customClass: "popoverStyle",
-                        //         content: "<p>제발?</p>",
-                        //         html: true,
-                        //     })}}
-                        eventDidMount={(info) => (
-                            <OverlayTrigger
-                                placement="auto"
-                                trigger={"hover"}
-                                overlay={
-                                    <Tooltip id="tooltip">
-                                        <strong>{info.event.title}</strong>
-                                        <div>내용</div>
-                                    </Tooltip>
-                                }
-                            >
-                                {info.el}
-                            </OverlayTrigger>
-                        )}
                     />
                 </Box>
             )}
