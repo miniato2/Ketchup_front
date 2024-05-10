@@ -17,6 +17,7 @@ import MyPage from './pages/members/MyPage';
 import NoticeDetail from './pages/notices/NoticeDetail';
 import Members from './pages/members/Members';
 import MemberDetail from './pages/members/MemberDetail';
+import InsertMember from './pages/members/InsertMember';
 
 function App() {
 
@@ -45,8 +46,10 @@ function App() {
             <Route path=':mailNo' element={<MailDetail />} />
           </Route>
         < Route path="mypage" element={<MyPage />}/>
+       
         <Route path='members'>
             <Route index element={<Members />} />
+            <Route path='insert' element={<InsertMember />} />
             <Route path=':memberNo' element={<MemberDetail />} />
           </Route>
         </Route>

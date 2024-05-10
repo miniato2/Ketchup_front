@@ -20,7 +20,7 @@ function Member({selectMemberNo}){
 
     useEffect(
         () => {
-            console.log('마이페이지token',token);
+           
 
             if(token){
                 dispatch(callGetMemberAPI({memberNo: selectMemberNo}));
@@ -125,6 +125,14 @@ function Member({selectMemberNo}){
                     style={{ borderWidth: '0px 0px 1px 0px',  marginBottom: '20px', padding: '5px',width: '400px',textAlign: 'center'}}
                 />
                 </label>
+                <label style={{color: '#878787'}}>재직상태<input 
+                    type="text" 
+                    placeholder="재직상태" 
+                    readOnly={true}
+                    value={memberDetail.status  || ''}
+                    style={{ borderWidth: '0px 0px 1px 0px',  marginBottom: '20px', padding: '5px',width: '400px',textAlign: 'center'}}
+                />
+                </label>
                 <label style={{color: '#878787'}}>사원사진
                 <img src={`/img/${memberDetail.imgUrl}`} width="200" height="150"/>
                 {/* <img src = 'src/main/resources/static/uploadfiles/8f3fd818208e44f6abd7b7116f9f79e1.png'/> */}
@@ -136,13 +144,13 @@ function Member({selectMemberNo}){
 
                 <span>
                 <button
-                  style={{ border: 'none', margin: 0, fontSize: '10px', height: '30px', padding: '5px', cursor: 'pointer',marginLeft:'700px'}}
+                  style={{ border: 'none', margin: 0, fontSize: '15px', height: '30px', padding: '5px', cursor: 'pointer',marginLeft:'700px'}}
                     onClick = { onClickBackHandler }
                 >
                     돌아가기
                 </button>
                 <button
-                  style={{backgroundColor: 'red', color: 'white', border: 'none',  fontSize: '10px', height: '30px', padding: '5px', cursor: 'pointer',marginLeft:'10px'}}
+                  style={{backgroundColor: 'red', color: 'white', border: 'none',  fontSize: '15px', height: '30px', padding: '5px', cursor: 'pointer',marginLeft:'10px'}}
                     onClick = { onClickBackHandler }
                 >
                     비밀번호 수정
