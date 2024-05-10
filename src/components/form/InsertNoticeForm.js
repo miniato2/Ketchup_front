@@ -47,16 +47,23 @@ function InsertNoticeForm() {
         e.preventDefault();
         try {
             const formData = new FormData();
-            const htmlContent = content;
+            // const htmlContent = content;
             console.log(title);
-            console.log(htmlContent);
+            console.log(content);
             console.log(fix);
             console.log(memberNo);
+
+            // const noticeData = {
+            //     noticeTitle: title,
+            //     memberNo: memberNo,
+            //     noticeFix: fix ? 'Y' : 'N',
+            //     noticeContent: content,
+            // };
 
             formData.append('noticeTitle', title);
             formData.append('memberNo', memberNo);
             formData.append('noticeFix', fix? 'Y' : 'N');
-            formData.append('noticeContent', htmlContent);
+            formData.append('noticeContent', content);
             files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
             // formData.append('noticeDTO', JSON.stringify({ 
             //     noticeTitle: title, 
@@ -68,18 +75,7 @@ function InsertNoticeForm() {
             // files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
     
 
-            // formData.append('noticeDTO',  JSON.stringify({ noticeTitle: title, memberNo: memberNo, noticeFix: fix ? 'Y' : 'N',  noticeContent: htmlContent }, { type: 'application/json' } ));
-            // if (files.length > 0) {
-            //     files.forEach(file => {
-            //         formData.append('files', file); // 파일 이름 추가하지 않음
-            //     })          
-            // } 
-
-            // console.log('handleSubmit [ formData ] : ', formData.get('noticeDTO'));
-            // console.log('handleSubmit [ formData ] : ', formData.get('files'));
-
-
-            dispatch(callInsertNoticeAPI(formData, files));
+            await dispatch(callInsertNoticeAPI(formData));
             // navigate('/notices');
         } catch (error) {
             console.error(error);

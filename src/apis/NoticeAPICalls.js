@@ -1,6 +1,7 @@
 import { request } from "./Api";
 import { INSERT_NOTICE, deleteNotice, getNotice, getNoticelist, insertNotice } from "../modules/NoticeModule";
 import axios from 'axios';
+import { FourMp } from "@mui/icons-material";
 
 
 const API_BASE_URL = 'http://localhost:8080';
@@ -147,27 +148,37 @@ export function callGetNoticeAPI(noticeNo) {
 //     };
 // };
 
-export const callInsertNoticeAPI = (formData, files) => {
+export const callInsertNoticeAPI = (formData) => {
     const requestURL = `http://localhost:8080/notices`;
-    // const boundary = '----WebKitFormBoundaryABCDEF';
+    const boundary = '----WebKitFormBoundaryABCDEF';
 
     return async (dispatch, getState) => {
         try {
-            const noticeDTO = {
-                noticeTitle: formData.noticeTitle,
-                memberNo: formData.memberNo,
-                noticeFix: formData.noticeFix,
-                noticeContent: formData.noticeContent,
-            };
+            // const noticeDTO = {
+            //     noticeTitle: formData.noticeTitle,
+            //     memberNo: formData.memberNo,
+            //     noticeFix: formData.noticeFix,
+            //     noticeContent: formData.noticeContent,
+            // };
 
-            formData.append('noticeDTO', JSON.stringify(noticeDTO));
-            files.forEach(file => formData.append('files', file));
+            // formData.append('noticeDTO', noticeDTO);
+            // files.forEach(file => formData.append('files', file));
+
+            // const formData = new FormData();
+            // formData.append('noticeDTO', JSON.stringify(noticeData));
+            // files.forEach(file => formData.append('files', file));
 
             const result = await fetch(requestURL, {
                 method: 'POST',
-                body: formData,
+                body: JSON.stringify({
+                    noticeTitle: formData.noticeTitle,
+                    memberNo: formData.memberNo,
+                    noticeFix: formData.noticeFix,
+                    noticeContent: formData.noticeContent,
+                    noticeImgUrl: formData.files
+                }),
                 headers: {
-                    // 'Content-Type': `multipart/form-data; boundary=${boundary}`,
+                    'Content-Type': `multipart/form-data; boundary=${boundary}`,
                     'Authorization': 'Bearer ' + window.localStorage.getItem('accessToken'),
                 }
             }).then((response) => response.json());
