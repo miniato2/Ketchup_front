@@ -17,6 +17,7 @@ import MyPage from './pages/members/MyPage';
 import NoticeDetail from './pages/notices/NoticeDetail';
 import Members from './pages/members/Members';
 import MemberDetail from './pages/members/MemberDetail';
+import MailReply from './pages/mails/MailReply';
 import InsertMember from './pages/members/InsertMember';
 
 function App() {
@@ -41,19 +42,21 @@ function App() {
           <Route path='calendar' element={<Calendar />} />
 
           <Route path='mails'>
-            <Route index element={<Mail />} />
+            <Route path=':part/' element={<Mail />} />
+            <Route path='detail'>
+              <Route path=':mailNo' element={<MailDetail />} />
+            </Route>
             <Route path='insert' element={<InsertMail />} />
-            <Route path=':mailNo' element={<MailDetail />} />
+            <Route path='reply' element={<MailReply />} />
           </Route>
-        < Route path="mypage" element={<MyPage />}/>
-       
+        <Route path="mypage" element={<MyPage />}/>
         <Route path='members'>
             <Route index element={<Members />} />
             <Route path='insert' element={<InsertMember />} />
             <Route path=':memberNo' element={<MemberDetail />} />
           </Route>
         </Route>
-        <Route path='login' element={<Login/>} />
+        <Route path='login' element={<Login />} />
       </Routes>
     </BrowserRouter>
   );

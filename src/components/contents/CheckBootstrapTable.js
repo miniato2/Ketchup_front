@@ -41,7 +41,7 @@ const CheckBootstrapTable = ({ data, columns, onRowClick }) => {
         </thead>
         <tbody>
           {Array.isArray(data) && data.map((item, index) => (
-            <tr key={index} style={{ cursor: 'pointer' }}>
+            <tr key={index}>
               <td style={{ padding: "15px", textAlign: 'center' }}>
                 <input
                   type="checkbox"
@@ -50,7 +50,7 @@ const CheckBootstrapTable = ({ data, columns, onRowClick }) => {
                 />
               </td>
               {columns.map(([key], columnIndex) => (
-                <td style={{ padding: "15px", textAlign: key === '제목' ? 'left' : 'center' }} onClick={() => onRowClick(columnIndex)} key={columnIndex}>{item[key]}</td>
+                <td style={{ padding: "15px", textAlign: key === '제목' ? 'left' : 'center', cursor: 'pointer' }} onClick={() => onRowClick(index)} key={columnIndex}>{item[key]}</td>
               ))}
             </tr>
           ))}
