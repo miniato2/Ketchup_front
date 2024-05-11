@@ -5,14 +5,21 @@ import { callMembersAPI } from "../../apis/MemberAPICalls";
 import { Table } from "react-bootstrap";
 import PaginationButtons from "../../components/contents/PaginationButtons";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import ButtonGroup from "../../components/contents/ButtonGroup";
+
 
 function Members() {
     const dispatch = useDispatch();
     const members = useSelector(state => state.memberReducer);
     const memberList = members?.data?.content;
     const token = decodeJwt(window.localStorage.getItem('accessToken'));
-   
+
     const navigate = useNavigate();
+
+    const buttons = [
+        { label: '등록', styleClass: 'move' },
+    ];
 
 
 
@@ -20,7 +27,7 @@ function Members() {
         () => {
             if (token !== null) {
                 dispatch(callMembersAPI());
-              
+
             }
 
         }, []
@@ -31,19 +38,21 @@ function Members() {
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
     const handleRowClick = (memberNo) => {
         // 클릭된 행의 noticeNo를 가져와서 상세 페이지로 이동합니다.
-       
-    
-        console.log('handleRowClick [ memberNo ] : ' , memberNo);
-    
-        navigate(`/members/${memberNo}`);
-      };
-    
 
+
+        console.log('handleRowClick [ memberNo ] : ', memberNo);
+
+        navigate(`/members/${memberNo}`);
+    };
 
     return (
         <>
             <main id="main">
                 <div >
+                    <h1>사원목록</h1>
+                    <Link to="/members/insert">
+                        <ButtonGroup buttons={buttons} />
+                    </Link>
                     <Table>
 
                         <thead>

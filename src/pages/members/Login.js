@@ -64,36 +64,44 @@ function Login() {
 
 
     return (
-        <div >
-            <div >
-                <h1>로그인</h1>
-                <input 
+
+        
+        <div className = "row justify-content-center">
+
+            <div className ="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+
+            <img src="/img/loginLogo.png" class = "loginLogo"  alt="" style={{marginTop: 200}}/>
+
+
+           
+                <input className="form-control"
                     type="text" 
                     name='memberNo'
-                    placeholder="아이디" 
+                    placeholder="사번을 입력하세요" 
                     autoComplete='off'
                     onChange={ onChangeHandler }
+                    style ={{width: 500,borderColor:"black" ,textAlign: 'center', marginTop: 70 ,borderWidth: '0px 0px 1px 0px' ,borderRadius: 0}}
                 />
-                <input 
+                <input  className="form-control"
                     type="password"
                     name='memberPW' 
-                    placeholder="패스워드" 
+                    placeholder="비밀번호를 입력하세요" 
                     autoComplete='off'
                     onChange={ onChangeHandler }
+                    style ={{width: 500,borderColor:"black" ,textAlign: 'center', marginTop: 20, borderWidth: '0px 0px 1px 0px' ,borderRadius: 0}}
                 />
                 <button
+                 
+                  style={ {width: '500px', border: 'none', margin: 0, fontSize: '20px', height: '50px',color: 'white' ,backgroundColor: "#ED0B0D", marginTop: 40 } }
                     onClick={ onClickLoginHandler }
                 >
                     로그인
                 </button>
-                <button
-                    style={ { border: 'none', margin: 0, fontSize: '10px', height: '10px' } }
-                    onClick={ onClickRegisterHandler }
-                >
-                    회원가입
-                </button>
+                <a style={{marginTop:"10px",marginLeft: 400}}>비밀번호 찾기</a>
+              
             </div>
         </div>
+       
     );
 }
 

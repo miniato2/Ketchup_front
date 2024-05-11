@@ -5,13 +5,12 @@ export const getScheduleAPI = (dptNo) => {
   return async (dispatch) => {
     try {
       const schedules = await request('GET', `/schedules/department/${dptNo}`);
-      console.log('getScheduleAPI로 받아온 스케줄 데이터:', schedules); // 데이터 확인
       dispatch({
         type: GET_SCHEDULE,
         payload: schedules
       });
     } catch (error) {
-      // console.error('[ScheduleAPICalls중에서 getScheduleAPI 호출 오류: ]', error);
+      alert("일정 정보를 조회에 실패하였습니다.");
       throw error;
     }
   };
@@ -27,14 +26,23 @@ export const insertScheduleAPI = async (newScheduleData) => {
   }
 };
 
+export const updateScheduleAPI = async (skdNo, updatedScheduleData) => {
+  try {
+    const response = await request('put', `/schedules/schedules/${skdNo}`, updatedScheduleData);
+    return response;
+  } catch (error) {
+    alert("수정에 실패하였습니다. updateScheduleAPI 오류");
+    const errorMessage = error.response ? error.response.data.message : error.message;
+    throw new Error(`[ScheduleAPICalls중 updateScheduleAPI] 오류: ${errorMessage}`);
+  }
+};
+
 export const deleteScheduleAPI = async (skdNo) => {
   try {
     const response = await request('delete', `/schedules/schedules/${skdNo}`);
-    alert("일정이 삭제되었습니다.");
     return response;
   } catch (error) {
     const errorMessage = error.response ? error.response.data.message : error.message;
     throw new Error(`[ScheduleAPICalls 중 deleteScheduleAPI] 오류: ${errorMessage}`);
   }
 };
-

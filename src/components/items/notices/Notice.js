@@ -3,17 +3,23 @@ import { callDeleteNoticeAPI, callGetNoticeAPI } from "../../../apis/NoticeAPICa
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ButtonGroup from "../../contents/ButtonGroup";
+import FormatDate from "../../contents/FormatDate";
 
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hour = String(date.getHours()).padStart(2, '0');
-    const minute = String(date.getMinutes()).padStart(2, '0');
-    const second = String(date.getSeconds()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
-}
+// function formatDate(dateString) {
+//     const dateTime = new Date(dateString);
+//     const year = dateTime.getFullYear();
+//     const month = String(dateTime.getMonth() + 1).padStart(2, '0');
+//     const day = String(dateTime.getDate()).padStart(2, '0');
+//     const hours = String(dateTime.getHours()).padStart(2, '0');
+//     const minutes = String(dateTime.getMinutes()).padStart(2, '0');
+    
+    
+//     const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+//     const dayOfWeek = weekdays[dateTime.getDay()];
+     
+//      return `${year}-${month}-${day}(${dayOfWeek}) ${hours}:${minutes}`;
+// };
+
 
 // 파일명 추출 함수
 function getOriginalFileName(url) {
@@ -28,7 +34,7 @@ function Notice({ noticeNo }) {
     const dispatch = useDispatch();
     const notice = useSelector(state => state.noticeReducer.notice);
     const navigate = useNavigate();
-    console.log('[ notice ] : ', notice)
+
 
     useEffect(() => {
         console.log('useEffect [ noticeNo ] : ', noticeNo)
@@ -48,29 +54,22 @@ function Notice({ noticeNo }) {
     );
 
     const updateHandler = () => navigate(`/notices/${noticeNo}`);
-    const deleteHandler = () => dispatch(callDeleteNoticeAPI({ noticeNo }));
+    const deleteHandler = () => dispatch(callDeleteNoticeAPI( noticeNo));
 
     // notice가 정의되지 않았는지 확인한 후 속성에 액세스합니다.
     if (!notice) {
         return <div>로딩 중...</div>; // 또는 다른 적절한 로딩 표시기를 렌더링합니다.
     }
-;
+    ;
 
-const downloadFile = (fileName) => {
-    const binary = atob(fileName.fileContent);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
-    }
-    const blob = new Blob([bytes], { type: 'multipart/form-data' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = getOriginalFileName(fileName); // 파일 이름 설정
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-};
+    const downloadFile = (fileName) => {
+        const downloadLink = document.createElement('a');
+        downloadLink.href = `data:application/octet-stream;base64,${fileName.fileContent}`;
+        downloadLink.download = getOriginalFileName(fileName);
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    };
 
     return (
         // notice && (
@@ -94,13 +93,15 @@ const downloadFile = (fileName) => {
                     <h1>{notice.noticeTitle}</h1>
 
                     <div style={{ marginBottom: '30px' }}>
-                        <img src="assets/img/profile-img.png" alt="Profile" className="rounded-circle" />&nbsp;
-                        <span className="">{notice.author}</span>&nbsp;
-                        <span>{formatDate(notice.noticeCreateDttm)}</span>
+                        
+                         <img src={`/img/${notice.memberInfo.imgUrl}`} width="30" height="30"/>&nbsp; 
+                         <span className="">{notice.memberInfo.memberName}</span>&nbsp; 
+                        <span>{notice.memberInfo.position.positionName}</span>&nbsp;&nbsp;
+                        <span>{FormatDate(notice.noticeCreateDttm)}</span> 
                     </div>
 
                     <div className="card-body">
-                    {notice.noticeImgUrl && (
+                        {notice.noticeImgUrl && (
                             <div>
                                 <img src={notice.noticeImgUrl} alt="Notice Image" className="file-image" />
                                 <br />
