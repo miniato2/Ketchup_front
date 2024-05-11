@@ -54,7 +54,7 @@ function Notice({ noticeNo }) {
     );
 
     const updateHandler = () => navigate(`/notices/${noticeNo}`);
-    const deleteHandler = () => dispatch(callDeleteNoticeAPI({ noticeNo }));
+    const deleteHandler = () => dispatch(callDeleteNoticeAPI( noticeNo));
 
     // notice가 정의되지 않았는지 확인한 후 속성에 액세스합니다.
     if (!notice) {

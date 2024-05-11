@@ -1,14 +1,18 @@
 import { request } from "./Api";
 import { deleteNotice, getNotice, getNoticelist, insertNotice } from "../modules/NoticeModule";
 
-export function callGetNoticeListAPI() {
-    console.log('callGetNoticeListAPI...');
+export function callGetNoticeListAPI(title = '') {
+    console.log('callNoticeListAPI...');
 
     return async (dispatch, getState) => {
         try {
-       
-            const result = await request('GET', `/notices`);
-            console.log('getNoticeList result : ', result);
+            let endpoint = '/notices';
+            if (title) {
+                endpoint += `?title=${title.toLowerCase()}`;
+            }
+
+            const result = await request('GET', endpoint);
+            console.log('Number of notices received:', result.data.data.content.length);
 
             // 각 공지의 작성자 이름을 가져오기 위해 공지 목록을 순회합니다.
             const noticesWithMemberNames = await Promise.all(result.data.data.content.map(async (notice) => {
@@ -28,36 +32,44 @@ export function callGetNoticeListAPI() {
 }
 
 
-export function callSearchNoticeListAPI({ title }) {
-    console.log('callSearchNoticeListAPI...');
-
-    return async (dispatch, getState) => {
-        try {
-            const result = await request('GET', `/notices${title ? `?title=${title.toLowerCase()}` : ''}`);
-            console.log('searchNoticeList result : ', result);
-
-            dispatch(getNoticelist(result.data.data.content));
-        } catch (error) {
-            console.error('Error searching notice list:', error);
-            // 에러가 발생한 경우에 대한 처리를 추가할 수 있습니다.
-        }
-    }
-}
-
-// export function callGetNoticeAPI(noticeNo) {
-//     console.log('callGetNoticeAPI...');
-//     console.log('callGetNoticeAPI [ noticeNo ] : ', noticeNo)
+// export function callGetNoticeListAPI() {
+//     console.log('callGetNoticeListAPI...');
 
 //     return async (dispatch, getState) => {
 //         try {
-//             console.log('callGetNoticeAPI [ noticeNo ] : ', noticeNo)
+       
+//             const result = await request('GET', `/notices`);
+//             console.log('Number of notices received:', result.data.data.content.length);
 
-//             const result = await request('GET', `/notices/${noticeNo}`);
-//             console.log('getNotice result : ', result);
+//             // 각 공지의 작성자 이름을 가져오기 위해 공지 목록을 순회합니다.
+//             const noticesWithMemberNames = await Promise.all(result.data.data.content.map(async (notice) => {
+//                 // 각 공지의 작성자 memberNo를 이용해 memberName을 조회합니다.
+//                 const memberInfoResult = await request('GET', `/members/${notice.memberNo}`);
+//                 // 공지 목록에 작성자 이름을 추가합니다.
+//                 return { ...notice, memberName: memberInfoResult.data.memberName };
+//             }));
 
-//             dispatch(getNotice(result.data));
+//             // 수정된 공지 목록을 저장합니다.
+//             dispatch(getNoticelist(noticesWithMemberNames));
 //         } catch (error) {
-//             console.error('Error notice :', error);
+//             console.error('Error fetching notice list:', error);
+//             // 에러가 발생한 경우에 대한 처리를 추가할 수 있습니다.
+//         }
+//     }
+// }
+
+
+// export function callSearchNoticeListAPI({ title }) {
+//     console.log('callSearchNoticeListAPI...');
+
+//     return async (dispatch, getState) => {
+//         try {
+//             const result = await request('GET', `/notices${title ? `?title=${title.toLowerCase()}` : ''}`);
+//             console.log('searchNoticeList result : ', result);
+
+//             dispatch(getNoticelist(result.data.data.content));
+//         } catch (error) {
+//             console.error('Error searching notice list:', error);
 //             // 에러가 발생한 경우에 대한 처리를 추가할 수 있습니다.
 //         }
 //     }
@@ -124,7 +136,7 @@ export const callInsertNoticeAPI = (formData) => {
 };
 
 
-export function callDeleteNoticeAPI({ noticeNo }) {
+export function callDeleteNoticeAPI( noticeNo ) {
     console.log('callDeleteNoticeAPI...');
 
     return async (dispatch, getState) => {
@@ -132,7 +144,7 @@ export function callDeleteNoticeAPI({ noticeNo }) {
             const result = await request('DELETE', `/notices/${noticeNo}`);
             console.log('getNotice result : ', result);
 
-            dispatch(deleteNotice(result.data.data.content));
+            dispatch(deleteNotice(result.data));
         } catch (error) {
             console.error('Error deleteNotice :', error);
             // 에러가 발생한 경우에 대한 처리를 추가할 수 있습니다.
