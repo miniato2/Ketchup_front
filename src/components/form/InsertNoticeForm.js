@@ -2,10 +2,15 @@
 import { useDispatch } from "react-redux";
 import ButtonGroup from "../../components/contents/ButtonGroup";
 import { useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { callInsertNoticeAPI } from "../../apis/NoticeAPICalls";
 import { decodeJwt } from "../../utils/tokenUtils";
 import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css';
+import { remark } from 'remark';
+import remarkHtml from 'remark-html';
+import ReactMarkdown from 'react-markdown';
+
 
 function InsertNoticeForm() {
 
@@ -18,9 +23,10 @@ function InsertNoticeForm() {
     const [fix, setFix] = useState(false);
     const [content, setContent] = useState('');
     const quillRef = useRef();
+    const [previewContent, setPreviewContent] = useState('');
+
 
     let memberNo = '';
-    // let name = '';
 
     const isLogin = window.localStorage.getItem("accessToken");
     let decoded = null;
@@ -32,10 +38,10 @@ function InsertNoticeForm() {
         memberNo = decodedTokenInfo.memberNo; // 함수 내부에서 memberId 할당
     }
 
-    const handleChangeColor = (color) => {
-        const quill = quillRef.current.getEditor();
-        quill.format('color', color);
-    };
+    // const handleChangeColor = (color) => {
+    //     const quill = quillRef.current.getEditor();
+    //     quill.format('color', color);
+    // };
 
     const handleFixChange = (e) => {
         const isChecked = e.target.checked;
@@ -68,6 +74,22 @@ function InsertNoticeForm() {
         { label: '취소', onClick: () => navigate(-1), styleClass: 'back' },
         { label: '등록', onClick: handleSubmit, styleClass: 'move' }
     ];
+    
+    useEffect(() => {
+        const plainTextContent = content.replace(/(<([^>]+)>)/gi, "");
+        const markdownContent = `# \n${plainTextContent}`;
+        remark()
+        .use(remarkHtml)
+        .process(markdownContent, (err, file) => {
+            if (err) {
+                console.error("Markdown processing error:", err);
+                return;
+            }
+            setPreviewContent(String(file));
+        });
+    }, [content, title]);
+
+    
 
     return (
         <main id="main" className="main">
@@ -102,16 +124,18 @@ function InsertNoticeForm() {
                             modules={{
                                 toolbar: [
                                     [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                                    [{ 'font': [] }],
+                                    // [{ 'font': [] }],
                                     [{ 'align': [] }],
                                     ['bold', 'italic', 'underline', 'strike', 'blockquote'],
                                     [{ 'list': 'ordered' }, { 'list': 'bullet' }],
                                     [{ 'color': [] }, { 'background': [] }],
-                                    ['link', 'image', 'video'],
+                                    ['link'], 
+                                    ['image', 'video'],
                                     ['clean']
                                 ]
                             }}
                         />
+                         <ReactMarkdown>{previewContent}</ReactMarkdown>
                     </div>
                     <ButtonGroup buttons={buttons} />
                 </div>
