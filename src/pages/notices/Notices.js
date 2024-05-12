@@ -8,6 +8,7 @@ import { callGetNoticeListAPI } from '../../apis/NoticeAPICalls';
 import { useDispatch, useSelector } from 'react-redux';
 import { BsMegaphone } from 'react-icons/bs';
 import FormatDateTime from '../../components/contents/FormatDateTime';
+import { decodeJwt } from '../../utils/tokenUtils';
 
 const Notices = () => {
   const dispatch = useDispatch();
@@ -49,7 +50,7 @@ const Notices = () => {
 
     }));
 
-    
+
 
   // 컬럼 제목 목록
   const columns = [
@@ -67,21 +68,24 @@ const Notices = () => {
     navigate(`/notices/${noticeNo}`);
   };
 
- // 검색어를 API 호출 함수에 전달하는 함수입니다.
-const handleSearch = (searchKeyword) => {
-  dispatch(callGetNoticeListAPI(searchKeyword));
-}
+  // 검색어를 API 호출 함수에 전달하는 함수입니다.
+  const handleSearch = (searchKeyword) => {
+    dispatch(callGetNoticeListAPI(searchKeyword));
+  }
 
-useEffect(
-  () => {
-    // 페이지가 로드될 때 전체 공지 목록을 불러옵니다.
-    dispatch(callGetNoticeListAPI());
-  }, [dispatch]
-);
+  useEffect(
+    () => {
+      // 페이지가 로드될 때 전체 공지 목록을 불러옵니다.
+      dispatch(callGetNoticeListAPI());
+    }, [dispatch]
+  );
   // 현재 페이지에 보여질 아이템 구하기
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = sortedNoticeList.slice(indexOfFirstItem, indexOfLastItem);
+
+  // 사용자의 직위 이름
+  const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
 
 
   return (
@@ -95,9 +99,11 @@ useEffect(
       <div className="col-lg-12">
         <div className="row"></div>
         <div className="list">
-          <Link to="/notices/insert">
-            <ButtonGroup buttons={[{ label: '등록', styleClass: 'move' }]} />
-          </Link>
+          {loginToken.role === 'LV2' || loginToken.role === 'LV3' && (
+            <Link to="/notices/insert">
+              <ButtonGroup buttons={[{ label: '등록', styleClass: 'move' }]} />
+            </Link>
+          )}
           <BootstrapTable data={currentItems} columns={columns} onRowClick={handleRowClick} />
           <PaginationButtons totalItems={sortedNoticeList.length} itemsPerPage={itemsPerPage} currentPage={currentPage} onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
         </div>

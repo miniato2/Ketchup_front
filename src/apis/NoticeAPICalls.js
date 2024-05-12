@@ -91,7 +91,7 @@ export const callInsertNoticeAPI = (formData) => {
     };
 };
 
-export function callUpdateNoticeAPI( formData, noticeNo ) {
+export function callUpdateNoticeAPI( formDate, noticeNo ) {
     console.log('callUpdateNoticeAPI...');
 
     const requestURL = `http://localhost:8080/notices/${noticeNo}`;
@@ -101,7 +101,7 @@ export function callUpdateNoticeAPI( formData, noticeNo ) {
             
             const response = await fetch(requestURL, {
                 method: 'PUT',
-                body: formData,
+                body: formDate,
                 headers: {
                     'Authorization': 'Bearer ' + window.localStorage.getItem('accessToken'),
                 }

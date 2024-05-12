@@ -7,18 +7,25 @@ import SendMail from "../../components/lists/mails/SendMail";
 import { useNavigate } from "react-router-dom";
 
 function Mail() {
-    const [part, setPart] = useState("receive");
-    const receiveHandler = () => setPart("receive");
-    const sendHandler = () => setPart("send");
     const navigate = useNavigate();
 
-    const insertHandler = () => navigate('insert');
+    const [part, setPart] = useState("receive");
+    const receiveHandler = () => {
+        setPart("receive");
+        navigate('/mails/receive');
+    };
+    const sendHandler = () => {
+        setPart("send");
+        navigate('/mails/send');
+    };
+
+    const insertHandler = () => navigate('/mails/insert');
 
     const buttons = [
         {label: "삭제", styleClass: "back"},
         {label: "메일 쓰기", styleClass: "move", onClick: insertHandler}
     ];
-
+    
     return (
         <>
             <main id="main" className="main">
@@ -38,7 +45,7 @@ function Mail() {
                     <ButtonGroup buttons={buttons} />
                 </div>
                 {
-                    part == "receive"? <ReceiveMail /> : <SendMail />
+                    part == "receive"? <ReceiveMail part={part} /> : <SendMail />
                 }
             </main>
         </>

@@ -34,8 +34,8 @@ function Main() {
     const noticeList = useSelector(state => state.noticeReducer.noticelist);
 
     const formattedNoticeList = noticeList ? noticeList
-    .slice(0, 3) // 최신 3개의 공지만 표시
     .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
+    .slice(0, 3) // 최신 3개의 공지만 표시
     .map(item => ({
       ...item,
       noticeTitle: (
@@ -54,6 +54,7 @@ function Main() {
       ),
       noticeCreateDttm: FormatDateTime(item.noticeCreateDttm)
     })) : [];
+    
     // 컬럼 제목 목록
     const columns = [
         ['noticeNo', '공지번호'],

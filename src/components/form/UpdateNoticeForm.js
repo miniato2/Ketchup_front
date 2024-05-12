@@ -50,7 +50,7 @@ function UpdateNotice() {
         
         try {
             const data = await dispatch(callUpdateNoticeAPI(formData, noticeNo));
-            // navigate('/notices');
+            navigate('/notices');
         } catch (error) {
             console.error(error);
             // 등록 실패 시 처리
@@ -74,7 +74,7 @@ function UpdateNotice() {
     }, [dispatch, noticeNo]);
 
     // useSelector를 사용하여 Redux 스토어에서 공지 정보 가져오기
-    const noticne = useSelector(state => state.noticeReducer.notice);
+    const notice = useSelector(state => state.noticeReducer.notice);
     
     useEffect(() => {
         const plainTextContent = content.replace(/(<([^>]+)>)/gi, "");
@@ -89,6 +89,15 @@ function UpdateNotice() {
             setPreviewContent(String(file));
         });
     }, [content, title]);
+
+    useEffect(() => {
+        if (notice) {
+            setTitle(notice.noticeTitle);
+            setContent(notice.noticeContent);
+            setFix(notice.noticeFix === 'Y');
+            setFiles(notice.files || []);
+        }
+    }, [notice]);
 
     
 
