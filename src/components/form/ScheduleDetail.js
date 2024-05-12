@@ -1,11 +1,19 @@
+
+
 import { Box, Grid, Typography, Button, Dialog, TextField } from "@mui/material";
 import moment from "moment";
 import CircularProgress from '@mui/material/CircularProgress';
 import { useState } from "react";
 
-export default function ScheduleDetail({ handleInputChange, scheduleDetail, closeDetailDialog, handleUpdate, handleDelete }) {
+export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, closeDetailDialog, handleUpdate, handleDelete }) {
     const [updateChecked, setUpdateChecked] = useState(false);
     const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+    const [updatedScheduleData, setUpdatedScheduleData] = useState({
+        skdStartDttm: moment(scheduleDetail?.start).format("YYYY-MM-DD HH:mm"),
+        skdEndDttm: moment(scheduleDetail?.end).format("YYYY-MM-DD HH:mm"),
+        skdLocation: scheduleDetail?.extendedProps.skdLocation,
+        skdMemo: scheduleDetail?.extendedProps.skdMemo
+    });
 
     const handleConfirmDelete = async () => {
         try {
@@ -14,6 +22,24 @@ export default function ScheduleDetail({ handleInputChange, scheduleDetail, clos
         } catch (error) {
             console.error("일정 삭제 중 에러 발생 handleDelete: ", error);
         }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setUpdatedScheduleData({
+            ...updatedScheduleData,
+            [name]: value
+        });
+    };
+
+    const handleAction = async () => {
+        try {
+            await handleUpdate(scheduleDetail, updatedScheduleData);
+        } catch(error) {
+            console.error("일정 수정 중 에러 발생 handleUpdate: ", error);
+            alert("일정 수정에 실패했습니다.");
+        } 
+        closeDetailDialog();
     };
 
     const onCloseConfirmDelete = () => {
@@ -42,25 +68,25 @@ export default function ScheduleDetail({ handleInputChange, scheduleDetail, clos
                             <Typography variant="body1">시작일시: </Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField variant="outlined" name="skdStartDttm" onChange={handleInputChange} defaultValue={moment(scheduleDetail.start).format("YYYY-MM-DD HH:mm")} />
+                            <TextField variant="outlined" name="skdStartDttm" onChange={handleInputChange} value={updatedScheduleData.skdStartDttm} />
                         </Grid>
                         <Grid item xs={6}>
                             <Typography variant="body1">종료일시: </Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField variant="outlined" name="skdEndDttm" onChange={handleInputChange} defaultValue={moment(scheduleDetail.end).format("YYYY-MM-DD HH:mm")} />
+                            <TextField variant="outlined" name="skdEndDttm" onChange={handleInputChange} value={updatedScheduleData.skdEndDttm} />
                         </Grid>
                         <Grid item xs={6}>
                             <Typography variant="body1">장소: </Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField variant="outlined" name="skdLocation" onChange={handleInputChange} defaultValue={scheduleDetail.extendedProps.skdLocation} />
+                            <TextField variant="outlined" name="skdLocation" onChange={handleInputChange} value={updatedScheduleData.skdLocation} />
                         </Grid>
                         <Grid item xs={6}>
                             <Typography variant="body1">메모: </Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField variant="outlined" name="skdMemo" onChange={handleInputChange} defaultValue={scheduleDetail.extendedProps.skdMemo} />
+                            <TextField variant="outlined" name="skdMemo" onChange={handleInputChange} value={updatedScheduleData.skdMemo} />
                         </Grid>
                         <Grid item xs={12}>
                             <Grid container justifyContent="flex-end" spacing={1}>
@@ -71,7 +97,7 @@ export default function ScheduleDetail({ handleInputChange, scheduleDetail, clos
                                     <Button onClick={closeDetailDialog} variant="contained">닫기</Button>
                                 </Grid>
                                 <Grid item>
-                                    <Button onClick={handleUpdate} onClose={() => setUpdateChecked(false)} variant="contained" color="primary">수정</Button>
+                                    <Button onClick={handleAction} onClose={() => setUpdateChecked(false)} variant="contained" color="primary">수정</Button>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -118,4 +144,3 @@ export default function ScheduleDetail({ handleInputChange, scheduleDetail, clos
         </Box >
     );
 };
-
