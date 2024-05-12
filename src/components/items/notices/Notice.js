@@ -30,7 +30,7 @@ function Notice({ noticeNo }) {
 
 
 
-    const updateHandler = () => navigate(`/notices/${noticeNo}`);
+    const updateHandler = () => navigate(`/notices/update/${noticeNo}`);
     const deleteHandler = () => {
         dispatch(callDeleteNoticeAPI(noticeNo))
         .then(() => {

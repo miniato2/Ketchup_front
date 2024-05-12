@@ -1,5 +1,5 @@
 import { request } from "./Api";
-import { deleteNotice, getNotice, getNoticelist, insertNotice } from "../modules/NoticeModule";
+import { getNoticelist, getNotice, insertNotice, updateNotice, deleteNotice } from "../modules/NoticeModule";
 
 export function callGetNoticeListAPI(title = '') {
     console.log('callNoticeListAPI...');
@@ -30,50 +30,6 @@ export function callGetNoticeListAPI(title = '') {
         }
     }
 }
-
-
-// export function callGetNoticeListAPI() {
-//     console.log('callGetNoticeListAPI...');
-
-//     return async (dispatch, getState) => {
-//         try {
-       
-//             const result = await request('GET', `/notices`);
-//             console.log('Number of notices received:', result.data.data.content.length);
-
-//             // 각 공지의 작성자 이름을 가져오기 위해 공지 목록을 순회합니다.
-//             const noticesWithMemberNames = await Promise.all(result.data.data.content.map(async (notice) => {
-//                 // 각 공지의 작성자 memberNo를 이용해 memberName을 조회합니다.
-//                 const memberInfoResult = await request('GET', `/members/${notice.memberNo}`);
-//                 // 공지 목록에 작성자 이름을 추가합니다.
-//                 return { ...notice, memberName: memberInfoResult.data.memberName };
-//             }));
-
-//             // 수정된 공지 목록을 저장합니다.
-//             dispatch(getNoticelist(noticesWithMemberNames));
-//         } catch (error) {
-//             console.error('Error fetching notice list:', error);
-//             // 에러가 발생한 경우에 대한 처리를 추가할 수 있습니다.
-//         }
-//     }
-// }
-
-
-// export function callSearchNoticeListAPI({ title }) {
-//     console.log('callSearchNoticeListAPI...');
-
-//     return async (dispatch, getState) => {
-//         try {
-//             const result = await request('GET', `/notices${title ? `?title=${title.toLowerCase()}` : ''}`);
-//             console.log('searchNoticeList result : ', result);
-
-//             dispatch(getNoticelist(result.data.data.content));
-//         } catch (error) {
-//             console.error('Error searching notice list:', error);
-//             // 에러가 발생한 경우에 대한 처리를 추가할 수 있습니다.
-//         }
-//     }
-// }
 
 export function callGetNoticeAPI(noticeNo) {
     console.log('callGetNoticeAPI...');
@@ -134,6 +90,35 @@ export const callInsertNoticeAPI = (formData) => {
         }
     };
 };
+
+export function callUpdateNoticeAPI( formData, noticeNo ) {
+    console.log('callUpdateNoticeAPI...');
+
+    const requestURL = `http://localhost:8080/notices/${noticeNo}`;
+
+    return async (dispatch, getState) => {
+        try {
+            
+            const response = await fetch(requestURL, {
+                method: 'PUT',
+                body: formData,
+                headers: {
+                    'Authorization': 'Bearer ' + window.localStorage.getItem('accessToken'),
+                }
+            });
+
+            const result = await response.json();
+
+            console.log('[callUpdateNoticeAPI] callUpdateNoticeAPI RESULT : ', result);
+
+            if (result.status === 201) {
+                dispatch(updateNotice(result));
+            }
+        } catch (error) {
+            console.error('Error inserting notice:', error);
+        }
+    };
+}
 
 
 export function callDeleteNoticeAPI( noticeNo ) {
