@@ -99,14 +99,14 @@ const Calendar = () => {
         }
     };
 
-    const handleUpdate = async (updatedScheduleData) => {
+    const handleUpdateEvent = async (selectedEvent, updatedScheduleData) => {
         try {
-            await updateScheduleAPI(updatedScheduleData);
+            await updateScheduleAPI(selectedEvent.id, updatedScheduleData);
             alert("일정을 정상적으로 수정하였습니다.");
-            
+
             const token = decodeJwt(window.localStorage.getItem("accessToken"));
             const dptNo = token.depNo;
-    
+
             if (dptNo) {
                 await dispatch(getScheduleAPI(dptNo));
             }
@@ -116,7 +116,38 @@ const Calendar = () => {
         }
         closeDetailDialog();
     };
-    
+
+    const handleUpdate = async (selectedEvent, updatedScheduleData) => {
+        if (selectedEvent && selectedEvent.event && selectedEvent.event.id) {
+
+            const eventId = selectedEvent.event.id;
+            console.log("eventId 확인", eventId);
+            if (updatedScheduleData) {
+                console.log("updatedScheduleData 확인: ", updatedScheduleData);
+            } else {
+                console.log("updatedScheduleData가 유효하지 않습니다.");
+            }
+            
+            try {
+                await updateScheduleAPI(selectedEvent.id, updatedScheduleData);
+                alert("일정을 정상적으로 수정하였습니다.");
+
+                const token = decodeJwt(window.localStorage.getItem("accessToken"));
+                const dptNo = token.depNo;
+
+                if (dptNo) {
+                    await dispatch(getScheduleAPI(dptNo));
+                }
+            } catch (error) {
+                console.error("일정 수정 중 에러 발생 handleUpdate: ", error);
+                alert("일정 수정에 실패했습니다.");
+            }
+            closeDetailDialog();
+        } else {
+            alert("event가 존재하지도 않습니다.");
+        }
+    };
+
     useEffect(() => {
         if (selectedEvent != null) {
             const skdNo = selectedEvent.id;
@@ -220,10 +251,10 @@ const Calendar = () => {
             <Dialog open={detailDialogOpen} onClose={closeDetailDialog}>
                 <DialogTitle>상세 정보</DialogTitle>
                 <ScheduleDetail
-                    handleInputChange={handleInputChange}
+                    inputChangeHandler={handleInputChange}
                     scheduleDetail={scheduleDetail}
                     handleDelete={handleDelete}
-                    handleUpdate={handleUpdate}
+                    handleUpdate={handleUpdateEvent}
                     closeDetailDialog={closeDetailDialog}
                     onCloseConfirmDelete={onCloseConfirmDelete}
                 />
