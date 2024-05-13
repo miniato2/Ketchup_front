@@ -10,8 +10,9 @@ export const getScheduleAPI = (dptNo) => {
         payload: schedules
       });
     } catch (error) {
-      alert("일정 정보를 조회에 실패하였습니다.");
-      throw error;
+      const errorMessage = error.response ? error.response.data.message : error.message;
+      console.log("일정 정보 조회에 실패하였습니다.");
+      throw new Error(`[ScheduleAPICalls중 insertScheduleAPI] 오류: ${errorMessage}`);
     }
   };
 };

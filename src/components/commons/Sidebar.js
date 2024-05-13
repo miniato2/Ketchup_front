@@ -29,7 +29,7 @@ function Sidebar() {
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" to="#">
+                    <Link className="nav-link collapsed" to="/reserve">
                         <i className="bi bi-clock"></i><span>자원예약</span>
                     </Link>
                 </li>

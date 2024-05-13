@@ -7,11 +7,17 @@ import { decodeJwt } from '../utils/tokenUtils';
 import { useEffect, useState } from "react";
 import { callGetMemberNameAPI } from "../apis/MemberAPICalls";
 import { callGetNoticeListAPI } from "../apis/NoticeAPICalls";
+import { getScheduleAPI } from "../apis/ScheduleAPICalls";
 import FormatDateTime from "../components/contents/FormatDateTime";
 import { BsMegaphone } from "react-icons/bs";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from "@fullcalendar/interaction";
+import listPlugin from '@fullcalendar/list';
+import Calendar from "./schedules/calendar";
 
 function Main() {
-
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
@@ -34,26 +40,27 @@ function Main() {
     const noticeList = useSelector(state => state.noticeReducer.noticelist);
 
     const formattedNoticeList = noticeList ? noticeList
-    .slice(0, 3) // 최신 3개의 공지만 표시
-    .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
-    .map(item => ({
-      ...item,
-      noticeTitle: (
-        <>
-          {item.noticeFix === 'Y' && ( // 필독 공지인 경우에만 [ 필독 ]을 붙임
-            <span style={{ marginRight: '5px' }}>
-              [ 필독&nbsp;
-              <span style={{ color: '#EC0B0B' }}>
-                <BsMegaphone />
-              </span>
-              &nbsp;]
-            </span>
-          )}
-          {item.noticeTitle}
-        </>
-      ),
-      noticeCreateDttm: FormatDateTime(item.noticeCreateDttm)
-    })) : [];
+        .slice(0, 3) // 최신 3개의 공지만 표시
+        .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
+        .map(item => ({
+            ...item,
+            noticeTitle: (
+                <>
+                    {item.noticeFix === 'Y' && ( // 필독 공지인 경우에만 [ 필독 ]을 붙임
+                        <span style={{ marginRight: '5px' }}>
+                            [ 필독&nbsp;
+                            <span style={{ color: '#EC0B0B' }}>
+                                <BsMegaphone />
+                            </span>
+                            &nbsp;]
+                        </span>
+                    )}
+                    {item.noticeTitle}
+                </>
+            ),
+            noticeCreateDttm: FormatDateTime(item.noticeCreateDttm)
+        })) : [];
+
     // 컬럼 제목 목록
     const columns = [
         ['noticeNo', '공지번호'],
@@ -78,24 +85,8 @@ function Main() {
     //     const memberName = decodedToken.memberName;
     //     console.log('memberName: ', memberName);
 
-
-
-    // 일정
-    const scheduleData = [
-        { dayOfWeek: "일요일", schedules: [] },
-        { dayOfWeek: "월요일", schedules: ["위클리 미팅", "프로젝트 회의"] },
-        { dayOfWeek: "화요일", schedules: ["미국 바이어 화상 회의"] },
-        { dayOfWeek: "수요일", schedules: ["미국 바이어 최종 준비"] },
-        { dayOfWeek: "목요일", schedules: ["미국 바이어 내방 미팅", "신입사원 간담회"] },
-        { dayOfWeek: "금요일", schedules: ["사내 교육", "업무 보고"] },
-        { dayOfWeek: "토요일", schedules: ["인왕산 등산"] },
-    ];
-
     return (
-
-
         <main id="main" className="main">
-
             {/* 메인 환영 */}
             <div className="pagetitle">
                 <div id="mainbox" className="p-4 p-md-5 mb-4 rounded text-body-emphasis" style={{ backgroundColor: "rgb(236, 11, 11, 0.17)" }}>
@@ -131,11 +122,37 @@ function Main() {
 
             {/* 일정 */}
             <div className="col-12">
-                <div className="d-flex justify-content-between">
-                    {scheduleData.map(({ dayOfWeek, schedules }) => (
-                        <ScheduleBox key={dayOfWeek} dayOfWeek={dayOfWeek} schedules={schedules} />
-                    ))}
-                </div>
+                <FullCalendar
+                    height="50vh"
+                    initialView="dayGridWeek"
+                    plugins={[
+                        dayGridPlugin,
+                        timeGridPlugin,
+                        interactionPlugin,
+                        listPlugin
+                    ]}
+                    headerToolbar={{
+                        left: "prev title next today",
+                        center: "",
+                        right: "moreButton"
+                    }}
+                    customButtons={{
+                        moreButton: {
+                            text: '더보기',
+                            click: function () { alert("더보기 버튼이 정상적으로 클릭되었습니다. '일정' 페이지로 이동시킬 예정입니다."); }
+                        }
+                    }}
+                />
+                {/* <Calendar
+                    height="50vh"
+                    plugins={{
+                        dayGridPlugin,
+                        timeGridPlugin,
+                        interactionPlugin,
+                        listPlugin
+                    }}
+                    initialView="dayGridWeek"
+                /> */}
             </div>
         </main >
     );

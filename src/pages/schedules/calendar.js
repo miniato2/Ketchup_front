@@ -117,44 +117,12 @@ const Calendar = () => {
         closeDetailDialog();
     };
 
-    const handleUpdate = async (selectedEvent, updatedScheduleData) => {
-        if (selectedEvent && selectedEvent.event && selectedEvent.event.id) {
-
-            const eventId = selectedEvent.event.id;
-            console.log("eventId 확인", eventId);
-            if (updatedScheduleData) {
-                console.log("updatedScheduleData 확인: ", updatedScheduleData);
-            } else {
-                console.log("updatedScheduleData가 유효하지 않습니다.");
-            }
-            
-            try {
-                await updateScheduleAPI(selectedEvent.id, updatedScheduleData);
-                alert("일정을 정상적으로 수정하였습니다.");
-
-                const token = decodeJwt(window.localStorage.getItem("accessToken"));
-                const dptNo = token.depNo;
-
-                if (dptNo) {
-                    await dispatch(getScheduleAPI(dptNo));
-                }
-            } catch (error) {
-                console.error("일정 수정 중 에러 발생 handleUpdate: ", error);
-                alert("일정 수정에 실패했습니다.");
-            }
-            closeDetailDialog();
-        } else {
-            alert("event가 존재하지도 않습니다.");
-        }
-    };
-
     useEffect(() => {
         if (selectedEvent != null) {
             const skdNo = selectedEvent.id;
             const detail = fetchEvents().find(event => event.id == skdNo);
             if (detail) {
                 setScheduleDetail(detail);
-                console.log("setScheduleDetail(detail)에 저장된 값 확인", detail);
             } else {
                 console.log("일치하는 일정 정보를 찾을 수 없습니다.");
             }
