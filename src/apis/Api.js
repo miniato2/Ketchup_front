@@ -22,4 +22,24 @@ export const request = async (method, url, data) => {
         console.error('API request 에러: ', error);
         throw error;
     }
-}
+};
+
+export const multipartRequest = async (method, url, data) => {
+    try {
+   
+        const token = window.localStorage.getItem('accessToken')
+        const response = await axios({
+            method: method,
+            url: `${DOMAIN}${url}`,
+            data: data,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Accept': '*/*'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('API request 에러: ', error);
+        throw error;
+    }
+};
