@@ -17,7 +17,7 @@ function InsertNoticeForm() {
     // const result = useSelector(state => state.noticeReducer);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    
+
     const [title, setTitle] = useState('');
     const [files, setFiles] = useState([]);
     const [fix, setFix] = useState(false);
@@ -54,7 +54,7 @@ function InsertNoticeForm() {
         const formData = new FormData();
         formData.append('noticeDTO', new Blob([JSON.stringify({ noticeTitle: title, memberNo: memberNo, noticeFix: fix ? 'Y' : 'N', noticeContent: content })], { type: 'application/json' }));
         files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
-        
+
         try {
             const data = await dispatch(callInsertNoticeAPI(formData));
             navigate('/notices');
@@ -65,8 +65,15 @@ function InsertNoticeForm() {
     };
 
     const handleChangeFiles = (e) => {
-        setFiles([...e.target.files]); // 모든 파일을 파일 목록에 추가
-        console.log('setFiles : ', setFiles)
+        const selectedFiles = Array.from(e.target.files);
+        setFiles((prevFiles) => [...prevFiles, ...selectedFiles]); // 기존 파일 목록과 새로 선택된 파일을 합쳐서 업데이트
+    };
+
+
+    const handleDeleteFile = (index) => {
+        const updatedFiles = [...files];
+        updatedFiles.splice(index, 1);
+        setFiles(updatedFiles);
     };
 
 
@@ -74,22 +81,22 @@ function InsertNoticeForm() {
         { label: '취소', onClick: () => navigate(-1), styleClass: 'back' },
         { label: '등록', onClick: handleSubmit, styleClass: 'move' }
     ];
-    
+
     useEffect(() => {
         const plainTextContent = content.replace(/(<([^>]+)>)/gi, "");
         const markdownContent = `# \n${plainTextContent}`;
         remark()
-        .use(remarkHtml)
-        .process(markdownContent, (err, file) => {
-            if (err) {
-                console.error("Markdown processing error:", err);
-                return;
-            }
-            setPreviewContent(String(file));
-        });
+            .use(remarkHtml)
+            .process(markdownContent, (err, file) => {
+                if (err) {
+                    console.error("Markdown processing error:", err);
+                    return;
+                }
+                setPreviewContent(String(file));
+            });
     }, [content, title]);
 
-    
+
 
     return (
         <main id="main" className="main">
@@ -107,6 +114,14 @@ function InsertNoticeForm() {
                         <div className="input-container">
                             <label htmlFor="file">첨부파일</label>
                             <div className="file-input">
+                                <ul>
+                                    {files.map((file, index) => (
+                                        <li style={{ listStyle: 'none' }} key={index}>
+                                            <span>{file.name}</span> &nbsp;
+                                            <button onClick={() => handleDeleteFile(index)} style={{ border: 'none', background: 'none', cursor: 'pointer' }}>x</button>
+                                        </li>
+                                    ))}
+                                </ul>
                                 <input type="file" id="formFile" multiple onChange={handleChangeFiles} />
                             </div>
                         </div>
@@ -129,13 +144,13 @@ function InsertNoticeForm() {
                                     ['bold', 'italic', 'underline', 'strike', 'blockquote'],
                                     [{ 'list': 'ordered' }, { 'list': 'bullet' }],
                                     [{ 'color': [] }, { 'background': [] }],
-                                    ['link'], 
+                                    ['link'],
                                     ['image', 'video'],
                                     ['clean']
                                 ]
                             }}
                         />
-                         <ReactMarkdown>{previewContent}</ReactMarkdown>
+                        <ReactMarkdown>{previewContent}</ReactMarkdown>
                     </div>
                     <ButtonGroup buttons={buttons} />
                 </div>

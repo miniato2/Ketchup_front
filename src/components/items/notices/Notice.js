@@ -142,7 +142,7 @@ function Notice({ noticeNo }) {
                                             onClick={() => downloadFile(file.noticeFilePath, getOriginalFileName(file.noticeFileName))}
                                         >
                                             {getOriginalFileName(file.noticeFileName)}                                        
-                                        </a>
+                                            </a>
                                     </li>
                                 ))}
                             </ul>
