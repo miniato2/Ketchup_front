@@ -20,6 +20,8 @@ import MemberDetail from './pages/members/MemberDetail';
 import MailReply from './pages/mails/MailReply';
 import InsertMember from './pages/members/InsertMember';
 import UpdateNotice from './pages/notices/UpdateNotice';
+import InsertBoard from './pages/boards/InsertBoard';
+import Boards from './pages/boards/Boards';
 
 function App() {
 
@@ -42,25 +44,29 @@ function App() {
             <Route path='insert' element={<InsertApproval />} />
             <Route path=':approvalNo' element={<ApprovalDetail />} />
           </Route>
-          {/* <Route path='board' element={<Boards />} /> */}
+          <Route path='board'>
+            <Route index element={<Boards />} />
+            <Route path='insert' element={<InsertBoard />} />
+
+          </Route>
           <Route path='calendar' element={<Calendar />} />
 
-          <Route path='mails'>
-            <Route path=':part/' element={<Mail />} />
-            <Route path='detail'>
-              <Route path=':mailNo' element={<MailDetail />} />
+            <Route path='mails'>
+              <Route path=':part/' element={<Mail />} />
+              <Route path='detail'>
+                <Route path=':mailNo' element={<MailDetail />} />
+              </Route>
+              <Route path='insert' element={<InsertMail />} />
+              <Route path='reply' element={<MailReply />} />
             </Route>
-            <Route path='insert' element={<InsertMail />} />
-            <Route path='reply' element={<MailReply />} />
+            <Route path="mypage" element={<MyPage />} />
+            <Route path='members'>
+              <Route index element={<Members />} />
+              <Route path='insert' element={<InsertMember />} />
+              <Route path=':memberNo' element={<MemberDetail />} />
+            </Route>
           </Route>
-        <Route path="mypage" element={<MyPage />}/>
-        <Route path='members'>
-            <Route index element={<Members />} />
-            <Route path='insert' element={<InsertMember />} />
-            <Route path=':memberNo' element={<MemberDetail />} />
-          </Route>
-        </Route>
-        <Route path='login' element={<Login />} />
+          <Route path='login' element={<Login />} />
       </Routes>
     </BrowserRouter>
   );

@@ -24,7 +24,7 @@ function Sidebar() {
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" to="/content/boards">
+                    <Link className="nav-link collapsed" to="/boards">
                         <i className="bi bi-file-text"></i><span>자료실</span>
                     </Link>
                 </li>

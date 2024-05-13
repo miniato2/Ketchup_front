@@ -70,6 +70,7 @@ export const callInsertNoticeAPI = (formData) => {
     return async (dispatch, getState) => {
         try {
             
+            console.log('파일 업로드 : ', formData)
             const response = await fetch(requestURL, {
                 method: 'POST',
                 body: formData,

@@ -10,7 +10,7 @@ import { remark } from 'remark';
 import remarkHtml from 'remark-html';
 import ReactMarkdown from 'react-markdown';
 
-function UpdateNotice() {
+function UpdateNoticeForm() {
     // const result = useSelector(state => state.noticeReducer);
     const {noticeNo} = useParams();
     const dispatch = useDispatch();
@@ -155,4 +155,4 @@ function UpdateNotice() {
 
 }
 
-export default UpdateNotice;
+export default UpdateNoticeForm;

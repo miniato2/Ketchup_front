@@ -17,7 +17,7 @@ function InsertNoticeForm() {
     // const result = useSelector(state => state.noticeReducer);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
+    
     const [title, setTitle] = useState('');
     const [files, setFiles] = useState([]);
     const [fix, setFix] = useState(false);
