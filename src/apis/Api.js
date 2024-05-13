@@ -16,7 +16,7 @@ export const request = async (method, url, data) => {
             headers: {
 
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data' // 추가
+                // 'Content-Type': 'multipart/form-data' // 추가
 
             }
         });
