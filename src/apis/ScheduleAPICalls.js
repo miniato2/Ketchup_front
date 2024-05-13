@@ -1,17 +1,18 @@
 import { request } from './Api';
-import { GET_SCHEDULE } from '../modules/ScheduleModule';
+import { getSchedule } from '../modules/ScheduleModule';
 
 export const getScheduleAPI = (dptNo) => {
   return async (dispatch) => {
     try {
       const schedules = await request('GET', `/schedules/department/${dptNo}`);
       dispatch({
-        type: GET_SCHEDULE,
+        type: getSchedule,
         payload: schedules
       });
     } catch (error) {
-      alert("일정 정보를 조회에 실패하였습니다.");
-      throw error;
+      const errorMessage = error.response ? error.response.data.message : error.message;
+      console.log("일정 정보 조회에 실패하였습니다.");
+      throw new Error(`[ScheduleAPICalls중 getScheduleAPI] 오류: ${errorMessage}`);
     }
   };
 };

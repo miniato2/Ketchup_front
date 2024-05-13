@@ -11,13 +11,14 @@ import { getScheduleAPI, insertScheduleAPI, deleteScheduleAPI, updateScheduleAPI
 import moment from "moment";
 import { decodeJwt } from "../../utils/tokenUtils";
 import ScheduleDetail from "../../components/form/ScheduleDetail";
+import { getSchedule } from "../../modules/ScheduleModule";
 
 const Calendar = () => {
     const schedules = useSelector(state => state.scheduleReducer);
     const [calendarReady, setCalendarReady] = useState(false);
     const [newScheduleAdded, setNewScheduleAdded] = useState(false);
     const [insertScheduleDialogOpen, setInsertScheduleDialogOpen] = useState(false);
-
+    const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
     const [detailDialogOpen, setDetailDialogOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [scheduleDetail, setScheduleDetail] = useState(null);
@@ -57,13 +58,9 @@ const Calendar = () => {
     }, [schedules]);
 
     const onDateClickHandler = () => { setInsertScheduleDialogOpen(true); };
-
     const onInsertCancelHandler = () => { setInsertScheduleDialogOpen(false); };
-
     const openDetailDialog = () => { setDetailDialogOpen(true); };
-
     const closeDetailDialog = () => { setDetailDialogOpen(false); };
-
     const handleDateClick = () => { onDateClickHandler(); };
 
     const onEventClickHandler = (selected) => {
@@ -71,12 +68,23 @@ const Calendar = () => {
         setSelectedEvent(selected.event);
     };
 
+    const onDelete = () => { setConfirmDeleteOpen(true); };
+    const onCloseConfirmDelete = () => { setConfirmDeleteOpen(false); };
+
+    const handleConfirmDelete = async () => {
+        try {
+            await handleDelete(selectedEvent);
+            setConfirmDeleteOpen(false);
+        } catch (error) {
+            console.error("일정 삭제 중 에러 발생 handleDelete: ", error);
+        }
+    };
+
     const handleDelete = async (event) => {
         if (event) {
             try {
                 await deleteScheduleAPI(event.id);
-                alert("일정이 정상적으로 삭제되었습니다.");
-              
+
                 const token = decodeJwt(window.localStorage.getItem("accessToken"));
                 const dptNo = token.depNo;
 
@@ -86,31 +94,28 @@ const Calendar = () => {
 
             } catch (error) {
                 console.error("일정 삭제 중 에러 발생 handleDelete: ", error);
+                alert("일정 삭제에 실패했습니다.");
             }
             closeDetailDialog();
         }
     };
 
-    // 지금 버튼을 누르면 바로 이걸 호출하기로 되어있는데,  2. 수정할 데이터들을 입력받고 3. 이 handleUpdate 시켜야함.
-    const handleUpdate = async (event) => {
-        if (event) {
-            try {
-                await updateScheduleAPI(event.id);
-                alert("일정을 정상적으로 수정하였습니다. handleUpdate");
-                
-                const token = decodeJwt(window.localStorage.getItem("accessToken"));
-                const dptNo = token.depNo;
+    const handleUpdateEvent = async (selectedEvent, updatedScheduleData) => {
+        try {
+            await updateScheduleAPI(selectedEvent.id, updatedScheduleData);
+            alert("일정을 정상적으로 수정하였습니다.");
 
-                if (dptNo) {
-                    await dispatch(getScheduleAPI(dptNo));
-                }
+            const token = decodeJwt(window.localStorage.getItem("accessToken"));
+            const dptNo = token.depNo;
 
-            } catch (error) {
-                console.error("일정 수정 중 에러 발생 handleUpdate: ", error);
-                alert("일정 수정에 실패했습니다.");
+            if (dptNo) {
+                await dispatch(getScheduleAPI(dptNo));
             }
-            closeDetailDialog();
+        } catch (error) {
+            console.error("일정 수정 중 에러 발생 handleUpdate: ", error);
+            alert("일정 수정에 실패했습니다.");
         }
+        closeDetailDialog();
     };
 
     useEffect(() => {
@@ -119,7 +124,6 @@ const Calendar = () => {
             const detail = fetchEvents().find(event => event.id == skdNo);
             if (detail) {
                 setScheduleDetail(detail);
-                console.log("setScheduleDetail(detail)에 저장된 값 확인", detail);
             } else {
                 console.log("일치하는 일정 정보를 찾을 수 없습니다.");
             }
@@ -134,7 +138,7 @@ const Calendar = () => {
             alert("일정이 정상적으로 등록되었습니다.");
             setNewScheduleAdded(!newScheduleAdded);
         } catch (error) {
-            console.error("Error submitting schedule data:", error);
+            console.error("일정 정보 등록하면서 오류가 발생했습니다 :", error);
             alert("일정 등록에 실패하였습니다.");
         }
         onInsertCancelHandler();
@@ -215,11 +219,12 @@ const Calendar = () => {
             <Dialog open={detailDialogOpen} onClose={closeDetailDialog}>
                 <DialogTitle>상세 정보</DialogTitle>
                 <ScheduleDetail
-                    handleInputChange={handleInputChange}
+                    inputChangeHandler={handleInputChange}
                     scheduleDetail={scheduleDetail}
                     handleDelete={handleDelete}
-                    handleUpdate={handleUpdate}
+                    handleUpdate={handleUpdateEvent}
                     closeDetailDialog={closeDetailDialog}
+                    onCloseConfirmDelete={onCloseConfirmDelete}
                 />
             </Dialog>
         </main>
