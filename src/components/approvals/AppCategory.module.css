@@ -1,5 +1,6 @@
 .appCategory{
-    height: 135px;
+    margin-top: 20px;
+    height: 130px;
     display: flex;
     /* border: solid 1px black; */
     justify-content: space-evenly;
@@ -7,16 +8,33 @@
 }
 
 .categoryBox{
-    padding: 0px 20px 20px 20px;
+    padding: 10px 15px 10px 15px;
     margin-top: 20px;
     width: 250px;
     height: 75px;
     border: solid 1px black;
+    border-radius: 10px;
+}
+.selectedCategoryBox{
+    background-color: #FCD6D6;
+    padding: 10px 15px 10px 15px;
+    margin-top: 20px;
+    width: 250px;
+    height: 75px;
+    border: solid 1px #EC0B0B;
+    border-radius: 10px;
+
 }
 
 .title {
-    padding: 10px 0 10px 0;
     font-size: 18px;
+    margin-bottom: 0;
+}
+.count{
+    width: fit-content;
+    font-size: 28px;
+    margin-left: auto;
+    margin-top: auto;
 }
 
 .cateogryCount{

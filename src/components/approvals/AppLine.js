@@ -1,19 +1,19 @@
 import Style from "./AppLine.module.css";
 
 
-function AppLine({appline}){
+function AppLine({ appline }) {
     console.log('결재선 리스트', appline);
 
-    return(
-        <>
+    return (
+        <div style={{overflowX: 'auto'}}>
             <table className={Style.appTable}>
                 <thead>
                     <tr>
-                        <th scope='col' width={'12%'}>구분</th>
+                        <th width={'133px'} style={{ minWidth: '133px'}}>구분</th>
                         {appline.map(() => (
-                            <th width={'12%'}>결재자</th>
+                            <th width={'133px'} style={{ minWidth: '133px'}}>결재자</th>
                         ))}
-                        <th></th>
+                        {appline.length < 8 ? <th></th> : null }
                     </tr>
                 </thead>
                 <tbody>
@@ -22,27 +22,27 @@ function AppLine({appline}){
                         {appline.map((item) => (
                             <td key={item.index}>{item.alMember.position.positionName}</td>
                         ))}
-                        <td></td>
+                        {appline.length < 8 ? <td></td> : null }
                     </tr>
                     <tr>
                         <th scope='row'>성명</th>
                         {appline.map((item) => (
                             <td key={item.index}>{item.alMember.memberName}</td>
                         ))}
-                        <td></td>
+                        {appline.length < 8 ? <td></td> : null }
                     </tr>
-                    <tr>
-                        <th scope='row'>결재일자</th>
-                        {appline.map((item) => (
-                            <td key={item.index}>{item.alDate}</td>
-                        ))}
-                        <td></td>
-                    </tr>
+                    {('alDate' in appline[0]) ? (
+                        <tr>
+                            <th scope='row'>결재일자</th>
+                            {appline.map((item) => (
+                                <td key={item.index}>{item.alDate? item.alDate: '-'}</td>
+                            ))}
+                            {appline.length < 8 ? <td></td> : null }
+                        </tr>
+                    ) : null}
                 </tbody>
             </table>
-
-
-        </>
+        </div>
     )
 }
 
