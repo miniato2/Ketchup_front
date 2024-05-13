@@ -83,8 +83,11 @@ export const callInsertNoticeAPI = (formData) => {
 
             console.log('[callInsertNoticeAPI] callRegisterAPI RESULT : ', result);
 
-            if (result.status === 201) {
-                dispatch(insertNotice(result));
+            if (result.status === 200) {
+                return result.data;
+            } else {
+                // 오류 응답을 throw하여 catch 블록으로 이동하도록 합니다.
+                throw new Error('Error inserting notice:', result);
             }
         } catch (error) {
             console.error('Error inserting notice:', error);

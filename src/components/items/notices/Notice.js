@@ -32,7 +32,10 @@ function Notice({ noticeNo }) {
         }
     }, [dispatch, noticeNo]);
 
-
+    // notice 객체가 정의되지 않은 경우 로딩 중을 표시하거나 다른 작업을 수행할 수 있습니다.
+    if (!notice) {
+        return <div>로딩 중...</div>;
+    }
 
     const updateHandler = () => navigate(`/notices/update/${noticeNo}`);
     const deleteHandler = () => {
@@ -46,11 +49,6 @@ function Notice({ noticeNo }) {
                 // 에러가 발생했을 때 추가적인 처리를 수행하거나 사용자에게 알림을 표시할 수 있습니다.
             });
     }
-
-    // notice가 정의되지 않았는지 확인한 후 속성에 액세스합니다.
-    if (!notice) {
-        return <div>로딩 중...</div>; // 또는 다른 적절한 로딩 표시기를 렌더링합니다.
-    };
 
     const downloadFile = async (filePath, fileName) => {
         try {
@@ -121,12 +119,12 @@ function Notice({ noticeNo }) {
 
                     <div style={{ marginBottom: '30px' }}>
 
-                        <img src={`/img/${notice.memberInfo.imgUrl}`} width="30" height="30" />&nbsp;
+                        <img src={`/img/${notice.memberInfo.imgUrl}`} width="30" height="30" alt="profile" />&nbsp;
                         <span className="">{notice.memberInfo.memberName}</span>&nbsp;
                         <span>{notice.memberInfo.position.positionName}</span>&nbsp;&nbsp;
                         <span>{FormatDate(notice.noticeCreateDttm)}</span>
                         {notice.noticeUpdateDttm && (
-                            <span> / 수정 시간: {FormatDate(notice.noticeUpdateDttm)}</span>
+                            <span> / 수정일: {FormatDate(notice.noticeUpdateDttm)}</span>
                         )}
                     </div>
 
@@ -139,10 +137,10 @@ function Notice({ noticeNo }) {
                                         <i className={`bi ${getIconClass(file.noticeFileName)} me-2`}></i>
                                         <a
                                             style={{ textDecoration: 'none', color: 'black', cursor: 'pointer' }}
-                                            onClick={() => downloadFile(file.noticeFilePath, getOriginalFileName(file.noticeFileName))}
+                                            onClick={() => downloadFile(file.noticeFilePath, file.noticeFileName)}
                                         >
-                                            {getOriginalFileName(file.noticeFileName)}                                        
-                                            </a>
+                                            {file.noticeFileOriName || getOriginalFileName(file.noticeFileName)}
+                                        </a>
                                     </li>
                                 ))}
                             </ul>

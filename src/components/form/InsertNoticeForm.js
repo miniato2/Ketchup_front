@@ -4,7 +4,6 @@ import ButtonGroup from "../../components/contents/ButtonGroup";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { callInsertNoticeAPI } from "../../apis/NoticeAPICalls";
-import { decodeJwt } from "../../utils/tokenUtils";
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
 import { remark } from 'remark';
@@ -28,20 +27,9 @@ function InsertNoticeForm() {
 
     let memberNo = '';
 
-    const isLogin = window.localStorage.getItem("accessToken");
-    let decoded = null;
+    const loginToken = window.localStorage.getItem("accessToken");
+    memberNo = loginToken.memberNo;
 
-    if (isLogin !== undefined && isLogin !== null) {
-        const decodedTokenInfo = decodeJwt(window.localStorage.getItem("accessToken"));
-        decoded = decodedTokenInfo.role;
-
-        memberNo = decodedTokenInfo.memberNo; // 함수 내부에서 memberId 할당
-    }
-
-    // const handleChangeColor = (color) => {
-    //     const quill = quillRef.current.getEditor();
-    //     quill.format('color', color);
-    // };
 
     const handleFixChange = (e) => {
         const isChecked = e.target.checked;
@@ -56,8 +44,27 @@ function InsertNoticeForm() {
         files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
 
         try {
-            const data = await dispatch(callInsertNoticeAPI(formData));
-            navigate('/notices');
+            console.log("handleSubmit [ result ] : ", formData);
+            const noticeNo = await dispatch(callInsertNoticeAPI(formData));
+            console.log("dispatch 후 noticeNo : ", noticeNo);
+            if (noticeNo) {
+                console.log('handleSubmit [ noticeNo ] : ', noticeNo);
+                // 등록 성공 시 공지 상세 페이지로 이동
+                navigate(`/notices/${noticeNo}`);
+            } else {
+                console.error("Invalid result:", "실패");
+            }
+            // console.log("handleSubmit [ result ] : ", formData);
+            // const noticeNo  = await dispatch(callInsertNoticeAPI(formData));
+            // console.log("dispatch 후 noticeNo : ", noticeNo);
+            // if (noticeNo) {
+            //     // const noticeNo = result.data; // 반환된 데이터에서 noticeNo 추출
+            //     console.log('handleSubmit [ noticeNo ] : ',  noticeNo)
+            //     // 등록 성공 시 공지 상세 페이지로 이동
+            //     navigate(`/notices/${noticeNo}`);
+            // } else {
+            //     console.error("Invalid result:", "실패");
+            // }
         } catch (error) {
             console.error(error);
             // 등록 실패 시 처리

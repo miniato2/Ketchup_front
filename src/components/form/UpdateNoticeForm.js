@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { callGetNoticeAPI, callUpdateNoticeAPI } from "../../apis/NoticeAPICalls";
 import ButtonGroup from "../../components/contents/ButtonGroup";
-import { decodeJwt } from "../../utils/tokenUtils";
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
 import { remark } from 'remark';
@@ -24,29 +23,15 @@ function UpdateNoticeForm() {
     const [previewContent, setPreviewContent] = useState('');
     const [fileList, setFileList] = useState([]);
 
-
     const handleFixChange = (e) => {
         const isChecked = e.target.checked;
         setFix(isChecked);
     };
 
-
     let memberNo = '';
 
-    const isLogin = window.localStorage.getItem("accessToken");
-    let decoded = null;
-
-    if (isLogin !== undefined && isLogin !== null) {
-        const decodedTokenInfo = decodeJwt(window.localStorage.getItem("accessToken"));
-        decoded = decodedTokenInfo.role;
-
-        memberNo = decodedTokenInfo.memberNo; // 함수 내부에서 memberId 할당
-    }
-
-    // 파일 목록 추가 함수
-    const handleAddFile = (file) => {
-        setFiles((prevFiles) => [...prevFiles, file]);
-    };
+    const loginToken = window.localStorage.getItem("accessToken");
+    memberNo = loginToken.memberNo;
 
     // 파일 삭제 함수
     const handleDeleteFile = (index) => {
@@ -54,10 +39,6 @@ function UpdateNoticeForm() {
         updatedFiles.splice(index, 1);
         setFiles(updatedFiles);
     };
-
-    useEffect(() => {
-        console.log('파일 목록:', files);
-    }, [files]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -67,18 +48,12 @@ function UpdateNoticeForm() {
         files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
 
         try {
-            const data = await dispatch(callUpdateNoticeAPI(formData, noticeNo));
+            await dispatch(callUpdateNoticeAPI(formData, noticeNo));
             navigate(`/notices/${noticeNo}`);
         } catch (error) {
             console.error(error);
-            // 등록 실패 시 처리
         }
     };
-
-    // const handleChangeFiles = (e) => {
-    //     setFiles([...e.target.files]); // 모든 파일을 파일 목록에 추가
-    //     console.log('setFiles : ', setFiles)
-    // };
 
     const handleChangeFiles = (e) => {
         const selectedFiles = Array.from(e.target.files);
