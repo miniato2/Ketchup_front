@@ -1,16 +1,18 @@
-import { request } from "./Api";
-import {GET_RESERVE} from '../modules/ReserveModule';
+import { request } from './Api';
+import {GET_RESERVE} from '../modules/ReserveModule'
 
-export async function getReserveAPI(rscCategory, rsvDate) {
-    try {
-        const response = await fetch(`/reserves?category=${rscCategory}&date=${rsvDate}`);
-        if (!response.ok) {
-            throw new Error('getReserveAPI중 네트워크 에러 발생');
+export const getReserveAPI = (rscCategory, rsvDate) => {
+    return async (dispatch) => {
+        try {
+            const reserves = await request('GET', `/reserves?category=${rscCategory}&date=${rsvDate}`);
+            dispatch({
+                type: GET_RESERVE,
+                payload: reserves
+            });
+        } catch (error) {
+            const errorMessage = error.response ? error.response.data.message : error.message;
+            console.log("getReserveAPI가 예약 현황 조회를 실패하였습니다.")
+            throw new Error(`ReserveAPICall중 getReserveAPI 오류: ${errorMessage}`);
         }
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('getReserveAPI중 에러발생:', error);
-        throw error;
-    }
-}
+    };
+};

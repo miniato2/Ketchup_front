@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import BootstrapTable from "../components/contents/BootstrapTable";
 import ApprovalBox from "../components/contents/ApprovalBox";
-import ScheduleBox from "../components/contents/ScheduleBox";
 import { useDispatch, useSelector } from "react-redux";
 import { decodeJwt } from '../utils/tokenUtils';
 import { useEffect, useState } from "react";
@@ -15,10 +14,12 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from '@fullcalendar/list';
-import Calendar from "./schedules/calendar";
+import moment from "moment";
 
 function Main() {
     const dispatch = useDispatch();
+    const [events, setEvents] = useState([]);
+    const schedules = useSelector(state => state.scheduleReducer);
     const navigate = useNavigate();
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     console.log('[ loginToken ] : ', loginToken);
@@ -31,36 +32,79 @@ function Main() {
         { title: "반려된 나의 문서", count: 2 },
     ];
 
-    // 공지사항 목록 가져오기
+    const convertToCalendarProps = (schedules) => {
+        try {
+            console.log("schedules 존재여부 확인", schedules);
+            if (schedules && schedules.results && schedules.results.schedule) {
+                const events = schedules.results.schedule.map(schedule => ({
+                    title: schedule.skdName,
+                    start: moment(schedule.skdStartDttm, "YYYY-MM-DD A h:mm").toISOString(),
+                    end: moment(schedule.skdEndDttm, "YYYY-MM-DD A h:mm").toISOString(),
+                    id: schedule.skdNo,
+                    extendedProps: {
+                        skdLocation: schedule.skdLocation,
+                        skdMemo: schedule.skdMemo
+                    }
+                }));
+                return events;
+            } else {
+                return [];
+            }
+        } catch (error) {
+            return [];
+        }
+    };
+
     useEffect(() => {
         dispatch(callGetNoticeListAPI());
+
+        const fetchSchedules = () => {
+            try {
+                const token = decodeJwt(window.localStorage.getItem("accessToken"));
+                const dptNo = token.depNo;
+
+                if (dptNo) {
+                    dispatch(getScheduleAPI(dptNo));
+                }
+            } catch (error) {
+                console.error("fetchSchedules 도중 에러 발생", error);
+            }
+        };
+        fetchSchedules();
     }, [dispatch]);
+
+    useEffect(() => {
+        if (!schedules) {
+            return;    
+        }
+        setEvents(convertToCalendarProps(schedules));
+    }, [schedules]);
 
     // 공지사항 목록 Redux store에서 가져오기
     const noticeList = useSelector(state => state.noticeReducer.noticelist);
 
     const formattedNoticeList = noticeList ? noticeList
-    .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
-    .slice(0, 3) // 최신 3개의 공지만 표시
-    .map(item => ({
-      ...item,
-      noticeTitle: (
-        <>
-          {item.noticeFix === 'Y' && ( // 필독 공지인 경우에만 [ 필독 ]을 붙임
-            <span style={{ marginRight: '5px' }}>
-              [ 필독&nbsp;
-              <span style={{ color: '#EC0B0B' }}>
-                <BsMegaphone />
-              </span>
-              &nbsp;]
-            </span>
-          )}
-          {item.noticeTitle}
-        </>
-      ),
-      noticeCreateDttm: FormatDateTime(item.noticeCreateDttm)
-    })) : [];
-    
+        .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
+        .slice(0, 3) // 최신 3개의 공지만 표시
+        .map(item => ({
+            ...item,
+            noticeTitle: (
+                <>
+                    {item.noticeFix === 'Y' && ( // 필독 공지인 경우에만 [ 필독 ]을 붙임
+                        <span style={{ marginRight: '5px' }}>
+                            [ 필독&nbsp;
+                            <span style={{ color: '#EC0B0B' }}>
+                                <BsMegaphone />
+                            </span>
+                            &nbsp;]
+                        </span>
+                    )}
+                    {item.noticeTitle}
+                </>
+            ),
+            noticeCreateDttm: FormatDateTime(item.noticeCreateDttm)
+        })) : [];
+
     // 컬럼 제목 목록
     const columns = [
         ['noticeNo', '공지번호'],
@@ -123,6 +167,7 @@ function Main() {
             {/* 일정 */}
             <div className="col-12">
                 <FullCalendar
+                    events={events}
                     height="50vh"
                     initialView="dayGridWeek"
                     plugins={[
@@ -143,16 +188,6 @@ function Main() {
                         }
                     }}
                 />
-                {/* <Calendar
-                    height="50vh"
-                    plugins={{
-                        dayGridPlugin,
-                        timeGridPlugin,
-                        interactionPlugin,
-                        listPlugin
-                    }}
-                    initialView="dayGridWeek"
-                /> */}
             </div>
         </main >
     );

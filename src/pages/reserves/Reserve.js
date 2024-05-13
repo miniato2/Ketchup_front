@@ -45,7 +45,8 @@ export default function Reserve() {
 
     async function fetchReserves() {
         try {
-            const response = await fetch('/api/reserve');
+            const { rscCategory, rsvDate } = searchConditions;
+            const response = await getReserveAPI(rscCategory, rsvDate);
             const data = await response.json();
     
             const reservesWithParsedDates = data.results.reserve.map(reserve => ({

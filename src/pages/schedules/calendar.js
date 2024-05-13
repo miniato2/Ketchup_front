@@ -11,6 +11,7 @@ import { getScheduleAPI, insertScheduleAPI, deleteScheduleAPI, updateScheduleAPI
 import moment from "moment";
 import { decodeJwt } from "../../utils/tokenUtils";
 import ScheduleDetail from "../../components/form/ScheduleDetail";
+import { getSchedule } from "../../modules/ScheduleModule";
 
 const Calendar = () => {
     const schedules = useSelector(state => state.scheduleReducer);
@@ -137,8 +138,7 @@ const Calendar = () => {
             alert("일정이 정상적으로 등록되었습니다.");
             setNewScheduleAdded(!newScheduleAdded);
         } catch (error) {
-            console.log("newScheduleData가 정말 multipartform인지??", newScheduleData);
-            console.error("Error submitting schedule data:", error);
+            console.error("일정 정보 등록하면서 오류가 발생했습니다 :", error);
             alert("일정 등록에 실패하였습니다.");
         }
         onInsertCancelHandler();

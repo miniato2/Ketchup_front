@@ -1,18 +1,18 @@
 import { request } from './Api';
-import { GET_SCHEDULE } from '../modules/ScheduleModule';
+import { getSchedule } from '../modules/ScheduleModule';
 
 export const getScheduleAPI = (dptNo) => {
   return async (dispatch) => {
     try {
       const schedules = await request('GET', `/schedules/department/${dptNo}`);
       dispatch({
-        type: GET_SCHEDULE,
+        type: getSchedule,
         payload: schedules
       });
     } catch (error) {
       const errorMessage = error.response ? error.response.data.message : error.message;
       console.log("일정 정보 조회에 실패하였습니다.");
-      throw new Error(`[ScheduleAPICalls중 insertScheduleAPI] 오류: ${errorMessage}`);
+      throw new Error(`[ScheduleAPICalls중 getScheduleAPI] 오류: ${errorMessage}`);
     }
   };
 };
@@ -28,9 +28,6 @@ export const insertScheduleAPI = async (newScheduleData) => {
 };
 
 export const updateScheduleAPI = async (skdNo, updatedScheduleData) => {
-  console.log("업데이트할 일정 번호:", skdNo);
-  console.log("업데이트할 일정 데이터:", updatedScheduleData);
-
   try {
     const response = await request('put', `/schedules/schedules/${skdNo}`, updatedScheduleData);
     return response;
