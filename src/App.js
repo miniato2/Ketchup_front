@@ -19,6 +19,7 @@ import Members from './pages/members/Members';
 import MemberDetail from './pages/members/MemberDetail';
 import MailReply from './pages/mails/MailReply';
 import InsertMember from './pages/members/InsertMember';
+import UpdateNotice from './pages/notices/UpdateNotice';
 import Reserve from './pages/reserves/Reserve';
 
 function App() {
@@ -33,6 +34,9 @@ function App() {
             <Route index element={<Notices />} />
             <Route path=':noticeNo' element={<NoticeDetail />} />
             <Route path='insert' element={<InsertNotice />} />
+            <Route path='update'>
+              <Route path=':noticeNo' element={<UpdateNotice />} />
+            </Route>
           </Route>
           <Route path='approvals'>
             <Route index element={<Approvals />} />

@@ -1,9 +1,8 @@
-// InsertNoticeForm 컴포넌트
-import { useDispatch } from "react-redux";
-import ButtonGroup from "../../components/contents/ButtonGroup";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { callInsertNoticeAPI } from "../../apis/NoticeAPICalls";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { callGetNoticeAPI, callUpdateNoticeAPI } from "../../apis/NoticeAPICalls";
+import ButtonGroup from "../../components/contents/ButtonGroup";
 import { decodeJwt } from "../../utils/tokenUtils";
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
@@ -11,10 +10,9 @@ import { remark } from 'remark';
 import remarkHtml from 'remark-html';
 import ReactMarkdown from 'react-markdown';
 
-
-function InsertNoticeForm() {
-
+function UpdateNotice() {
     // const result = useSelector(state => state.noticeReducer);
+    const {noticeNo} = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -24,6 +22,11 @@ function InsertNoticeForm() {
     const [content, setContent] = useState('');
     const quillRef = useRef();
     const [previewContent, setPreviewContent] = useState('');
+
+    const handleFixChange = (e) => {
+        const isChecked = e.target.checked;
+        setFix(isChecked);
+    };
 
 
     let memberNo = '';
@@ -38,16 +41,6 @@ function InsertNoticeForm() {
         memberNo = decodedTokenInfo.memberNo; // 함수 내부에서 memberId 할당
     }
 
-    // const handleChangeColor = (color) => {
-    //     const quill = quillRef.current.getEditor();
-    //     quill.format('color', color);
-    // };
-
-    const handleFixChange = (e) => {
-        const isChecked = e.target.checked;
-        setFix(isChecked);
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -56,7 +49,7 @@ function InsertNoticeForm() {
         files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
         
         try {
-            const data = await dispatch(callInsertNoticeAPI(formData));
+            const data = await dispatch(callUpdateNoticeAPI(formData, noticeNo));
             navigate('/notices');
         } catch (error) {
             console.error(error);
@@ -72,8 +65,16 @@ function InsertNoticeForm() {
 
     const buttons = [
         { label: '취소', onClick: () => navigate(-1), styleClass: 'back' },
-        { label: '등록', onClick: handleSubmit, styleClass: 'move' }
+        { label: '저장', onClick: handleSubmit, styleClass: 'move' }
     ];
+
+    useEffect(() => {
+        // 공지 정보 불러오기
+        dispatch(callGetNoticeAPI(noticeNo));
+    }, [dispatch, noticeNo]);
+
+    // useSelector를 사용하여 Redux 스토어에서 공지 정보 가져오기
+    const notice = useSelector(state => state.noticeReducer.notice);
     
     useEffect(() => {
         const plainTextContent = content.replace(/(<([^>]+)>)/gi, "");
@@ -88,6 +89,15 @@ function InsertNoticeForm() {
             setPreviewContent(String(file));
         });
     }, [content, title]);
+
+    useEffect(() => {
+        if (notice) {
+            setTitle(notice.noticeTitle);
+            setContent(notice.noticeContent);
+            setFix(notice.noticeFix === 'Y');
+            setFiles(notice.files || []);
+        }
+    }, [notice]);
 
     
 
@@ -142,6 +152,7 @@ function InsertNoticeForm() {
             </div>
         </main>
     );
-};
 
-export default InsertNoticeForm;
+}
+
+export default UpdateNotice;

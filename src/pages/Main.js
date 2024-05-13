@@ -40,27 +40,27 @@ function Main() {
     const noticeList = useSelector(state => state.noticeReducer.noticelist);
 
     const formattedNoticeList = noticeList ? noticeList
-        .slice(0, 3) // 최신 3개의 공지만 표시
-        .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
-        .map(item => ({
-            ...item,
-            noticeTitle: (
-                <>
-                    {item.noticeFix === 'Y' && ( // 필독 공지인 경우에만 [ 필독 ]을 붙임
-                        <span style={{ marginRight: '5px' }}>
-                            [ 필독&nbsp;
-                            <span style={{ color: '#EC0B0B' }}>
-                                <BsMegaphone />
-                            </span>
-                            &nbsp;]
-                        </span>
-                    )}
-                    {item.noticeTitle}
-                </>
-            ),
-            noticeCreateDttm: FormatDateTime(item.noticeCreateDttm)
-        })) : [];
-
+    .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
+    .slice(0, 3) // 최신 3개의 공지만 표시
+    .map(item => ({
+      ...item,
+      noticeTitle: (
+        <>
+          {item.noticeFix === 'Y' && ( // 필독 공지인 경우에만 [ 필독 ]을 붙임
+            <span style={{ marginRight: '5px' }}>
+              [ 필독&nbsp;
+              <span style={{ color: '#EC0B0B' }}>
+                <BsMegaphone />
+              </span>
+              &nbsp;]
+            </span>
+          )}
+          {item.noticeTitle}
+        </>
+      ),
+      noticeCreateDttm: FormatDateTime(item.noticeCreateDttm)
+    })) : [];
+    
     // 컬럼 제목 목록
     const columns = [
         ['noticeNo', '공지번호'],
