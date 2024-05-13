@@ -42,15 +42,16 @@ function App() {
           <Route path='calendar' element={<Calendar />} />
 
           <Route path='mails'>
-            <Route path=':part/' element={<Mail />} />
+            <Route path=':part' element={<Mail />} />
             <Route path='detail'>
-              <Route path=':mailNo' element={<MailDetail />} />
-            </Route>
+                <Route path=':mailNo' element={<MailDetail />} />
+              </Route>
             <Route path='insert' element={<InsertMail />} />
             <Route path='reply' element={<MailReply />} />
           </Route>
-        <Route path="mypage" element={<MyPage />}/>
-        <Route path='members'>
+
+          <Route path="mypage" element={<MyPage />} />
+          <Route path='members'>
             <Route index element={<Members />} />
             <Route path='insert' element={<InsertMember />} />
             <Route path=':memberNo' element={<MemberDetail />} />

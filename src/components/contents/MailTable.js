@@ -2,8 +2,8 @@ import Table from 'react-bootstrap/Table';
 import '../../style.css';
 import { useState } from 'react';
 
-const CheckBootstrapTable = ({ data, columns, onRowClick }) => {
-  const [checkedItems, setCheckedItems] = useState({}); // 체크된 항목을 추적하기 위한 상태
+const MailTable = ({ data, columns, onRowClick, part }) => {
+  const [checkedItems, setCheckedItems] = useState({});
 
   // 전체 선택 여부를 토글하는 함수
   const toggleAllCheckboxes = () => {
@@ -11,7 +11,7 @@ const CheckBootstrapTable = ({ data, columns, onRowClick }) => {
     data.forEach((item, index) => {
       newCheckedItems[index] = !checkedItems[index];
     });
-  
+
     setCheckedItems(newCheckedItems);
   };
 
@@ -21,6 +21,9 @@ const CheckBootstrapTable = ({ data, columns, onRowClick }) => {
       ...prevState,
       [index]: !prevState[index]
     }));
+
+    console.log("체크 박스 확인용!!!!!!!!!!!!")
+    console.log(index);
   };
 
   return (
@@ -34,6 +37,7 @@ const CheckBootstrapTable = ({ data, columns, onRowClick }) => {
                 onChange={toggleAllCheckboxes}
               />
             </th>
+            <th>번호</th>
             {columns.map(([key, label], index) => (
               <th scope='col' style={key === '제목' ? { width: "600px", padding: "10px" } : { padding: "10px" }} key={index}>{label}</th>
             ))}
@@ -49,8 +53,14 @@ const CheckBootstrapTable = ({ data, columns, onRowClick }) => {
                   onChange={() => toggleCheckbox(index)}
                 />
               </td>
+              <td>{data.length - index}</td>
               {columns.map(([key], columnIndex) => (
-                <td style={{ padding: "15px", textAlign: key === '제목' ? 'left' : 'center', cursor: 'pointer' }} onClick={() => onRowClick(index)} key={columnIndex}>{item[key]}</td>
+                <td style={{ padding: "15px" }} key={columnIndex}>
+                  {key === 'mailTitle' ?
+                    (<span style={{ cursor:"pointer" }} onClick={onRowClick(index)} >{item[key]}</span>)
+                    : (key === 'receiverName' ? <span style={{cursor:"pointer"}}>{item[key]}</span> : item[key])
+                  }
+                </td>
               ))}
             </tr>
           ))}
@@ -60,4 +70,4 @@ const CheckBootstrapTable = ({ data, columns, onRowClick }) => {
   );
 };
 
-export default CheckBootstrapTable;
+export default MailTable;
