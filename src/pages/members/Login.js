@@ -45,9 +45,7 @@ function Login() {
         });
     };
 
-    const onClickRegisterHandler = () => { 
-        navigate("/register", { replace: true })
-    }
+   
 
     // 로그인 버튼 클릭시 디스패처 실행 및 메인 페이지로 이동
     const onClickLoginHandler = () => { 
@@ -97,7 +95,7 @@ function Login() {
                 >
                     로그인
                 </button>
-                <a style={{marginTop:"10px",marginLeft: 400}}>비밀번호 찾기</a>
+                <a style={{marginTop:"10px",marginLeft: 390}}>비밀번호 찾기</a>
               
             </div>
         </div>
