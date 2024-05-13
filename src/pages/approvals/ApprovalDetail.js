@@ -12,6 +12,8 @@ function ApprovalDetail() {
     const param = useParams();
     const dispatch = useDispatch();
 
+    console.log('상세 ',approval)
+
     const quillRef = useRef(null);
 
     useEffect(() => {

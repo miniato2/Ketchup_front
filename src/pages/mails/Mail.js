@@ -1,6 +1,6 @@
 import { useState } from "react";
 import SearchBar from "../../components/contents/SearchBar";
-import "../../mail.css";
+import "./mail.css";
 import ButtonGroup from "../../components/contents/ButtonGroup";
 import ReceiveMail from "../../components/lists/mails/ReceiveMail";
 import SendMail from "../../components/lists/mails/SendMail";
@@ -45,7 +45,7 @@ function Mail() {
                     <ButtonGroup buttons={buttons} />
                 </div>
                 {
-                    part == "receive"? <ReceiveMail part={part} /> : <SendMail />
+                    part == "receive"? <ReceiveMail part={part} /> : <SendMail part={part} />
                 }
             </main>
         </>

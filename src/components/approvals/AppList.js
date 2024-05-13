@@ -37,7 +37,7 @@ function AppList({ data }) {
                             </td>
                             <td>{item.member.memberName}</td>
                             <td>{item.appDate?.substring(0, 8)}</td>
-                            <td>{item.appFinalDate?.substring(0, 8)}</td>
+                            <td>{item.alDate? item.appFinalDate?.substring(0, 8) : '-'}</td>
                         </tr>
                     ))}
                 </tbody>
