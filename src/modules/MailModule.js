@@ -25,10 +25,12 @@ const initialState = [{
 
 const GET_RECEIVEMAIL = 'mails/GET_RECEIVEMAIL';
 const GET_SENDMAIL = 'mails/GET_SENDMAIL';
+const GET_MAILDETAIL = 'mails/GET_MAILDETAIL';
 
-export const {mails: {getReceivemail, getSendmail}} = createActions({
+export const {mails: {getReceivemail, getSendmail, getMaildetail}} = createActions({
     [GET_RECEIVEMAIL]: (res) => ({receivemail: res}),
-    [GET_SENDMAIL]: (res) => ({sendmail: res})
+    [GET_SENDMAIL]: (res) => ({sendmail: res}),
+    [GET_MAILDETAIL]: (res) => ({maildetail: res})
 });
 
 const mailReducer = handleActions(
@@ -37,6 +39,9 @@ const mailReducer = handleActions(
             return payload;
         },
         [GET_SENDMAIL]: (state, {payload}) => {
+            return payload;
+        },
+        [GET_MAILDETAIL]: (state, {payload}) => {
             return payload;
         }
     }, initialState

@@ -17,7 +17,7 @@ const Calendar = () => {
     const [calendarReady, setCalendarReady] = useState(false);
     const [newScheduleAdded, setNewScheduleAdded] = useState(false);
     const [insertScheduleDialogOpen, setInsertScheduleDialogOpen] = useState(false);
-
+    const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
     const [detailDialogOpen, setDetailDialogOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [scheduleDetail, setScheduleDetail] = useState(null);
@@ -57,13 +57,9 @@ const Calendar = () => {
     }, [schedules]);
 
     const onDateClickHandler = () => { setInsertScheduleDialogOpen(true); };
-
     const onInsertCancelHandler = () => { setInsertScheduleDialogOpen(false); };
-
     const openDetailDialog = () => { setDetailDialogOpen(true); };
-
     const closeDetailDialog = () => { setDetailDialogOpen(false); };
-
     const handleDateClick = () => { onDateClickHandler(); };
 
     const onEventClickHandler = (selected) => {
@@ -71,12 +67,23 @@ const Calendar = () => {
         setSelectedEvent(selected.event);
     };
 
+    const onDelete = () => { setConfirmDeleteOpen(true); };
+    const onCloseConfirmDelete = () => { setConfirmDeleteOpen(false); };
+
+    const handleConfirmDelete = async () => {
+        try {
+            await handleDelete(selectedEvent);
+            setConfirmDeleteOpen(false);
+        } catch (error) {
+            console.error("일정 삭제 중 에러 발생 handleDelete: ", error);
+        }
+    };
+
     const handleDelete = async (event) => {
         if (event) {
             try {
                 await deleteScheduleAPI(event.id);
-                alert("일정이 정상적으로 삭제되었습니다.");
-              
+
                 const token = decodeJwt(window.localStorage.getItem("accessToken"));
                 const dptNo = token.depNo;
 
@@ -86,30 +93,58 @@ const Calendar = () => {
 
             } catch (error) {
                 console.error("일정 삭제 중 에러 발생 handleDelete: ", error);
+                alert("일정 삭제에 실패했습니다.");
             }
             closeDetailDialog();
         }
     };
 
-    // 지금 버튼을 누르면 바로 이걸 호출하기로 되어있는데,  2. 수정할 데이터들을 입력받고 3. 이 handleUpdate 시켜야함.
-    const handleUpdate = async (event) => {
-        if (event) {
+    const handleUpdateEvent = async (selectedEvent, updatedScheduleData) => {
+        try {
+            await updateScheduleAPI(selectedEvent.id, updatedScheduleData);
+            alert("일정을 정상적으로 수정하였습니다.");
+
+            const token = decodeJwt(window.localStorage.getItem("accessToken"));
+            const dptNo = token.depNo;
+
+            if (dptNo) {
+                await dispatch(getScheduleAPI(dptNo));
+            }
+        } catch (error) {
+            console.error("일정 수정 중 에러 발생 handleUpdate: ", error);
+            alert("일정 수정에 실패했습니다.");
+        }
+        closeDetailDialog();
+    };
+
+    const handleUpdate = async (selectedEvent, updatedScheduleData) => {
+        if (selectedEvent && selectedEvent.event && selectedEvent.event.id) {
+
+            const eventId = selectedEvent.event.id;
+            console.log("eventId 확인", eventId);
+            if (updatedScheduleData) {
+                console.log("updatedScheduleData 확인: ", updatedScheduleData);
+            } else {
+                console.log("updatedScheduleData가 유효하지 않습니다.");
+            }
+            
             try {
-                await updateScheduleAPI(event.id);
-                alert("일정을 정상적으로 수정하였습니다. handleUpdate");
-                
+                await updateScheduleAPI(selectedEvent.id, updatedScheduleData);
+                alert("일정을 정상적으로 수정하였습니다.");
+
                 const token = decodeJwt(window.localStorage.getItem("accessToken"));
                 const dptNo = token.depNo;
 
                 if (dptNo) {
                     await dispatch(getScheduleAPI(dptNo));
                 }
-
             } catch (error) {
                 console.error("일정 수정 중 에러 발생 handleUpdate: ", error);
                 alert("일정 수정에 실패했습니다.");
             }
             closeDetailDialog();
+        } else {
+            alert("event가 존재하지도 않습니다.");
         }
     };
 
@@ -134,6 +169,7 @@ const Calendar = () => {
             alert("일정이 정상적으로 등록되었습니다.");
             setNewScheduleAdded(!newScheduleAdded);
         } catch (error) {
+            console.log("newScheduleData가 정말 multipartform인지??", newScheduleData);
             console.error("Error submitting schedule data:", error);
             alert("일정 등록에 실패하였습니다.");
         }
@@ -215,11 +251,12 @@ const Calendar = () => {
             <Dialog open={detailDialogOpen} onClose={closeDetailDialog}>
                 <DialogTitle>상세 정보</DialogTitle>
                 <ScheduleDetail
-                    handleInputChange={handleInputChange}
+                    inputChangeHandler={handleInputChange}
                     scheduleDetail={scheduleDetail}
                     handleDelete={handleDelete}
-                    handleUpdate={handleUpdate}
+                    handleUpdate={handleUpdateEvent}
                     closeDetailDialog={closeDetailDialog}
+                    onCloseConfirmDelete={onCloseConfirmDelete}
                 />
             </Dialog>
         </main>

@@ -27,6 +27,9 @@ export const insertScheduleAPI = async (newScheduleData) => {
 };
 
 export const updateScheduleAPI = async (skdNo, updatedScheduleData) => {
+  console.log("업데이트할 일정 번호:", skdNo);
+  console.log("업데이트할 일정 데이터:", updatedScheduleData);
+
   try {
     const response = await request('put', `/schedules/schedules/${skdNo}`, updatedScheduleData);
     return response;

@@ -21,9 +21,9 @@ npm install jsonwebtoken
 
 # vs.code 클론 후 (install 설정) 
 npm install
+
+# router 설정 
 npm install react-router-dom
-npm install react-bootstrap bootstrap
-npm install react-icons
 
 # reducx install 설정 
 npm install redux@4.2.1
@@ -32,9 +32,21 @@ npm install redux-thunk@2.4.2
 npm install redux-actions  (createActions, handleActions 등 사용을 위해)
 npm install react-redux@8.1.3
 npm install redux-logger
-npm install react-quill
 
-npm uninstall ~ (install된 npm 삭제)
+# react-bootstrap 설정 
+npm install react-bootstrap bootstrap
+npm install react-icons
+
+# react editor 설정
+npm install react-quill
+npm install remark
+npm install remark-html
+npm install react-markdown
+npm install isomorphic-dompurify(XSS 공격 방지)
+npm install quill-image-resize-module(img업로드 크기)
+
+# install 삭제 시 (install된 모듈 삭제)
+npm uninstall (모듈명) 
 
 # Getting Started with Create React App
 

@@ -17,7 +17,9 @@ import MyPage from './pages/members/MyPage';
 import NoticeDetail from './pages/notices/NoticeDetail';
 import Members from './pages/members/Members';
 import MemberDetail from './pages/members/MemberDetail';
+import MailReply from './pages/mails/MailReply';
 import InsertMember from './pages/members/InsertMember';
+import UpdateNotice from './pages/notices/UpdateNotice';
 
 function App() {
 
@@ -31,6 +33,9 @@ function App() {
             <Route index element={<Notices />} />
             <Route path=':noticeNo' element={<NoticeDetail />} />
             <Route path='insert' element={<InsertNotice />} />
+            <Route path='update'>
+              <Route path=':noticeNo' element={<UpdateNotice />} />
+            </Route>
           </Route>
           <Route path='approvals'>
             <Route index element={<Approvals />} />
@@ -41,19 +46,21 @@ function App() {
           <Route path='calendar' element={<Calendar />} />
 
           <Route path='mails'>
-            <Route index element={<Mail />} />
+            <Route path=':part/' element={<Mail />} />
+            <Route path='detail'>
+              <Route path=':mailNo' element={<MailDetail />} />
+            </Route>
             <Route path='insert' element={<InsertMail />} />
-            <Route path=':mailNo' element={<MailDetail />} />
+            <Route path='reply' element={<MailReply />} />
           </Route>
-        < Route path="mypage" element={<MyPage />}/>
-       
+        <Route path="mypage" element={<MyPage />}/>
         <Route path='members'>
             <Route index element={<Members />} />
             <Route path='insert' element={<InsertMember />} />
             <Route path=':memberNo' element={<MemberDetail />} />
           </Route>
         </Route>
-        <Route path='login' element={<Login/>} />
+        <Route path='login' element={<Login />} />
       </Routes>
     </BrowserRouter>
   );
