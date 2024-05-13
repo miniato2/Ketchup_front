@@ -11,6 +11,7 @@ import { getScheduleAPI, insertScheduleAPI, deleteScheduleAPI, updateScheduleAPI
 import moment from "moment";
 import { decodeJwt } from "../../utils/tokenUtils";
 import ScheduleDetail from "../../components/form/ScheduleDetail";
+import { getSchedule } from "../../modules/ScheduleModule";
 
 const Calendar = () => {
     const schedules = useSelector(state => state.scheduleReducer);
@@ -117,44 +118,12 @@ const Calendar = () => {
         closeDetailDialog();
     };
 
-    const handleUpdate = async (selectedEvent, updatedScheduleData) => {
-        if (selectedEvent && selectedEvent.event && selectedEvent.event.id) {
-
-            const eventId = selectedEvent.event.id;
-            console.log("eventId 확인", eventId);
-            if (updatedScheduleData) {
-                console.log("updatedScheduleData 확인: ", updatedScheduleData);
-            } else {
-                console.log("updatedScheduleData가 유효하지 않습니다.");
-            }
-            
-            try {
-                await updateScheduleAPI(selectedEvent.id, updatedScheduleData);
-                alert("일정을 정상적으로 수정하였습니다.");
-
-                const token = decodeJwt(window.localStorage.getItem("accessToken"));
-                const dptNo = token.depNo;
-
-                if (dptNo) {
-                    await dispatch(getScheduleAPI(dptNo));
-                }
-            } catch (error) {
-                console.error("일정 수정 중 에러 발생 handleUpdate: ", error);
-                alert("일정 수정에 실패했습니다.");
-            }
-            closeDetailDialog();
-        } else {
-            alert("event가 존재하지도 않습니다.");
-        }
-    };
-
     useEffect(() => {
         if (selectedEvent != null) {
             const skdNo = selectedEvent.id;
             const detail = fetchEvents().find(event => event.id == skdNo);
             if (detail) {
                 setScheduleDetail(detail);
-                console.log("setScheduleDetail(detail)에 저장된 값 확인", detail);
             } else {
                 console.log("일치하는 일정 정보를 찾을 수 없습니다.");
             }
@@ -169,8 +138,7 @@ const Calendar = () => {
             alert("일정이 정상적으로 등록되었습니다.");
             setNewScheduleAdded(!newScheduleAdded);
         } catch (error) {
-            console.log("newScheduleData가 정말 multipartform인지??", newScheduleData);
-            console.error("Error submitting schedule data:", error);
+            console.error("일정 정보 등록하면서 오류가 발생했습니다 :", error);
             alert("일정 등록에 실패하였습니다.");
         }
         onInsertCancelHandler();

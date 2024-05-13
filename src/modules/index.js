@@ -4,6 +4,7 @@ import approvalReducer from "./ApprovalModule";
 import mailReducer from "./MailModule";
 import memberReducer from "./MemberModule";
 import scheduleReducer from "./ScheduleModule";
+import reserveReducer from "./ReserveModule";
 
 const rootReducer = combineReducers({
     // userReducer,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
     memberReducer,
     scheduleReducer,
     approvalReducer,
-    mailReducer
+    mailReducer,
+    reserveReducer
 });
 
 export default rootReducer;
