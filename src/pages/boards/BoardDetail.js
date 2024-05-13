@@ -1,4 +1,4 @@
-function UpdateBoard() {
+function BoardDetail() {
     return (
         <>
         
@@ -6,4 +6,4 @@ function UpdateBoard() {
     );
 }
 
-export default UpdateBoard;
+export default BoardDetail;

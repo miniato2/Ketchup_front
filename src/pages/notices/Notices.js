@@ -14,7 +14,6 @@ const Notices = () => {
   const dispatch = useDispatch();
   const result = useSelector(state => state.noticeReducer);
   const noticeList = result.noticelist || [];
-  const [search, setSearch] = useState(''); // 검색어 상태 추가
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
   const itemsPerPage = 10; // 페이지당 아이템 수
   const navigate = useNavigate();
@@ -86,7 +85,7 @@ const Notices = () => {
 
   // 사용자의 직위 이름
   const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
-
+  console.log("[ loginToken ] ", loginToken.role);
 
   return (
     <main id="main" className="main">
@@ -99,7 +98,7 @@ const Notices = () => {
       <div className="col-lg-12">
         <div className="row"></div>
         <div className="list">
-          {loginToken.role === 'LV2' || loginToken.role === 'LV3' && (
+          {(loginToken.role === "LV2" || loginToken.role === "LV3") && (
             <Link to="/notices/insert">
               <ButtonGroup buttons={[{ label: '등록', styleClass: 'move' }]} />
             </Link>
