@@ -1,15 +1,25 @@
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import Calendar from "../schedules/calendar";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from "@fullcalendar/interaction";
+import listPlugin from '@fullcalendar/list';
 import { getReserveAPI } from "../../apis/ReserveAPICalls";
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 
 export default function Reserve() {
+    const dispatch = useDispatch();
+    const reserves = useSelector(state => state.reserveReducer);
+    console.log("reserves값 확인", reserves);
+    const [reserveData, setReserveData] = useState([]);
     const [searchClicked, setSearchClicked] = useState(false);
     const [searchConditions, setSearchConditions] = useState({
         rscCategory: "",
         rsvDate: ""
     });
-    const [reserveData, setReserveData] = useState([]);
 
     useEffect(() => {
         console.log("reserveData useEffect를 통해서 확인해봄", reserveData);
@@ -23,42 +33,55 @@ export default function Reserve() {
         });
     };
 
+    const convertToCalendarProps = (rsvList) => {
+        if (rsvList && rsvList.results && rsvList.results.reserve) {
+            return rsvList.results.reserve.map(reserve => ({
+                title: reserve.rsvDescr,
+                start: moment(reserve.rsvStartDttm, 'YYYY-MM-DD A h:mm').toDate(),
+                end: moment(reserve.rsvEndDttm, 'YYYY-MM-DD A h:mm').toDate(),
+                id: reserve.rsvNo,
+                extendedProps: {
+                    rsvDescr: reserve.rsvDescr,
+                    reserver: reserve.reserver,
+                    resources: {
+                        rscNo: reserve.resources.rscNo,
+                        rscCategory: reserve.resources.rscCategory,
+                        rscName: reserve.resources.rscName,
+                        rscInfo: reserve.resources.rscInfo,
+                        rscCap: reserve.resources.rscCap,
+                        rscIsAvailable: reserve.resources.rscIsAvailable,
+                        rscDescr: reserve.resources.rscDescr
+                    }
+                }
+            }));
+        } else {
+            console.log("reserves가 존재하지 않거나 올바른 형식이 아닙니다.", rsvList);
+            return [];
+        }
+    };
+
+    const fetchReserves = () => {
+        try {
+            const { rscCategory, rsvDate } = searchConditions;
+            if (!rsvDate) {
+                throw new Error("날짜를 입력해주세요.");
+            }
+            dispatch(getReserveAPI(rscCategory, rsvDate));
+            const convertedReserves = convertToCalendarProps(reserves);
+            setReserveData(convertedReserves);
+        } catch (error) {
+            const errorMessage = error.response ? error.response.data.message : error.message;
+            console.error('fetchReserves 함수 도중 에러 발생:', errorMessage);
+        }
+    };
+
+    useEffect(() => {
+        fetchReserves();
+    }, [searchConditions]);
+
     const onClickSearch = () => {
         fetchReserves();
         setSearchClicked(true);
-    };
-
-    function parseCustomDateTime(dateTimeStr) {
-        const datePattern = /(\d{4})-(\d{2})-(\d{2})/;
-        const timePattern = /(\d{1,2})시 (\d{2})분/;
-        const amPmMatch = dateTimeStr.match(/(오전|오후)/);
-        let [dateMatch, year, month, day] = dateTimeStr.match(datePattern);
-        let [timeMatch, hour, minute] = dateTimeStr.match(timePattern);
-      
-        if (amPmMatch[1] === "오후" && hour !== "12") {
-          hour = parseInt(hour) + 12; // Convert to 24-hour format for PM
-        }
-      
-        return new Date(year, month - 1, day, hour, minute); // Months are 0-based, so subtract 1
-      }
-      
-
-    async function fetchReserves() {
-        try {
-            const { rscCategory, rsvDate } = searchConditions;
-            const response = await getReserveAPI(rscCategory, rsvDate);
-            const data = await response.json();
-    
-            const reservesWithParsedDates = data.results.reserve.map(reserve => ({
-                ...reserve,
-                rsvStartDttm: parseCustomDateTime(reserve.rsvStartDttm),
-                rsvEndDttm: parseCustomDateTime(reserve.rsvEndDttm),
-            }));
-    
-            setReserveData(reservesWithParsedDates);
-        } catch (error) {
-            console.error('fetchReserves 함수 도중 에러 발생:', error);
-        }
     }
 
     return (
@@ -75,22 +98,23 @@ export default function Reserve() {
                     </Grid>
                 </Grid>
 
-                {searchClicked ? (
-                    <Grid>
-                        {reserveData ? reserveData.map((reserves, index) => (
-                            <Calendar
-                                key={index}
-                                reserves={reserves}
-                                height="50vh"
-                                initialView="dayGridDay"
-                            />
-                        )) : <Typography>조회된 예약 정보가 없습니다.</Typography>}
-                    </Grid>
-                ) : (
-                    <Grid>
-                        <Typography>검색 조건을 입력하여 검색해주세요.</Typography>
-                    </Grid>
-                )}
+                <Grid>
+                {reserves && reserves.results && reserves.results.reserve ? (
+                        <FullCalendar
+                            events={reserveData}
+                            initialView="dayGridDay"
+                            plugins={[
+                                dayGridPlugin,
+                                timeGridPlugin,
+                                interactionPlugin,
+                                listPlugin
+                            ]}
+                            height="50vh"
+                        />
+                    ) : (
+                        <Typography>조회된 예약 정보가 없습니다.</Typography>
+                    )}
+                </Grid>
             </Box>
         </main>
     );

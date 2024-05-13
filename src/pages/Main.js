@@ -34,7 +34,6 @@ function Main() {
 
     const convertToCalendarProps = (schedules) => {
         try {
-            console.log("schedules 존재여부 확인", schedules);
             if (schedules && schedules.results && schedules.results.schedule) {
                 const events = schedules.results.schedule.map(schedule => ({
                     title: schedule.skdName,
