@@ -1,5 +1,4 @@
 import { Link, NavLink } from 'react-router-dom';
-import { Nav, NavItem, NavLink as BootstrapNavLink, Collapse } from 'react-bootstrap';
 import '../../style.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -9,9 +8,9 @@ function Sidebar() {
         <aside id="sidebar" className="sidebar">
             <ul className="sidebar-nav" id="sidebar-nav">
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" to="/notices">
+                    <NavLink  className="nav-link collapsed" activeClassName="active" to="/notices">
                         <i className="bi bi-megaphone"></i><span>공지사항</span>
-                    </Link>
+                    </NavLink >
                 </li>
                 <li class="nav-item">
                     <Link className="nav-link collapsed" to="/approvals">
@@ -24,7 +23,7 @@ function Sidebar() {
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" to="/content/boards">
+                    <Link className="nav-link collapsed" to="/boards">
                         <i className="bi bi-file-text"></i><span>자료실</span>
                     </Link>
                 </li>

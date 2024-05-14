@@ -61,6 +61,15 @@ function MyPage(){
                     style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px',width: '400px', textAlign: 'center'}}
                 />
                 </label>
+                <label style={{ color: '#878787' }}>연락처
+                        <input
+                            type="text"
+                            placeholder="연락처"
+                            readOnly={true}
+                            value={memberDetail.phone || ''}
+                            style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
+                        />
+                    </label>
                 <label style={{color: '#878787'}}>생년월일<input 
                     type="text" 
                     placeholder="생년월일" 

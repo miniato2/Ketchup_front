@@ -1,7 +1,7 @@
 import { createActions, handleActions } from "redux-actions";
 
 const initialState =  {
-    memberNo: 0,
+    memberNo: '',
     noticeContent: '',
     noticeCreateDttm: 0,
     noticeFix: '',

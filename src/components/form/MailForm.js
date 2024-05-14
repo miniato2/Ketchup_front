@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { callMembersAPI } from "../../apis/MemberAPICalls";
 import ReactQuill from "react-quill";
-import { callPostInsertMail } from "../../apis/MailAPICalls";
+import { callPostInsertMailAPI } from "../../apis/MailAPICalls";
 import { useNavigate } from "react-router-dom";
 
 function MailForm() {
@@ -11,12 +11,14 @@ function MailForm() {
     const members = useSelector(state => state.memberReducer);
     const memberList = members.data?.content || [];
     const quillRef = useRef();
+
     const [mailForm, setMailForm] = useState({
         mailTitle: '',
         mailContent: '',
         receivers: []
     });
     const [mailFile, setMailFile] = useState([]);
+    const [receiverInfo, setReceiverInfo] = useState([]);
 
     useEffect(
         () => {
@@ -34,41 +36,47 @@ function MailForm() {
         });
     };
 
-    const onRecipientChange = (e) => {
+    // 수신자 추가
+    const addReceiver = (e) => {
         const { value } = e.target;
+        const selectedOption = e.target.options[e.target.selectedIndex];
+        const receiverInfo = {
+            receiverMem: selectedOption.text
+        };
+
         setMailForm(prevState => ({
             ...prevState,
             receivers: [...prevState.receivers, { receiverMem: value }]
         }));
+
+        setReceiverInfo(prevState => [...prevState, receiverInfo]);
+    };
+
+    // 수신자 제거
+    const removeReceiver = (delIndex) => {
+        setMailForm(prevState => ({
+            ...prevState,
+            receivers: prevState.receivers.filter((_, index) => index !== delIndex)
+        }));
+    
+        setReceiverInfo(prevState => prevState.filter((_, index) => index !== delIndex));
     };
 
     // const handleFileChange = (e) => {
     //     const files = e.target.files;
     //     if (files && files.length > 0) {
-    //         // 현재 상태에서 mailFiles를 가져옵니다. 없다면 빈 배열을 사용합니다.
-    //         const currentFiles = mailFiles.mailFiles || [];
-    //         // 현재 상태의 파일과 새로운 파일을 합쳐서 새로운 파일 목록을 생성합니다.
-    //         const newFiles = [...currentFiles, ...files];
-    //         // 새로운 파일 목록을 mailForm에 설정합니다.
-    //         setMailFiles(prevState => ({
-    //             ...prevState,
-    //             mailFiles: newFiles
-    //         }));
+    //         setMailFile([...files]);
     //     }
     // };
 
     const handleFileChange = (e) => {
-        const files = e.target.files;
-        if (files && files.length > 0) {
-            setMailFile([...files]); // 파일 목록 업데이트
-        }
-
-        console.log("🚆🚆🚆🚆🚆🚆🚆🚆🚆🚆🚆🚆🚆🚆🚆🚆🚆🚆🚆");
-        console.log(files);
+        setMailFile([...e.target.files]); // 모든 파일을 파일 목록에 추가
+        console.log('setMailFile : ', setMailFile)
     };
 
     const submitMailClick = async () => {
         const formData = new FormData();
+
         const mailInfo = {
             mailTitle: mailForm.mailTitle,
             mailContent: mailForm.mailContent.ops[0].insert,
@@ -79,21 +87,24 @@ function MailForm() {
             mailInfo.mailContent = mailForm.mailContent.ops[0].insert;
         }
 
-        formData.append('mailInfo', new Blob([JSON.stringify(mailInfo)]));
+        formData.append('mailInfo', new Blob([JSON.stringify(mailInfo)], { type: 'application/json' }));
         mailFile.forEach(file => formData.append('mailFile', file)); // 모든 파일을 FormData에 추가
-
+        
         console.log("💦💤💥💦💦💦💦💦💦💦");
-        for (var pair of formData.entries()) {
-            console.log(pair[0] + ', ' + pair[1]);
-        }
+        console.log([...formData.entries()]);
 
         try {
-            dispatch(callPostInsertMail({formData}));
+            await dispatch(callPostInsertMailAPI({ formData }));
             // navigate('/mails/send');
         } catch (error) {
             console.error(error);
         }
     };
+
+    // 취소 버튼 미완성
+    // const backMailList = () => () => {
+    //     navigate(`/mails/${part}`);
+    // }
 
     return (
         <>
@@ -108,29 +119,39 @@ function MailForm() {
                     onChange={onChangeHandler}
                     placeholder="제목을 입력하세요" />
             </div>
-            <div className="input-container">
+            <div className="input-container d-flex">
                 <label>받는 사람</label>
-                <select
-                    className="form-select"
-                    id="recipient"
-                    onChange={onRecipientChange}
-                    value={mailForm.receivers}>
-                    <option selected></option>
-                    {memberList.map((item, index) => {
-                        return (
-                            <option
-                                key={index}
-                                value={item.memberNo}>
-                                {item.memberNo}{item.memberName}({item.department.depName}) {item.companyEmail}
-                            </option>
-                        );
-                    })}
-                </select>
+                <div>
+                    <div className="mb-2">
+                        {receiverInfo.map((receiver, index) => (
+                            <div key={index} className="d-inline selected-recipient">
+                                <span>{receiver.receiverMem}</span>
+                                <i className="bi bi-x" onClick={() => removeReceiver(index)}></i>
+                            </div>
+                        ))}
+                    </div>
+                    <select
+                        className="form-select"
+                        id="recipient"
+                        onChange={addReceiver}
+                        value={mailForm.receivers}>
+                        <option selected>수신자를 선택하세요</option>
+                        {memberList.map((item, index) => {
+                            return (
+                                <option
+                                    key={index}
+                                    value={item.memberNo}>
+                                    {item.memberName}({item.department.depName}) {item.companyEmail}
+                                </option>
+                            );
+                        })}
+                    </select>
+                </div>
             </div>
             <div className="input-container">
                 <label htmlFor="file">첨부파일</label>
                 <div className="file-input">
-                    <input type="file" className="form-control-file" id="file" name="file" onChange={handleFileChange} multiple />
+                    <input type="file" id="formFile" multiple onChange={handleFileChange} />
                 </div>
             </div>
             <div>
@@ -149,7 +170,10 @@ function MailForm() {
                     placeholder="내용을 입력하세요."
                 />
             </div>
-            <button type="submit" onClick={submitMailClick} className="move-btn">전송</button>
+            <div className="d-flex justify-content-end mt-4">
+                <button className="back-btn">취소</button>
+                <button type="submit" onClick={submitMailClick} className="move-btn">전송</button>
+            </div>
         </>
     );
 }

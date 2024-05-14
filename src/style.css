@@ -709,6 +709,7 @@ h6 {
 .title {
   display: flex;
   align-items: center;
+  margin-top: 30px;
 }
 
 .title h2 {
@@ -911,7 +912,7 @@ tbody th a {
   width: 100px;;
 }
 
-.input-container input {
+.input-container input, .input-container div select {
   display: inline-block;
   width: calc(100% - 100px); /* 제목 input의 너비에 맞춤 */
   vertical-align: middle;

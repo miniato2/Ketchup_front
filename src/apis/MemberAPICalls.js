@@ -1,5 +1,6 @@
 import { GET_MEMBER, GET_MEMBERS, POST_LOGIN, POST_REGISTER } from '../modules/MemberModule';
-import { request } from './Api';
+import { request,multipartRequest } from './Api';
+
 
 export const callGetMemberAPI = ({ memberNo }) => {
     const requestURL = `http://localhost:8080/members/${memberNo}`;
@@ -64,49 +65,56 @@ export const callLogoutAPI = () => {
 };
 
 export const callRegisterAPI = ({ form }) => {
-    const requestURL = `http://${process.env.REACT_APP_RESTAPI_IP}:8080/auth/signup`;
+   
+    console.log('여기가 api 시작', form);
+    const formData = new FormData();
 
-    return async (dispatch, getState) => {
-        const result = await fetch(requestURL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: '*/*',
-            },
-            body: JSON.stringify({
-                memberNo: form.memberNo,
-                memberName: form.memberName,
-                memberPW: form.memberPW,
-                phone: form.phone,
-                birthDate: form.birthDate,
-                gender: form.gender,
-                address: form.address,
-                privateEmail: form.privateEmail,
-                companyEmail: form.companyEmail,
-                department: form.department,
-                position: form.position,
-                account: form.account,
-                status: form.status,
-                imgUrl: form.imgUrl,
-                resignDateTime: form.resignDateTime,
-            }),
-        }).then((response) => response.json());
+    // 멤버 정보를 JSON 형식으로 변환하여 FormData에 추가
+    const memberInfoBlob = new Blob([JSON.stringify({
+        memberNo: form.memberNo,
+        memberName: form.memberName,
+        memberPW: form.memberPW,
+        phone: form.phone,
+        birthDate: form.birthDate,
+        gender: form.gender,
+        address: form.address,
+        privateEmail: form.privateEmail,
+        companyEmail: form.companyEmail,
+        department: form.department,
+        position: form.position,
+        account: form.account,
+        status: form.status,
+        imgUrl: form.imgUrl,
+    })], { type: 'application/json' });
+    formData.append('memberInfo', memberInfoBlob);
+    
+    // 이미지 파일을 Blob으로 추가
+    // const memberImageBlob = new Blob([form.memberImage], { type: form.memberImage.type });
+    formData.append('memberImage', form.memberImage);
+    console.log('----------------여기가 API 실행중', form.memberImage);
+   
+  
+    return async (dispatch) => {
+        try {
+            const result = await multipartRequest('POST','/signup', formData);
+            console.log('[MemberAPICalls] callRegisterAPI RESULT : ', result);
 
-        console.log('[MemberAPICalls] callRegisterAPI RESULT : ', result);
-
-        if (result.status === 201) {
-            dispatch({ type: POST_REGISTER, payload: result });
+            if (result.status === 201) {
+                dispatch({ type: POST_REGISTER, payload: result });
+            }
+        } catch (error) {
+            console.error('Error: ', error);
         }
     };
 };
 
-export function callMembersAPI() {
+export function callMembersAPI(currentPage) {
     console.log("=============전체 사원 호출=============");
 
-    return async(dispatch, getState) => {
-        const result = await request('GET', '/members');
-        console.log("전체 사원 호출 API 결과:   ",result.data);
+    return async (dispatch, getState) => {
+        const result = await request('GET', `/members?offset=${currentPage}`);
+        console.log("전체 사원 호출 API 결과:   ", result.data);
 
-        dispatch({ type: GET_MEMBERS, payload: result.data});
+        dispatch({ type: GET_MEMBERS, payload: result.data });
     };
 }
