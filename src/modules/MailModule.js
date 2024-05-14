@@ -7,20 +7,21 @@ const initialState = [{
     mailContent: '',
     sendMailTime: '',
     sendCancelStatus: '',
-    sendDelStatus: '',
-    receivers: [{
-        receiverNo: '',
-        receiverMem: '',
-        readTime: '',
-        receiverDelStatus: ''
-    }],
-    mailFiles: [{
-        mailFileNo: '',
-        mailNo: '',
-        mailFilePath: '',
-        mailFileName: '',
-        mailFileOriName: ''
-    }]
+    sendDelStatus: ''
+    // ,
+    // receivers: [{
+    //     receiverNo: '',
+    //     receiverMem: '',
+    //     readTime: '',
+    //     receiverDelStatus: ''
+    // }],
+    // mailFiles: [{
+    //     mailFileNo: '',
+    //     mailNo: '',
+    //     mailFilePath: '',
+    //     mailFileName: '',
+    //     mailFileOriName: ''
+    // }]
 }];
 
 const GET_RECEIVEMAIL = 'mails/GET_RECEIVEMAIL';

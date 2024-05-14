@@ -6,12 +6,31 @@ export function callGetReceiveMailAPI() {
     console.log("getReceivemail api call...");
 
     return async (dispatch, getState) => {
+        // let resultUrl = '';
+        // if(search !== '' || search !== null) {
+        //     if(searchValue !== '' || searchValue !== null) {
+        //         resultUrl = `/mails?part=receive&search=${searchCondition}&searchvalue=${searchKeyword}`;
+        //     }else {
+        //         resultUrl = '/mails?part=receive';
+        //     }
+        // }else {
+        //     resultUrl = '/mails?part=receive';
+        // }
+
         const result = await request('GET', '/mails?part=receive');
         console.log(result.data);
 
         const sendMailName = await Promise.all(result.data.map(async (mail) => {
             const memberInfoResult = await request('GET', `/members/${mail.senderMem}`);
-            return { ...mail, senderName: memberInfoResult.data.memberName };
+
+            let timeString = "";
+            if (mail.receivers[0].readTime == null) {
+                timeString = "안읽음";
+            } else {
+                timeString = "읽음";
+            }
+
+            return { ...mail, senderName: memberInfoResult.data.memberName, readTime: timeString };
         }));
 
         dispatch(getReceivemail(sendMailName));
@@ -63,7 +82,7 @@ export function callGetMailDetailAPI({ mailNo }) {
 //             for (var pair of formData.entries()) {
 //                 console.log(pair[0]+ ', ' + pair[1]); 
 //             }
-    
+
 //             const response = await fetch('/mails', {
 //                 method: 'POST',
 //                 headers: {
@@ -91,42 +110,35 @@ export function callGetMailDetailAPI({ mailNo }) {
 // }
 
 // 메일 작성
-export const callPostInsertMail = ({formData}) => {
+export const callPostInsertMailAPI = ({ formData }) => {
     const requestURL = `http://localhost:8080/mails`;
+    console.log("🚦🚦🚦🚦🚦🚦🚦🚦🚦🚦🚦🚦");
+    console.log(window.localStorage.getItem('accessToken'));
 
-    console.log("💢💢💢💢💢💢💢💢💢💢💢💢");
-    for (var pair of formData.entries()) {
-        console.log(pair[0]+ ', ' + pair[1]); 
-    }
-            
     return async (dispatch, getState) => {
         try {
-            const response = await fetch(requestURL, {
+            const result = await fetch(requestURL, {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + window.localStorage.getItem('accessToken'),
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
+                    'Accept': '*/*'
                 },
                 body: formData
-            });
-
-            const result = await response.json();
-
-            console.log("🚲🛹🚲🛹🛹🛹🛹🛹🛹🛹🛹🛹🛹");
+            }).then((response) => response.json());
+            
+            console.log("🏳‍🌈🏳‍🌈🏳‍🌈🏳‍🌈🏳‍🌈🏳‍🌈🏳‍🌈");
             console.log(result);
 
-            if(result.status === 201) {
-                dispatch(postInsertmail(result));
-            }
-        }catch(error) {
-            console.error("메일 전송 중 오류가 발생했습니다.", error);
-            throw error;
+            dispatch(postInsertmail(result));
+        } catch (error) {
+            console.error('네트워크 오류:', error);
         }
     };
 }
 
 // 메일 삭제
-export const callPutDeleteMailAPI = ({part, mailNo}) => {
+export const callPutDeleteMailAPI = ({ part, mailNo }) => {
     console.log("putDeletemail api call...");
 
     return async (dispatch, getState) => {
