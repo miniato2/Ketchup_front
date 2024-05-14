@@ -12,38 +12,43 @@ import ButtonGroup from "../../components/contents/ButtonGroup";
 function Members() {
     const dispatch = useDispatch();
     const members = useSelector(state => state.memberReducer);
-    const memberList = members?.data?.content;
+    const memberList = members?.data;
+    console.log(memberList);
     const token = decodeJwt(window.localStorage.getItem('accessToken'));
-
-    const navigate = useNavigate();
-
-    const buttons = [
-        { label: '등록', styleClass: 'move' },
-    ];
-
-
-
-    useEffect(
-        () => {
-            if (token !== null) {
-                dispatch(callMembersAPI());
-
-            }
-
-        }, []
-
-    );
-
     const itemsPerPage = 10; // 페이지당 아이템 수
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
     const handleRowClick = (memberNo) => {
-        // 클릭된 행의 noticeNo를 가져와서 상세 페이지로 이동합니다.
+      
 
 
         console.log('handleRowClick [ memberNo ] : ', memberNo);
 
         navigate(`/members/${memberNo}`);
     };
+
+    
+
+    const navigate = useNavigate();
+
+    const buttons = [
+        { label: '등록', styleClass: 'move' },
+    ];
+   
+
+
+    useEffect(
+        () => {
+            if (token !== null) {
+                dispatch(callMembersAPI(currentPage));
+               
+
+            }
+
+        }, [currentPage]
+
+    );
+
+    
 
     return (
         <>
@@ -66,7 +71,7 @@ function Members() {
                             </tr>
                         </thead>
                         <tbody>
-                            {Array.isArray(memberList) && memberList.map((member) => (
+                            {Array.isArray(memberList?.content) && memberList?.content?.map((member) => (
                                 <tr key={member.memberNo} onClick={() => handleRowClick(member.memberNo)}>
                                     <td>
                                         <img src={`/img/${member.imgUrl}`} width="30" height="30" alt="member" />
@@ -82,11 +87,11 @@ function Members() {
                         </tbody>
                     </Table>
                     <PaginationButtons
-                        totalItems={memberList?.length}
-                        itemsPerPage={itemsPerPage}
-                        currentPage={currentPage}
-                        onPageChange={(pageNumber) => setCurrentPage(pageNumber)} // 페이지 변경 핸들러 전달
-                    />
+    totalItems={members?.data?.totalElements}
+    itemsPerPage={itemsPerPage}
+    currentPage={currentPage}
+    onPageChange={(pageNumber) => setCurrentPage(pageNumber)} // 페이지 변경 핸들러 전달
+/>
                 </div>
             </main>
         </>
