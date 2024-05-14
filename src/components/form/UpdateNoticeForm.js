@@ -3,14 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { callGetNoticeAPI, callUpdateNoticeAPI } from "../../apis/NoticeAPICalls";
 import ButtonGroup from "../../components/contents/ButtonGroup";
-import ReactQuill from "react-quill";
-import 'react-quill/dist/quill.snow.css';
-import { remark } from 'remark';
-import remarkHtml from 'remark-html';
-import ReactMarkdown from 'react-markdown';
+import Editor from "../contents/Editor";
 
 function UpdateNoticeForm() {
-    // const result = useSelector(state => state.noticeReducer);
     const { noticeNo } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -19,8 +14,6 @@ function UpdateNoticeForm() {
     const [files, setFiles] = useState([]);
     const [fix, setFix] = useState(false);
     const [content, setContent] = useState('');
-    const quillRef = useRef();
-    const [previewContent, setPreviewContent] = useState('');
     const [fileList, setFileList] = useState([]);
 
     const handleFixChange = (e) => {
@@ -29,7 +22,7 @@ function UpdateNoticeForm() {
     };
 
     let memberNo = '';
-
+    
     const loginToken = window.localStorage.getItem("accessToken");
     memberNo = loginToken.memberNo;
 
@@ -78,20 +71,6 @@ function UpdateNoticeForm() {
     const notice = useSelector(state => state.noticeReducer.notice);
 
     useEffect(() => {
-        const plainTextContent = content.replace(/(<([^>]+)>)/gi, "");
-        const markdownContent = `# \n${plainTextContent}`;
-        remark()
-            .use(remarkHtml)
-            .process(markdownContent, (err, file) => {
-                if (err) {
-                    console.error("Markdown processing error:", err);
-                    return;
-                }
-                setPreviewContent(String(file));
-            });
-    }, [content, title]);
-
-    useEffect(() => {
         if (notice) {
             setTitle(notice.noticeTitle);
             setContent(notice.noticeContent);
@@ -99,8 +78,6 @@ function UpdateNoticeForm() {
             setFiles(notice.noticeFileList || []);
         }
     }, [notice]);
-
-
 
     return (
         <main id="main" className="main">
@@ -134,28 +111,7 @@ function UpdateNoticeForm() {
                         <label htmlFor="fix">최상단에 공지로 등록</label>
                     </div>
                     <div className="editor-container">
-                        <ReactQuill
-                            style={{ height: "300px", margin1: "4px", overflowY: 'auto' }}
-                            ref={quillRef}
-                            theme="snow"
-                            value={content}
-                            onChange={setContent}
-                            placeholder="내용을 입력하세요."
-                            modules={{
-                                toolbar: [
-                                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                                    // [{ 'font': [] }],
-                                    [{ 'align': [] }],
-                                    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                    [{ 'color': [] }, { 'background': [] }],
-                                    ['link'],
-                                    ['image', 'video'],
-                                    ['clean']
-                                ]
-                            }}
-                        />
-                        <ReactMarkdown>{previewContent}</ReactMarkdown>
+                        <Editor content={content} setContent={setContent} />
                     </div>
                     <ButtonGroup buttons={buttons} />
                 </div>

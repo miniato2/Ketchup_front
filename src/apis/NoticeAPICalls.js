@@ -82,6 +82,7 @@ export const callInsertNoticeAPI = (formData) => {
             const result = await response.json();
 
             console.log('[callInsertNoticeAPI] callRegisterAPI RESULT : ', result);
+            dispatch(insertNotice(result));
 
             if (result.status === 200) {
                 return result.data;
@@ -95,7 +96,7 @@ export const callInsertNoticeAPI = (formData) => {
     };
 };
 
-export function callUpdateNoticeAPI( formDate, noticeNo ) {
+export function callUpdateNoticeAPI( formData, noticeNo ) {
     console.log('callUpdateNoticeAPI...');
 
     const requestURL = `http://localhost:8080/notices/${noticeNo}`;
@@ -105,7 +106,7 @@ export function callUpdateNoticeAPI( formDate, noticeNo ) {
             
             const response = await fetch(requestURL, {
                 method: 'PUT',
-                body: formDate,
+                body: formData,
                 headers: {
                     'Authorization': 'Bearer ' + window.localStorage.getItem('accessToken'),
                 }
@@ -115,8 +116,13 @@ export function callUpdateNoticeAPI( formDate, noticeNo ) {
 
             console.log('[callUpdateNoticeAPI] callUpdateNoticeAPI RESULT : ', result);
 
-            if (result.status === 201) {
-                dispatch(updateNotice(result));
+            if (result.status === 200) {
+                dispatch(updateNotice(result.data));
+            } else {
+                // 권한이 없는 경우 에러 메시지 처리
+                console.error('Error updating notice: 권한이 없습니다.');
+                // 에러를 throw하여 적절히 처리할 수 있도록 합니다.
+                throw new Error('Error updating notice: 권한이 없습니다.');
             }
         } catch (error) {
             console.error('Error inserting notice:', error);

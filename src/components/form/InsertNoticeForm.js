@@ -1,19 +1,14 @@
 // InsertNoticeForm 컴포넌트
 import { useDispatch } from "react-redux";
-import ButtonGroup from "../../components/contents/ButtonGroup";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { callInsertNoticeAPI } from "../../apis/NoticeAPICalls";
-import ReactQuill from "react-quill";
+import ButtonGroup from "../../components/contents/ButtonGroup";
+import Editor from "../contents/Editor";
 import 'react-quill/dist/quill.snow.css';
-import { remark } from 'remark';
-import remarkHtml from 'remark-html';
-import ReactMarkdown from 'react-markdown';
-
 
 function InsertNoticeForm() {
 
-    // const result = useSelector(state => state.noticeReducer);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -21,15 +16,9 @@ function InsertNoticeForm() {
     const [files, setFiles] = useState([]);
     const [fix, setFix] = useState(false);
     const [content, setContent] = useState('');
-    const quillRef = useRef();
-    const [previewContent, setPreviewContent] = useState('');
-
-
-    let memberNo = '';
 
     const loginToken = window.localStorage.getItem("accessToken");
-    memberNo = loginToken.memberNo;
-
+    const memberNo = loginToken.memberNo;
 
     const handleFixChange = (e) => {
         const isChecked = e.target.checked;
@@ -54,21 +43,13 @@ function InsertNoticeForm() {
             } else {
                 console.error("Invalid result:", "실패");
             }
-            // console.log("handleSubmit [ result ] : ", formData);
-            // const noticeNo  = await dispatch(callInsertNoticeAPI(formData));
-            // console.log("dispatch 후 noticeNo : ", noticeNo);
-            // if (noticeNo) {
-            //     // const noticeNo = result.data; // 반환된 데이터에서 noticeNo 추출
-            //     console.log('handleSubmit [ noticeNo ] : ',  noticeNo)
-            //     // 등록 성공 시 공지 상세 페이지로 이동
-            //     navigate(`/notices/${noticeNo}`);
-            // } else {
-            //     console.error("Invalid result:", "실패");
-            // }
+
+        console.log([...formData.entries()]);
+
         } catch (error) {
             console.error(error);
-            // 등록 실패 시 처리
         }
+
     };
 
     const handleChangeFiles = (e) => {
@@ -88,22 +69,6 @@ function InsertNoticeForm() {
         { label: '취소', onClick: () => navigate(-1), styleClass: 'back' },
         { label: '등록', onClick: handleSubmit, styleClass: 'move' }
     ];
-
-    useEffect(() => {
-        const plainTextContent = content.replace(/(<([^>]+)>)/gi, "");
-        const markdownContent = `# \n${plainTextContent}`;
-        remark()
-            .use(remarkHtml)
-            .process(markdownContent, (err, file) => {
-                if (err) {
-                    console.error("Markdown processing error:", err);
-                    return;
-                }
-                setPreviewContent(String(file));
-            });
-    }, [content, title]);
-
-
 
     return (
         <main id="main" className="main">
@@ -136,28 +101,7 @@ function InsertNoticeForm() {
                         <label htmlFor="fix">최상단에 공지로 등록</label>
                     </div>
                     <div className="editor-container">
-                        <ReactQuill
-                            style={{ height: "300px", margin1: "4px", overflowY: 'auto' }}
-                            ref={quillRef}
-                            theme="snow"
-                            value={content}
-                            onChange={setContent}
-                            placeholder="내용을 입력하세요."
-                            modules={{
-                                toolbar: [
-                                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                                    // [{ 'font': [] }],
-                                    [{ 'align': [] }],
-                                    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                    [{ 'color': [] }, { 'background': [] }],
-                                    ['link'],
-                                    ['image', 'video'],
-                                    ['clean']
-                                ]
-                            }}
-                        />
-                        <ReactMarkdown>{previewContent}</ReactMarkdown>
+                        <Editor content={content} setContent={setContent}/>
                     </div>
                     <ButtonGroup buttons={buttons} />
                 </div>

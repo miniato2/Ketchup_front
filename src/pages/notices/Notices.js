@@ -2,7 +2,7 @@ import SearchBar from '../../components/contents/SearchBar';
 import BootstrapTable from '../../components/contents/BootstrapTable';
 import PaginationButtons from '../../components/contents/PaginationButtons';
 import ButtonGroup from '../../components/contents/ButtonGroup';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { callGetNoticeListAPI } from '../../apis/NoticeAPICalls';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ const Notices = () => {
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
   const itemsPerPage = 10; // 페이지당 아이템 수
   const navigate = useNavigate();
+
 
   console.log("noticeList : ", noticeList);
 
@@ -49,8 +50,6 @@ const Notices = () => {
 
     }));
 
-
-
   // 컬럼 제목 목록
   const columns = [
     ['noticeNo', '공지번호'],
@@ -59,11 +58,10 @@ const Notices = () => {
     ['noticeCreateDttm', '등록일']
   ];
 
-
   const handleRowClick = (index) => {
-    const noticeNo = sortedNoticeList[index]?.noticeNo;
+    const realIndex = (currentPage - 1) * itemsPerPage + index;
+    const noticeNo = sortedNoticeList[realIndex]?.noticeNo;
     console.log(noticeNo);
-
     navigate(`/notices/${noticeNo}`);
   };
 
@@ -78,6 +76,7 @@ const Notices = () => {
       dispatch(callGetNoticeListAPI());
     }, [dispatch]
   );
+
   // 현재 페이지에 보여질 아이템 구하기
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -98,12 +97,16 @@ const Notices = () => {
       <div className="col-lg-12">
         <div className="row"></div>
         <div className="list">
-          {(loginToken.role === "LV2" || loginToken.role === "LV3") && (
+          {loginToken.role === "LV2" || loginToken.role === "LV3" ? (
             <Link to="/notices/insert">
               <ButtonGroup buttons={[{ label: '등록', styleClass: 'move' }]} />
             </Link>
-          )}
-          <BootstrapTable data={currentItems} columns={columns} onRowClick={handleRowClick} />
+          ) : null}
+
+          <div style={{ marginTop: loginToken.role !== "LV2" && loginToken.role !== "LV3" && '30px' }}>
+            <BootstrapTable data={currentItems} columns={columns} onRowClick={handleRowClick} />
+          </div>
+
           <PaginationButtons totalItems={sortedNoticeList.length} itemsPerPage={itemsPerPage} currentPage={currentPage} onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
         </div>
       </div>
