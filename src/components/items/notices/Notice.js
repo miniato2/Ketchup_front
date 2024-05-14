@@ -36,8 +36,20 @@ function Notice({ noticeNo }) {
     if (!notice) {
         return <div>로딩 중...</div>;
     }
+    
+    const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
+    console.log("loginToken 수정 로그인 확인 : ", loginToken.role);
 
-    const updateHandler = () => navigate(`/notices/update/${noticeNo}`);
+    const updateHandler = () => {
+        console.log("updateHandler loginToken 확인: ", loginToken);
+        // 작성자인 경우에만 수정 페이지로 이동
+        if (loginToken && loginToken.memberNo === notice.memberInfo.memberNo) {
+            navigate(`/notices/update/${noticeNo}`);
+        } else {
+            alert('권한이 없습니다.');
+        }
+    
+    };
     const deleteHandler = () => {
         dispatch(callDeleteNoticeAPI(noticeNo))
             .then(() => {
@@ -92,16 +104,12 @@ function Notice({ noticeNo }) {
         }
     }
 
-    const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
-    console.log("loginToken : ", loginToken)
     return (
         // notice && (
         <div className="container">
             <div className="row">
-                <div className="col-lg-12">
-                    { /* 로그인 된 상황에만 button이 보이도록 조건부 랜더링 */}
-                    {/* { (loginStatus) &&  */}
-                    {(loginToken.role === 'LV2' || loginToken.role === 'LV3') && (
+                <div className="col-lg-12">               
+                    {loginToken && loginToken.memberNo === notice.memberInfo.memberNo && (
                         <ButtonGroup
                             buttons={[
                                 { label: '수정', styleClass: 'back', onClick: updateHandler },
@@ -109,16 +117,13 @@ function Notice({ noticeNo }) {
                             ]}
                         />
                     )}
-                    {/* } */}
+                
                 </div>
             </div>
             <div className="row">
                 <div className="col-lg-12">
-
-                    <h1>{notice.noticeTitle}</h1>
-
+                    <h1 style={loginToken && loginToken.memberNo !== notice.memberInfo.memberNo ? { marginTop: '30px' } : {}}>{notice.noticeTitle}</h1>
                     <div style={{ marginBottom: '30px' }}>
-
                         <img src={`/img/${notice.memberInfo.imgUrl}`} width="30" height="30" alt="profile" />&nbsp;
                         <span className="">{notice.memberInfo.memberName}</span>&nbsp;
                         <span>{notice.memberInfo.position.positionName}</span>&nbsp;&nbsp;
@@ -144,20 +149,13 @@ function Notice({ noticeNo }) {
                                     </li>
                                 ))}
                             </ul>
-
                         )}
-                        {/* file-earmark-pdf / file-earmark-text / file-earmark-image / file-earmark-zip /  */}
-                        {/* <a className="bi-file-earmark-pdf-fill"> [개발자료]가정의달  신제품 개발자료1.pdf </a><br />
-                        <a className="bi-file-earmark-pdf-fill"> [개발자료]가정의달  신제품 개발자료2.pdf </a><br />
-                        <a className="bi-file-earmark-pdf-fill"> [개발자료]가정의달  신제품 개발자료3.pdf </a> */}
                     </div>
 
                     <div style={{ marginTop: '30px', marginBottom: '100px' }}
                         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(notice.noticeContent) }}>
                     </div>
-
                 </div>
-
             </div>
         </div >
     );
