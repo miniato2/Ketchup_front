@@ -27,7 +27,7 @@ function MailDetail() {
         }, []
     );
 
-    const backMailList = () => () => {
+    const backMailList = () => {
         navigate(`/mails/${part}`);
     }
 
@@ -35,7 +35,7 @@ function MailDetail() {
         <>
             <main id="main" className="main">
                 <div className="title">
-                    <h2>메일 상세</h2>
+                    <h2>메일</h2>
                 </div>
                 <div className="mt-3 d-flex justify-content-between align-middle">
                     <div className="mail-btn">
@@ -48,7 +48,7 @@ function MailDetail() {
                             onClick={() => sendHandler()}
                             >보낸 메일함</button>
                     </div>
-                    <button className="back-btn" onClick={backMailList()}>목록</button>
+                    <button className="back-btn" onClick={backMailList}>목록</button>
                 </div>
                 <hr />
                 <MailContent content={mailDetail} />

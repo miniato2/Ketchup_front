@@ -1,9 +1,14 @@
 import Table from 'react-bootstrap/Table';
 import '../../style.css';
+import '../../pages/mails/mail.css';
 import { useState } from 'react';
 
 const MailTable = ({ data, columns, onRowClick, part }) => {
   const [checkedItems, setCheckedItems] = useState({});
+
+  console.log("🌍🌍🌍🌍🌍🌍🌍🌍");
+  console.log(data);
+  console.log(part);
 
   // 전체 선택 여부를 토글하는 함수
   const toggleAllCheckboxes = () => {
@@ -45,7 +50,7 @@ const MailTable = ({ data, columns, onRowClick, part }) => {
         </thead>
         <tbody>
           {Array.isArray(data) && data.map((item, index) => (
-            <tr key={index}>
+            <tr key={index} className={part === 'receive' ? (item.readTime !== '읽음' ? 'unreadRow' : '') : ''}>
               <td style={{ padding: "15px", textAlign: 'center' }}>
                 <input
                   type="checkbox"
@@ -57,8 +62,18 @@ const MailTable = ({ data, columns, onRowClick, part }) => {
               {columns.map(([key], columnIndex) => (
                 <td style={{ padding: "15px" }} key={columnIndex}>
                   {key === 'mailTitle' ?
-                    (<span style={{ cursor:"pointer" }} onClick={onRowClick(index)} >{item[key]}</span>)
-                    : (key === 'receiverName' ? <span style={{cursor:"pointer"}}>{item[key]}</span> : item[key])
+                    (<span style={{ cursor: "pointer" }} onClick={onRowClick(data.length - index -1)} >{item[key]}</span>)
+                    : (
+                      key === 'readTime' ? (
+                        item[key] === '읽음' ? (
+                          <i className="bi bi-envelope-open m-icon"></i> // 읽음일 때 아이콘
+                        ) : (
+                          <i className="bi bi-envelope m-icon"></i> // 안 읽음일 때 아이콘
+                        )
+                      ) : (key === 'receiverName' ?
+                        <span style={{ cursor: "pointer" }}>{item[key]}</span>
+                        : item[key])
+                    )
                   }
                 </td>
               ))}
