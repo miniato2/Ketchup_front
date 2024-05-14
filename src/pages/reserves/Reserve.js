@@ -1,5 +1,4 @@
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
-import Calendar from "../schedules/calendar";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -21,10 +20,6 @@ export default function Reserve() {
         rsvDate: ""
     });
 
-    useEffect(() => {
-        console.log("reserveData useEffect를 통해서 확인해봄", reserveData);
-    }, [reserveData]);
-
     const onInputChange = (e) => {
         const { name, value } = e.target;
         setSearchConditions({
@@ -34,8 +29,8 @@ export default function Reserve() {
     };
 
     const convertToCalendarProps = (rsvList) => {
-        if (rsvList && rsvList.results && rsvList.results.reserve) {
-            return rsvList.results.reserve.map(reserve => ({
+        if (rsvList && rsvList.length > 0) {
+            return rsvList.map(reserve => ({
                 title: reserve.rsvDescr,
                 start: moment(reserve.rsvStartDttm, 'YYYY-MM-DD A h:mm').toDate(),
                 end: moment(reserve.rsvEndDttm, 'YYYY-MM-DD A h:mm').toDate(),
@@ -67,8 +62,6 @@ export default function Reserve() {
                 throw new Error("날짜를 입력해주세요.");
             }
             dispatch(getReserveAPI(rscCategory, rsvDate));
-            const convertedReserves = convertToCalendarProps(reserves);
-            setReserveData(convertedReserves);
         } catch (error) {
             const errorMessage = error.response ? error.response.data.message : error.message;
             console.error('fetchReserves 함수 도중 에러 발생:', errorMessage);
@@ -79,6 +72,22 @@ export default function Reserve() {
         fetchReserves();
     }, [searchConditions]);
 
+    const rsvDataFromObj2List = (reserveData, searchConditions) => {
+        return reserveData.map((data) => ({
+            id: data.id,
+            events: convertToCalendarProps([data]),
+            initialDate: searchConditions.rsvDate
+        }));
+    };
+
+    useEffect(() => {
+        if (reserves && reserves.results && reserves.results.reserve) {
+            const convertedReserves = convertToCalendarProps(reserves.results.reserve);
+            console.log("변환된 예약 데이터 ", convertedReserves);
+            setReserveData(convertedReserves);
+        }
+    }, [reserves]);
+
     const onClickSearch = () => {
         fetchReserves();
         setSearchClicked(true);
@@ -87,34 +96,49 @@ export default function Reserve() {
     return (
         <main id="main" className="main">
             <Box p={2}>
-                <Grid container spacing={2}>
-                    <Grid>
-                        <h1>자원예약</h1>
-                        <Grid item xs={5}>
-                            <TextField variant="outlined" name="rscCategory" type="text" onChange={onInputChange} />
-                            <TextField variant="outlined" name="rsvDate" type="date" onChange={onInputChange} />
-                        </Grid>
+                <Grid container spacing={2} alignItems="center" mb={8}>
+                    <Grid item xs={12}>
+                        <h1 style={{ marginTop: 15 }}>자원예약</h1>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <TextField variant="outlined" name="rscCategory" type="text" onChange={onInputChange} fullWidth />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <TextField variant="outlined" name="rsvDate" type="date" onChange={onInputChange} fullWidth />
+                    </Grid>
+                    <Grid item xs={4}>
                         <Button onClick={onClickSearch}>조회</Button>
                     </Grid>
                 </Grid>
-
-                <Grid>
-                {reserves && reserves.results && reserves.results.reserve ? (
-                        <FullCalendar
-                            events={reserveData}
-                            initialView="dayGridDay"
-                            plugins={[
-                                dayGridPlugin,
-                                timeGridPlugin,
-                                interactionPlugin,
-                                listPlugin
-                            ]}
-                            height="50vh"
-                        />
-                    ) : (
-                        <Typography>조회된 예약 정보가 없습니다.</Typography>
-                    )}
-                </Grid>
+                {searchClicked ? (
+                    <Box overflowX="auto">
+                        <Grid container spacing={2}>
+                            {reserveData.map((reserve, index) => (
+                                <Grid item xs={12} md={6} lg={3} key={reserve.extendedProps.resources.rscName}>
+                                    {reserveData.length > 0 ? (
+                                        <FullCalendar
+                                            events={[reserve]}
+                                            initialView="dayGridDay"
+                                            initialDate={searchConditions.rsvDate}
+                                            plugins={[
+                                                dayGridPlugin,
+                                                timeGridPlugin,
+                                                interactionPlugin,
+                                                listPlugin
+                                            ]}
+                                            height="50vh"
+                                            headerToolbar={false}
+                                        />
+                                    ) : (
+                                        <Typography>조회된 예약 정보가 없습니다.</Typography>
+                                    )}
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Box>
+                ) : (
+                    <Typography fontSize={38}>검색 조건을 입력하여 검색해주세요.</Typography>
+                )}
             </Box>
         </main>
     );
