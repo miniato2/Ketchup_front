@@ -4,8 +4,6 @@ import ButtonGroup from "../../components/contents/ButtonGroup";
 
 function NoticeDetail() {
 
-    /* 로그인 상태 확인 */
-    // const loginStatus = !!localStorage.getItem('isLogin');
     const navigate = useNavigate();
     const { noticeNo } = useParams();
     
