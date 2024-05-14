@@ -19,11 +19,15 @@ npm install jwt-decode@3.1.2
 # toekn 복호화 라이브러리 설치 필요
 npm install jsonwebtoken
 
+# 다음주소 설치필요
+npm install --save react-daum-postcode
+
 # vs.code 클론 후 (install 설정) 
 npm install
 
 # router 설정 
 npm install react-router-dom
+
 
 # reducx install 설정 
 npm install redux@4.2.1

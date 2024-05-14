@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { callRegisterAPI } from "../../apis/MemberAPICalls";
 import { useEffect } from "react";
+import DaumPostcodeEmbed from "react-daum-postcode";
+import DaumPostcode from 'react-daum-postcode';
+
+
 
 
 
@@ -10,8 +14,11 @@ import { useEffect } from "react";
 
 function InsertMember() {
 
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [Address, setAddress] = useState('주소를 입력해주세요');
+    const [isOpen, setIsOpen] = useState('false');
     const [form, setForm] = useState({
         memberNo: '',
         memberPW: '1111',
@@ -20,8 +27,53 @@ function InsertMember() {
 
     });
 
+    const themeObj = {
+        bgColor: '#FFFFFF',
+        pageBgColor: '#FFFFFF',
+        postcodeTextColor: '#C05850',
+        emphTextColor: '#222222',
+    };
+
+    const postCodeStyle = {
+        width: '360px',
+        height: '480px',
+    };
+
+    const completeHandler = (data) => {
+        const { address } = data;
+        setAddress(address);
+        setIsOpen(false); // 주소 선택 후에는 주소 입력 폼을 닫음
+    };
+
+    const closeHandler = (state) => {
+        if (state === 'FORCE_CLOSE') {
+            setIsOpen(false);
+        } else if (state === 'COMPLETE_CLOSE') {
+            setIsOpen(false);
+        }
+    };
+
+    const toggleHandler = () => {
+        setIsOpen((prevOpenState) => !prevOpenState);
+    };
+
+    const inputChangeHandler = (event) => {
+        setAddress(event.target.value);
+    };
+
+
+
+
+
+
+
+
+
+
     useEffect(() => {
         generateMemberNo();
+        setAddress('');
+        setIsOpen(false); // 초기화 시 주소 입력 폼을 닫음
 
     }, []); // 컴포넌트가 처음 렌더링될 때만 실행
 
@@ -50,25 +102,26 @@ function InsertMember() {
                 setImagePreview(reader.result);
             };
             reader.readAsDataURL(file);
-            
+
             setForm(prevForm => ({
                 ...prevForm,
                 memberImage: file
-              }));
+            }));
         };
-        
+
     };
 
-  
+
 
     const onClickRegistHandler = () => {
         dispatch(callRegisterAPI({	// 로그인
             form: form
         }));
-        
 
-        console.log("사원등록 진행");
-       
+
+        alert("사원등록이 완료되었습니다.");
+        navigate('/members');
+
     }
 
 
@@ -81,12 +134,13 @@ function InsertMember() {
         });
     };
 
-   
+
 
 
 
 
     return (
+        
         <main id="main">
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <h2 style={{ marginLeft: '-1000px' }}>사원 등록</h2>
@@ -100,10 +154,10 @@ function InsertMember() {
                         style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
                     />
                 </label>
-    
+
                 <label style={{ color: '#878787' }}>이름
                     <input
-                       autoComplete='off'
+                        autoComplete='off'
                         type="text"
                         placeholder="이름"
                         name="memberName"
@@ -113,7 +167,7 @@ function InsertMember() {
                 </label>
                 <label style={{ color: '#878787' }}>연락처
                     <input
-                       autoComplete='off'
+                        autoComplete='off'
                         type="text"
                         placeholder="연락처"
                         name="phone"
@@ -123,7 +177,7 @@ function InsertMember() {
                 </label>
                 <label style={{ color: '#878787' }}>생년월일
                     <input
-                      autoComplete='off'
+                        autoComplete='off'
                         type="date"
                         placeholder="생년월일"
                         name="birthDate"
@@ -146,17 +200,29 @@ function InsertMember() {
                 </label>
                 <label style={{ color: '#878787' }}>주소
                     <input
-                      autoComplete='off'
+                        autoComplete='off'
                         type="text"
                         placeholder="주소"
                         name="address"
+                        value={Address}
                         onChange={onChangeHandler}
                         style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
-                    />
+                    /><button onClick={toggleHandler}>주소 찾기</button>
                 </label>
+                {isOpen && (
+                    <div>
+                        <DaumPostcodeEmbed
+                            style={{ width: '360px', height: '480px' }}
+                            onComplete={completeHandler}
+                            onClose={() => setIsOpen(false)} // 닫기 버튼을 클릭한 경우에도 주소 입력 폼을 닫음
+                        />
+                    </div>
+                )}
+
+                
                 <label style={{ color: '#878787' }}>이메일
                     <input
-                      autoComplete='off'
+                        autoComplete='off'
                         type="text"
                         placeholder="이메일"
                         name="privateEmail"
@@ -166,7 +232,7 @@ function InsertMember() {
                 </label>
                 <label style={{ color: '#878787' }}>사내메일
                     <input
-                      autoComplete='off'
+                        autoComplete='off'
                         type="text"
                         placeholder="사내메일"
                         name="companyEmail"
@@ -176,7 +242,7 @@ function InsertMember() {
                 </label>
                 <label style={{ color: '#878787' }}>부서번호
                     <input
-                      autoComplete='off'
+                        autoComplete='off'
                         type="text"
                         placeholder="부서번호"
                         name="department"
@@ -186,7 +252,7 @@ function InsertMember() {
                 </label>
                 <label style={{ color: '#878787' }}>직급번호
                     <input
-                      autoComplete='off'
+                        autoComplete='off'
                         type="text"
                         placeholder="직급번호"
                         name="position"
@@ -210,7 +276,7 @@ function InsertMember() {
                         <option value="제일">제일</option>
                     </select> */}
                     <input
-                      autoComplete='off'
+                        autoComplete='off'
                         type="text"
                         placeholder="계좌번호"
                         name="account"
