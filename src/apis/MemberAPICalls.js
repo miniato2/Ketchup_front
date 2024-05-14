@@ -129,3 +129,16 @@ export function callPageMembersAPI(currentPage) {
         dispatch({ type: GET_MEMBERS, payload: result.data });
     };
 }
+
+
+export function callResignMemberAPI(memberNo,statusData) {
+    console.log("=============사원 퇴사 진행=============");
+
+    return async (dispatch, getState) => {
+        const result = await request('PUT', `/auth/resign/${memberNo}`,statusData);
+        console.log(`${memberNo}번 사원 퇴사 결과 `, result);
+        console.log(`${memberNo}번 사원 퇴사 결과.데이터 `, result.data);
+
+        dispatch({ type: GET_MEMBER, payload: result });
+    };
+}
