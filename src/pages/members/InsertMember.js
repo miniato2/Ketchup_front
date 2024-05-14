@@ -10,15 +10,13 @@ import DaumPostcode from 'react-daum-postcode';
 
 
 
-
-
 function InsertMember() {
 
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [Address, setAddress] = useState('주소를 입력해주세요');
-    const [isOpen, setIsOpen] = useState('false');
+    const [isOpen, setIsOpen] = useState(false);
     const [form, setForm] = useState({
         memberNo: '',
         memberPW: '1111',
@@ -40,42 +38,34 @@ function InsertMember() {
     };
 
     const completeHandler = (data) => {
+        console.log('컴플리트 핸들러의 데이터는??', data);
         const { address } = data;
-        setAddress(address);
+        // setAddress(address);
+        setForm({
+            ...form,
+            address: address
+        });
+        // console.log(form.address);
         setIsOpen(false); // 주소 선택 후에는 주소 입력 폼을 닫음
     };
 
-    const closeHandler = (state) => {
-        if (state === 'FORCE_CLOSE') {
-            setIsOpen(false);
-        } else if (state === 'COMPLETE_CLOSE') {
-            setIsOpen(false);
-        }
-    };
+
 
     const toggleHandler = () => {
+        console.log('토글 핸들러');
         setIsOpen((prevOpenState) => !prevOpenState);
     };
-
-    const inputChangeHandler = (event) => {
-        setAddress(event.target.value);
-    };
-
-
-
-
-
-
-
 
 
 
     useEffect(() => {
         generateMemberNo();
-        setAddress('');
-        setIsOpen(false); // 초기화 시 주소 입력 폼을 닫음
+       
 
-    }, []); // 컴포넌트가 처음 렌더링될 때만 실행
+
+    }, []);
+
+
 
     const generateMemberNo = () => {
         const today = new Date();
@@ -114,17 +104,32 @@ function InsertMember() {
 
 
     const onClickRegistHandler = () => {
-        dispatch(callRegisterAPI({	// 로그인
+        dispatch(callRegisterAPI({
             form: form
         }));
 
 
         alert("사원등록이 완료되었습니다.");
         navigate('/members');
+        setForm({
+            memberNo: '',
+            memberPW: '1111',
+            status: '재직중',
+            imgUrl: 'memberFileName',
+            memberName: '',
+            phone: '',
+            birthDate: '',
+            gender: '',
+            address: '',
+            privateEmail: '',
+            companyEmail: '',
+            department: '',
+            position: '',
+            account: '',
+            memberImage: null // 사원사진 초기화
+        });
 
     }
-
-
 
 
     const onChangeHandler = (e) => {
@@ -135,12 +140,8 @@ function InsertMember() {
     };
 
 
-
-
-
-
     return (
-        
+
         <main id="main">
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <h2 style={{ marginLeft: '-1000px' }}>사원 등록</h2>
@@ -198,28 +199,36 @@ function InsertMember() {
                         <option value="F">여</option>
                     </select>
                 </label>
+
+
+
+
+
                 <label style={{ color: '#878787' }}>주소
                     <input
                         autoComplete='off'
                         type="text"
                         placeholder="주소"
                         name="address"
-                        value={Address}
+                        value={form.address}
                         onChange={onChangeHandler}
                         style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
                     /><button onClick={toggleHandler}>주소 찾기</button>
                 </label>
                 {isOpen && (
-                    <div>
+                    <div >
                         <DaumPostcodeEmbed
-                            style={{ width: '360px', height: '480px' }}
+                            style={{ width: '400px', height: '480px' }}
                             onComplete={completeHandler}
                             onClose={() => setIsOpen(false)} // 닫기 버튼을 클릭한 경우에도 주소 입력 폼을 닫음
                         />
+                        <br/>
                     </div>
                 )}
 
-                
+
+
+
                 <label style={{ color: '#878787' }}>이메일
                     <input
                         autoComplete='off'

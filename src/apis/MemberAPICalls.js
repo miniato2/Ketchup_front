@@ -108,7 +108,18 @@ export const callRegisterAPI = ({ form }) => {
     };
 };
 
-export function callMembersAPI(currentPage) {
+export function callMembersAPI() {
+    console.log("=============전체 사원 호출=============");
+
+    return async (dispatch, getState) => {
+        const result = await request('GET', '/noPageMembers');
+        console.log("전체 사원 호출 API 결과:   ", result.data);
+
+        dispatch({ type: GET_MEMBERS, payload: result.data });
+    };
+}
+
+export function callPageMembersAPI(currentPage) {
     console.log("=============전체 사원 호출=============");
 
     return async (dispatch, getState) => {
