@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { callGetReceiveMailAPI } from "../../../apis/MailAPICalls";
-import MailTable from "../../contents/MailTable";
+import { callGetReceiveMailAPI, callPutReadTimeAPI } from "../../../apis/MailAPICalls";
+import MailTable from "../../items/mails/MailTable";
 import { useNavigate, useParams } from "react-router-dom";
 import FormatDateTime from "../../contents/FormatDateTime";
 
-function ReceiveMail() {
-    const {part} = useParams();
+function ReceiveMail({ checkedItems, setCheckedItems }) {
+    const { part } = useParams();
     const [sortedMail, setSortedMail] = useState([]);
     const result = useSelector(state => state.mailReducer);
     const receiveMail = result && result.receivemail && result.receivemail.length > 0 ? result.receivemail : null;
@@ -16,7 +16,7 @@ function ReceiveMail() {
     useEffect(
         () => {
             dispatch(callGetReceiveMailAPI());
-        }, []
+        }, [dispatch]
     );
 
     useEffect(() => {
@@ -34,21 +34,29 @@ function ReceiveMail() {
         ['readTime', '읽음'],
         ['mailTitle', '제목'],
         ['senderName', '발신자'],
-        ['sendMailTime', '수신일']
+        ['sendMailTime', '수신일시']
     ];
 
     const handleRowClick = (index) => () => {
         const mailNo = receiveMail[index]?.mailNo;
 
-        navigate(`/mails/detail/${mailNo}`, {state: {part}});
+        navigate(`/mails/detail/${mailNo}`, { state: { part } });
+
+        if (part == 'receive') {
+            dispatch(callPutReadTimeAPI(mailNo));
+        }
     };
 
     return (
-        receiveMail && (
         <div>
-            <MailTable data={sortedMail} columns={columns} onRowClick={handleRowClick} part={part} />
+            <MailTable
+                data={sortedMail}
+                columns={columns}
+                onRowClick={handleRowClick}
+                part={part}
+                checkedItems={checkedItems}
+                setCheckedItems={setCheckedItems} />
         </div>
-        )
     );
 }
 

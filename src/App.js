@@ -53,7 +53,7 @@ function App() {
           <Route path='calendar' element={<Calendar />} />
           <Route path='reserve' element={<Reserve/>}/>
           <Route path='mails'>
-            <Route path=':part/' element={<Mail />} />
+            <Route path=':part' element={<Mail />} />
             <Route path='detail'>
               <Route path=':mailNo' element={<MailDetail />} />
             </Route>
