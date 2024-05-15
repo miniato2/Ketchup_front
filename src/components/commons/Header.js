@@ -11,28 +11,39 @@ import { decodeJwt } from '../../utils/tokenUtils';
 
 function Header() {
 
-    
-const dispatch = useDispatch();
 
-const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-const token = decodeJwt(window.localStorage.getItem('accessToken'));
+    const navigate = useNavigate();
 
- 
- 
+    const token = decodeJwt(window.localStorage.getItem('accessToken'));
 
-const onClickLogoutHandler = () => {
-    window.localStorage.removeItem('accessToken');  
-    //로그아웃
-    dispatch(callLogoutAPI());
-    
-    alert('로그아웃이 되어 로그인화면 으로 이동합니다.');
-    navigate("login", { replace: true })
-   
-}
 
-   
 
+
+    const onClickLogoutHandler = () => {
+        window.localStorage.removeItem('accessToken');  
+        //로그아웃
+        dispatch(callLogoutAPI());
+
+        alert('로그아웃이 되어 로그인화면 으로 이동합니다.');
+        navigate("/login")
+    }
+
+    // const onClickLogoutHandler = async () => {
+    //     try {
+    //         window.localStorage.removeItem('accessToken');
+    //         // 로그아웃
+    //         await dispatch(callLogoutAPI());
+    //         alert('로그아웃이 되어 로그인화면으로 이동합니다.');
+    //         navigate("/login");
+    //         // 로그아웃 후 로그인 페이지로 이동하기 전에 잠시 대기하여 에러 페이지가 표시되지 않도록 함
+    //         await new Promise(resolve => setTimeout(resolve, 100));
+    //         window.location.reload();
+    //     } catch (error) {
+    //         console.error("로그아웃 에러:", error);
+    //     }
+    // }
 
     return (
         <header id="header" className="header fixed-top d-flex align-items-center">
@@ -46,7 +57,7 @@ const onClickLogoutHandler = () => {
             <Nav className="header-nav ms-auto">
                 <ul className="d-flex align-items-center">
                     <li className="nav-item">
-                        <Link to="/mails/receive" className="bi-envelope nav-icon" style={{color: '#EC0B0B'}}></Link>
+                        <Link to="/mails/receive" className="bi-envelope nav-icon" style={{ color: '#EC0B0B' }}></Link>
                     </li>
                     <li className="nav-item dropdown pe-2">
                         <a className="nav-link nav-profile d-flex align-items-center pe-6" href="#" data-bs-toggle="dropdown">

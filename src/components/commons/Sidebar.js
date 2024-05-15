@@ -2,13 +2,12 @@ import { Link, NavLink } from 'react-router-dom';
 import '../../style.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-
 function Sidebar() {
     return (
         <aside id="sidebar" className="sidebar">
             <ul className="sidebar-nav" id="sidebar-nav">
-                <li class="nav-item">
-                    <NavLink  className="nav-link collapsed" activeClassName="active" to="/notices">
+                <li className="nav-item">
+                    <NavLink  className="nav-link collapsed" to="/notices">
                         <i className="bi bi-megaphone"></i><span>공지사항</span>
                     </NavLink >
                 </li>
