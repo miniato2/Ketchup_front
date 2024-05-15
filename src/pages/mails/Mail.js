@@ -1,37 +1,41 @@
 import { useState } from "react";
-import SearchBar from "../../components/contents/SearchBar";
 import "./mail.css";
-import ButtonGroup from "../../components/contents/ButtonGroup";
 import ReceiveMail from "../../components/lists/mails/ReceiveMail";
 import SendMail from "../../components/lists/mails/SendMail";
 import { useNavigate } from "react-router-dom";
+import SearchBarValue from "../../components/contents/SearchBarValue";
+import { callPutDeleteMailAPI } from "../../apis/MailAPICalls";
+// import { callGetReceiveMailAPI, callGetSendMailAPI } from "../../apis/MailAPICalls";
 
 function Mail() {
     const navigate = useNavigate();
 
     const [part, setPart] = useState("receive");
+    const [checkedItems, setCheckedItems] = useState({});
+
     const receiveHandler = () => {
         setPart("receive");
         navigate('/mails/receive');
     };
+
     const sendHandler = () => {
         setPart("send");
         navigate('/mails/send');
     };
 
+    // const mailSearch = (searchCondition, searchKeyword) => {
+    //     dispatch(callGetReceiveMailAPI(searchCondition, searchKeyword));
+    //     dispatch(callGetSendMailAPI(searchCondition, searchKeyword));
+    // };
+
     const insertHandler = () => navigate('/mails/insert');
 
-    const buttons = [
-        {label: "삭제", styleClass: "back"},
-        {label: "메일 쓰기", styleClass: "move", onClick: insertHandler}
-    ];
-    
     return (
         <>
             <main id="main" className="main">
                 <div className="title">
                     <h2>메일</h2>
-                    <SearchBar />
+                    <SearchBarValue />
                 </div>
                 <div className="mt-3 d-flex justify-content-between align-middle">
                     <div className="mail-btn">
@@ -42,10 +46,16 @@ function Mail() {
                             className={`${part == "send" ? 'focus-btn fs-5' : 'non-focus-btn fs-5'}`}
                             onClick={() => sendHandler()}>보낸 메일함</button>
                     </div>
-                    <ButtonGroup buttons={buttons} />
+                    <div>
+                        <button className="back-btn">삭제</button>
+                        <button className="move-btn" onClick={insertHandler}>메일 쓰기</button>
+                    </div>
                 </div>
                 {
-                    part == "receive"? <ReceiveMail part={part} /> : <SendMail part={part} />
+                    part == "receive"? 
+                        <ReceiveMail 
+                            checkedItems={checkedItems} 
+                            setCheckedItems={setCheckedItems} /> : <SendMail part={part} />
                 }
             </main>
         </>

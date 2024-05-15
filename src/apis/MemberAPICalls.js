@@ -108,7 +108,18 @@ export const callRegisterAPI = ({ form }) => {
     };
 };
 
-export function callMembersAPI(currentPage) {
+export function callMembersAPI() {
+    console.log("=============전체 사원 호출=============");
+
+    return async (dispatch, getState) => {
+        const result = await request('GET', '/noPageMembers');
+        console.log("전체 사원 호출 API 결과:   ", result.data);
+
+        dispatch({ type: GET_MEMBERS, payload: result.data });
+    };
+}
+
+export function callPageMembersAPI(currentPage) {
     console.log("=============전체 사원 호출=============");
 
     return async (dispatch, getState) => {
@@ -116,5 +127,18 @@ export function callMembersAPI(currentPage) {
         console.log("전체 사원 호출 API 결과:   ", result.data);
 
         dispatch({ type: GET_MEMBERS, payload: result.data });
+    };
+}
+
+
+export function callResignMemberAPI(memberNo,statusData) {
+    console.log("=============사원 퇴사 진행=============");
+
+    return async (dispatch, getState) => {
+        const result = await request('PUT', `/auth/resign/${memberNo}`,statusData);
+        console.log(`${memberNo}번 사원 퇴사 결과 `, result);
+        console.log(`${memberNo}번 사원 퇴사 결과.데이터 `, result.data);
+
+        dispatch({ type: GET_MEMBER, payload: result });
     };
 }
