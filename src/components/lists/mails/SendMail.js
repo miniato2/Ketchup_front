@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { callGetSendMailAPI } from "../../../apis/MailAPICalls";
-import MailTable from "../../contents/MailTable";
+import MailTable from "../../items/mails/MailTable";
 import { useNavigate, useParams } from "react-router-dom";
 import FormatDateTime from "../../contents/FormatDateTime";
 

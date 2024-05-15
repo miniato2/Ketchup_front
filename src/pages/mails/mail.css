@@ -1,26 +1,27 @@
 .mail-btn button {
-    border:none;
+    border: none;
     background-color: #ffffff;
 }
 .focus-btn {
-    color:#EC0B0B;
+    color: #EC0B0B;
 }
 .non-focus-btn {
-    color:#000000;
+    color: #000000;
 }
-
 .m-icon {
-    width:50px;
-    height:50px;
+    width: 50px;
+    height: 50px;
 }
-
 .selected-recipient {
     background-color: #ec0b0b21;
     border-radius: 5px;
-    margin-right:10px;
-    padding:5px;
+    margin-right: 10px;
+    padding: 5px;
 }
-
 .unreadRow {
     font-weight: bold;
-  }
+}
+.receiver-time {
+    color:#000000;
+    text-decoration: none;
+}

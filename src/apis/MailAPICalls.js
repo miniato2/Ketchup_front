@@ -1,4 +1,4 @@
-import { getReceivemail, getSendmail, getMaildetail, postInsertmail, putDeletemail } from "../modules/MailModule";
+import { getReceivemail, getSendmail, getMaildetail, postInsertmail, putDeletemail, putReadtime } from "../modules/MailModule";
 import { request } from "./Api";
 
 // 받은 메일
@@ -6,17 +6,6 @@ export function callGetReceiveMailAPI() {
     console.log("getReceivemail api call...");
 
     return async (dispatch, getState) => {
-        // let resultUrl = '';
-        // if(search !== '' || search !== null) {
-        //     if(searchValue !== '' || searchValue !== null) {
-        //         resultUrl = `/mails?part=receive&search=${searchCondition}&searchvalue=${searchKeyword}`;
-        //     }else {
-        //         resultUrl = '/mails?part=receive';
-        //     }
-        // }else {
-        //     resultUrl = '/mails?part=receive';
-        // }
-
         const result = await request('GET', '/mails?part=receive');
         console.log(result.data);
 
@@ -71,49 +60,11 @@ export function callGetMailDetailAPI({ mailNo }) {
     };
 }
 
-// export function callPostInsertMail({ formData }) {
-//     return async (dispatch, getState) => {
-
-//         try {
-//             const accessToken = window.localStorage.getItem('accessToken');
-
-//             console.log("💛💛💛💛💛💛💛");
-//             console.log("💦💤💥💦💦💦💦💦💦💦");
-//             for (var pair of formData.entries()) {
-//                 console.log(pair[0]+ ', ' + pair[1]); 
-//             }
-
-//             const response = await fetch('/mails', {
-//                 method: 'POST',
-//                 headers: {
-//                     // 'Content-Type': 'application/json',
-//                     'Authorization': `Bearer ${accessToken}`
-//                 },
-//                 body: formData
-//             });
-//             console.log("💙💙💙💙💙💙💙💙");
-//             console.log(response);
-
-//             if (!response.ok) {
-//                 throw new Error('Failed to insert mail');
-//             }
-
-//             const data = await response.json();
-//             console.log("💜💜💜💜💜💜💜💜");
-//             console.log(data);
-//             console.log("메일이 성공적으로 전송되었습니다.");
-//         } catch (error) {
-//             console.error("메일 전송 중 오류가 발생했습니다.", error);
-//             throw error;
-//         }  
-//     };
-// }
-
 // 메일 작성
 export const callPostInsertMailAPI = ({ formData }) => {
+    console.log("postInsertmail api call...");
+
     const requestURL = `http://localhost:8080/mails`;
-    console.log("🚦🚦🚦🚦🚦🚦🚦🚦🚦🚦🚦🚦");
-    console.log(window.localStorage.getItem('accessToken'));
 
     return async (dispatch, getState) => {
         try {
@@ -126,8 +77,7 @@ export const callPostInsertMailAPI = ({ formData }) => {
                 },
                 body: formData
             }).then((response) => response.json());
-            
-            console.log("🏳‍🌈🏳‍🌈🏳‍🌈🏳‍🌈🏳‍🌈🏳‍🌈🏳‍🌈");
+
             console.log(result);
 
             dispatch(postInsertmail(result));
@@ -137,14 +87,38 @@ export const callPostInsertMailAPI = ({ formData }) => {
     };
 }
 
-// 메일 삭제
+// 메일 삭제 = 삭제 상태 수정
 export const callPutDeleteMailAPI = ({ part, mailNo }) => {
     console.log("putDeletemail api call...");
 
     return async (dispatch, getState) => {
-        const result = await request('PUT', `/mails?part=${part}&mailno=${mailNo}`);
+        const result = await request('PUT', `/mails?part=${part}&mailno=${mailNo}}`);
         console.log(result.data);
 
         dispatch(putDeletemail());
     };
+}
+
+// 수신자 읽음
+export const callPutReadTimeAPI = (mailNo) => {
+    console.log("putReadtime api call...");
+
+    const requestURL = `http://localhost:8080/mails/times/${mailNo}`;
+
+    return async (dispatch, getState) => {
+        try {
+            const response = await fetch(requestURL, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + window.localStorage.getItem('accessToken')
+                }
+            });
+
+            const result = await response.json();
+
+            dispatch(putReadtime(result));
+        } catch (error) {
+            console.error('Error updatetime :', error);
+        }
+    }
 }

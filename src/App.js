@@ -53,7 +53,7 @@ function App() {
           <Route path='calendar' element={<Calendar />} />
 
           <Route path='mails'>
-            <Route path=':part/' element={<Mail />} />
+            <Route path=':part' element={<Mail />} />
             <Route path='detail'>
               <Route path=':mailNo' element={<MailDetail />} />
             </Route>
