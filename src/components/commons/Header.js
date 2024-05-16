@@ -1,25 +1,16 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Nav } from 'react-bootstrap'
 import '../../style.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { callLogoutAPI } from '../../apis/MemberAPICalls';
 import { decodeJwt } from '../../utils/tokenUtils';
 
-
-
-
 function Header() {
 
-
     const dispatch = useDispatch();
-
     const navigate = useNavigate();
-
     const token = decodeJwt(window.localStorage.getItem('accessToken'));
-
-
-
 
     const onClickLogoutHandler = () => {
         window.localStorage.removeItem('accessToken');  
@@ -29,21 +20,6 @@ function Header() {
         alert('로그아웃이 되어 로그인화면 으로 이동합니다.');
         navigate("/login")
     }
-
-    // const onClickLogoutHandler = async () => {
-    //     try {
-    //         window.localStorage.removeItem('accessToken');
-    //         // 로그아웃
-    //         await dispatch(callLogoutAPI());
-    //         alert('로그아웃이 되어 로그인화면으로 이동합니다.');
-    //         navigate("/login");
-    //         // 로그아웃 후 로그인 페이지로 이동하기 전에 잠시 대기하여 에러 페이지가 표시되지 않도록 함
-    //         await new Promise(resolve => setTimeout(resolve, 100));
-    //         window.location.reload();
-    //     } catch (error) {
-    //         console.error("로그아웃 에러:", error);
-    //     }
-    // }
 
     return (
         <header id="header" className="header fixed-top d-flex align-items-center">
