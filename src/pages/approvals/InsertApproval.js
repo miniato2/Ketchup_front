@@ -8,10 +8,14 @@ import RefLine from "../../components/approvals/RefLine";
 import { callGetFormAPI, callInsertAppAPI } from "../../apis/ApprovalAPICalls";
 import AppLineModal from "../../components/approvals/AppLineModal";
 import RefLineModal from "../../components/approvals/RefLineModal";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function InsertApproval() {
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const quillRef = useRef(null);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [modalControl, setModalControl] = useState({
         appLineModal: false,
@@ -25,25 +29,22 @@ function InsertApproval() {
     }
 
     //
-    const [ file, setFile ] = useState();
+    const [file, setFile] = useState(null);
+    const [formNo, setFormNo] = useState('');
+    const [appTitle, setAppTitle] = useState('');
+    const [appContents, setAppContents] = useState('');
 
-    const [ approval, setApproval ] = useState({
-        formNo: '',
-        appTitle: '',
-        appContents: '',
-    })
-
-    const [ appLine, setAppLine ] = useState([{
-        alMember : {
+    const [appLine, setAppLine] = useState([{
+        alMember: {
             memberNo: '', memberName: '',
-            position: {positionName: ''},
-            department: {depName: ''}
+            position: { positionName: '' },
+            department: { depName: '' }
         },
         alType: '',
-        alSequence: ''
+        sequence: ''
     }])
 
-    const [ refLine, setRefLine ] = useState([{
+    const [refLine, setRefLine] = useState([{
         refMember: {
             refMemberName: ''
         }
@@ -51,75 +52,99 @@ function InsertApproval() {
     //
 
     const onChangeAppTitle = (e) => {
-        setApproval({
-            ...approval,
-            appTitle: e.target.value
-        })
-        console.log(approval);
+        setAppTitle(e.target.value);
+
     } //제목
 
     const onChangeAppContents = (e) => {
-        setApproval({
-            ...approval,
-            appContents: e
-        })
-        console.log(approval);
+        setAppContents(e);
+
     } //내용
 
     const onChangeFileUpload = (e) => {
-        console.log(e.target.files);
-        setFile(e.target.files);
+        // const filesArray = Array.from(e.target.files);
+        // const filesList = [...filesArray];
+        // console.log('filesList', filesList);
+        // setFile(filesList);
+        setFile(e.target.files[0]);
     }
 
 
-    const onChangeForm = async(e) => {
+    const onChangeForm = async (e) => {
         const result = await callGetFormAPI(e.target.value);
 
-        if(result.status == 200){
-            setApproval(
-                {
-                    ...approval,
-                    formNo: result.data.formNo,
-                    appContents: result.data.formContents
-                })
-        }else{
+        if (result.status == 200) {
+            setFormNo(result.data.formNo);
+            setAppContents(result.data.formContents);
+        } else {
             console.log('실패');
         }
     } //양식 변경
 
+    const onClickCancelHandler = () => {
+        navigate(`/approvals`, {replace:false})
+    } //취소
+
     const onClickInsertApprovalHandler = () => {
         const formData = new FormData();
+
+        console.log(appLine);
+        console.log(refLine);
+
         formData.append("approval.appMemberNo", loginToken.memberNo);
-        formData.append("approval.formNo", approval.formNo);
-        formData.append("aprpoval.appTitle", approval.appTitle);
-        formData.append("approval.appContents", approval.appContents);
+        formData.append("approval.formNo", formNo);
+        formData.append("approval.appTitle", appTitle);
+        formData.append("approval.appContents", appContents);
 
         appLine.forEach((al, index) => {
             formData.append(`appLineDTOList[${index}].alMemberNo`, al.alMember.memberNo);
             formData.append(`appLineDTOList[${index}].alType`, al.alType);
-            formData.append(`appLineDTOList[${index}].alSequence`, al.alSequence);
+            formData.append(`appLineDTOList[${index}].alSequence`, al.sequence);
         });
 
         refLine.forEach((rl, index) => {
             formData.append(`refLineDTOList[${index}].refMemberNo`, rl.refMember.memberNo);
         });
 
-        formData.append("multipartFileList", file);
+        if (Array.isArray(file)) {
+            console.log(file);
+            console.log('폼에 파일 추가')
+            formData.append("multipartFileList", file);
 
-        // dispatch(callInsertAppAPI({form: formData}));
+        }
+
+        // if(Array.isArray(file)){
+        //     file.map((item, index) => {
+        //         console.log('dd',item);
+        //         formData.append(`multipartFileList[${index}]`, item)
+        //     })
+        // }
+        console.log('사원번호', formData.get("approval.appMemberNo"));
+        console.log('양식번호', formData.get("approval.formNo"));
+        console.log('제목', formData.get("approval.appTitle"));
+        console.log('내용', formData.get("approval.appContents"));
+        console.log('결재선', formData.get(`appLineDTOList[0].alMemberNo`));
+        console.log('결재선', formData.get(`appLineDTOList[0].alType`));
+        console.log('결재선', formData.get(`appLineDTOList[0].alSequence`));
+        console.log('참조선', formData.get("refLineDTOList[0].refMemberNo"));
+
+
+        dispatch(callInsertAppAPI({ form: formData }));
     } //등록
+
+    
 
     return (
         <main className="main" id="main">
-            {modalControl.appLineModal ? <AppLineModal setModalControl={setModalControl} setAppLine={setAppLine}/> : null}
+            {modalControl.appLineModal ? <AppLineModal setModalControl={setModalControl} setAppLine={setAppLine} /> : null}
             {modalControl.refLineModal ? <RefLineModal setModalControl={setModalControl} setRefLine={setRefLine} /> : null}
             <h1>기안등록</h1>
 
             <label>결재선</label><button name='appLineModal' onClick={onClickModalControl}>추가</button>
-            <AppLine appline={appLine}/>
+            <AppLine appline={appLine} />
 
             <label>참조선</label><button name='refLineModal' onClick={onClickModalControl}>추가</button>
-            <RefLine refline={refLine}/>
+            <RefLine refline={refLine} />
 
             <table className={Style.appTable}>
                 <tbody>
@@ -155,10 +180,10 @@ function InsertApproval() {
                 theme="snow"
                 name="appContents"
                 onChange={onChangeAppContents}
-                value={approval.appContents}
+                value={appContents}
                 placeholder="내용을 입력하세요." />
             <div className={Style.appBtn}>
-                <button className="back-btn">취소</button>
+                <button className="back-btn" onClick={onClickCancelHandler}>취소</button>
                 <button className="move-btn" onClick={onClickInsertApprovalHandler}>등록</button>
             </div>
 

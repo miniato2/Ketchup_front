@@ -1,24 +1,46 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import AppLine from "../../components/approvals/AppLine";
 import RefLine from "../../components/approvals/RefLine";
 import Style from "./Approvals.module.css"
 import ReactQuill from "react-quill";
-import { useParams } from "react-router-dom";
-import { callAppAPI } from "../../apis/ApprovalAPICalls";
+import { useNavigate, useParams } from "react-router-dom";
+import { callAppAPI, callUpdateApprovalAPI } from "../../apis/ApprovalAPICalls";
+import { decodeJwt } from "../../utils/tokenUtils";
 
 function ApprovalDetail() {
+    const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const approval = useSelector(state => state.approvalReducer);
     const param = useParams();
     const dispatch = useDispatch();
-
-    console.log('상세 ',approval)
+    const navigate = useNavigate();
+    const [appAction, setAppAction] = useState('');
+    const [refusal, setRefusal] = useState('');
 
     const quillRef = useRef(null);
 
     useEffect(() => {
         dispatch(callAppAPI({ approvalNo: param.approvalNo }));
     }, [])
+
+    const onClickListHandler = () => {
+        navigate(`/approvals`, { replace: false })
+    }
+
+    const onClickCancelAppHandler = () => {
+        const appUpdate = {
+            action: '회수'
+        }
+        dispatch(callUpdateApprovalAPI(appUpdate));
+    }
+
+    const onClickSubmitHandler = () => {
+        const appUpdate = {
+            action: appAction,
+            refusal: refusal
+        }
+        dispatch(callUpdateApprovalAPI(appUpdate));
+    }
 
     return (
         <main id="main" className="main">
@@ -41,7 +63,9 @@ function ApprovalDetail() {
                             </tr>
                             <tr>
                                 <th >첨부파일</th>
-                                <td ><a href={approval.appFileList[0]}>ㅇㅇㅇ</a></td>
+                                <td>
+                                <a href={`/img/approvals/${approval.appFileList[0]?.fileUrl}`} download>{approval.appFileList[0]?.fileUrl}</a>
+                                </td>
                                 {/* 나중에 리스트 형식으로 다시 만들자 + 경로 재설정 */}
 
                                 <th >기안자</th>
@@ -65,15 +89,27 @@ function ApprovalDetail() {
                         placeholder="내용을 입력하세요." />
 
                     <h1>승인/반려</h1>
-                    <div>
-                        
-                    </div>
-
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>승인</td>
+                                <td>반려</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <textarea style={{resize: 'none'}}>dd</textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <div className={Style.appBtn}>
-                        {/* 사원이 결재자인지 작성자인지에 따라 회수 또는 처리 활성화 & 대기중일때만 회수 활성화 */}
-                        <button className="back-btn">목록</button>
-                        <button className="move-btn">회수</button>
-                        <button className="move-btn">처리</button>
+                        <button className="back-btn" onClick={onClickListHandler}>목록</button>
+
+                        {loginToken.memberNo === approval?.member.memberNo && approval?.appStatus === "대기" ?
+                            <button className="move-btn" onClick={onClickCancelAppHandler}>회수</button> : null}
+
+                        {approval?.appLineList.find(item => item.alMember.memberNo === loginToken.memberNo) ?
+                            <button className="move-btn" onClick={onClickSubmitHandler}>처리</button> : null}
                     </div>
                 </div>
             }

@@ -1,16 +1,38 @@
+import { useEffect, useState } from 'react';
 import AppCatCss from './AppCategory.module.css';
+import { callGetApprovalCountAPI } from '../../apis/ApprovalAPICalls';
+import { decodeJwt } from "../../utils/tokenUtils";
 
-function AppCategory({category, setCategory}){
+function AppCategory({category, setCategory, setCurrentPage}){
+    const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
+    const [approvalCount, setApprovalCount] = useState();
     const approvalData = [
-        { title: "진행중인 문서", count: 3, categoryNo: 1},
-        { title: "완료된 문서", count: 5, categoryNo: 2},
-        { title: "결재 대기 문서", count: 10, categoryNo: 3},
-        { title: "수신 참조 문서", count: 2, categoryNo: 4}
+        { title: "진행중인 문서", count: approvalCount?.myApp, categoryNo: 1},
+        { title: "완료된 문서", count: approvalCount?.doneApp, categoryNo: 2},
+        { title: "결재 대기 문서", count: approvalCount?.receiveApp, categoryNo: 3},
+        { title: "수신 참조 문서", count: approvalCount?.refApp, categoryNo: 4}
     ];
+
+    useEffect(() => {
+        const categoryCount = async () => {
+            try {
+                const result = await callGetApprovalCountAPI(loginToken.memberNo);
+                if (result.status === 200) {
+                    setApprovalCount(result.data);
+                } else {
+                    console.log('실패');
+                }
+            } catch (error) {
+                console.error('데이터 가져오기 실패:', error);
+            }
+        };
+        categoryCount();
+    },[]);
 
 
     const onClickHandler = (categoryNo) => {
         setCategory(categoryNo);
+        setCurrentPage(1);
     }
 
     return(

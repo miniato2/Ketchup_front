@@ -94,8 +94,12 @@ function AppLineModal({ setModalControl, setAppLine }) {
     }
 
     const onClickSubmit = () => { //저장 버튼
-        setAppLine(selectedAppList);
-        setModalControl({ appLineModal: false, refLineModal: false });
+        if(selectedAppList.length < 2){
+            alert("최소 두명 이상 지정해 주세요");
+        }else{
+            setAppLine(selectedAppList);
+            setModalControl({ appLineModal: false, refLineModal: false });
+        }
     }
 
 

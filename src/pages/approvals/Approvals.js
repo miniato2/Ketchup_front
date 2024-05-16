@@ -22,6 +22,8 @@ function Approvals() {
     const apps = useSelector(state => state.approvalReducer);
     const appList = apps.data?.content;
     console.log('apps', apps);
+    console.log('appList', appList);
+    console.log('currentPage',currentPage);
 
     let statusList = [];
     switch(category){
@@ -48,13 +50,27 @@ function Approvals() {
         setSearch(e.target.value);
     } //검색어
 
+    const onClickSearchHandler = (e) => {
+        e.preventDefault();
+        dispatch(
+            callAppListAPI({
+                memberNo: loginToken.memberNo,
+                category: category,
+                status: status,
+                search: search,
+                currentPage: 1
+            })
+        )
+    } //검색버튼
+
     const statusChangeHandler = (e) => {
         setStatus(e.target.value);
+        setCurrentPage(1);
     } //드랍박스
 
     return (
         <main id="main" className={'main'}>
-            <AppCategory category={category} setCategory={setCategory}/>
+            <AppCategory category={category} setCategory={setCategory} setCurrentPage={setCurrentPage}/>
             <div style={{ display: "flex", height: "60px", backgroundColor: "#f5f5f5", alignItems: "center", borderBottom: 'solid 0.5px black'}}>
                 <select className={ApprovalCss.selectStatus} onChange={statusChangeHandler}>
                     <option>전체</option>
@@ -63,9 +79,9 @@ function Approvals() {
                     ))}
                 </select>
                 <div>
-                    <form class="search-form d-flex align-items-center" method="GET" action={''} style={{ marginBottom: '0px' }}>
+                    <form class="search-form d-flex align-items-center" style={{ marginBottom: '0px' }}>
                         <input type="text" name="search" placeholder="제목을 입력하세요" value={search} onChange={onChangeHandler} />
-                        <button type="submit" title="SearchBtn"><i class="bi bi-search"></i></button>
+                        <button type="submit" title="SearchBtn" onClick={onClickSearchHandler}><i class="bi bi-search"></i></button>
                     </form>
                 </div>
                 <Link to={'/approvals/insert'} className={ApprovalCss.movebtn}>
@@ -73,7 +89,8 @@ function Approvals() {
                 </Link>
             </div>
             <AppList data={appList}/>
-            <PaginationButtons totalItems={Array.isArray(appList)? appList.length : ''} itemsPerPage={10} currentPage={currentPage} onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
+            <PaginationButtons totalItems={apps.pageInfo?.total} itemsPerPage={10} currentPage={currentPage} onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
+            {/* totalItems 전체 갯수 조회 내용 넣어야함 */}
         </main>
     )
 }
