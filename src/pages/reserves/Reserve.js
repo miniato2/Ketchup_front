@@ -75,10 +75,6 @@ export default function Reserve() {
     };
 
     useEffect(() => {
-        fetchReserves();
-    }, [searchConditions]);
-
-    useEffect(() => {
         if (reserves && reserves.results && reserves.results.reserve) {
             const convertedReserves = convertToCalendarProps(reserves.results.reserve);
             setReserveData(convertedReserves);
@@ -89,6 +85,10 @@ export default function Reserve() {
         fetchReserves();
         setSearchClicked(true);
     };
+
+    useEffect(() => {
+        fetchReserves();
+    }, [searchConditions]);
 
     const groupReservesByRsc = (reserveData) => {
         const groupedReserves = {};
