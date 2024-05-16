@@ -4,16 +4,20 @@ import ReceiveMail from "../../components/lists/mails/ReceiveMail";
 import SendMail from "../../components/lists/mails/SendMail";
 import { useNavigate } from "react-router-dom";
 import SearchBarValue from "../../components/contents/SearchBarValue";
+import { callPutDeleteMailAPI } from "../../apis/MailAPICalls";
 // import { callGetReceiveMailAPI, callGetSendMailAPI } from "../../apis/MailAPICalls";
 
 function Mail() {
     const navigate = useNavigate();
 
     const [part, setPart] = useState("receive");
+    const [checkedItems, setCheckedItems] = useState({});
+
     const receiveHandler = () => {
         setPart("receive");
         navigate('/mails/receive');
     };
+
     const sendHandler = () => {
         setPart("send");
         navigate('/mails/send');
@@ -48,7 +52,10 @@ function Mail() {
                     </div>
                 </div>
                 {
-                    part == "receive"? <ReceiveMail part={part} /> : <SendMail part={part} />
+                    part == "receive"? 
+                        <ReceiveMail 
+                            checkedItems={checkedItems} 
+                            setCheckedItems={setCheckedItems} /> : <SendMail part={part} />
                 }
             </main>
         </>

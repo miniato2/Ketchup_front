@@ -62,16 +62,8 @@ function MailForm() {
         setReceiverInfo(prevState => prevState.filter((_, index) => index !== delIndex));
     };
 
-    // const handleFileChange = (e) => {
-    //     const files = e.target.files;
-    //     if (files && files.length > 0) {
-    //         setMailFile([...files]);
-    //     }
-    // };
-
     const handleFileChange = (e) => {
-        setMailFile([...e.target.files]); // 모든 파일을 파일 목록에 추가
-        console.log('setMailFile : ', setMailFile)
+        setMailFile([...e.target.files]);
     };
 
     const submitMailClick = async () => {
@@ -88,9 +80,8 @@ function MailForm() {
         }
 
         formData.append('mailInfo', new Blob([JSON.stringify(mailInfo)], { type: 'application/json' }));
-        mailFile.forEach(file => formData.append('mailFile', file)); // 모든 파일을 FormData에 추가
+        mailFile.forEach(file => formData.append('mailFile', file));
         
-        console.log("💦💤💥💦💦💦💦💦💦💦");
         console.log([...formData.entries()]);
 
         try {
