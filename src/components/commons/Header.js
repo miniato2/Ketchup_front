@@ -7,18 +7,17 @@ import { callLogoutAPI } from '../../apis/MemberAPICalls';
 import { decodeJwt } from '../../utils/tokenUtils';
 
 function Header() {
-
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const token = decodeJwt(window.localStorage.getItem('accessToken'));
 
     const onClickLogoutHandler = () => {
-        window.localStorage.removeItem('accessToken');  
+        window.localStorage.removeItem('accessToken');
         //로그아웃
         dispatch(callLogoutAPI());
 
         alert('로그아웃이 되어 로그인화면 으로 이동합니다.');
-        navigate("/login")
+        navigate("login", { replace: true })
     }
 
     return (

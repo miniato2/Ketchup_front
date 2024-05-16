@@ -8,7 +8,6 @@ import {
 
 
 function Login() {
-        
     const navigate = useNavigate();
 
     // 리덕스를 이용하기 위한 디스패처, 셀렉터 선언
@@ -50,22 +49,17 @@ function Login() {
         dispatch(callLoginAPI({	// 로그인
             form: form
         }));
-        // if (window.localStorage.getItem('accessToken')) {
-        //     console.log("로그인 진행");
-        //     navigate("/main", { replace: true });
-        // } 
+        if (window.localStorage.getItem('accessToken')) {
+            console.log("로그인 진행");
+            navigate("/main", { replace: true });
+        } 
     }
 
     return (
-        
         <div className = "row justify-content-center">
-
             <div className ="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
-
             <img src="/img/loginLogo.png" class = "loginLogo"  alt="" style={{marginTop: 200}}/>
 
-
-           
                 <input className="form-control"
                     type="text" 
                     name='memberNo'

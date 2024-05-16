@@ -25,3 +25,25 @@
     color:#000000;
     text-decoration: none;
 }
+
+/* SendCancelModal.js */
+.modal-back{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+.modal-box{
+    padding:20px;
+    background-color: white;
+    width: 450px;
+    height: 250px;
+    border-radius: 10px;
+}
