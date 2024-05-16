@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { decodeJwt } from "../../utils/tokenUtils";
-import { callMembersAPI } from "../../apis/MemberAPICalls";
+import {  callPageMembersAPI } from "../../apis/MemberAPICalls";
 import { Table } from "react-bootstrap";
 import PaginationButtons from "../../components/contents/PaginationButtons";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +18,7 @@ function Members() {
     const itemsPerPage = 10; // 페이지당 아이템 수
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
     const handleRowClick = (memberNo) => {
-      
+
 
 
         console.log('handleRowClick [ memberNo ] : ', memberNo);
@@ -26,21 +26,20 @@ function Members() {
         navigate(`/members/${memberNo}`);
     };
 
-    
+
 
     const navigate = useNavigate();
 
     const buttons = [
         { label: '등록', styleClass: 'move' },
     ];
-   
+
 
 
     useEffect(
         () => {
             if (token !== null) {
-                dispatch(callMembersAPI(currentPage));
-               
+                dispatch(callPageMembersAPI(currentPage));
 
             }
 
@@ -48,7 +47,7 @@ function Members() {
 
     );
 
-    
+
 
     return (
         <>
@@ -87,11 +86,11 @@ function Members() {
                         </tbody>
                     </Table>
                     <PaginationButtons
-    totalItems={members?.data?.totalElements}
-    itemsPerPage={itemsPerPage}
-    currentPage={currentPage}
-    onPageChange={(pageNumber) => setCurrentPage(pageNumber)} // 페이지 변경 핸들러 전달
-/>
+                        totalItems={members?.data?.totalElements}
+                        itemsPerPage={itemsPerPage}
+                        currentPage={currentPage}
+                        onPageChange={(pageNumber) => setCurrentPage(pageNumber)} // 페이지 변경 핸들러 전달
+                    />
                 </div>
             </main>
         </>

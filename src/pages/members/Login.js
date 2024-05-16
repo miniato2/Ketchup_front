@@ -2,8 +2,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import { Navigate } from "react-router-dom";
-
 import {
     callLoginAPI
 } from '../../apis/MemberAPICalls'
@@ -26,16 +24,18 @@ function Login() {
         
         if(loginMember.status === 200){
             console.log("[Login] Login SUCCESS {}", loginMember);
-            navigate("/", { replace: true });
+            navigate("/main", { replace: true });
         }
     }
-    ,[loginMember]);
+    ,[loginMember, navigate]);
     
-    // 로그인 상태일 시 로그인페이지로 접근 방지
-    if(loginMember.length > 0) {
-        console.log("[Login] Login is already authenticated by the server");        
-        return <Navigate to="/"/>
-    }
+    useEffect(() => {
+        if (loginMember.length > 0) {
+            console.log("[Login] Login is already authenticated by the server");        
+            navigate("/");
+        }
+    }, [loginMember, navigate]);
+    
 
     const onChangeHandler = (e) => {
         setForm({

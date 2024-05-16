@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './layouts/Layout';
 import Main from './pages/Main';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -26,52 +27,65 @@ import Boards from './pages/boards/Boards';
 import Resources from './pages/resources/Resources';
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // 로그인 상태 확인 로직 추가
+  useEffect(() => {
+    const accessToken = window.localStorage.getItem('accessToken');
+    if (accessToken) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  // isLoggedIn 상태에 따라 리다이렉션 경로 설정
+  const redirectPath = isLoggedIn ? '/main' : '/login';
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Layout />}> {/** 중첩구조 설정시 route로 layout 먼저 설정한 후 그 하위에 route를 중첩으로 만들어주면 됨 */}
+        {/* 로그인 여부에 따라 "/" 경로를 리다이렉션 */}
+        <Route path="/" element={<Navigate to={redirectPath} replace />} />
+        <Route path="/login" element={<Login onLoginSuccess={() => setIsLoggedIn(true)} />} />
+        <Route path="/main" element={<Layout />}>
           <Route index element={<Main />} />
-          <Route path='main' element={<Main />} />
-          <Route path='notices'>
+          <Route path="notices">
             <Route index element={<Notices />} />
-            <Route path=':noticeNo' element={<NoticeDetail />} />
-            <Route path='insert' element={<InsertNotice />} />
-            <Route path='update'>
-              <Route path=':noticeNo' element={<UpdateNotice />} />
+            <Route path=":noticeNo" element={<NoticeDetail />} />
+            <Route path="insert" element={<InsertNotice />} />
+            <Route path="update">
+              <Route path=":noticeNo" element={<UpdateNotice />} />
             </Route>
           </Route>
-          <Route path='approvals'>
+          <Route path="approvals">
             <Route index element={<Approvals />} />
-            <Route path='insert' element={<InsertApproval />} />
-            <Route path=':approvalNo' element={<ApprovalDetail />} />
+            <Route path="insert" element={<InsertApproval />} />
+            <Route path=":approvalNo" element={<ApprovalDetail />} />
           </Route>
-          <Route path='board'>
+          <Route path="board">
             <Route index element={<Boards />} />
-            <Route path='insert' element={<InsertBoard />} />
-
+            <Route path="insert" element={<InsertBoard />} />
           </Route>
-          <Route path='calendar' element={<Calendar />} />
-
-          <Route path='mails'>
-            <Route path=':part' element={<Mail />} />
-            <Route path='detail'>
-              <Route path=':mailNo' element={<MailDetail />} />
+          <Route path="calendar" element={<Calendar />} />
+          <Route path='reserve' element={<Reserve/>}/>          
+          <Route path="mails">
+            <Route path=":part" element={<Mail />} />
+            <Route path="detail">
+              <Route path=":mailNo" element={<MailDetail />} />
             </Route>
-            <Route path='insert' element={<InsertMail />} />
-            <Route path='reply' element={<MailReply />} />
+            <Route path="insert" element={<InsertMail />} />
+            <Route path="reply" element={<MailReply />} />
           </Route>
           <Route path="mypage" element={<MyPage />} />
-          <Route path='members'>
+          <Route path="members">
             <Route index element={<Members />} />
-            <Route path='insert' element={<InsertMember />} />
-            <Route path=':memberNo' element={<MemberDetail />} />
+            <Route path="insert" element={<InsertMember />} />
+            <Route path=":memberNo" element={<MemberDetail />} />
           </Route>
           <Route path='resources'>
             <Route path=':part' element={<Resources />} />
           </Route>
         </Route>
-        <Route path='login' element={<Login />} />
+        <Route path="*" element={<Error />} />
       </Routes>
     </BrowserRouter>
   );

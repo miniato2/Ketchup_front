@@ -5,13 +5,12 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from '@fullcalendar/list';
-import { Box, Dialog, DialogTitle } from "@mui/material";
+import { Box, Dialog, DialogTitle, Typography } from "@mui/material";
 import ScheduleForm from "../../components/form/ScheduleForm";
 import { getScheduleAPI, insertScheduleAPI, deleteScheduleAPI, updateScheduleAPI } from "../../apis/ScheduleAPICalls";
 import moment from "moment";
 import { decodeJwt } from "../../utils/tokenUtils";
 import ScheduleDetail from "../../components/form/ScheduleDetail";
-import { getSchedule } from "../../modules/ScheduleModule";
 
 const Calendar = () => {
     const schedules = useSelector(state => state.scheduleReducer);
@@ -174,6 +173,7 @@ const Calendar = () => {
         <main id="main" className="main">
             {calendarReady && (
                 <Box flex="1 1 100%" ml="15px" mt="15px" sx={{ a: { textDecoration: 'none', color: '#444444' } }}>
+                    <h2>부서별 일정</h2>
                     <FullCalendar
                         locale="ko"
                         height="100vh"
@@ -202,6 +202,7 @@ const Calendar = () => {
                             day: '일',
                             list: '목록'
                         }}
+                        themeSystem= 'united'
                     />
                 </Box>
             )}

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Nav } from 'react-bootstrap'
 import '../../style.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -18,7 +18,6 @@ function Header() {
 
         alert('로그아웃이 되어 로그인화면 으로 이동합니다.');
         navigate("login", { replace: true })
-
     }
 
     return (
