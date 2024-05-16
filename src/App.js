@@ -24,7 +24,7 @@ import UpdateNotice from './pages/notices/UpdateNotice';
 import Reserve from './pages/reserves/Reserve';
 import InsertBoard from './pages/boards/InsertBoard';
 import Boards from './pages/boards/Boards';
-import Resources from './pages/resources/Resources';
+// import Error from './pages/Error';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -46,8 +46,10 @@ function App() {
         {/* 로그인 여부에 따라 "/" 경로를 리다이렉션 */}
         <Route path="/" element={<Navigate to={redirectPath} replace />} />
         <Route path="/login" element={<Login onLoginSuccess={() => setIsLoggedIn(true)} />} />
-        <Route path="/main" element={<Layout />}>
+        {isLoggedIn && (
+        <Route path="/" element={<Layout />}>
           <Route index element={<Main />} />
+          <Route path='main' element={<Main />} />
           <Route path="notices">
             <Route index element={<Notices />} />
             <Route path=":noticeNo" element={<NoticeDetail />} />
@@ -81,11 +83,9 @@ function App() {
             <Route path="insert" element={<InsertMember />} />
             <Route path=":memberNo" element={<MemberDetail />} />
           </Route>
-          <Route path='resources'>
-            <Route path=':part' element={<Resources />} />
-          </Route>
         </Route>
-        <Route path="*" element={<Error />} />
+         )}
+        {/* <Route path="*" element={<Error />} /> */}
       </Routes>
     </BrowserRouter>
   );
