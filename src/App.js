@@ -23,7 +23,9 @@ import UpdateNotice from './pages/notices/UpdateNotice';
 import Reserve from './pages/reserves/Reserve';
 import InsertBoard from './pages/boards/InsertBoard';
 import Boards from './pages/boards/Boards';
+
 import Resources from './pages/resources/Resources';
+
 // import Error from './pages/Error';
 
 function App() {
@@ -50,6 +52,7 @@ function App() {
       <Routes>
         {/* 로그인 여부에 따라 "/" 경로를 리다이렉션 */}
         <Route path="/" element={<Navigate to={redirectPath} replace />} />
+
         <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
         {isLoggedIn && (
           <Route path="/" element={<Layout />}>
@@ -62,6 +65,7 @@ function App() {
               <Route path="update">
                 <Route path=":noticeNo" element={<UpdateNotice />} />
               </Route>
+
             </Route>
             <Route path="approvals">
               <Route index element={<Approvals />} />
@@ -91,8 +95,10 @@ function App() {
             <Route path='resources'>
               <Route path=':part' element={<Resources />} />
             </Route>
+
           </Route>
         )}
+
         {/* <Route path="*" element={<Error />} /> */}
       </Routes>
     </BrowserRouter>
