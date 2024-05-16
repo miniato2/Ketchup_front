@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { callRegisterAPI } from "../../apis/MemberAPICalls";
 import { useEffect } from "react";
 import DaumPostcodeEmbed from "react-daum-postcode";
-import DaumPostcode from 'react-daum-postcode';
+
 
 
 
@@ -15,7 +15,10 @@ function InsertMember() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [Address, setAddress] = useState('주소를 입력해주세요');
+    const [validationMessage, setValidationMessage] = useState({
+        privateEmail: '이메일을 입력해주세요'
+       
+    });
     const [isOpen, setIsOpen] = useState(false);
     const [form, setForm] = useState({
         memberNo: '',
@@ -71,12 +74,26 @@ function InsertMember() {
         const today = new Date();
         const year = today.getFullYear().toString().slice(2); // 연도의 마지막 두 자리
         const month = (today.getMonth() + 1).toString().padStart(2, '0'); // 월을 두 자리로
-        const randomNum = Math.floor(Math.random() * 100) + 10; // 1에서 100 사이의 랜덤 숫자
+        const randomNum = Math.floor(Math.random() * 1000) + 10; // 1에서 100 사이의 랜덤 숫자
 
         const generatedMemberNo = year + month + randomNum;
         setForm(prevForm => ({
             ...prevForm,
-            memberNo: generatedMemberNo
+            memberNo: generatedMemberNo,
+            memberPW: '1111',
+            status: '재직중',
+            imgUrl: 'memberFileName',
+            memberName: '',
+            phone: '',
+            birthDate: '',
+            gender: '',
+            address: '',
+            privateEmail: '',
+            companyEmail: '',
+            department: '',
+            position: '',
+            account: '',
+            memberImage: null // 사원사진 초기화
         }));
     };
 
@@ -108,35 +125,45 @@ function InsertMember() {
             form: form
         }));
 
-
-        alert("사원등록이 완료되었습니다.");
-        navigate('/members');
-        setForm({
-            memberNo: '',
-            memberPW: '1111',
-            status: '재직중',
-            imgUrl: 'memberFileName',
-            memberName: '',
-            phone: '',
-            birthDate: '',
-            gender: '',
-            address: '',
-            privateEmail: '',
-            companyEmail: '',
-            department: '',
-            position: '',
-            account: '',
-            memberImage: null // 사원사진 초기화
-        });
+        alert("요청이 완료되었습니다.");
+        navigate("/members");
 
     }
 
+    const isValidEmail = (email) => {
+        // 이메일 유효성을 검사하는 정규표현식
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailRegex.test(String(email).toLowerCase());
+    };
+    
+
 
     const onChangeHandler = (e) => {
+        const { name, value } = e.target;
         setForm({
             ...form,
             [e.target.name]: e.target.value
         });
+
+        if (name === "privateEmail" ) {
+            if (!isValidEmail(value)) {
+                // 유효하지 않은 이메일 형식일 경우 경고 메시지를 출력하거나 다른 처리를 할 수 있습니다.
+                setValidationMessage({
+                    ...validationMessage,
+                    privateEmail: '이메일의 형식에 맞지 않습니다.'
+                })
+            }
+           else{
+                setValidationMessage({
+                    ...validationMessage,
+                    privateEmail: 'ok!'
+                })
+
+            }
+        }
+
+
+
     };
 
 
@@ -147,6 +174,7 @@ function InsertMember() {
                 <h2 style={{ marginLeft: '-1000px' }}>사원 등록</h2>
                 <label style={{ color: '#878787' }}>사번
                     <input
+                        readOnly
                         onChange={onChangeHandler}
                         type="text"
                         placeholder="사번"
@@ -206,6 +234,7 @@ function InsertMember() {
 
                 <label style={{ color: '#878787' }}>주소
                     <input
+                        readOnly
                         autoComplete='off'
                         type="text"
                         placeholder="주소"
@@ -238,7 +267,10 @@ function InsertMember() {
                         onChange={onChangeHandler}
                         style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
                     />
+                    
                 </label>
+                <p style={{color: 'red', marginLeft: 400}}>{validationMessage.privateEmail}</p>
+                
                 <label style={{ color: '#878787' }}>사내메일
                     <input
                         autoComplete='off'
@@ -323,7 +355,9 @@ function InsertMember() {
                         취소
                     </button>
                     <button
+                        id="registerButton"
                         onClick={onClickRegistHandler}
+                        disabled={Object.values(validationMessage).some(msg => msg !== 'ok!')}
                         style={{ backgroundColor: 'red', color: 'white', border: 'none', fontSize: '15px', width: 80, height: '35px', padding: '5px', cursor: 'pointer', marginLeft: '10px', borderRadius: 5 }}
                     >
                         등록

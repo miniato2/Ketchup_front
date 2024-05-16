@@ -89,7 +89,7 @@ export const callRegisterAPI = ({ form }) => {
     formData.append('memberInfo', memberInfoBlob);
     
     // 이미지 파일을 Blob으로 추가
-    // const memberImageBlob = new Blob([form.memberImage], { type: form.memberImage.type });
+   
     formData.append('memberImage', form.memberImage);
     console.log('----------------여기가 API 실행중', form.memberImage);
    
@@ -103,7 +103,7 @@ export const callRegisterAPI = ({ form }) => {
                 dispatch({ type: POST_REGISTER, payload: result });
             }
         } catch (error) {
-            console.error('Error: ', error);
+            console.error('프론트에서 캐치한 Error: ', error);
         }
     };
 };
