@@ -8,20 +8,6 @@ const initialState = [{
     sendMailTime: '',
     sendCancelStatus: '',
     sendDelStatus: ''
-    // ,
-    // receivers: [{
-    //     receiverNo: '',
-    //     receiverMem: '',
-    //     readTime: '',
-    //     receiverDelStatus: ''
-    // }],
-    // mailFiles: [{
-    //     mailFileNo: '',
-    //     mailNo: '',
-    //     mailFilePath: '',
-    //     mailFileName: '',
-    //     mailFileOriName: ''
-    // }]
 }];
 
 const GET_RECEIVEMAIL = 'mails/GET_RECEIVEMAIL';
@@ -30,16 +16,16 @@ const GET_MAILDETAIL = 'mails/GET_MAILDETAIL';
 const POST_INSERTMAIL = 'mails/POST_INSERTMAIL';
 const PUT_DELETEMAIL = 'mails/PUT_DELETEMAIL';
 const PUT_READTIME = 'mails/PUT_READTIME';
-const PUT_SENDMAILCANCEL = 'mails/PUT_SENDMAILCANCEL';
+const PUT_MAILCANCEL = 'mails/PUT_MAILCANCEL';
 
-export const {mails: {getReceivemail, getSendmail, getMaildetail, postInsertmail, putDeletemail, putReadtime, putCancelmail}} = createActions({
+export const {mails: {getReceivemail, getSendmail, getMaildetail, postInsertmail, putDeletemail, putReadtime, putMailcancel}} = createActions({
     [GET_RECEIVEMAIL]: (res) => ({receivemail: res}),
     [GET_SENDMAIL]: (res) => ({sendmail: res}),
     [GET_MAILDETAIL]: (res) => ({maildetail: res}),
     [POST_INSERTMAIL]: (res) => ({insertmail: res}),
     [PUT_DELETEMAIL]: (res) => ({deletemail: res}),
     [PUT_READTIME]: (res) => ({updatetime: res}),
-    [PUT_SENDMAILCANCEL]: (res) => ({cancelmail: res})
+    [PUT_MAILCANCEL]: (res) => ({mailcancel: res})
 });
 
 const mailReducer = handleActions(
@@ -62,7 +48,7 @@ const mailReducer = handleActions(
         [PUT_READTIME]: (state, {payload}) => {
             return payload;
         },
-        [PUT_SENDMAILCANCEL]: (state, {payload}) => {
+        [PUT_MAILCANCEL]: (state, {payload}) => {
             return payload;
         }
     }, initialState
