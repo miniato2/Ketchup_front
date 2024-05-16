@@ -10,8 +10,8 @@ function MailDetail() {
     const mailDetail = result.maildetail || [];
     const dispatch = useDispatch();
     const location = useLocation();
-    const navigate = useNavigate();
     const {part} = location.state;
+    const navigate = useNavigate();
 
     const receiveHandler = () => {
         navigate('/mails/receive');
@@ -51,7 +51,7 @@ function MailDetail() {
                     <button className="back-btn" onClick={backMailList}>목록</button>
                 </div>
                 <hr />
-                <MailContent content={mailDetail} />
+                <MailContent content={mailDetail} part={part} mailNo={mailNo} />
             </main>
         </>
     );

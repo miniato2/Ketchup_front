@@ -1,7 +1,6 @@
 import Style from "./AppLine.module.css";
 
 function RefLine({refline}){
-    console.log('결재선 리스트', refline);
     return(
         <div style={{overflowX: 'auto'}}>
             <table className={Style.appTable} >
