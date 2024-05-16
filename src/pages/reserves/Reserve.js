@@ -88,7 +88,7 @@ export default function Reserve() {
 
     useEffect(() => {
         fetchReserves();
-    }, [searchConditions]);
+    }, [searchClicked]);
 
     const groupReservesByRsc = (reserveData) => {
         const groupedReserves = {};
@@ -123,6 +123,7 @@ export default function Reserve() {
                                 ]}
                                 height="50vh"
                                 headerToolbar={false}
+                                themeSystem='United'
                             />
                         </div>
                     </Box>

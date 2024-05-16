@@ -202,8 +202,7 @@ const Calendar = () => {
                             day: '일',
                             list: '목록'
                         }}
-                        themeSystem= 'united'
-                    />
+                        />
                 </Box>
             )}
 
