@@ -24,7 +24,7 @@ import UpdateNotice from './pages/notices/UpdateNotice';
 import Reserve from './pages/reserves/Reserve';
 import InsertBoard from './pages/boards/InsertBoard';
 import Boards from './pages/boards/Boards';
-import Error from './pages/Error';
+import Resources from './pages/resources/Resources';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -80,6 +80,9 @@ function App() {
             <Route index element={<Members />} />
             <Route path="insert" element={<InsertMember />} />
             <Route path=":memberNo" element={<MemberDetail />} />
+          </Route>
+          <Route path='resources'>
+            <Route path=':part' element={<Resources />} />
           </Route>
         </Route>
         <Route path="*" element={<Error />} />
