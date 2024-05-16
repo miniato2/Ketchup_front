@@ -23,6 +23,7 @@ import UpdateNotice from './pages/notices/UpdateNotice';
 import Reserve from './pages/reserves/Reserve';
 import InsertBoard from './pages/boards/InsertBoard';
 import Boards from './pages/boards/Boards';
+import Resources from './pages/resources/Resources';
 
 function App() {
 
@@ -60,11 +61,14 @@ function App() {
             <Route path='insert' element={<InsertMail />} />
             <Route path='reply' element={<MailReply />} />
           </Route>
-        <Route path="mypage" element={<MyPage />}/>
-        <Route path='members'>
+          <Route path="mypage" element={<MyPage />} />
+          <Route path='members'>
             <Route index element={<Members />} />
             <Route path='insert' element={<InsertMember />} />
             <Route path=':memberNo' element={<MemberDetail />} />
+          </Route>
+          <Route path='resources'>
+            <Route path=':part' element={<Resources />} />
           </Route>
         </Route>
         <Route path='login' element={<Login />} />

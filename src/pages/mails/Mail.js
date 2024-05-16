@@ -55,7 +55,11 @@ function Mail() {
                     part == "receive"? 
                         <ReceiveMail 
                             checkedItems={checkedItems} 
-                            setCheckedItems={setCheckedItems} /> : <SendMail part={part} />
+                            setCheckedItems={setCheckedItems} /> 
+                        : 
+                        <SendMail
+                            checkedItems={checkedItems} 
+                            setCheckedItems={setCheckedItems} />
                 }
             </main>
         </>
