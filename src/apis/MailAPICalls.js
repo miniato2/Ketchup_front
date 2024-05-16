@@ -1,4 +1,4 @@
-import { getReceivemail, getSendmail, getMaildetail, postInsertmail, putDeletemail, putReadtime, putCancelmail } from "../modules/MailModule";
+import { getReceivemail, getSendmail, getMaildetail, postInsertmail, putDeletemail, putReadtime, putMailcancel } from "../modules/MailModule";
 import { request } from "./Api";
 
 // 받은 메일
@@ -90,12 +90,13 @@ export const callPostInsertMailAPI = ({ formData }) => {
 // 메일 삭제 = 삭제 상태 수정 X
 export const callPutDeleteMailAPI = ({ part, mailNo }) => {
     console.log("putDeletemail api call...");
+    console.log(mailNo);
 
     return async (dispatch, getState) => {
         const result = await request('PUT', `/mails?part=${part}&mailno=${mailNo}}`);
         console.log(result.data);
 
-        dispatch(putDeletemail());
+        dispatch(putDeletemail(result.data));
     };
 }
 
@@ -125,12 +126,12 @@ export const callPutReadTimeAPI = (mailNo) => {
 
 // 발송 취소
 export function callPutSendMailCancel(mailNo) {
-    console.log("putCancelmail api call...");
+    console.log("putMailcancel api call...");
 
     return async (dispatch, getState) => {
         const result = await request('PUT', `/mails/${mailNo}`);
         console.log(result.data);
 
-        dispatch(putCancelmail(result.data));
+        dispatch(putMailcancel(result.data));
     };
 }
