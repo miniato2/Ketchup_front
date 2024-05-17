@@ -27,6 +27,8 @@ function InsertMember() {
 
 
     });
+
+    console.log(validationMessage)
     const [isOpen, setIsOpen] = useState(false);
     const [form, setForm] = useState({
         memberNo: '',
@@ -36,17 +38,7 @@ function InsertMember() {
 
     });
 
-    const themeObj = {
-        bgColor: '#FFFFFF',
-        pageBgColor: '#FFFFFF',
-        postcodeTextColor: '#C05850',
-        emphTextColor: '#222222',
-    };
-
-    const postCodeStyle = {
-        width: '360px',
-        height: '480px',
-    };
+   
 
     const completeHandler = (data) => {
         console.log('컴플리트 핸들러의 데이터는??', data);
@@ -179,14 +171,7 @@ function InsertMember() {
         return phoneRegex.test(String(phone));
     }
 
-    const isGenderSelected = (gender) => {
-        if(gender === ""){
-            return false;
-        }else{
-            return true;
-        }
-        
-    }
+    
 
 
 
@@ -210,23 +195,6 @@ function InsertMember() {
 
             }
         }
-
-        if (name === "gender") {
-            if (isGenderSelected()) {
-                setValidationMessage({
-                    ...validationMessage,
-                    gender: ''
-                })
-            }
-            else {
-                setValidationMessage({
-                    ...validationMessage,
-                    gender: 'ok!'
-                })
-
-            }
-        }
-
 
         if (name === "companyEmail") {
             if (!isValidCompanyEmail(value)) {
@@ -277,7 +245,7 @@ function InsertMember() {
         }
 
         if (name === "department") {
-            if (form.department === "") {
+            if (value === "" ) {
                 setValidationMessage({
                     ...validationMessage,
                     department: '부서를 선택해주세요'
@@ -293,7 +261,7 @@ function InsertMember() {
         }
 
         if (name === "position") {
-            if (form.position === "") {
+            if (value === "") {
                 setValidationMessage({
                     ...validationMessage,
                     position: '직급을 선택해주세요'
@@ -308,6 +276,24 @@ function InsertMember() {
             }
         }
 
+        
+        if (name === "gender") {
+            if (value === "") {
+                setValidationMessage({
+                    ...validationMessage,
+                    gender: '성별을 선택해주세요'
+                })
+            }
+            else {
+                setValidationMessage({
+                    ...validationMessage,
+                    gender: 'ok!'
+                })
+
+            }
+        }
+
+
         setForm({
             ...form,
             [e.target.name]: e.target.value
@@ -317,6 +303,7 @@ function InsertMember() {
 
     };
 
+    
 
     return (
 
