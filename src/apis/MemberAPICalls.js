@@ -1,4 +1,6 @@
-import { GET_MEMBER, GET_MEMBERS, POST_LOGIN, POST_REGISTER } from '../modules/MemberModule';
+import { GET_MEMBER, GET_MEMBERS, POST_LOGIN, POST_REGISTER} from '../modules/MemberModule';
+import { GET_DEPARTMENTS } from '../modules/DepartmentModule';
+import { GET_POSITIONS } from '../modules/PositionModule';
 import { request,multipartRequest } from './Api';
 
 
@@ -142,3 +144,34 @@ export function callResignMemberAPI(memberNo,statusData) {
         dispatch({ type: GET_MEMBER, payload: result });
     };
 }
+
+
+
+export function callDepartmentsAPI() {
+    console.log("=============전체 부서 호출=============");
+
+    return async (dispatch, getState) => {
+      
+        const result = await request('GET', '/noPageDeps');
+        console.log("전체 부서 호출 API 결과:   ", result.data);
+
+        dispatch({ type: GET_DEPARTMENTS, payload: result.data});
+    };
+}
+
+export function callPositionsAPI() {
+    console.log("============전체 직급 호출==============");
+
+    return async (dispatch,getState) => {
+        const result = await request('GET','/noPagePositions');
+        console.log("전체 직급 호출 API 결과:  ", result.data);
+
+        dispatch({type: GET_POSITIONS, payload: result.data})
+
+    };
+
+
+
+}
+
+

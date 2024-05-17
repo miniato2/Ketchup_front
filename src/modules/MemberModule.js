@@ -14,7 +14,7 @@ const actions = createActions({
     [GET_MEMBER]: () => {},
     [GET_MEMBER]: () => {},
     [POST_LOGIN]: () => {},
-    [POST_REGISTER]: () => {}
+    [POST_REGISTER]: () => {},
 });
 
 /* 리듀서 */
@@ -35,7 +35,8 @@ const memberReducer = handleActions(
         [POST_REGISTER]: (state, { payload }) => {
             
             return payload;
-        },
+        }
+       
 
     },
     initialState
