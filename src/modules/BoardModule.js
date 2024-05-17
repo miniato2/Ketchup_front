@@ -5,19 +5,18 @@ const initialState =  {
     depNo: 0,
     boardContent: '',
     boardCreateDttm: 0,
-    boardImgUrl: '',
     boardNo: 0,
     boardTitle: '',
     boardUpdateDttm: ''
 };
 
-const GET_BOARDLIST = 'notice/GET_BOARDLIST';
-const GET_BOARD = 'notice/GET_BOARD';
-const INSERT_BOARD = 'notice/INSERT_BOARD';
-const UPDATE_BOARD = 'notice/UPDATE_BOARD';
-const DELETE_BOARD = 'notice/DELETE_BOARD';
+const GET_BOARDLIST = 'board/GET_BOARDLIST';
+const GET_BOARD = 'board/GET_BOARD';
+const INSERT_BOARD = 'board/INSERT_BOARD';
+const UPDATE_BOARD = 'board/UPDATE_BOARD';
+const DELETE_BOARD = 'board/DELETE_BOARD';
 
-export const { notice: { getBoardlist, getBoard, insertBoard, updateBoard, deleteBoard } } = createActions({
+export const { board: { getBoardlist, getBoard, insertBoard, updateBoard, deleteBoard } } = createActions({
     [GET_BOARDLIST]: (res) => ({ boardlist: res }),
     [GET_BOARD]: (res) => ({ board: res }),
     [INSERT_BOARD]: (res) => ({ insert: res }),

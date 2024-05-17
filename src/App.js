@@ -23,7 +23,9 @@ import UpdateNotice from './pages/notices/UpdateNotice';
 import Reserve from './pages/reserves/Reserve';
 import InsertBoard from './pages/boards/InsertBoard';
 import Boards from './pages/boards/Boards';
-
+import BoardDetail from './pages/boards/BoardDetail';
+import UpdateBoard from './pages/boards/UpdateBoard';
+// 
 import Resources from './pages/resources/Resources';
 
 // import Error from './pages/Error';
@@ -74,7 +76,11 @@ function App() {
             </Route>
             <Route path="board">
               <Route index element={<Boards />} />
+              <Route path=":boardNo" element={<BoardDetail />} />
               <Route path="insert" element={<InsertBoard />} />
+              <Route path="update">
+                <Route path=":boardNo" element={<UpdateBoard />} />
+              </Route>
             </Route>
             <Route path="calendar" element={<Calendar />} />
             <Route path='reserve' element={<Reserve />} />

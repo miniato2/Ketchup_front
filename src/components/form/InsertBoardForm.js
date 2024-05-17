@@ -2,44 +2,39 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { callInsertNoticeAPI } from "../../apis/NoticeAPICalls";
 import ButtonGroup from "../../components/contents/ButtonGroup";
 import Editor from "../contents/Editor";
 import 'react-quill/dist/quill.snow.css';
+import { callInsertBoardAPI } from "../../apis/BoardAPICalls";
 
-function InsertNoticeForm() {
+function InsertBoardForm() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [title, setTitle] = useState('');
     const [files, setFiles] = useState([]);
-    const [fix, setFix] = useState(false);
     const [content, setContent] = useState('');
 
     const loginToken = window.localStorage.getItem("accessToken");
     const memberNo = loginToken.memberNo;
-
-    const handleFixChange = (e) => {
-        const isChecked = e.target.checked;
-        setFix(isChecked);
-    };
+    const departmentNo = loginToken.depNo;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData();
-        formData.append('noticeDTO', new Blob([JSON.stringify({ noticeTitle: title, memberNo: memberNo, noticeFix: fix ? 'Y' : 'N', noticeContent: content })], { type: 'application/json' }));
+        formData.append('boardDTO', new Blob([JSON.stringify({ boardTitle: title, memberNo: memberNo, departmentNo: departmentNo, boardContent: content })], { type: 'application/json' }));
         files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
 
         try {
             console.log("handleSubmit [ result ] : ", formData);
-            const noticeNo = await dispatch(callInsertNoticeAPI(formData));
-            console.log("dispatch 후 noticeNo : ", noticeNo);
-            if (noticeNo) {
-                console.log('handleSubmit [ noticeNo ] : ', noticeNo);
+            const boardNo = await dispatch(callInsertBoardAPI(formData));
+            console.log("dispatch 후 boardNp : ", boardNo);
+            if (boardNo) {
+                console.log('handleSubmit [ boardNp ] : ', boardNo);
                 // 등록 성공 시 공지 상세 페이지로 이동
-                navigate(`/notices/${noticeNo}`);
+                navigate(`/boards/${boardNo}`);
             } else {
                 console.error("Invalid result:", "실패");
             }
@@ -74,7 +69,7 @@ function InsertNoticeForm() {
         <div className="card-title">
             <div className="input-container">
                 <label htmlFor="title">제목</label>
-                <input type="text" id="title" placeholder=" 공지 제목을 입력하세요" value={title} onChange={(e) => setTitle(e.target.value)} />
+                <input type="text" id="title" placeholder=" 게시물 제목을 입력하세요" value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
             <div className="input-container">
                 <label htmlFor="file">첨부파일</label>
@@ -90,8 +85,6 @@ function InsertNoticeForm() {
                     <input type="file" id="formFile" multiple onChange={handleChangeFiles} />
                 </div>
             </div>
-            <input type="checkbox" id="fix" checked={fix} onChange={handleFixChange} /> &nbsp;
-            <label htmlFor="fix">최상단에 공지로 등록</label>
             <div>
                 <Editor content={content} setContent={setContent} />
             </div>
@@ -99,9 +92,7 @@ function InsertNoticeForm() {
                 <ButtonGroup buttons={buttons} />
             </div>
         </div>
-
-
     );
 };
 
-export default InsertNoticeForm;
+export default InsertBoardForm;
