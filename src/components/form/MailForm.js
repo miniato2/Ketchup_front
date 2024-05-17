@@ -9,7 +9,6 @@ function MailForm() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const members = useSelector(state => state.memberReducer);
-    const memberList = members.data?.content || [];
     const quillRef = useRef();
 
     const [mailForm, setMailForm] = useState({
@@ -27,7 +26,6 @@ function MailForm() {
     );
 
     const onChangeHandler = (e) => {
-        console.log(e.target);
         const { name, value } = e.target;
 
         setMailForm({
@@ -58,7 +56,7 @@ function MailForm() {
             ...prevState,
             receivers: prevState.receivers.filter((_, index) => index !== delIndex)
         }));
-    
+
         setReceiverInfo(prevState => prevState.filter((_, index) => index !== delIndex));
     };
 
@@ -66,36 +64,33 @@ function MailForm() {
         setMailFile([...e.target.files]);
     };
 
+    const goBackList = () => {
+        navigate('/mails/send');
+    }
+
     const submitMailClick = async () => {
         const formData = new FormData();
 
-        const mailInfo = {
+        const mailDto = {
             mailTitle: mailForm.mailTitle,
             mailContent: mailForm.mailContent.ops[0].insert,
             receivers: mailForm.receivers
         };
 
         if (mailForm.mailContent && mailForm.mailContent.ops && mailForm.mailContent.ops.length > 0) {
-            mailInfo.mailContent = mailForm.mailContent.ops[0].insert;
+            mailDto.mailContent = mailForm.mailContent.ops[0].insert;
         }
 
-        formData.append('mailInfo', new Blob([JSON.stringify(mailInfo)], { type: 'application/json' }));
+        formData.append('mailDto', new Blob([JSON.stringify(mailDto)], { type: 'application/json' }));
         mailFile.forEach(file => formData.append('mailFile', file));
-        
-        console.log([...formData.entries()]);
 
         try {
             await dispatch(callPostInsertMailAPI({ formData }));
-            // navigate('/mails/send');
+            navigate(`/mails/send`);
         } catch (error) {
             console.error(error);
         }
     };
-
-    // 취소 버튼 미완성
-    // const backMailList = () => () => {
-    //     navigate(`/mails/${part}`);
-    // }
 
     return (
         <>
@@ -113,21 +108,13 @@ function MailForm() {
             <div className="input-container d-flex">
                 <label>받는 사람</label>
                 <div>
-                    <div className="mb-2">
-                        {receiverInfo.map((receiver, index) => (
-                            <div key={index} className="d-inline selected-recipient">
-                                <span>{receiver.receiverMem}</span>
-                                <i className="bi bi-x" onClick={() => removeReceiver(index)}></i>
-                            </div>
-                        ))}
-                    </div>
                     <select
                         className="form-select"
                         id="recipient"
                         onChange={addReceiver}
                         value={mailForm.receivers}>
                         <option selected>수신자를 선택하세요</option>
-                        {memberList.map((item, index) => {
+                        {members.map((item, index) => {
                             return (
                                 <option
                                     key={index}
@@ -137,17 +124,25 @@ function MailForm() {
                             );
                         })}
                     </select>
+                    <div className="mt-3">
+                        {receiverInfo.map((receiver, index) => (
+                            <div key={index} className="d-inline selected-recipient">
+                                <span>{receiver.receiverMem}</span>
+                                <i className="bi bi-x" onClick={() => removeReceiver(index)}></i>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
             <div className="input-container">
-                <label htmlFor="file">첨부파일</label>
+                <label htmlFor="mailFile">첨부파일</label>
                 <div className="file-input">
-                    <input type="file" id="formFile" multiple onChange={handleFileChange} />
+                    <input type="file" id="mailFile" multiple onChange={handleFileChange} />
                 </div>
             </div>
             <div>
                 <ReactQuill
-                    style={{ height: "350px", margin: "4px", overflowY: 'auto' }}
+                    style={{ height: "400px", overflowY: 'scroll' }}
                     ref={quillRef}
                     value={mailForm.mailContent}
                     theme="snow"
@@ -162,7 +157,7 @@ function MailForm() {
                 />
             </div>
             <div className="d-flex justify-content-end mt-4">
-                <button className="back-btn">취소</button>
+                <button className="back-btn" onClick={goBackList}>취소</button>
                 <button type="submit" onClick={submitMailClick} className="move-btn">전송</button>
             </div>
         </>

@@ -14,12 +14,12 @@ function MailDeleteModal({ setDeleteModal, part, delMailList, setDelMailList }) 
     const buttonClick = async (label) => {
         if (label === "취소") {
             setDeleteModal(false);
-            setDelMailList([]); 
+            setDelMailList([]);
         }else if (label === "삭제") {
             await dispatch(callPutDeleteMailAPI(part, delMailList));
         }else if(label === "확인") {
             setDeleteModal(false);
-            setDelMailList([]); 
+            setDelMailList([]);
             navigate(`/mails/${part}`);
         }
     };
