@@ -28,7 +28,7 @@ function InsertMember() {
 
     });
 
-    console.log(validationMessage)
+
     const [isOpen, setIsOpen] = useState(false);
     const [form, setForm] = useState({
         memberNo: '',

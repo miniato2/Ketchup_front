@@ -31,10 +31,12 @@ import Resources from './pages/resources/Resources';
 // import Error from './pages/Error';
 
 function App() {
+  console.log("App 도착!")
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // 로그인 상태 확인 로직 추가
   useEffect(() => {
+
     const accessToken = window.localStorage.getItem('accessToken');
     if (accessToken) {
       setIsLoggedIn(true);
@@ -46,19 +48,17 @@ function App() {
     setIsLoggedIn(true);
   };
 
-  // isLoggedIn 상태에 따라 리다이렉션 경로 설정
-  const redirectPath = isLoggedIn ? '/main' : '/login';
+  
 
   return (
     <BrowserRouter>
       <Routes>
         {/* 로그인 여부에 따라 "/" 경로를 리다이렉션 */}
-        <Route path="/" element={<Navigate to={redirectPath} replace />} />
-
+        <Route path="/" element={isLoggedIn ? <Navigate to="/main" /> : <Navigate to="/login" />} />
         <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
-        {isLoggedIn && (
+        
+       
           <Route path="/" element={<Layout />}>
-            {/* <Route index element={<Main />} /> */}
             <Route path='main' element={<Main />} />
             <Route path="notices">
               <Route index element={<Notices />} />
@@ -103,7 +103,11 @@ function App() {
             </Route>
 
           </Route>
-        )}
+      
+        
+        <Route index element={<Login/>} />
+        
+   
 
         {/* <Route path="*" element={<Error />} /> */}
       </Routes>
