@@ -49,7 +49,7 @@ export function callGetSendMailAPI() {
 }
 
 // 메일 상세
-export function callGetMailDetailAPI({ mailNo }) {
+export function callGetMailDetailAPI(mailNo) {
     console.log("getMailDetail api call...");
 
     return async (dispatch, getState) => {
@@ -87,14 +87,14 @@ export const callPostInsertMailAPI = ({ formData }) => {
     };
 }
 
-// 메일 삭제 = 삭제 상태 수정 X
-export const callPutDeleteMailAPI = ({ part, mailNo }) => {
+// 메일 삭제 = 삭제 상태 수정
+export const callPutDeleteMailAPI = ( part, mailNos ) => {
     console.log("putDeletemail api call...");
-    console.log(mailNo);
 
     return async (dispatch, getState) => {
-        const result = await request('PUT', `/mails?part=${part}&mailno=${mailNo}}`);
-        console.log(result.data);
+        const mailnoParams = mailNos.map(mailNo => `mailno=${mailNo}`).join('&');
+        const result = await request('PUT', `/mails?part=${part}&${mailnoParams}`);
+        console.log(result);
 
         dispatch(putDeletemail(result.data));
     };
