@@ -60,8 +60,8 @@ export function callGetMailDetailAPI(mailNo) {
     };
 }
 
-// 메일 작성 X
-export const callPostInsertMailAPI = ({ formData }) => {
+// 메일 작성
+export const callPostInsertMailAPI = ({formData}) => {
     console.log("postInsertmail api call...");
 
     const requestURL = `http://localhost:8080/mails`;
@@ -71,16 +71,13 @@ export const callPostInsertMailAPI = ({ formData }) => {
             const result = await fetch(requestURL, {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer ' + window.localStorage.getItem('accessToken'),
-                    'Content-Type': 'multipart/form-data',
-                    'Accept': '*/*'
+                    'Authorization': 'Bearer ' + window.localStorage.getItem('accessToken')
                 },
                 body: formData
             }).then((response) => response.json());
+            console.log(result.data);
 
-            console.log(result);
-
-            dispatch(postInsertmail(result));
+            dispatch(postInsertmail(result.data));
         } catch (error) {
             console.error('네트워크 오류:', error);
         }
@@ -109,8 +106,8 @@ export const callPutReadTimeAPI = (mailNo) => {
     return async (dispatch, getState) => {
         try {
             const response = await fetch(requestURL, {
-                method: 'PUT',
-                headers: {
+                'method': 'PUT',
+                'headers': {
                     'Authorization': 'Bearer ' + window.localStorage.getItem('accessToken')
                 }
             });

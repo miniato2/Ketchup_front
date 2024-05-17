@@ -1,30 +1,25 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { callGetNoticeAPI, callUpdateNoticeAPI } from "../../apis/NoticeAPICalls";
 import ButtonGroup from "../../components/contents/ButtonGroup";
 import Editor from "../contents/Editor";
+import { callGetBoardAPI, callUpdateBoardAPI } from "../../apis/BoardAPICalls";
 
-function UpdateNoticeForm() {
-    const { noticeNo } = useParams();
+function UpdateBoardForm() {
+    const { boardNo } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [title, setTitle] = useState('');
     const [files, setFiles] = useState([]);
-    const [fix, setFix] = useState(false);
     const [content, setContent] = useState('');
     const [setFileList] = useState([]);
-
-    const handleFixChange = (e) => {
-        const isChecked = e.target.checked;
-        setFix(isChecked);
-    };
 
     let memberNo = '';
 
     const loginToken = window.localStorage.getItem("accessToken");
     memberNo = loginToken.memberNo;
+    const departmentNo = loginToken.depNo;
 
     // 파일 삭제 함수
     const handleDeleteFile = (index) => {
@@ -37,12 +32,12 @@ function UpdateNoticeForm() {
         e.preventDefault();
 
         const formData = new FormData();
-        formData.append('noticeDTO', new Blob([JSON.stringify({ noticeTitle: title, memberNo: memberNo, noticeFix: fix ? 'Y' : 'N', noticeContent: content })], { type: 'application/json' }));
+        formData.append('boardDTO', new Blob([JSON.stringify({ boardTitle: title, memberNo: memberNo, departmentNo: departmentNo, boardContent: content })], { type: 'application/json' }));
         files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
 
         try {
-            await dispatch(callUpdateNoticeAPI(formData, noticeNo));
-            navigate(`/notices/${noticeNo}`);
+            await dispatch(callUpdateBoardAPI(formData, boardNo));
+            navigate(`/boards/${boardNo}`);
         } catch (error) {
             console.error(error);
         }
@@ -64,27 +59,26 @@ function UpdateNoticeForm() {
 
     useEffect(() => {
         // 공지 정보 불러오기
-        dispatch(callGetNoticeAPI(noticeNo));
-    }, [dispatch, noticeNo]);
+        dispatch(callGetBoardAPI(boardNo));
+    }, [dispatch, boardNo]);
 
     // useSelector를 사용하여 Redux 스토어에서 공지 정보 가져오기
-    const notice = useSelector(state => state.noticeReducer.notice);
+    const board = useSelector(state => state.boardReducer.board);
 
     useEffect(() => {
-        if (notice) {
-            setTitle(notice.noticeTitle);
-            setContent(notice.noticeContent);
-            setFix(notice.noticeFix === 'Y');
-            setFiles(notice.noticeFileList || []);
+        if (board) {
+            setTitle(board.boardTitle);
+            setContent(board.boardContent);
+            setFiles(board.boardFileList || []);
         }
-    }, [notice]);
+    }, [board]);
 
     return (
 
         <div className="card-title">
             <div className="input-container">
                 <label htmlFor="title">제목</label>
-                <input type="text" id="title" placeholder=" 공지 제목을 입력하세요" value={title} onChange={(e) => setTitle(e.target.value)} />
+                <input type="text" id="title" placeholder=" 게시물 제목을 입력하세요" value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
             <div className="input-container">
                 <label htmlFor="file">첨부파일</label>
@@ -92,7 +86,7 @@ function UpdateNoticeForm() {
                     <ul>
                         {files.map((file, index) => (
                             <li style={{ listStyle: 'none' }} key={index}>
-                                <span>{file.noticeFileOriName || file.name}</span> &nbsp;
+                                <span>{file.boardFileOriName || file.name}</span> &nbsp;
                                 {/* 파일 삭제 버튼 */}
                                 <button onClick={() => handleDeleteFile(index)} style={{ border: 'none', background: 'none', cursor: 'pointer' }}>x</button>
                             </li>
@@ -101,8 +95,6 @@ function UpdateNoticeForm() {
                     <input type="file" id="formFile" multiple onChange={handleChangeFiles} />
                 </div>
             </div>
-            <input type="checkbox" id="fix" checked={fix} onChange={handleFixChange} /> &nbsp;
-            <label htmlFor="fix">최상단에 공지로 등록</label>
             <div>
                 <Editor content={content} setContent={setContent} />
             </div>
@@ -114,4 +106,4 @@ function UpdateNoticeForm() {
 
 }
 
-export default UpdateNoticeForm;
+export default UpdateBoardForm;
