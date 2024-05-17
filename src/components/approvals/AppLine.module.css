@@ -6,6 +6,7 @@
 }
 .appTable td{
     border: solid 0.5px #999797;
+    background-color: #fffcfc;
 }
 .appTable th {
     border: solid 0.5px #999797;

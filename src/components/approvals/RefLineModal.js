@@ -8,9 +8,7 @@ function RefLineModal({ setModalControl, setRefLine }) {
     const column = ['번호', '부서', '이름', '직급'];
 
     const dispatch = useDispatch();
-    const members = useSelector(state => state.memberReducer);
-    const memberList = members.data?.content;
-
+    const memberList = useSelector(state => state.memberReducer);
     const [selectedMember, setSelectedMember] = useState({
         refMember: {
             memberNo: '', memberName: '',
@@ -40,6 +38,22 @@ function RefLineModal({ setModalControl, setRefLine }) {
         setSelectedMember({
             refMember: member
         });
+    }
+
+    const onDoubleClickList = (member) => {
+        if(!selectedRefList.find(item => item.refMember.memberNo === member.memberNo)){
+            setSelectedRefList([
+                ...selectedRefList,
+                {
+                    refMember: {
+                        memberNo: member.memberNo,
+                        memberName: member.memberName,
+                        department: { depName: member.department.depName },
+                        position: { positionName: member.position.positionName }
+                    }
+                }
+            ]);
+        }
     }
 
     const onClickAddButton = () => {
@@ -87,6 +101,7 @@ function RefLineModal({ setModalControl, setRefLine }) {
                                             {members.map((member, index) => (
                                                 <li key={member.memberNo}
                                                     onClick={() => onClickList(member)}
+                                                    onDoubleClick={() => onDoubleClickList(member)}
                                                     className={selectedMember.refMember.memberNo === member.memberNo ? AppModalCss.selectedLi : ''}
                                                 >
                                                     {member.memberName}
@@ -111,7 +126,7 @@ function RefLineModal({ setModalControl, setRefLine }) {
                                 <thead>
                                     <tr>
                                         {column.map((item) => (
-                                            <th scope='col' key={item.index} style={{ width: '25%' }}>{item}</th>
+                                            <th scope='col' key={item} style={{ width: '25%' }}>{item}</th>
                                         ))}
                                     </tr>
                                 </thead>

@@ -17,7 +17,6 @@ function Approvals() {
     const [search, setSearch] = useState('');
 
     const dispatch = useDispatch();
-    
 
     const apps = useSelector(state => state.approvalReducer);
     const appList = apps.data?.content;
@@ -70,7 +69,7 @@ function Approvals() {
 
     return (
         <main id="main" className={'main'}>
-            <AppCategory category={category} setCategory={setCategory} setCurrentPage={setCurrentPage}/>
+            <AppCategory category={category} setCategory={setCategory} setCurrentPage={setCurrentPage} setStatus={setStatus} setSearch={setSearch} appList={appList}/>
             <div style={{ display: "flex", height: "60px", backgroundColor: "#f5f5f5", alignItems: "center", borderBottom: 'solid 0.5px black'}}>
                 <select className={ApprovalCss.selectStatus} onChange={statusChangeHandler}>
                     <option>전체</option>
@@ -90,7 +89,6 @@ function Approvals() {
             </div>
             <AppList data={appList}/>
             <PaginationButtons totalItems={apps.pageInfo?.total} itemsPerPage={10} currentPage={currentPage} onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
-            {/* totalItems 전체 갯수 조회 내용 넣어야함 */}
         </main>
     )
 }

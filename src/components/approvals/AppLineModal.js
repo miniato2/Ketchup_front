@@ -6,8 +6,7 @@ import { callMembersAPI } from '../../apis/MemberAPICalls';
 
 function AppLineModal({ setModalControl, setAppLine }) {
     const dispatch = useDispatch();
-    const members = useSelector(state => state.memberReducer);
-    const memberList = members.data?.content; //전체 사원
+    const memberList = useSelector(state => state.memberReducer); //전체 사원
 
     const [selectedMember, setSelectedMember] = useState({
         alMember : {
@@ -48,6 +47,29 @@ function AppLineModal({ setModalControl, setAppLine }) {
             alType: '',
             sequence: ''
         });
+    }
+
+    const onDoubleClickList = (member) => {
+        if(!selectedAppList.find(item => item.alMember.memberNo === member.memberNo)){
+            setSelectedAppList([
+                ...selectedAppList,
+                {
+                    alMember: {
+                        memberNo: member.memberNo,
+                        memberName: member.memberName,
+                        department: {
+                            depName: member.department.depName
+                        },
+                        position: {
+                            positionName: member.position.positionName
+                        }
+                    },
+                    alType: '일반',
+                    sequence: count
+                }
+            ]);
+            setCount(count + 1);
+        }
     }
 
     const onClickAddButton = () => {
@@ -119,6 +141,7 @@ function AppLineModal({ setModalControl, setAppLine }) {
                                             {members.map((member, index) => (
                                                 <li key={member.memberNo}
                                                     onClick={() => onClickList(member)}
+                                                    onDoubleClick={() => onDoubleClickList(member)}
                                                     className={selectedMember.alMember.memberNo === member.memberNo ? AppModalCss.selectedLi : ''}
                                                 >
                                                     {member.memberName}
@@ -142,7 +165,7 @@ function AppLineModal({ setModalControl, setAppLine }) {
                             <thead>
                                 <tr>
                                     {column.map((item) => (
-                                        <th scope='col' key={item.index} style={{width: '20%'}}>{item}</th>
+                                        <th scope='col' key={item} style={{width: '20%'}}>{item}</th>
                                     ))}
                                 </tr>
                             </thead>
