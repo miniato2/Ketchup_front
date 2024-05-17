@@ -2,6 +2,7 @@ import { GET_MEMBER, GET_MEMBERS, POST_LOGIN, POST_REGISTER} from '../modules/Me
 import { GET_DEPARTMENTS } from '../modules/DepartmentModule';
 import { GET_POSITIONS } from '../modules/PositionModule';
 import { request,multipartRequest } from './Api';
+import { useNavigate } from 'react-router-dom';
 
 
 export const callGetMemberAPI = ({ memberNo }) => {
@@ -51,6 +52,8 @@ export const callLoginAPI = ({ form }) => {
             window.localStorage.setItem('accessToken', result.token);
 
             dispatch({ type: POST_LOGIN, payload: result });
+          
+            
         }
     };
 };

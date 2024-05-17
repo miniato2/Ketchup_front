@@ -37,7 +37,7 @@ function Header() {
                     <li className="nav-item dropdown pe-2">
                         <a className="nav-link nav-profile d-flex align-items-center pe-6" href="#" data-bs-toggle="dropdown">
 
-                            <img src={`/img/${token.imgUrl}`} width="55" height="45"  alt="Profile" className="rounded-circle" />
+                            <img src={`/img/${token.imgUrl}`} width="45" height="45"  alt="Profile" className="rounded-circle" />
                             
                             <span className="d-none d-md-block dropdown-toggle ps-2" style={{ color: "#000" }}>{token.memberName} 사원</span>
                         </a>

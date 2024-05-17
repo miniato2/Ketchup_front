@@ -67,6 +67,7 @@ h6 {
   margin-bottom: 0;
   font-weight: 600;
   color: #000;
+  width: 600px;
 }
 
 /*--------------------------------------------------------------
@@ -368,8 +369,8 @@ h6 {
 }
 
 .logo img {
-  max-height: 26px;
-  margin-right: 6px;
+  max-height: 50px;
+  margin-right: 50px;
 }
 
 .logo span {
@@ -423,7 +424,7 @@ h6 {
 }
 
 .header-nav .nav-profile img {
-  max-height: 36px;
+  max-height: 50px;
 }
 
 .header-nav .nav-profile span {

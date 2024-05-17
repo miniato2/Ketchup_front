@@ -12,7 +12,7 @@ export const POST_REGISTER  = 'member/POST_REGISTER';
 
 const actions = createActions({
     [GET_MEMBER]: () => {},
-    [GET_MEMBER]: () => {},
+    [GET_MEMBERS]: () => {},
     [POST_LOGIN]: () => {},
     [POST_REGISTER]: () => {},
 });
