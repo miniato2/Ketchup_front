@@ -23,8 +23,8 @@ function MailDetail() {
 
     useEffect(
         () => {
-            dispatch(callGetMailDetailAPI({ mailNo }));
-        }, []
+            dispatch(callGetMailDetailAPI(mailNo));
+        }, [mailNo]
     );
 
     const backMailList = () => {

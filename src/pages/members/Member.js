@@ -23,7 +23,6 @@ function Member({ selectMemberNo }) {
         await dispatch(callResignMemberAPI(memberDetail.memberNo, { status: e.target.value }));
         await dispatch(callGetMemberAPI({ memberNo: selectMemberNo }));
 
-
     }
 
     useEffect(

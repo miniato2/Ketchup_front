@@ -3,23 +3,20 @@ import '../../../style.css';
 import '../../../pages/mails/mail.css';
 
 const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedItems }) => {
+  const toggleCheckbox = (mailNo) => {
+    setCheckedItems(prevState => ({
+      ...prevState,
+      [mailNo]: !prevState[mailNo]
+    }));
+  };
 
-  // 전체 선택 여부를 토글하는 함수
   const toggleAllCheckboxes = () => {
     const newCheckedItems = {};
-    data.forEach((item, index) => {
-      newCheckedItems[index] = !checkedItems[index];
+    data.forEach((item) => {
+      newCheckedItems[item.mailNo] = !checkedItems[item.mailNo];
     });
 
     setCheckedItems(newCheckedItems);
-  };
-
-  // 특정 행의 체크박스를 토글하는 함수
-  const toggleCheckbox = (index) => {
-    setCheckedItems(prevState => ({
-      ...prevState,
-      [index]: !prevState[index]
-    }));
   };
 
   return (
@@ -46,8 +43,8 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
               <td style={{ padding: "15px", textAlign: 'center' }}>
                 <input
                   type="checkbox"
-                  checked={checkedItems[index] || false}
-                  onChange={() => toggleCheckbox(index)} />
+                  checked={checkedItems[item.mailNo] || false}
+                  onChange={() => toggleCheckbox(item.mailNo)} />
               </td>
               <td>{data.length - index}</td>
               {columns.map(([key], columnIndex) => (
