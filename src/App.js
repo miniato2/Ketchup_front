@@ -25,6 +25,9 @@ import InsertBoard from './pages/boards/InsertBoard';
 import Boards from './pages/boards/Boards';
 import BoardDetail from './pages/boards/BoardDetail';
 import UpdateBoard from './pages/boards/UpdateBoard';
+// 
+import Resources from './pages/resources/Resources';
+
 // import Error from './pages/Error';
 
 function App() {
@@ -51,50 +54,57 @@ function App() {
       <Routes>
         {/* 로그인 여부에 따라 "/" 경로를 리다이렉션 */}
         <Route path="/" element={<Navigate to={redirectPath} replace />} />
+
         <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
         {isLoggedIn && (
-        <Route path="/" element={<Layout />}>
-          {/* <Route index element={<Main />} /> */}
-          <Route path='main' element={<Main />} />
-          <Route path="notices">
-            <Route index element={<Notices />} />
-            <Route path=":noticeNo" element={<NoticeDetail />} />
-            <Route path="insert" element={<InsertNotice />} />
-            <Route path="update">
-              <Route path=":noticeNo" element={<UpdateNotice />} />
+          <Route path="/" element={<Layout />}>
+            {/* <Route index element={<Main />} /> */}
+            <Route path='main' element={<Main />} />
+            <Route path="notices">
+              <Route index element={<Notices />} />
+              <Route path=":noticeNo" element={<NoticeDetail />} />
+              <Route path="insert" element={<InsertNotice />} />
+              <Route path="update">
+                <Route path=":noticeNo" element={<UpdateNotice />} />
+              </Route>
+
             </Route>
-          </Route>
-          <Route path="approvals">
-            <Route index element={<Approvals />} />
-            <Route path="insert" element={<InsertApproval />} />
-            <Route path=":approvalNo" element={<ApprovalDetail />} />
-          </Route>
-          <Route path="boards">
-            <Route index element={<Boards />} />
-            <Route path=":boardNo" element={<BoardDetail /> } />
-            <Route path="insert" element={<InsertBoard />} />
-            <Route path="update">
-              <Route path=":boardNo" element={<UpdateBoard />} />
+            <Route path="approvals">
+              <Route index element={<Approvals />} />
+              <Route path="insert" element={<InsertApproval />} />
+              <Route path=":approvalNo" element={<ApprovalDetail />} />
             </Route>
-           </Route>
-          <Route path="calendar" element={<Calendar />} />
-          <Route path='reserve' element={<Reserve/>}/>          
-          <Route path="mails">
-            <Route path=":part" element={<Mail />} />
-            <Route path="detail">
-              <Route path=":mailNo" element={<MailDetail />} />
+            <Route path="board">
+              <Route index element={<Boards />} />
+              <Route path=":boardNo" element={<BoardDetail />} />
+              <Route path="insert" element={<InsertBoard />} />
+              <Route path="update">
+                <Route path=":boardNo" element={<UpdateBoard />} />
+              </Route>
             </Route>
-            <Route path="insert" element={<InsertMail />} />
-            <Route path="reply" element={<MailReply />} />
+            <Route path="calendar" element={<Calendar />} />
+            <Route path='reserve' element={<Reserve />} />
+            <Route path="mails">
+              <Route path=":part" element={<Mail />} />
+              <Route path="detail">
+                <Route path=":mailNo" element={<MailDetail />} />
+              </Route>
+              <Route path="insert" element={<InsertMail />} />
+              <Route path="reply" element={<MailReply />} />
+            </Route>
+            <Route path="mypage" element={<MyPage />} />
+            <Route path="members">
+              <Route index element={<Members />} />
+              <Route path="insert" element={<InsertMember />} />
+              <Route path=":memberNo" element={<MemberDetail />} />
+            </Route>
+            <Route path='resources'>
+              <Route path=':part' element={<Resources />} />
+            </Route>
+
           </Route>
-          <Route path="mypage" element={<MyPage />} />
-          <Route path="members">
-            <Route index element={<Members />} />
-            <Route path="insert" element={<InsertMember />} />
-            <Route path=":memberNo" element={<MemberDetail />} />
-          </Route>
-        </Route>
-         )}
+        )}
+
         {/* <Route path="*" element={<Error />} /> */}
       </Routes>
     </BrowserRouter>

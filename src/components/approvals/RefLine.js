@@ -1,14 +1,13 @@
 import Style from "./AppLine.module.css";
 
 function RefLine({refline}){
-    console.log('결재선 리스트', refline);
     return(
         <div style={{overflowX: 'auto'}}>
             <table className={Style.appTable} >
                 <thead>
                     <tr>
                         <th scope='col' width={'133px'} style={{minWidth: '133px', width: '133px'}}>구분</th>
-                        {refline.map(() => (
+                        {refline.map((index) => (
                             <th width={'133px'} style={{ minWidth: '133px'}}>참조자</th>
                         ))}
                         {refline.length < 8 ? <th></th> : null }
@@ -18,7 +17,7 @@ function RefLine({refline}){
                     <tr>
                         <th scope='row'>성명</th>
                         {refline.map((item) => (
-                            <td key={item.index}>{item.refMember.memberName}</td>
+                            <td>{item.refMember.memberName}</td>
                         ))}
                         {refline.length < 8 ? <td></td> : null }
                     </tr>

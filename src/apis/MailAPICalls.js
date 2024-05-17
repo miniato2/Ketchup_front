@@ -1,4 +1,4 @@
-import { getReceivemail, getSendmail, getMaildetail, postInsertmail, putDeletemail, putReadtime } from "../modules/MailModule";
+import { getReceivemail, getSendmail, getMaildetail, postInsertmail, putDeletemail, putReadtime, putMailcancel } from "../modules/MailModule";
 import { request } from "./Api";
 
 // 받은 메일
@@ -49,7 +49,7 @@ export function callGetSendMailAPI() {
 }
 
 // 메일 상세
-export function callGetMailDetailAPI({ mailNo }) {
+export function callGetMailDetailAPI(mailNo) {
     console.log("getMailDetail api call...");
 
     return async (dispatch, getState) => {
@@ -60,7 +60,7 @@ export function callGetMailDetailAPI({ mailNo }) {
     };
 }
 
-// 메일 작성
+// 메일 작성 X
 export const callPostInsertMailAPI = ({ formData }) => {
     console.log("postInsertmail api call...");
 
@@ -88,14 +88,15 @@ export const callPostInsertMailAPI = ({ formData }) => {
 }
 
 // 메일 삭제 = 삭제 상태 수정
-export const callPutDeleteMailAPI = ({ part, mailNo }) => {
+export const callPutDeleteMailAPI = ( part, mailNos ) => {
     console.log("putDeletemail api call...");
 
     return async (dispatch, getState) => {
-        const result = await request('PUT', `/mails?part=${part}&mailno=${mailNo}}`);
-        console.log(result.data);
+        const mailnoParams = mailNos.map(mailNo => `mailno=${mailNo}`).join('&');
+        const result = await request('PUT', `/mails?part=${part}&${mailnoParams}`);
+        console.log(result);
 
-        dispatch(putDeletemail());
+        dispatch(putDeletemail(result.data));
     };
 }
 
@@ -120,5 +121,17 @@ export const callPutReadTimeAPI = (mailNo) => {
         } catch (error) {
             console.error('Error updatetime :', error);
         }
-    }
+    };
+}
+
+// 발송 취소
+export function callPutSendMailCancel(mailNo) {
+    console.log("putMailcancel api call...");
+
+    return async (dispatch, getState) => {
+        const result = await request('PUT', `/mails/${mailNo}`);
+        console.log(result.data);
+
+        dispatch(putMailcancel(result.data));
+    };
 }

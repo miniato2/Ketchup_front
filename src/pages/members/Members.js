@@ -53,7 +53,7 @@ function Members() {
         <>
             <main id="main">
                 <div >
-                    <h1>사원목록</h1>
+                    <h2>사원목록</h2>
                     <Link to="/members/insert">
                         <ButtonGroup buttons={buttons} />
                     </Link>

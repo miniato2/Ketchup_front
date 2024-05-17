@@ -64,12 +64,12 @@ function Sidebar() {
                     </a>              
                     <ul id="resource-management-nav" className="nav-content collapse" data-bs-parent="#resource-management-parent">                    
                         <li class="nav-item">
-                            <Link to="/resource-management-metting.html" style={{ color: "black", textDecorationLine: "none"}}>
+                            <Link to="/resources/conferences" style={{ color: "black", textDecorationLine: "none"}}>
                                 <i></i><span> - 회의실</span>
                             </Link>
                         </li>
                         <li class="nav-item">
-                            <Link to="/resource-management-vehicle.html" style={{ color: "black", textDecorationLine: "none"}}>
+                            <Link to="/resources/vehicles" style={{ color: "black", textDecorationLine: "none"}}>
                                 <i></i><span> - 차량</span>
                             </Link>
                         </li>

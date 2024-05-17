@@ -5,8 +5,8 @@ import MailTable from "../../items/mails/MailTable";
 import { useNavigate, useParams } from "react-router-dom";
 import FormatDateTime from "../../contents/FormatDateTime";
 
-function SendMail() {
-    const {part} = useParams();
+function SendMail({ checkedItems, setCheckedItems }) {
+    const { part } = useParams();
     const [sortedMail, setSortedMail] = useState([]);
     const result = useSelector(state => state.mailReducer);
     const sendMail = result && result.sendmail && result.sendmail.length > 0 ? result.sendmail : null;
@@ -39,15 +39,19 @@ function SendMail() {
     const handleRowClick = (index) => () => {
         const mailNo = sendMail[index]?.mailNo;
 
-        navigate(`/mails/detail/${mailNo}`, {state: {part}});
+        navigate(`/mails/detail/${mailNo}`, { state: { part } });
     };
 
     return (
-        sendMail && (
-            <div>
-                <MailTable data={sortedMail} columns={columns} onRowClick={handleRowClick} part={part} />
-            </div>
-        )
+        <div>
+            <MailTable
+                data={sortedMail}
+                columns={columns}
+                onRowClick={handleRowClick}
+                part={part}
+                checkedItems={checkedItems}
+                setCheckedItems={setCheckedItems} />
+        </div>
     );
 }
 

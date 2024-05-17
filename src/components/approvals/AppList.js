@@ -36,10 +36,17 @@ function AppList({ data }) {
                                 ))}
                             </td>
                             <td>{item.member.memberName}</td>
-                            <td>{item.appDate?.substring(0, 8)}</td>
-                            <td>{item.alDate? item.appFinalDate?.substring(0, 8) : '-'}</td>
+                            <td>{item.appDate}</td>
+                            <td>{item.alDate? item.appFinalDate : '-'}</td>
                         </tr>
                     ))}
+                    {Array.isArray(data) && data.length === 0 && 
+                    <tr>
+                        <td colSpan={6} style={{textAlign:"center", color: "#999797"}}>
+                            목록을 찾을 수 없습니다.
+                        </td>
+                    </tr>
+                    }
                 </tbody>
             </Table>
         </>

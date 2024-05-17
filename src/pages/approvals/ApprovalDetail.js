@@ -1,24 +1,65 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import AppLine from "../../components/approvals/AppLine";
 import RefLine from "../../components/approvals/RefLine";
 import Style from "./Approvals.module.css"
 import ReactQuill from "react-quill";
-import { useParams } from "react-router-dom";
-import { callAppAPI } from "../../apis/ApprovalAPICalls";
+import { useNavigate, useParams } from "react-router-dom";
+import { callAppAPI, callUpdateApprovalAPI } from "../../apis/ApprovalAPICalls";
+import { decodeJwt } from "../../utils/tokenUtils";
 
 function ApprovalDetail() {
+    const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const approval = useSelector(state => state.approvalReducer);
     const param = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [appAction, setAppAction] = useState('');
+    const [refusal, setRefusal] = useState('');
 
-    console.log('상세 ',approval)
+    console.log('상세', approval)
 
     const quillRef = useRef(null);
 
     useEffect(() => {
         dispatch(callAppAPI({ approvalNo: param.approvalNo }));
-    }, [])
+    }, [dispatch])
+
+    const onClickListHandler = () => {
+        navigate(`/approvals`, { replace: false });
+    }
+
+    const onChangeRefusalHandler = (e) => {
+        setRefusal(e.target.value);
+    }
+
+    const onClickCancelAppHandler = () => {
+        const appUpdate = {
+            action: '회수'
+        }
+        dispatch(callUpdateApprovalAPI(appUpdate, approval.approvalNo))
+        .then(() => navigate(`/approvals`, { replace: false }));
+        //돌아가면 카테고리별 문서 수 다시 안불러옴 수정 필요
+    }
+
+    const onClickSubmitHandler = () => {
+        const appUpdate = {
+            action: appAction,
+            refusal: refusal
+        }
+        if (appAction === '') {
+            alert('승인 또는 반려를 선택해주세요');
+        } else if (appAction === "반려" && refusal.trim() === '') {
+            alert('반려 사유를 입력해주세요');
+        } else {
+            try {
+                dispatch(callUpdateApprovalAPI(appUpdate, approval.approvalNo));
+                navigate(`/approvals`, { replace: false });
+            } catch {
+                alert('에러');
+            }
+        }
+    }
 
     return (
         <main id="main" className="main">
@@ -41,9 +82,9 @@ function ApprovalDetail() {
                             </tr>
                             <tr>
                                 <th >첨부파일</th>
-                                <td ><a href={approval.appFileList[0]}>ㅇㅇㅇ</a></td>
-                                {/* 나중에 리스트 형식으로 다시 만들자 + 경로 재설정 */}
-
+                                <td >
+                                {Array.isArray(approval.appFileList) && approval.appFileList.map((item, index) => (<span><a href={`img/approvals/${item.fileUrl}`} download>{item.fileUrl}</a><br /></span>))}
+                                </td>
                                 <th >기안자</th>
                                 <td>{approval.member.memberName}</td>
                             </tr>
@@ -61,19 +102,46 @@ function ApprovalDetail() {
                         ref={quillRef}
                         readOnly
                         theme="snow"
+                        modules={{toolbar:false}}
                         value={approval.appContents}
                         placeholder="내용을 입력하세요." />
+                    <br />
 
-                    <h1>승인/반려</h1>
-                    <div>
-                        
-                    </div>
-
+                    {approval?.appLineList.find(item => item.alMember.memberNo === loginToken.memberNo) ?
+                        <div>
+                            <h5>처리</h5>
+                            <table className={Style.appTable}>
+                                <tbody>
+                                    <tr>
+                                        <th width={'15%'}>구분</th>
+                                        <td width={'15%'} style={{ textAlign: 'center' }}>
+                                            <input type="radio" name="appRadio" id="appRadio1" onChange={() => setAppAction("결재")} />
+                                            <label for="appRadio1">승인</label>
+                                        </td>
+                                        <td width={'15%'} style={{ textAlign: 'center' }}>
+                                            <input type="radio" name="appRadio" id="appRadio2" onChange={() => setAppAction("반려")} />
+                                            <label for="appRadio2">반려</label>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    {appAction === "반려" &&
+                                        <tr>
+                                            <th width={'15%'}>반려사유</th>
+                                            <td colSpan={3} style={{ padding: '5px 5px 5px 5px' }}>
+                                                <textarea style={{ resize: 'none', width: '100%', border: 'none' }} value={refusal} onChange={onChangeRefusalHandler}></textarea>
+                                            </td>
+                                        </tr>}
+                                </tbody>
+                            </table>
+                        </div> : null}
                     <div className={Style.appBtn}>
-                        {/* 사원이 결재자인지 작성자인지에 따라 회수 또는 처리 활성화 & 대기중일때만 회수 활성화 */}
-                        <button className="back-btn">목록</button>
-                        <button className="move-btn">회수</button>
-                        <button className="move-btn">처리</button>
+                        <button className="back-btn" onClick={onClickListHandler}>목록</button>
+
+                        {loginToken.memberNo === approval?.member.memberNo && approval?.appStatus === "대기" ?
+                            <button className="move-btn" onClick={onClickCancelAppHandler}>회수</button> : null}
+
+                        {approval?.appLineList.find(item => item.alMember.memberNo === loginToken.memberNo) ?
+                            <button className="move-btn" onClick={onClickSubmitHandler}>처리</button> : null}
                     </div>
                 </div>
             }

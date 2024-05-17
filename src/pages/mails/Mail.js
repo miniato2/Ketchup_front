@@ -2,24 +2,23 @@ import { useState } from "react";
 import "./mail.css";
 import ReceiveMail from "../../components/lists/mails/ReceiveMail";
 import SendMail from "../../components/lists/mails/SendMail";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SearchBarValue from "../../components/contents/SearchBarValue";
-import { callPutDeleteMailAPI } from "../../apis/MailAPICalls";
-// import { callGetReceiveMailAPI, callGetSendMailAPI } from "../../apis/MailAPICalls";
+import MailDeleteModal from "../../components/items/mails/MailDeleteModal";
 
 function Mail() {
     const navigate = useNavigate();
 
-    const [part, setPart] = useState("receive");
-    const [checkedItems, setCheckedItems] = useState({});
+    const {part} = useParams();
+    const [sendMailNos, setSendMailNos] = useState([]);
+    const [receiveMailNos, setReceiveMailNos] = useState([])
+    const [deleteModal, setDeleteModal] = useState(false);
 
     const receiveHandler = () => {
-        setPart("receive");
         navigate('/mails/receive');
     };
 
     const sendHandler = () => {
-        setPart("send");
         navigate('/mails/send');
     };
 
@@ -29,6 +28,15 @@ function Mail() {
     // };
 
     const insertHandler = () => navigate('/mails/insert');
+
+    const openDeleteModal = () => {
+        setDeleteModal(true);
+    };
+
+    const delMailList = part === 'receive' ? 
+        Object.keys(receiveMailNos).filter(key => receiveMailNos[key]).map(Number)
+        : Object.keys(sendMailNos).filter(key => sendMailNos[key]).map(Number);
+    const setDelMailList = part === 'receive' ? setReceiveMailNos : setSendMailNos;
 
     return (
         <>
@@ -47,17 +55,28 @@ function Mail() {
                             onClick={() => sendHandler()}>보낸 메일함</button>
                     </div>
                     <div>
-                        <button className="back-btn">삭제</button>
+                        <button className="back-btn" onClick={openDeleteModal}>삭제</button>
                         <button className="move-btn" onClick={insertHandler}>메일 쓰기</button>
                     </div>
                 </div>
                 {
-                    part == "receive"? 
-                        <ReceiveMail 
-                            checkedItems={checkedItems} 
-                            setCheckedItems={setCheckedItems} /> : <SendMail part={part} />
+                    part == "receive" ?
+                        <ReceiveMail
+                            checkedItems={receiveMailNos}
+                            setCheckedItems={setReceiveMailNos} />
+                        :
+                        <SendMail
+                            checkedItems={sendMailNos}
+                            setCheckedItems={setSendMailNos} />
                 }
             </main>
+
+            {deleteModal ? 
+                <MailDeleteModal 
+                    setDeleteModal={setDeleteModal} 
+                    part={part}
+                    delMailList={delMailList}
+                    setDelMailList={setDelMailList} /> : null}
         </>
     );
 }

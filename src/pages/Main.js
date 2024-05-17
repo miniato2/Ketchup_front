@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { callGetMemberNameAPI } from "../apis/MemberAPICalls";
 import { callGetNoticeListAPI } from "../apis/NoticeAPICalls";
 import { getScheduleAPI } from "../apis/ScheduleAPICalls";
+import { callGetApprovalCountAPI } from "../apis/ApprovalAPICalls";
 import FormatDateTime from "../components/contents/FormatDateTime";
 import { BsMegaphone } from "react-icons/bs";
 import FullCalendar from "@fullcalendar/react";
@@ -24,13 +25,14 @@ function Main() {
     const navigate = useNavigate();
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     console.log('[ loginToken ] : ', loginToken);
+    const [approvalCount, setApprovalCount] = useState({});
 
     // 결재 
     const approvalData = [
-        { title: "내가 결재해야 하는 문서", count: 3 },
-        { title: "결재 대기중인 나의 문서", count: 5 },
-        { title: "승인된 나의 문서", count: 10 },
-        { title: "반려된 나의 문서", count: 2 },
+        { title: "진행중인 문서", count: approvalCount?.myApp, categoryNo: 1},
+        { title: "완료된 문서", count: approvalCount?.doneApp, categoryNo: 2},
+        { title: "결재 대기 문서", count: approvalCount?.receiveApp, categoryNo: 3},
+        { title: "수신 참조 문서", count: approvalCount?.refApp, categoryNo: 4}
     ];
 
     const convertToCalendarProps = (schedules) => {
@@ -70,6 +72,19 @@ function Main() {
                 console.error("fetchSchedules 도중 에러 발생", error);
             }
         };
+        const categoryCount = async () => {
+            try {
+                const result = await callGetApprovalCountAPI(loginToken.memberNo);
+                if (result.status === 200) {
+                    setApprovalCount(result.data);
+                } else {
+                    console.log('실패');
+                }
+            } catch (error) {
+                console.error('데이터 가져오기 실패:', error);
+            }
+        };
+        categoryCount();
         fetchSchedules();
     }, [dispatch]);
 
