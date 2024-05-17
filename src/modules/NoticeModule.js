@@ -5,7 +5,6 @@ const initialState =  {
     noticeContent: '',
     noticeCreateDttm: 0,
     noticeFix: '',
-    noticeImgUrl: '',
     noticeNo: 0,
     noticeTitle: '',
     noticeUpdateDttm: ''

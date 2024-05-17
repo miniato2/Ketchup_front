@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './layouts/Layout';
 import Main from './pages/Main';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Notices from './pages/notices/Notices';
 import InsertNotice from './pages/notices/InsertNotice';
 import Calendar from './pages/schedules/calendar';
@@ -24,7 +23,9 @@ import UpdateNotice from './pages/notices/UpdateNotice';
 import Reserve from './pages/reserves/Reserve';
 import InsertBoard from './pages/boards/InsertBoard';
 import Boards from './pages/boards/Boards';
-import Error from './pages/Error';
+import BoardDetail from './pages/boards/BoardDetail';
+import UpdateBoard from './pages/boards/UpdateBoard';
+// import Error from './pages/Error';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -37,6 +38,11 @@ function App() {
     }
   }, []);
 
+  // 로그인 성공 콜백
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+  };
+
   // isLoggedIn 상태에 따라 리다이렉션 경로 설정
   const redirectPath = isLoggedIn ? '/main' : '/login';
 
@@ -45,9 +51,11 @@ function App() {
       <Routes>
         {/* 로그인 여부에 따라 "/" 경로를 리다이렉션 */}
         <Route path="/" element={<Navigate to={redirectPath} replace />} />
-        <Route path="/login" element={<Login onLoginSuccess={() => setIsLoggedIn(true)} />} />
-        <Route path="/main" element={<Layout />}>
-          <Route index element={<Main />} />
+        <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
+        {isLoggedIn && (
+        <Route path="/" element={<Layout />}>
+          {/* <Route index element={<Main />} /> */}
+          <Route path='main' element={<Main />} />
           <Route path="notices">
             <Route index element={<Notices />} />
             <Route path=":noticeNo" element={<NoticeDetail />} />
@@ -61,10 +69,14 @@ function App() {
             <Route path="insert" element={<InsertApproval />} />
             <Route path=":approvalNo" element={<ApprovalDetail />} />
           </Route>
-          <Route path="board">
+          <Route path="boards">
             <Route index element={<Boards />} />
+            <Route path=":boardNo" element={<BoardDetail /> } />
             <Route path="insert" element={<InsertBoard />} />
-          </Route>
+            <Route path="update">
+              <Route path=":boardNo" element={<UpdateBoard />} />
+            </Route>
+           </Route>
           <Route path="calendar" element={<Calendar />} />
           <Route path='reserve' element={<Reserve/>}/>          
           <Route path="mails">
@@ -82,7 +94,8 @@ function App() {
             <Route path=":memberNo" element={<MemberDetail />} />
           </Route>
         </Route>
-        <Route path="*" element={<Error />} />
+         )}
+        {/* <Route path="*" element={<Error />} /> */}
       </Routes>
     </BrowserRouter>
   );

@@ -19,6 +19,7 @@ import moment from "moment";
 function Main() {
     const dispatch = useDispatch();
     const [events, setEvents] = useState([]);
+    const [isLoading, setIsLoading] = useState(true); // 데이터 로딩 상태를 관리합니다.
     const schedules = useSelector(state => state.scheduleReducer);
     const navigate = useNavigate();
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
@@ -74,9 +75,10 @@ function Main() {
 
     useEffect(() => {
         if (!schedules) {
-            return;    
+            return;
         }
         setEvents(convertToCalendarProps(schedules));
+        setIsLoading(false); 
     }, [schedules]);
 
     // 공지사항 목록 Redux store에서 가져오기
@@ -130,64 +132,70 @@ function Main() {
 
     return (
         <main id="main" className="main">
-            {/* 메인 환영 */}
-            <div className="pagetitle">
-                <div id="mainbox" className="p-4 p-md-5 mb-4 rounded text-body-emphasis" style={{ backgroundColor: "rgb(236, 11, 11, 0.17)" }}>
-                    <div className="col-lg-6 px-0">
-                        <h1 className="display-1" style={{ fontSize: "45px" }}>안녕하세요, {loginToken.memberName} 사원님!</h1>
-                        <h2 className="lead my-3" style={{ fontSize: "30px" }}>오늘 하루도 화이팅하세요🤩</h2>
+            {isLoading ? ( // 데이터 로딩 중이면 로딩 스피너를 표시합니다.
+                <div>Loading...</div>
+            ) : (
+                <>
+                    {/* 메인 환영 */}
+                    <div className="pagetitle">
+                        <div id="mainbox" className="p-4 p-md-5 mb-4 rounded text-body-emphasis" style={{ backgroundColor: "rgb(236, 11, 11, 0.17)" }}>
+                            <div className="col-lg-6 px-0">
+                                <h1 className="display-1" style={{ fontSize: "45px" }}>안녕하세요, {loginToken.memberName} 사원님!</h1>
+                                <h2 className="lead my-3" style={{ fontSize: "30px" }}>오늘 하루도 화이팅하세요🤩</h2>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            {/* 전자결재 */}
-            <div className="col-lg-12">
-                <div className="row">
-                    {approvalData.map(({ title, count }) => (
-                        <ApprovalBox title={title} count={count} />
-                    ))}
-                </div>
-            </div>
+                    {/* 전자결재 */}
+                    <div className="col-lg-12">
+                        <div className="row">
+                            {approvalData.map(({ title, count }) => (
+                                <ApprovalBox title={title} count={count} />
+                            ))}
+                        </div>
+                    </div>
 
-            {/* 공지사항 */}
-            <div className="col-12">
-                <div className="card recent-sales overflow-auto">
-                    <h2 className="card-title"
-                        style={{ fontWeight: 'bold', fontSize: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingLeft: '20px', paddingRight: '20px' }}>
-                        공지사항
-                        <Link to={`/notices`} style={{ fontSize: '18px', color: '#EC0B0B' }}>
-                            더보기
-                        </Link>
-                    </h2>
-                    <BootstrapTable data={formattedNoticeList} columns={columns} onRowClick={handleRowClick} />
-                </div>
-            </div>
+                    {/* 공지사항 */}
+                    <div className="col-12">
+                        <div className="card recent-sales overflow-auto">
+                            <h2 className="card-title"
+                                style={{ fontWeight: 'bold', fontSize: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingLeft: '20px', paddingRight: '20px' }}>
+                                공지사항
+                                <Link to={`/notices`} style={{ fontSize: '18px', color: '#EC0B0B' }}>
+                                    더보기
+                                </Link>
+                            </h2>
+                            <BootstrapTable data={formattedNoticeList} columns={columns} onRowClick={handleRowClick} />
+                        </div>
+                    </div>
 
-            {/* 일정 */}
-            <div className="col-12">
-                <FullCalendar
-                    events={events}
-                    height="50vh"
-                    initialView="dayGridWeek"
-                    plugins={[
-                        dayGridPlugin,
-                        timeGridPlugin,
-                        interactionPlugin,
-                        listPlugin
-                    ]}
-                    headerToolbar={{
-                        left: "prev title next today",
-                        center: "",
-                        right: "moreButton"
-                    }}
-                    customButtons={{
-                        moreButton: {
-                            text: '더보기',
-                            click: function () { alert("더보기 버튼이 정상적으로 클릭되었습니다. '일정' 페이지로 이동시킬 예정입니다."); }
-                        }
-                    }}
-                />
-            </div>
+                    {/* 일정 */}
+                    <div className="col-12">
+                        <FullCalendar
+                            events={events}
+                            height="50vh"
+                            initialView="dayGridWeek"
+                            plugins={[
+                                dayGridPlugin,
+                                timeGridPlugin,
+                                interactionPlugin,
+                                listPlugin
+                            ]}
+                            headerToolbar={{
+                                left: "prev title next today",
+                                center: "",
+                                right: "moreButton"
+                            }}
+                            customButtons={{
+                                moreButton: {
+                                    text: '더보기',
+                                    click: function () { alert("더보기 버튼이 정상적으로 클릭되었습니다. '일정' 페이지로 이동시킬 예정입니다."); }
+                                }
+                            }}
+                        />
+                    </div>
+                </>
+            )}
         </main >
     );
 }

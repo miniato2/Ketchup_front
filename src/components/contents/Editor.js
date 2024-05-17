@@ -1,33 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { remark } from 'remark';
-import remarkHtml from 'remark-html';
-import ReactMarkdown from 'react-markdown';
 
 function Editor({content, setContent}) {
-
   const quillRef = useRef(null);
-  const [previewContent, setPreviewContent] = useState('');
-
-  useEffect(() => {
-    const plainTextContent = content.replace(/(<([^>]+)>)/gi, "");
-    const markdownContent = `# \n${plainTextContent}`;
-    remark()
-      .use(remarkHtml)
-      .process(markdownContent, (err, file) => {
-        if (err) {
-          console.error("Markdown processing error:", err);
-          return;
-        }
-        setPreviewContent(String(file));
-      });
-  }, [content]);
 
   return (
-    <>
+    <div className="editor-container" >
       <ReactQuill
-        style={{ height: "300px", margin1: "4px", overflowY: 'auto' }}
+        style={{ height: "350px", margin: "4px", overflowY: 'auto' }}
         ref={quillRef}
         theme="snow"
         value={content}
@@ -47,9 +28,7 @@ function Editor({content, setContent}) {
           ]
         }}
       />
-      <ReactMarkdown>{previewContent}</ReactMarkdown>
-
-    </>
+    </div>
   );
 }
 

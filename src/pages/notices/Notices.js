@@ -2,7 +2,7 @@ import SearchBar from '../../components/contents/SearchBar';
 import BootstrapTable from '../../components/contents/BootstrapTable';
 import PaginationButtons from '../../components/contents/PaginationButtons';
 import ButtonGroup from '../../components/contents/ButtonGroup';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { callGetNoticeListAPI } from '../../apis/NoticeAPICalls';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,53 +14,59 @@ const Notices = () => {
   const dispatch = useDispatch();
   const result = useSelector(state => state.noticeReducer);
   const noticeList = result.noticelist || [];
-  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
-  const itemsPerPage = 10; // 페이지당 아이템 수
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
-
 
   console.log("noticeList : ", noticeList);
 
+  // 필독 공지와 일반 공지를 분리
+  const pinnedNotices = noticeList.filter(notice => notice.noticeFix === 'Y').map(notice => ({
+    ...notice,
+    noticeTitle: (
+      <>
+        <span style={{ marginRight: '5px' }}>
+          [ 필독&nbsp;
+          <span style={{ color: '#EC0B0B' }}>
+            <BsMegaphone />
+          </span>
+          &nbsp;]
+        </span>{notice.noticeTitle}
+      </>
+    )
+  }));
+  const normalNotices = noticeList.filter(notice => notice.noticeFix !== 'Y');
+
   // 중복된 noticeNo 제거 및 공지 정렬
-  const sortedNoticeList = [...noticeList]
-    .sort((a, b) => {
-      if (a.noticeFix === 'Y' && b.noticeFix !== 'Y') {
-        return -1; // a가 필독 공지이고 b가 필독 공지가 아닌 경우, a를 먼저 배치
-      } else if (a.noticeFix !== 'Y' && b.noticeFix === 'Y') {
-        return 1; // a가 필독 공지가 아니고 b가 필독 공지인 경우, b를 먼저 배치
-      } else {
-        return new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm); // a와 b가 모두 필독 공지이거나 아닌 경우 등록된 시간의 역순으로 정렬
-      }
-    })
+  const sortedNormalNotices = [...normalNotices]
+    .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm))
     .map(item => ({
       ...item,
-      noticeTitle: item.noticeFix === 'Y' ? (
-        <>
-          <span style={{ marginRight: '5px' }}>
-            [ 필독&nbsp;
-            <span style={{ color: '#EC0B0B' }}>
-              <BsMegaphone />
-            </span>
-            &nbsp;]
-          </span>
-          {item.noticeTitle}
-        </>
-      ) : item.noticeTitle,
       noticeCreateDttm: FormatDateTime(item.noticeCreateDttm) // 등록일 형식화 적용
-
     }));
+
+
+  const mergedNoticeList = [...pinnedNotices, ...sortedNormalNotices];  // 합쳐진 공지 리스트
+  const totalItems = mergedNoticeList.length;                           // 페이지당 필독 공지와 일반 공지의 총 개수
+  const itemsPerPage = 10;                                              // 각 페이지별 아이템 수 계산
+
+  // 현재 페이지에 보여질 필독 공지와 일반 공지 구하기
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentPinnedNotices = pinnedNotices;                                                 // 모든 페이지에서 필독 공지는 상단에 표시
+  const currentNormalNotices = sortedNormalNotices.slice(indexOfFirstItem, indexOfLastItem);  // 현재 페이지에 보여질 일반 공지
+  const currentItems = [...currentPinnedNotices, ...currentNormalNotices];                    // 현재 페이지의 필독 공지와 일반 공지 목록
 
   // 컬럼 제목 목록
   const columns = [
     ['noticeNo', '공지번호'],
     ['noticeTitle', '제목'],
     ['memberName', '작성자'],
-    ['noticeCreateDttm', '등록일']
+    ['noticeCreateDttm', '작성일']
   ];
 
   const handleRowClick = (index) => {
     const realIndex = (currentPage - 1) * itemsPerPage + index;
-    const noticeNo = sortedNoticeList[realIndex]?.noticeNo;
+    const noticeNo = mergedNoticeList[realIndex]?.noticeNo;
     console.log(noticeNo);
     navigate(`/notices/${noticeNo}`);
   };
@@ -72,15 +78,9 @@ const Notices = () => {
 
   useEffect(
     () => {
-      // 페이지가 로드될 때 전체 공지 목록을 불러옵니다.
       dispatch(callGetNoticeListAPI());
     }, [dispatch]
   );
-
-  // 현재 페이지에 보여질 아이템 구하기
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = sortedNoticeList.slice(indexOfFirstItem, indexOfLastItem);
 
   // 사용자의 직위 이름
   const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
@@ -88,7 +88,6 @@ const Notices = () => {
 
   return (
     <main id="main" className="main">
-
       <div className="title">
         <h2>공지사항</h2>
         <SearchBar onSearch={handleSearch} />
@@ -103,11 +102,8 @@ const Notices = () => {
             </Link>
           ) : null}
 
-          <div style={{ marginTop: loginToken.role !== "LV2" && loginToken.role !== "LV3" && '30px' }}>
-            <BootstrapTable data={currentItems} columns={columns} onRowClick={handleRowClick} />
-          </div>
-
-          <PaginationButtons totalItems={sortedNoticeList.length} itemsPerPage={itemsPerPage} currentPage={currentPage} onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
+          <BootstrapTable data={currentItems} columns={columns} onRowClick={handleRowClick} />
+          <PaginationButtons totalItems={totalItems} itemsPerPage={itemsPerPage} currentPage={currentPage} onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
         </div>
       </div>
     </main>

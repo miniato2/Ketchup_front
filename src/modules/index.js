@@ -5,6 +5,7 @@ import mailReducer from "./MailModule";
 import memberReducer from "./MemberModule";
 import scheduleReducer from "./ScheduleModule";
 import reserveReducer from "./ReserveModule";
+import boardReducer from "./BoardModule";
 
 const rootReducer = combineReducers({
     // userReducer,
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
     scheduleReducer,
     approvalReducer,
     mailReducer,
-    reserveReducer
+    reserveReducer,
+    boardReducer
 });
 
 export default rootReducer;
