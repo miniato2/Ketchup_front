@@ -21,6 +21,11 @@ function Sidebar() {
                         <i className="bi bi-calendar-event"></i><span>일정</span>
                     </Link>
                 </li>
+                <li className="nav-item">
+                    <Link className="nav-link collapsed" to="/mails/receive">
+                        <i className="bi bi-envelope"></i><span>메일</span>
+                    </Link>
+                </li>
                 <li class="nav-item">
                     <Link className="nav-link collapsed" to="/boards">
                         <i className="bi bi-file-text"></i><span>자료실</span>
