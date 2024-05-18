@@ -8,6 +8,7 @@ import reserveReducer from "./ReserveModule";
 import resourceReducer from "./ResourceModule";
 import departmentReducer from "./DepartmentModule";
 import positionReducer from "./PositionModule";
+import boardReducer from "./BoardModule";
 
 const rootReducer = combineReducers({
     // userReducer,
@@ -21,7 +22,7 @@ const rootReducer = combineReducers({
     resourceReducer,
     departmentReducer,
     positionReducer,
-
+    boardReducer
 });
 
 export default rootReducer;

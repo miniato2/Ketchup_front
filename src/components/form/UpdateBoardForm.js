@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ButtonGroup from "../../components/contents/ButtonGroup";
 import Editor from "../contents/Editor";
 import { callGetBoardAPI, callUpdateBoardAPI } from "../../apis/BoardAPICalls";
+import { decodeJwt } from "../../utils/tokenUtils";
 
 function UpdateBoardForm() {
     const { boardNo } = useParams();
@@ -13,13 +14,14 @@ function UpdateBoardForm() {
     const [title, setTitle] = useState('');
     const [files, setFiles] = useState([]);
     const [content, setContent] = useState('');
-    const [setFileList] = useState([]);
+    const [fileList, setFileList] = useState([]);
 
-    let memberNo = '';
-
-    const loginToken = window.localStorage.getItem("accessToken");
-    memberNo = loginToken.memberNo;
+    const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
+    const memberNo = loginToken.memberNo;
     const departmentNo = loginToken.depNo;
+    console.log("memberNo : ", memberNo);
+    console.log("departmentNo : ", departmentNo);
+
 
     // 파일 삭제 함수
     const handleDeleteFile = (index) => {
@@ -36,6 +38,8 @@ function UpdateBoardForm() {
         files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
 
         try {
+            console.log("handleSubmit [ callUpdateBoardAPI formData ] : ", formData);
+            console.log("handleSubmit [ callUpdateBoardAPI boardNo ] : ", boardNo);
             await dispatch(callUpdateBoardAPI(formData, boardNo));
             navigate(`/boards/${boardNo}`);
         } catch (error) {
@@ -62,7 +66,7 @@ function UpdateBoardForm() {
         dispatch(callGetBoardAPI(boardNo));
     }, [dispatch, boardNo]);
 
-    // useSelector를 사용하여 Redux 스토어에서 공지 정보 가져오기
+    // useSelector를 사용하여 Redux 스토어에서 게시물 정보 가져오기
     const board = useSelector(state => state.boardReducer.board);
 
     useEffect(() => {
