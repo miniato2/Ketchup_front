@@ -6,6 +6,7 @@ import ButtonGroup from "../../components/contents/ButtonGroup";
 import Editor from "../contents/Editor";
 import 'react-quill/dist/quill.snow.css';
 import { callInsertBoardAPI } from "../../apis/BoardAPICalls";
+import { decodeJwt } from "../../utils/tokenUtils";
 
 function InsertBoardForm() {
 
@@ -16,23 +17,26 @@ function InsertBoardForm() {
     const [files, setFiles] = useState([]);
     const [content, setContent] = useState('');
 
-    const loginToken = window.localStorage.getItem("accessToken");
+    const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const memberNo = loginToken.memberNo;
     const departmentNo = loginToken.depNo;
+    console.log("memberNo : ", memberNo);
+    console.log("departmentNo : ", departmentNo);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData();
-        formData.append('boardDTO', new Blob([JSON.stringify({ boardTitle: title, memberNo: memberNo, departmentNo: departmentNo, boardContent: content })], { type: 'application/json' }));
+        formData.append('boardDTO', new Blob([JSON.stringify({ memberNo: memberNo, departmentNo: departmentNo, boardTitle: title, boardContent: content })], { type: 'application/json' }));
         files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
 
         try {
             console.log("handleSubmit [ result ] : ", formData);
             const boardNo = await dispatch(callInsertBoardAPI(formData));
-            console.log("dispatch 후 boardNp : ", boardNo);
+            console.log("dispatch 후 boardNo : ", boardNo);
             if (boardNo) {
-                console.log('handleSubmit [ boardNp ] : ', boardNo);
+                console.log('handleSubmit [ boardNo ] : ', boardNo);
                 // 등록 성공 시 공지 상세 페이지로 이동
                 navigate(`/boards/${boardNo}`);
             } else {

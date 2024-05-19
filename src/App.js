@@ -69,14 +69,13 @@ function App() {
               <Route path="update">
                 <Route path=":noticeNo" element={<UpdateNotice />} />
               </Route>
-
             </Route>
             <Route path="approvals">
               <Route index element={<Approvals />} />
               <Route path="insert" element={<InsertApproval />} />
               <Route path=":approvalNo" element={<ApprovalDetail />} />
             </Route>
-            <Route path="board">
+            <Route path="boards">
               <Route index element={<Boards />} />
               <Route path=":boardNo" element={<BoardDetail />} />
               <Route path="insert" element={<InsertBoard />} />

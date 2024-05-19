@@ -6,17 +6,14 @@ import ButtonGroup from "../../components/contents/ButtonGroup";
 import BootstrapTable from "../../components/contents/BootstrapTable";
 import { callGetBoardListAPI } from "../../apis/BoardAPICalls";
 import PaginationButtons from "../../components/contents/PaginationButtons";
-import { callGetMemberAPI } from "../../apis/MemberAPICalls";
 import { decodeJwt } from "../../utils/tokenUtils";
 
 function Boards() {
     const dispatch = useDispatch();
     const result = useSelector(state => state.boardReducer);
-    const boardList = result.boardlist || [];
+    const boardList = result ? result.boardlist || [] : [];
     const navigate = useNavigate();
     const [userDepartments, setUserDepartments] = useState([]);
-    // const [boardList, setBoardList] = useState([]);
-
 
     // 현재 사용자 정보 가져오기
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
@@ -44,40 +41,6 @@ function Boards() {
         };
         fetchBoardList();
     }, [userRole, depNo, dispatch]);
-
-
-    // useEffect(() => {
-    //     // LV3 이상 권한을 가진 사용자에 대해서만 회원 정보를 가져옴
-    //     if (userRole !== 'LV3') {
-    //         const fetchData = async () => {
-    //             try {
-    //                 // 사용자 정보를 가져오는 부분을 제거하고 setUserDepartments 함수를 사용하여 사용자의 부서 정보를 설정합니다.
-    //                 setUserDepartments([{ depNo: depNo, depName: depName }]);
-    //             } catch (error) {
-    //                 console.error("Error getting member information: ", error);
-    //             }
-    //         };
-    //         fetchData();
-    //     }
-    // }, [userRole, depNo, depName]);
-    
-
-    // useEffect(() => {
-    //     // 부서 정보가 변경될 때마다 해당 부서의 자료실 목록을 가져옴
-    //     const fetchBoardList = async (searchKeyword = '') => {
-    //         const departmentNo = userRole === 'LV3' ? null : depNo;
-    //         console.log("depNo : ", depNo);
-    //         console.log("departmentNo : ", departmentNo);
-    //         const params = {
-    //             title: typeof searchKeyword === 'string' ? searchKeyword.toLowerCase() : '', // searchKeyword가 문자열인 경우에만 소문자로 변환
-    //             depNo: departmentNo
-    //         };
-    //         console.log("params : ", params);
-    //         dispatch(callGetBoardListAPI({ params }));
-    //     };
-    //     fetchBoardList();
-    // }, [userRole, depNo, dispatch]);
-   
 
     const columns = [
         ['boardNo', '번호'],
