@@ -23,13 +23,14 @@ export default function ResourceCategorySelect({ value, onChange }) {
 
   return (
     <div>
-      <FormControl sx={{ m: 1, width: "371px" }}>
+      <FormControl sx={{ m: 1, width: "371px" }} xs={6} >
         <Select
           displayEmpty
           value={value}
           onChange={handleCategoryChange}
           input={<OutlinedInput />}
           MenuProps={MenuProps}
+          autoFocus
         >
           <MenuItem disabled value="">
             <em><FilterListIcon/>자원 카테고리</em>

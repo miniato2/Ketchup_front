@@ -1,5 +1,8 @@
-import { GET_MEMBER, GET_MEMBERS, POST_LOGIN, POST_REGISTER } from '../modules/MemberModule';
+import { GET_MEMBER, GET_MEMBERS, POST_LOGIN, POST_REGISTER} from '../modules/MemberModule';
+import { GET_DEPARTMENTS } from '../modules/DepartmentModule';
+import { GET_POSITIONS } from '../modules/PositionModule';
 import { request,multipartRequest } from './Api';
+import { useNavigate } from 'react-router-dom';
 
 
 export const callGetMemberAPI = ({ memberNo }) => {
@@ -49,6 +52,8 @@ export const callLoginAPI = ({ form }) => {
             window.localStorage.setItem('accessToken', result.token);
 
             dispatch({ type: POST_LOGIN, payload: result });
+          
+            
         }
     };
 };
@@ -89,7 +94,7 @@ export const callRegisterAPI = ({ form }) => {
     formData.append('memberInfo', memberInfoBlob);
     
     // 이미지 파일을 Blob으로 추가
-    // const memberImageBlob = new Blob([form.memberImage], { type: form.memberImage.type });
+   
     formData.append('memberImage', form.memberImage);
     console.log('----------------여기가 API 실행중', form.memberImage);
    
@@ -103,7 +108,7 @@ export const callRegisterAPI = ({ form }) => {
                 dispatch({ type: POST_REGISTER, payload: result });
             }
         } catch (error) {
-            console.error('Error: ', error);
+            console.error('프론트에서 캐치한 Error: ', error);
         }
     };
 };
@@ -142,3 +147,34 @@ export function callResignMemberAPI(memberNo,statusData) {
         dispatch({ type: GET_MEMBER, payload: result });
     };
 }
+
+
+
+export function callDepartmentsAPI() {
+    console.log("=============전체 부서 호출=============");
+
+    return async (dispatch, getState) => {
+      
+        const result = await request('GET', '/noPageDeps');
+        console.log("전체 부서 호출 API 결과:   ", result.data);
+
+        dispatch({ type: GET_DEPARTMENTS, payload: result.data});
+    };
+}
+
+export function callPositionsAPI() {
+    console.log("============전체 직급 호출==============");
+
+    return async (dispatch,getState) => {
+        const result = await request('GET','/noPagePositions');
+        console.log("전체 직급 호출 API 결과:  ", result.data);
+
+        dispatch({type: GET_POSITIONS, payload: result.data})
+
+    };
+
+
+
+}
+
+

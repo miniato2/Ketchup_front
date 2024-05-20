@@ -21,18 +21,23 @@ function InsertApproval() {
         appLineModal: false,
         refLineModal: false
     })
+
+    const date = new Date();
+    const today = date.getFullYear() + '-' +  (date.getMonth()+1) + '-' + date.getDate();
+
     const onClickModalControl = (e) => {
         setModalControl({
             ...modalControl,
             [e.target.name]: true
         })
     }
-
     //
-    const [file, setFile] = useState(null);
-    const [formNo, setFormNo] = useState('');
+    const [file, setFile] = useState('');
+    const [formNo, setFormNo] = useState(0);
     const [appTitle, setAppTitle] = useState('');
     const [appContents, setAppContents] = useState('');
+
+    console.log(appContents);
 
     const [appLine, setAppLine] = useState([{
         alMember: {
@@ -46,7 +51,7 @@ function InsertApproval() {
 
     const [refLine, setRefLine] = useState([{
         refMember: {
-            refMemberName: ''
+            memberNo: ''
         }
     }])
     //
@@ -58,17 +63,13 @@ function InsertApproval() {
 
     const onChangeAppContents = (e) => {
         setAppContents(e);
-
     } //내용
 
     const onChangeFileUpload = (e) => {
-        // const filesArray = Array.from(e.target.files);
-        // const filesList = [...filesArray];
-        // console.log('filesList', filesList);
-        // setFile(filesList);
-        setFile(e.target.files[0]);
+        const filesArray = Array.from(e.target.files);
+        const filesList = [...filesArray];
+        setFile(filesList);
     }
-
 
     const onChangeForm = async (e) => {
         const result = await callGetFormAPI(e.target.value);
@@ -88,9 +89,6 @@ function InsertApproval() {
     const onClickInsertApprovalHandler = () => {
         const formData = new FormData();
 
-        console.log(appLine);
-        console.log(refLine);
-
         formData.append("approval.appMemberNo", loginToken.memberNo);
         formData.append("approval.formNo", formNo);
         formData.append("approval.appTitle", appTitle);
@@ -102,37 +100,43 @@ function InsertApproval() {
             formData.append(`appLineDTOList[${index}].alSequence`, al.sequence);
         });
 
-        refLine.forEach((rl, index) => {
+        
+        refLine[0].refMember.memberNo !== '' && refLine.forEach((rl, index) => {
             formData.append(`refLineDTOList[${index}].refMemberNo`, rl.refMember.memberNo);
         });
 
         if (Array.isArray(file)) {
-            console.log(file);
-            console.log('폼에 파일 추가')
-            formData.append("multipartFileList", file);
-
+            file.forEach((fileItem, index) => {
+                formData.append(`multipartFileList`,fileItem);
+            });
         }
+        
+        // formData.forEach((value, key) => {
+        //     console.log(key + ': ' + value);
+        //   });
 
-        // if(Array.isArray(file)){
-        //     file.map((item, index) => {
-        //         console.log('dd',item);
-        //         formData.append(`multipartFileList[${index}]`, item)
-        //     })
-        // }
-        console.log('사원번호', formData.get("approval.appMemberNo"));
-        console.log('양식번호', formData.get("approval.formNo"));
-        console.log('제목', formData.get("approval.appTitle"));
-        console.log('내용', formData.get("approval.appContents"));
-        console.log('결재선', formData.get(`appLineDTOList[0].alMemberNo`));
-        console.log('결재선', formData.get(`appLineDTOList[0].alType`));
-        console.log('결재선', formData.get(`appLineDTOList[0].alSequence`));
-        console.log('참조선', formData.get("refLineDTOList[0].refMemberNo"));
-
-
-        dispatch(callInsertAppAPI({ form: formData }));
+        if(appLine[0].alMember.memberNo === ''){
+            alert('결재선을 지정해 주세요');
+            //결재선
+        }else if(formNo === 0){
+            alert('양식을 선택해 주세요');
+            //양식
+        }else if(appTitle.trim() === ''){
+            alert('제목을 입력해 주세요');
+            //제목
+        }else if(appContents.trim() === ''){
+            alert('내용을 입력해 주세요');
+            //내용
+        }else {
+            try{
+                dispatch(callInsertAppAPI({ form: formData }))
+                .then(() => navigate(`/approvals`, { replace: false }));
+            }catch{
+                alert('에러');
+            }
+            //예외처리는 다시하자
+        }
     } //등록
-
-    
 
     return (
         <main className="main" id="main">
@@ -140,10 +144,10 @@ function InsertApproval() {
             {modalControl.refLineModal ? <RefLineModal setModalControl={setModalControl} setRefLine={setRefLine} /> : null}
             <h1>기안등록</h1>
 
-            <label>결재선</label><button name='appLineModal' onClick={onClickModalControl}>추가</button>
+            <label>결재선</label><button className={Style.lineBtn} name='appLineModal' onClick={onClickModalControl}>추가</button>
             <AppLine appline={appLine} />
 
-            <label>참조선</label><button name='refLineModal' onClick={onClickModalControl}>추가</button>
+            <label>참조선</label><button className={Style.lineBtn} name='refLineModal' onClick={onClickModalControl}>추가</button>
             <RefLine refline={refLine} />
 
             <table className={Style.appTable}>
@@ -151,10 +155,9 @@ function InsertApproval() {
                     <tr>
                         <th width={'12%'}>양식</th>
                         <td width={'38%'}>
-                            <select onChange={onChangeForm}>
+                            <select onChange={onChangeForm} className={Style.formSelect}>
                                 <option value={0}>양식 선택</option>
                                 <option value={1}>1번 양식</option>
-                                <option value={2}>2번 양식</option>
                             </select>
                         </td>
                         <th width={'12%'}>기안부서</th>
@@ -168,9 +171,9 @@ function InsertApproval() {
                     </tr>
                     <tr>
                         <th >제목</th>
-                        <td><input type="text" name="appTitle" onChange={onChangeAppTitle}></input></td>
+                        <td><input type="text" name="appTitle" className={Style.appTitle} onChange={onChangeAppTitle}></input></td>
                         <th >기안일자</th>
-                        <td>dd</td>
+                        <td>{today}</td>
                     </tr>
                 </tbody>
             </table>
@@ -181,6 +184,18 @@ function InsertApproval() {
                 name="appContents"
                 onChange={onChangeAppContents}
                 value={appContents}
+                modules={{
+                    toolbar: [
+                      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                      [{ 'align': [] }],
+                      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                      [{ 'color': [] }, { 'background': [] }],
+                      ['link'],
+                      ['image', 'video'],
+                      ['clean']
+                    ]
+                  }}
                 placeholder="내용을 입력하세요." />
             <div className={Style.appBtn}>
                 <button className="back-btn" onClick={onClickCancelHandler}>취소</button>

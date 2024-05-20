@@ -12,9 +12,9 @@ export const POST_REGISTER  = 'member/POST_REGISTER';
 
 const actions = createActions({
     [GET_MEMBER]: () => {},
-    [GET_MEMBER]: () => {},
+    [GET_MEMBERS]: () => {},
     [POST_LOGIN]: () => {},
-    [POST_REGISTER]: () => {}
+    [POST_REGISTER]: () => {},
 });
 
 /* 리듀서 */
@@ -35,7 +35,8 @@ const memberReducer = handleActions(
         [POST_REGISTER]: (state, { payload }) => {
             
             return payload;
-        },
+        }
+       
 
     },
     initialState

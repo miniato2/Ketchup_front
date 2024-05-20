@@ -44,7 +44,7 @@ function InsertNoticeForm() {
                 console.error("Invalid result:", "실패");
             }
 
-        console.log([...formData.entries()]);
+            console.log([...formData.entries()]);
 
         } catch (error) {
             console.error(error);
@@ -57,13 +57,11 @@ function InsertNoticeForm() {
         setFiles((prevFiles) => [...prevFiles, ...selectedFiles]); // 기존 파일 목록과 새로 선택된 파일을 합쳐서 업데이트
     };
 
-
     const handleDeleteFile = (index) => {
         const updatedFiles = [...files];
         updatedFiles.splice(index, 1);
         setFiles(updatedFiles);
     };
-
 
     const buttons = [
         { label: '취소', onClick: () => navigate(-1), styleClass: 'back' },
@@ -71,42 +69,38 @@ function InsertNoticeForm() {
     ];
 
     return (
-        <main id="main" className="main">
-            <div className="title">
-                <h2>공지사항</h2>
-            </div>
 
-            <div className="col-lg-12">
-                <div className="list">
-                    <div className="card-title">
-                        <div className="input-container">
-                            <label htmlFor="title">제목</label>
-                            <input type="text" id="title" placeholder=" 공지 제목을 입력하세요" value={title} onChange={(e) => setTitle(e.target.value)} />
-                        </div>
-                        <div className="input-container">
-                            <label htmlFor="file">첨부파일</label>
-                            <div className="file-input">
-                                <ul>
-                                    {files.map((file, index) => (
-                                        <li style={{ listStyle: 'none' }} key={index}>
-                                            <span>{file.name}</span> &nbsp;
-                                            <button onClick={() => handleDeleteFile(index)} style={{ border: 'none', background: 'none', cursor: 'pointer' }}>x</button>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <input type="file" id="formFile" multiple onChange={handleChangeFiles} />
-                            </div>
-                        </div>
-                        <input type="checkbox" id="fix" checked={fix} onChange={handleFixChange} /> &nbsp;
-                        <label htmlFor="fix">최상단에 공지로 등록</label>
-                    </div>
-                    <div className="editor-container">
-                        <Editor content={content} setContent={setContent}/>
-                    </div>
-                    <ButtonGroup buttons={buttons} />
+
+        <div className="card-title">
+            <div className="input-container">
+                <label htmlFor="title">제목</label>
+                <input type="text" id="title" placeholder=" 공지 제목을 입력하세요" value={title} onChange={(e) => setTitle(e.target.value)} />
+            </div>
+            <div className="input-container">
+                <label htmlFor="file">첨부파일</label>
+                <div className="file-input">
+                    <ul>
+                        {files.map((file, index) => (
+                            <li style={{ listStyle: 'none' }} key={index}>
+                                <span>{file.name}</span> &nbsp;
+                                <button onClick={() => handleDeleteFile(index)} style={{ border: 'none', background: 'none', cursor: 'pointer' }}>x</button>
+                            </li>
+                        ))}
+                    </ul>
+                    <input type="file" id="formFile" multiple onChange={handleChangeFiles} />
                 </div>
             </div>
-        </main>
+            <input type="checkbox" id="fix" checked={fix} onChange={handleFixChange} /> &nbsp;
+            <label htmlFor="fix">최상단에 공지로 등록</label>
+            <div>
+                <Editor content={content} setContent={setContent} />
+            </div>
+            <div className="d-flex justify-content-end mt-4">
+                <ButtonGroup buttons={buttons} />
+            </div>
+        </div>
+
+
     );
 };
 

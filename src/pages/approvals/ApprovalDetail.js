@@ -17,21 +17,29 @@ function ApprovalDetail() {
     const [appAction, setAppAction] = useState('');
     const [refusal, setRefusal] = useState('');
 
+    console.log('상세', approval)
+
     const quillRef = useRef(null);
 
     useEffect(() => {
         dispatch(callAppAPI({ approvalNo: param.approvalNo }));
-    }, [])
+    }, [dispatch])
 
     const onClickListHandler = () => {
-        navigate(`/approvals`, { replace: false })
+        navigate(`/approvals`, { replace: false });
+    }
+
+    const onChangeRefusalHandler = (e) => {
+        setRefusal(e.target.value);
     }
 
     const onClickCancelAppHandler = () => {
         const appUpdate = {
             action: '회수'
         }
-        dispatch(callUpdateApprovalAPI(appUpdate));
+        dispatch(callUpdateApprovalAPI(appUpdate, approval.approvalNo))
+        .then(() => navigate(`/approvals`, { replace: false }));
+        //돌아가면 카테고리별 문서 수 다시 안불러옴 수정 필요
     }
 
     const onClickSubmitHandler = () => {
@@ -39,7 +47,18 @@ function ApprovalDetail() {
             action: appAction,
             refusal: refusal
         }
-        dispatch(callUpdateApprovalAPI(appUpdate));
+        if (appAction === '') {
+            alert('승인 또는 반려를 선택해주세요');
+        } else if (appAction === "반려" && refusal.trim() === '') {
+            alert('반려 사유를 입력해주세요');
+        } else {
+            try {
+                dispatch(callUpdateApprovalAPI(appUpdate, approval.approvalNo));
+                navigate(`/approvals`, { replace: false });
+            } catch {
+                alert('에러');
+            }
+        }
     }
 
     return (
@@ -63,11 +82,9 @@ function ApprovalDetail() {
                             </tr>
                             <tr>
                                 <th >첨부파일</th>
-                                <td>
-                                <a href={`/img/approvals/${approval.appFileList[0]?.fileUrl}`} download>{approval.appFileList[0]?.fileUrl}</a>
+                                <td >
+                                {Array.isArray(approval.appFileList) && approval.appFileList.map((item, index) => (<span><a href={`img/approvals/${item.fileUrl}`} download>{item.fileUrl}</a><br /></span>))}
                                 </td>
-                                {/* 나중에 리스트 형식으로 다시 만들자 + 경로 재설정 */}
-
                                 <th >기안자</th>
                                 <td>{approval.member.memberName}</td>
                             </tr>
@@ -85,23 +102,38 @@ function ApprovalDetail() {
                         ref={quillRef}
                         readOnly
                         theme="snow"
+                        modules={{toolbar:false}}
                         value={approval.appContents}
                         placeholder="내용을 입력하세요." />
+                    <br />
 
-                    <h1>승인/반려</h1>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>승인</td>
-                                <td>반려</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <textarea style={{resize: 'none'}}>dd</textarea>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    {approval?.appLineList.find(item => item.alMember.memberNo === loginToken.memberNo) ?
+                        <div>
+                            <h5>처리</h5>
+                            <table className={Style.appTable}>
+                                <tbody>
+                                    <tr>
+                                        <th width={'15%'}>구분</th>
+                                        <td width={'15%'} style={{ textAlign: 'center' }}>
+                                            <input type="radio" name="appRadio" id="appRadio1" onChange={() => setAppAction("결재")} />
+                                            <label for="appRadio1">승인</label>
+                                        </td>
+                                        <td width={'15%'} style={{ textAlign: 'center' }}>
+                                            <input type="radio" name="appRadio" id="appRadio2" onChange={() => setAppAction("반려")} />
+                                            <label for="appRadio2">반려</label>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    {appAction === "반려" &&
+                                        <tr>
+                                            <th width={'15%'}>반려사유</th>
+                                            <td colSpan={3} style={{ padding: '5px 5px 5px 5px' }}>
+                                                <textarea style={{ resize: 'none', width: '100%', border: 'none' }} value={refusal} onChange={onChangeRefusalHandler}></textarea>
+                                            </td>
+                                        </tr>}
+                                </tbody>
+                            </table>
+                        </div> : null}
                     <div className={Style.appBtn}>
                         <button className="back-btn" onClick={onClickListHandler}>목록</button>
 

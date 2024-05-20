@@ -30,6 +30,7 @@ export default function Reserve() {
     };
 
     const convertToCalendarProps = (rsvList) => {
+        console.log("rsvList 확인", rsvList);
         if (!Array.isArray(rsvList) || rsvList.length === 0) {
             return [];
         }
@@ -71,6 +72,7 @@ export default function Reserve() {
             if (!rsvDate) {
                 throw new Error("날짜를 입력해주세요.");
             }
+            console.log("API 호출 전 dispatch", { rscCategory, rsvDate });
             dispatch(getReserveAPI(rscCategory, rsvDate));
         } catch (error) {
             const errorMessage = error.response ? error.response.data.message : error.message;
@@ -79,8 +81,12 @@ export default function Reserve() {
     };
 
     useEffect(() => {
-        if (reserves && reserves.results && reserves.results.reserve) {
-            const convertedReserves = convertToCalendarProps(reserves.results.reserve);
+        console.log('reserves 확인', reserves);
+        // reserves가 배열이면 바로 사용
+        if (Array.isArray(reserves)) {
+            console.log('convertToCalendarProps 호출 전', reserves);
+            const convertedReserves = convertToCalendarProps(reserves);
+            console.log('convertedReserves 확인', convertedReserves);
             setReserveData(convertedReserves);
         }
     }, [reserves]);
@@ -98,6 +104,7 @@ export default function Reserve() {
     }, [searchClicked]);
 
     const groupReservesByRsc = (reserveData) => {
+        console.log("reserveData 확인", reserveData);
         const groupedReserves = {};
         reserveData.forEach((reserve) => {
             const rscNo = reserve.extendedProps.resources.rscNo;
@@ -146,13 +153,13 @@ export default function Reserve() {
                     <Grid item xs={12}>
                         <h1 style={{ marginTop: 15 }}>자원예약</h1>
                     </Grid>
-                    <Grid item xs={5}>
+                    <Grid item md={4} xs={12}>
                         <ResourceCategorySelect value={searchConditions.rscCategory} onChange={(value) => setSearchConditions({ ...searchConditions, rscCategory: value })} />
                     </Grid>
-                    <Grid item xs={5}>
+                    <Grid item md={4} xs={10}>
                         <ReserveDateSelect value={searchConditions.rsvDate} onChange={(e) => setSearchConditions({ ...searchConditions, rsvDate: e.target.value })} />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item md={2} xs={2} >
                         <Button onClick={onClickSearch}>조회</Button>
                     </Grid>
                 </Grid>

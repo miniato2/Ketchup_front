@@ -20,9 +20,13 @@
     width: 100%;
     border: solid 0.5px #999797;
 }
+.appTable label{
+    margin-left: 5px;
+}
 .appTable td{
     text-align: left;
     border: solid 0.5px #999797;
+    background-color: #fffcfc;
 }
 .appTable th {
     text-align: center;
@@ -33,4 +37,25 @@
     width: fit-content;
     margin-left: auto;
 }
-  
+
+.lineBtn{
+    font-size: 12px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+    width: 40px;
+    height: 20px;
+    border-radius: 5px;   /* 버튼 둥글기*/
+    border: none;
+    background-color: #EC0B0B;
+    color: white;
+}
+
+.formSelect{
+    border: none;
+    width: 100%;
+}
+.appTitle{
+    border: none;
+    width: 100%;
+    background-color: #fffcfc;
+}

@@ -3,14 +3,14 @@ import AppCatCss from './AppCategory.module.css';
 import { callGetApprovalCountAPI } from '../../apis/ApprovalAPICalls';
 import { decodeJwt } from "../../utils/tokenUtils";
 
-function AppCategory({category, setCategory, setCurrentPage}){
+function AppCategory({ category, setCategory, setCurrentPage, setStatus, setSearch, appList}) {
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const [approvalCount, setApprovalCount] = useState();
     const approvalData = [
-        { title: "진행중인 문서", count: approvalCount?.myApp, categoryNo: 1},
-        { title: "완료된 문서", count: approvalCount?.doneApp, categoryNo: 2},
-        { title: "결재 대기 문서", count: approvalCount?.receiveApp, categoryNo: 3},
-        { title: "수신 참조 문서", count: approvalCount?.refApp, categoryNo: 4}
+        { title: "진행중인 문서", count: approvalCount?.myApp, categoryNo: 1 },
+        { title: "완료된 문서", count: approvalCount?.doneApp, categoryNo: 2 },
+        { title: "결재 대기 문서", count: approvalCount?.receiveApp, categoryNo: 3 },
+        { title: "수신 참조 문서", count: approvalCount?.refApp, categoryNo: 4 }
     ];
 
     useEffect(() => {
@@ -27,25 +27,26 @@ function AppCategory({category, setCategory, setCurrentPage}){
             }
         };
         categoryCount();
-    },[]);
-
+    }, [appList]);
 
     const onClickHandler = (categoryNo) => {
         setCategory(categoryNo);
         setCurrentPage(1);
+        setStatus('전체');
+        setSearch('');
     }
 
-    return(
+    return (
         <div className={AppCatCss.appCategory}>
-            {approvalData.map(({ title, count, categoryNo}) => (
-                    <div className={category === categoryNo ? AppCatCss.selectedCategoryBox : AppCatCss.categoryBox } 
+            {approvalData.map(({ title, count, categoryNo }) => (
+                <div className={category === categoryNo ? AppCatCss.selectedCategoryBox : AppCatCss.categoryBox}
                     onClick={() => onClickHandler(categoryNo)} key={categoryNo}>
-                            <h5 className={AppCatCss.title}>{title}</h5>
-                            <div className={AppCatCss.count}>
-                                <h3>{count}</h3>
-                            </div>
-                        </div> 
-                    ))}
+                    <h5 className={AppCatCss.title}>{title}</h5>
+                    <div className={AppCatCss.count}>
+                        <h3>{count}</h3>
+                    </div>
+                </div>
+            ))}
         </div>
     )
 }

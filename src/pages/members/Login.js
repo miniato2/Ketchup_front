@@ -21,20 +21,20 @@ function Login() {
     });
 
     useEffect(() => {
+        window.localStorage.getItem('accessToken')
         
-        if(loginMember.status === 200){
-            console.log("[Login] Login SUCCESS {}", loginMember);
-            navigate("/main", { replace: true });
+        if(window.localStorage.getItem('accessToken')){
+          
+            navigate("/main");
+
+        }else{
+            navigate('/login');
         }
-    }
-    ,[loginMember, navigate]);
+        }
     
-    useEffect(() => {
-        if (loginMember.length > 0) {
-            console.log("[Login] Login is already authenticated by the server");        
-            navigate("/");
-        }
-    }, [loginMember, navigate]);
+    ,[]);
+    
+
     
 
     const onChangeHandler = (e) => {
@@ -45,15 +45,11 @@ function Login() {
     };
 
     // 로그인 버튼 클릭시 디스패처 실행 및 메인 페이지로 이동
-    const onClickLoginHandler = () => { 
-        dispatch(callLoginAPI({	// 로그인
-            form: form
-        }));
-        if (window.localStorage.getItem('accessToken')) {
-            console.log("로그인 진행");
-            navigate("/main", { replace: true });
-        } 
-    }
+    const onClickLoginHandler = async() => {
+       await dispatch(callLoginAPI({ form: form }));
+       await navigate('/main');
+    
+    };
 
     return (
         <div className = "row justify-content-center">
