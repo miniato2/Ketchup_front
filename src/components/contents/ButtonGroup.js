@@ -5,7 +5,7 @@ const ButtonGroup = ({ buttons }) => {
         <>
             <div className="btn-group">
                 {buttons.map((button, index) => (
-                    <button type="button" className={`${button.styleClass}-btn`} key={index} onClick={button.onClick}>{button.label}</button>
+                    <button type="button" className={`${button.styleClass}-btn`} key={index} onClick={button.onClick} disabled={button.styleClass === 'disable'}>{button.label}</button>
                 ))}
             </div>
         </>

@@ -2,11 +2,17 @@ import { getReceivemail, getSendmail, getMaildetail, postInsertmail, putDeletema
 import { request } from "./Api";
 
 // 받은 메일
-export function callGetReceiveMailAPI() {
+export function callGetReceiveMailAPI(searchCondition, searchValue) {
     console.log("getReceivemail api call...");
+    console.log(searchCondition);
+    console.log(searchValue);
 
     return async (dispatch, getState) => {
-        const result = await request('GET', '/mails?part=receive');
+        let url = '/mails?part=receive';
+        if(searchCondition && searchValue) {
+            url += `&search=${searchCondition}&searchvalue=${searchValue}`;
+        }
+        const result = await request('GET', url);
         console.log(result.data);
 
         const sendMailName = await Promise.all(result.data.map(async (mail) => {
@@ -27,11 +33,17 @@ export function callGetReceiveMailAPI() {
 }
 
 // 보낸 메일
-export function callGetSendMailAPI() {
+export function callGetSendMailAPI(searchCondition, searchValue) {
     console.log("getSendmail api call...");
+    console.log(searchCondition);
+    console.log(searchValue);
 
     return async (dispatch, getState) => {
-        const result = await request('GET', '/mails?part=send');
+        let url = '/mails?part=send';
+        if(searchCondition && searchValue) {
+            url += `&search=${searchCondition}&searchvalue=${searchValue}`;
+        }
+        const result = await request('GET', url);
         console.log(result.data);
 
         const receiveMailName = await Promise.all(result.data.map(async (mail) => {
@@ -49,19 +61,36 @@ export function callGetSendMailAPI() {
 }
 
 // 메일 상세
-export function callGetMailDetailAPI(mailNo) {
+export function callGetMailDetailAPI(mailNo, part) {
     console.log("getMailDetail api call...");
 
     return async (dispatch, getState) => {
         const result = await request('GET', `/mails/${mailNo}`);
         console.log(result.data);
 
-        dispatch(getMaildetail(result.data));
+        if (part === 'receive') {
+            const memberInfoResult = await request('GET', `/members/${result.data.senderMem}`);
+            console.log(memberInfoResult);
+            const receiveMailDetail = { ...result.data, memberName: memberInfoResult.data.memberName, memberDepName: memberInfoResult.data.position.positionName, memberCompanyEmail: memberInfoResult.data.companyEmail };
+
+            dispatch(getMaildetail(receiveMailDetail));
+        } else if (part === 'send') {
+            const mail = result.data;
+            const memberDetails = await Promise.all(mail.receivers.map(async (receiver) => {
+                const memberInfoResult = await request('GET', `/members/${receiver.receiverMem}`);
+                const formattedName = `${memberInfoResult.data.memberName} ${memberInfoResult.data.position.positionName}`;
+                return formattedName;
+            }));
+            const formattedMemberNames = memberDetails.join(', ');
+            const sendMailDetail = { ...mail, memberName: formattedMemberNames };
+
+            dispatch(getMaildetail(sendMailDetail));
+        }
     };
 }
 
 // 메일 작성
-export const callPostInsertMailAPI = ({formData}) => {
+export const callPostInsertMailAPI = ({ formData }) => {
     console.log("postInsertmail api call...");
 
     const requestURL = `http://localhost:8080/mails`;
@@ -85,7 +114,7 @@ export const callPostInsertMailAPI = ({formData}) => {
 }
 
 // 메일 삭제 = 삭제 상태 수정
-export const callPutDeleteMailAPI = ( part, mailNos ) => {
+export const callPutDeleteMailAPI = (part, mailNos) => {
     console.log("putDeletemail api call...");
 
     return async (dispatch, getState) => {
@@ -127,6 +156,7 @@ export function callPutSendMailCancel(mailNo) {
 
     return async (dispatch, getState) => {
         const result = await request('PUT', `/mails/${mailNo}`);
+        console.log("🎭🎭🎭🎭🎭🎭🎭");
         console.log(result.data);
 
         dispatch(putMailcancel(result.data));

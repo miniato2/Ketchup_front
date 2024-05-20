@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { callGetReceiveMailAPI, callPutReadTimeAPI } from "../../../apis/MailAPICalls";
+import { callGetReceiveMailAPI } from "../../../apis/MailAPICalls";
 import MailTable from "../../items/mails/MailTable";
 import { useNavigate, useParams } from "react-router-dom";
 import FormatDateTime from "../../contents/FormatDateTime";
 
-function ReceiveMail({ checkedItems, setCheckedItems }) {
+function ReceiveMail({ checkedItems, setCheckedItems, searchCondition, searchValue }) {
     const { part } = useParams();
     const [sortedMail, setSortedMail] = useState([]);
     const result = useSelector(state => state.mailReducer);
@@ -15,7 +15,7 @@ function ReceiveMail({ checkedItems, setCheckedItems }) {
 
     useEffect(
         () => {
-            dispatch(callGetReceiveMailAPI());
+            dispatch(callGetReceiveMailAPI(searchCondition, searchValue));
         }, [dispatch]
     );
 
@@ -37,14 +37,10 @@ function ReceiveMail({ checkedItems, setCheckedItems }) {
         ['sendMailTime', '수신일시']
     ];
 
-    const handleRowClick = (index) => () => {
+    const handleRowClick = (index) => async () => {
         const mailNo = receiveMail[index]?.mailNo;
 
         navigate(`/mails/detail/${mailNo}`, { state: { part } });
-
-        if (part == 'receive') {
-            dispatch(callPutReadTimeAPI(mailNo));
-        }
     };
 
     return (

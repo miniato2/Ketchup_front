@@ -13,7 +13,9 @@ function Mail() {
     const [sendMailNos, setSendMailNos] = useState([]);
     const [receiveMailNos, setReceiveMailNos] = useState([])
     const [deleteModal, setDeleteModal] = useState(false);
-
+    const [searchCondition, setSearchCondition] = useState('');
+    const [searchValue, setSearchValue] = useState('');
+    
     const receiveHandler = () => {
         navigate('/mails/receive');
     };
@@ -22,20 +24,21 @@ function Mail() {
         navigate('/mails/send');
     };
 
-    // const mailSearch = (searchCondition, searchKeyword) => {
-    //     dispatch(callGetReceiveMailAPI(searchCondition, searchKeyword));
-    //     dispatch(callGetSendMailAPI(searchCondition, searchKeyword));
-    // };
-
     const insertHandler = () => navigate('/mails/insert');
 
     const openDeleteModal = () => {
         setDeleteModal(true);
     };
 
+    const handleSearch = ({ condition, value }) => {
+        setSearchCondition(condition);
+        setSearchValue(value);
+    };
+
     const delMailList = part === 'receive' ? 
         Object.keys(receiveMailNos).filter(key => receiveMailNos[key]).map(Number)
         : Object.keys(sendMailNos).filter(key => sendMailNos[key]).map(Number);
+
     const setDelMailList = part === 'receive' ? setReceiveMailNos : setSendMailNos;
 
     return (
@@ -43,7 +46,12 @@ function Mail() {
             <main id="main" className="main">
                 <div className="title">
                     <h2>메일</h2>
-                    <SearchBarValue />
+                    <SearchBarValue
+                        searchCondition={searchCondition}
+                        setSearchCondition={setSearchCondition}
+                        searchValue={searchValue}
+                        setSearchValue={setSearchValue}
+                        onSearch={handleSearch} />
                 </div>
                 <div className="mt-3 d-flex justify-content-between align-middle">
                     <div className="mail-btn">
@@ -63,11 +71,15 @@ function Mail() {
                     part == "receive" ?
                         <ReceiveMail
                             checkedItems={receiveMailNos}
-                            setCheckedItems={setReceiveMailNos} />
+                            setCheckedItems={setReceiveMailNos}
+                            searchCondition={searchCondition}
+                            searchValue={searchValue} />
                         :
                         <SendMail
                             checkedItems={sendMailNos}
-                            setCheckedItems={setSendMailNos} />
+                            setCheckedItems={setSendMailNos}
+                            searchCondition={searchCondition}
+                            searchValue={searchValue} />
                 }
             </main>
 
