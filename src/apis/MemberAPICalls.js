@@ -1,4 +1,4 @@
-import { GET_MEMBER, GET_MEMBERS, POST_LOGIN, POST_REGISTER} from '../modules/MemberModule';
+import { GET_MEMBER, GET_MEMBERS, POST_LOGIN, POST_REGISTER, PUT_MEMBERS} from '../modules/MemberModule';
 import { GET_DEPARTMENTS } from '../modules/DepartmentModule';
 import { GET_POSITIONS } from '../modules/PositionModule';
 import { request,multipartRequest } from './Api';
@@ -173,8 +173,74 @@ export function callPositionsAPI() {
 
     };
 
-
-
 }
 
+
+
+
+
+
+
+export const callUpdateMembersAPI = ({ form }) => {
+
+    if(form.memberImage!==undefined){
+
+  
+    console.log('여기가 수정 api 시작', form);
+    const formData = new FormData();
+
+    // 멤버 정보를 JSON 형식으로 변환하여 FormData에 추가
+    const memberInfoBlob = new Blob([JSON.stringify({
+        memberNo: form.memberNo,
+        memberName: form.memberName,
+        phone: form.phone,
+        address: form.address,
+        privateEmail: form.privateEmail,
+        companyEmail: form.companyEmail,
+        department: form.department,
+        position: form.position,
+        account: form.account,
+    })], { type: 'application/json' });
+    formData.append('memberInfo', memberInfoBlob);
+    
+    // 이미지 파일을 Blob으로 추가
+   
+    formData.append('memberImage', form.memberImage);
+    console.log('----------------여기가 API 실행중', form.memberImage);
+   
+  
+    return async (dispatch) => {
+        try {
+            const result = await multipartRequest('PUT','/members', formData);
+            console.log('[MemberAPICalls] callUpdateMembersAPI RESULT : ', result);
+
+            if (result.status === 201) {
+                dispatch({ type: PUT_MEMBERS, payload: result });
+            }
+        } catch (error) {
+            console.error('프론트에서 캐치한 Error: ', error);
+        }
+    };
+
+    }
+    else{
+
+        console.log('이미지없는 수정 시작!! 제발 나와줘',form)
+
+        return async (dispatch, getState) => {
+            const result = await request('PUT','/membersNoImage', form);
+            console.log('이미지없는 수정 결과는? : ', result);
+            if (result.status == 200) {
+                dispatch({ type: PUT_MEMBERS, payload: result });
+            } else {
+                throw new Error('에러');
+            }
+        }
+
+
+    }
+
+
+
+};
 

@@ -21,7 +21,7 @@ function Login() {
     });
 
     useEffect(() => {
-        window.localStorage.getItem('accessToken')
+        
         
         if(window.localStorage.getItem('accessToken')){
           
