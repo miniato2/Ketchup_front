@@ -3,10 +3,8 @@ import Notice from "../../components/items/notices/Notice";
 import ButtonGroup from "../../components/contents/ButtonGroup";
 
 function NoticeDetail() {
-
     const navigate = useNavigate();
     const { noticeNo } = useParams();
-    
 
     return (
         <main id="main" className="main">

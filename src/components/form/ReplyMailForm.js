@@ -5,71 +5,35 @@ import ReactQuill from "react-quill";
 import { callPostInsertMailAPI } from "../../apis/MailAPICalls";
 import { useNavigate } from "react-router-dom";
 
-function MailForm() {
+function MailForm({ content }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const members = useSelector(state => state.memberReducer);
     const quillRef = useRef();
 
     const [mailForm, setMailForm] = useState({
-        mailTitle: '',
+        mailTitle: `RE:${content.mailTitle}`,
         mailContent: '',
-        replyMailNo: 0,
-        receivers: []
+        replyMailNo: content.mailNo,
+        receivers: [{receiverMem: content.senderMem}]
     });
     const [mailFile, setMailFile] = useState([]);
-    const [receiverInfo, setReceiverInfo] = useState([]);
+    // const [receiverInfo, setReceiverInfo] = useState([]);
 
-    useEffect(
-        () => {
-            dispatch(callMembersAPI());
-        }, [dispatch]
-    );
+    // const onChangeHandler = (e) => {
+    //     const { name, value } = e.target;
 
-    const onChangeHandler = (e) => {
-        const { name, value } = e.target;
-
-        setMailForm({
-            ...mailForm,
-            [name]: value
-        });
-    };
-
-    // 수신자 추가
-    const addReceiver = (e) => {
-        const { value } = e.target;
-        const selectedOption = e.target.options[e.target.selectedIndex];
-        const receiverInfo = {
-            receiverMem: selectedOption.text
-        };
-
-        setMailForm(prevState => ({
-            ...prevState,
-            receivers: [...prevState.receivers, { receiverMem: value }]
-        }));
-
-        setReceiverInfo(prevState => [...prevState, receiverInfo]);
-    };
-
-    // 수신자 제거
-    const removeReceiver = (delIndex) => {
-        setMailForm(prevState => ({
-            ...prevState,
-            receivers: prevState.receivers.filter((_, index) => index !== delIndex)
-        }));
-
-        setReceiverInfo(prevState => prevState.filter((_, index) => index !== delIndex));
-    };
-
-    console.log("🎡🎡🎡🎡🎡🎡🎡🎡🎡🎡🎡");
-    console.log(receiverInfo);
+    //     setMailForm({
+    //         ...mailForm,
+    //         [name]: value
+    //     });
+    // };
 
     const handleFileChange = (e) => {
         setMailFile([...e.target.files]);
     };
 
     const goBackList = () => {
-        navigate('/mails/send');
+        navigate(`/mails/detail/${mailNo}`);
     }
 
     const submitMailClick = async () => {
@@ -78,6 +42,7 @@ function MailForm() {
         const mailDto = {
             mailTitle: mailForm.mailTitle,
             mailContent: mailForm.mailContent.ops[0].insert,
+            replyMailNo: mailForm.replyMailNo,
             receivers: mailForm.receivers
         };
 
@@ -104,38 +69,14 @@ function MailForm() {
                     type="text"
                     className="form-control"
                     name="mailTitle"
-                    value={mailForm.mailTitle}
                     id="title"
-                    onChange={onChangeHandler}
-                    placeholder="제목을 입력하세요" />
+                    placeholder={`RE:${content.mailTitle}`}
+                    readOnly />
             </div>
             <div className="input-container d-flex">
                 <label>받는 사람</label>
-                <div>
-                    <select
-                        className="form-select"
-                        id="recipient"
-                        onChange={addReceiver}
-                        value={mailForm.receivers}>
-                        <option selected>수신자를 선택하세요</option>
-                        {members.map((item, index) => {
-                            return (
-                                <option
-                                    key={index}
-                                    value={item.memberNo}>
-                                    {item.memberName}({item.department.depName}) {item.companyEmail}
-                                </option>
-                            );
-                        })}
-                    </select>
-                    <div className="mt-3">
-                        {receiverInfo.map((receiver, index) => (
-                            <div key={index} className="d-inline selected-recipient">
-                                <span>{receiver.receiverMem}</span>
-                                <i className="bi bi-x" onClick={() => removeReceiver(index)}></i>
-                            </div>
-                        ))}
-                    </div>
+                <div className="mt-3 d-inline selected-recipient">
+                    <span>{`${content.memberName}(${content.memberDepName}) ${content.memberCompanyEmail}`}</span>
                 </div>
             </div>
             <div className="input-container">

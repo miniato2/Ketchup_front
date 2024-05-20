@@ -25,6 +25,15 @@
     color:#000000;
     text-decoration: none;
 }
+.disable-btn {
+    width: 90px;          /* 버튼 넓이*/
+    height: 38px;         /* 버튼 높이*/
+    border-radius: 5px;   /* 버튼 둥글기*/
+    border: none;
+    background-color: #ddd;
+    color: #000;
+}
+  
 
 /* SendCancelModal.js */
 .modal-back{
@@ -46,4 +55,23 @@
     width: 450px;
     height: 250px;
     border-radius: 10px;
+}
+
+/* MailContent.js */
+.mail-title {
+    margin-bottom:5px;
+}
+.send-time {
+    color: #a1a1a1;
+    font-size:18px;
+}
+.r-color {
+    margin-top:10px;
+}
+.r-color span {
+    font-size:18px;
+}
+.r-color span:first-child {
+    color:#EC0B0B;
+    margin-right:20px;
 }
