@@ -19,7 +19,7 @@ export function callPostResourceAPI({rscData}) {
 
     return async (dispatch, getState) => {
         try {
-            const response = await fetch(requestURL, {
+            const result = await fetch(requestURL, {
                 method: 'POST',
                 headers: {
                     
