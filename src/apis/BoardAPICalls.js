@@ -2,27 +2,30 @@ import { request } from "./Api";
 import { getBoardlist, getBoard, insertBoard, updateBoard, deleteBoard } from "../modules/BoardModule";
 
 
-export function callGetBoardListAPI({ params }) {
+export function callGetBoardListAPI({ depNo, title, currentPage, setTotalItems  }) {
     console.log('callGetBoardListAPI...');
 
     return async (dispatch, getState) => {
         try {
             // API 엔드포인트 설정
-            let endpoint = '/boards';
-            if (params.depNo !== undefined) {
-                endpoint += `?depNo=${params.depNo}`;
-            }
-            if (params.title) {
-                endpoint += `${params.depNo !== undefined ? '&' : '?'}title=${params.title.toLowerCase()}`;
+            let endpoint = `/boards?depNo=${depNo}&page=${currentPage}`;
+
+            if (title) {
+                endpoint += `&title=${title}`;
             }
 
             // // 게시물 목록 요청
             const result = await request('GET', endpoint);
-            console.log('Number of boards received:', result.data);
+            console.log('Number of boards received:', result.data.data);
 
-            // 게시물 목록을 가져오는 부분 수정
-            const boardList = Array.isArray(result.data.data.content) ? result.data.data.content : [];
+            const boardList = result?.data?.data?.content || [];
+            const totalItems = result?.data?.data?.totalElements || {};
+            
             console.log('Board list:', boardList);
+            console.log('Board page:', totalItems);
+
+            setTotalItems(totalItems); // totalItems를 setTotalItems 함수를 통해 전달
+
 
             // 각 게시물의 작성자 이름을 가져오기 위해 게시물 목록을 순회
             const boardsWithMemberNames = await Promise.all(boardList.map(async (board) => {
@@ -31,14 +34,6 @@ export function callGetBoardListAPI({ params }) {
                 // 게시물 목록에 작성자 이름을 추가
                 return { ...board, memberName: memberInfoResult.data.memberName };
             }));
-
-            // 각 게시물의 작성자 이름을 가져오기 위해 게시물 목록을 순회
-            // const boardsWithMemberNames = await Promise.all(result.data.data.map(async (board) => {
-            //     // 각 게시물의 작성자 memberNo를 이용해 memberName을 조회
-            //     const memberInfoResult = await request('GET', `/members/${board.memberNo}`);
-            //     // 게시물 목록에 작성자 이름을 추가
-            //     return { ...board, memberName: memberInfoResult.data.memberName };
-            // }));
 
             // 수정된 게시물 목록을 저장
             dispatch(getBoardlist(boardsWithMemberNames));
