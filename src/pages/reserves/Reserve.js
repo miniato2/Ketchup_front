@@ -1,4 +1,4 @@
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+import { Box, Button, Grid, Typography, Dialog } from "@mui/material";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import ResourceCategorySelect from "./ResourceCategorySelect";
 import ReserveDateSelect from "./ReserveDateSelect";
+import InsertReserveForm from "../../components/form/InsertReserveForm";
+import ReserveDetail from "../../components/form/ReserveDetail";
 
 export default function Reserve() {
     const dispatch = useDispatch();
@@ -20,6 +22,19 @@ export default function Reserve() {
         rscCategory: "",
         rsvDate: ""
     });
+    const onDateClickHandler = () => { setInsertReserveDialogOpen(true) };
+    const [insertReserveDialogOpen, setInsertReserveDialogOpen] = useState(false);
+    const onInsertCancelHandler = () => { setInsertReserveDialogOpen(false) };
+    
+    const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+    const openDetailDialog = () => { setDetailDialogOpen(true) };
+    const closeDetailDialog = () => { setDetailDialogOpen(false) };
+    const [selectedReserve, setSelectedReserve] = useState([]);
+    const onEventClickHandler = (selected) => {
+        openDetailDialog();
+        setSelectedReserve(selected.event);
+        console.log("selectedReserve에 담을 selected.event", selected.event);
+    };
 
     const onInputChange = (e) => {
         const { name, value } = e.target;
@@ -82,7 +97,6 @@ export default function Reserve() {
 
     useEffect(() => {
         console.log('reserves 확인', reserves);
-        // reserves가 배열이면 바로 사용
         if (Array.isArray(reserves)) {
             console.log('convertToCalendarProps 호출 전', reserves);
             const convertedReserves = convertToCalendarProps(reserves);
@@ -139,6 +153,9 @@ export default function Reserve() {
                             height="50vh"
                             headerToolbar={false}
                             themeSystem='bootstrap'
+                            selectable={true}
+                            select={onDateClickHandler}
+                            eventClick={onEventClickHandler}
                         />
                     </Box>
                 </Grid>
@@ -171,6 +188,19 @@ export default function Reserve() {
                     <Typography fontSize={38}>검색 조건을 입력하여 검색해주세요.</Typography>
                 )}
             </Box>
+
+            <Dialog open={insertReserveDialogOpen} onClose={onInsertCancelHandler}>
+                <InsertReserveForm
+                    onInsertCancelHandler={onInsertCancelHandler}
+                />
+            </Dialog>
+
+            <Dialog open={detailDialogOpen} onClose={closeDetailDialog}>
+                <ReserveDetail
+                    closeDetailDialog={closeDetailDialog}
+                    selectedReserve={selectedReserve}
+                />
+            </Dialog>
         </main >
     );
 };
