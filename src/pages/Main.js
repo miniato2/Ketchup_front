@@ -16,6 +16,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from '@fullcalendar/list';
 import moment from "moment";
+import { Box } from "@mui/material";
 
 function Main() {
     const dispatch = useDispatch();
@@ -180,7 +181,9 @@ function Main() {
 
             {/* 일정 */}
             <div className="col-12">
+                <Box flex="100%" mt="15px">
                 <FullCalendar
+                    locale="ko"
                     events={events}
                     height="50vh"
                     initialView="dayGridWeek"
@@ -201,7 +204,9 @@ function Main() {
                             click: function () { alert("더보기 버튼이 정상적으로 클릭되었습니다. '일정' 페이지로 이동시킬 예정입니다."); }
                         }
                     }}
+                    themeSystem='bootstrap'
                 />
+                </Box>
             </div>
         </main >
     );

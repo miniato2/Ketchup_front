@@ -12,6 +12,9 @@ import moment from "moment";
 import { decodeJwt } from "../../utils/tokenUtils";
 import ScheduleDetail from "../../components/form/ScheduleDetail";
 
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-icons/font/bootstrap-icons.css'; // webpack uses file-loader to handle font files
+
 const Calendar = () => {
     const schedules = useSelector(state => state.scheduleReducer);
     const [calendarReady, setCalendarReady] = useState(false);
@@ -172,7 +175,7 @@ const Calendar = () => {
     return (
         <main id="main" className="main">
             {calendarReady && (
-                <Box flex="1 1 100%" ml="15px" mt="15px" sx={{ a: { textDecoration: 'none', color: '#444444' } }}>
+                <Box flex="1 1 100%" ml="15px" mt="15px" >
                     <h2>부서별 일정</h2>
                     <FullCalendar
                         locale="ko"
@@ -202,6 +205,7 @@ const Calendar = () => {
                             day: '일',
                             list: '목록'
                         }}
+                        themeSystem='United'
                         />
                 </Box>
             )}
