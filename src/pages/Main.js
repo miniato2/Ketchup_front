@@ -16,6 +16,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from '@fullcalendar/list';
 import moment from "moment";
+import { Box } from "@mui/material";
 
 function Main() {
     const dispatch = useDispatch();
@@ -29,10 +30,10 @@ function Main() {
 
     // 결재 
     const approvalData = [
-        { title: "진행중인 문서", count: approvalCount?.myApp, categoryNo: 1},
-        { title: "완료된 문서", count: approvalCount?.doneApp, categoryNo: 2},
-        { title: "결재 대기 문서", count: approvalCount?.receiveApp, categoryNo: 3},
-        { title: "수신 참조 문서", count: approvalCount?.refApp, categoryNo: 4}
+        { title: "진행중인 문서", count: approvalCount?.myApp, categoryNo: 1 },
+        { title: "완료된 문서", count: approvalCount?.doneApp, categoryNo: 2 },
+        { title: "결재 대기 문서", count: approvalCount?.receiveApp, categoryNo: 3 },
+        { title: "수신 참조 문서", count: approvalCount?.refApp, categoryNo: 4 }
     ];
 
     const convertToCalendarProps = (schedules) => {
@@ -93,7 +94,7 @@ function Main() {
             return;
         }
         setEvents(convertToCalendarProps(schedules));
-        setIsLoading(false); 
+        setIsLoading(false);
     }, [schedules]);
 
     // 공지사항 목록 Redux store에서 가져오기
@@ -186,32 +187,36 @@ function Main() {
 
                     {/* 일정 */}
                     <div className="col-12">
-                        <FullCalendar
-                            events={events}
-                            height="50vh"
-                            initialView="dayGridWeek"
-                            plugins={[
-                                dayGridPlugin,
-                                timeGridPlugin,
-                                interactionPlugin,
-                                listPlugin
-                            ]}
-                            headerToolbar={{
-                                left: "prev title next today",
-                                center: "",
-                                right: "moreButton"
-                            }}
-                            customButtons={{
-                                moreButton: {
-                                    text: '더보기',
-                                    click: function () { alert("더보기 버튼이 정상적으로 클릭되었습니다. '일정' 페이지로 이동시킬 예정입니다."); }
-                                }
-                            }}
-                        />
+                        <Box flex="100%" mt="15px">
+                            <FullCalendar
+                                locale="ko"
+                                events={events}
+                                height="50vh"
+                                initialView="dayGridWeek"
+                                plugins={[
+                                    dayGridPlugin,
+                                    timeGridPlugin,
+                                    interactionPlugin,
+                                    listPlugin
+                                ]}
+                                headerToolbar={{
+                                    left: "prev title next today",
+                                    center: "",
+                                    right: "moreButton"
+                                }}
+                                customButtons={{
+                                    moreButton: {
+                                        text: '더보기',
+                                        click: function () { alert("더보기 버튼이 정상적으로 클릭되었습니다. '일정' 페이지로 이동시킬 예정입니다."); }
+                                    }
+                                }}
+                                themeSystem='bootstrap'
+                            />
+                        </Box>
                     </div>
                 </>
             )}
-        </main >
+        </main>
     );
 }
 

@@ -2,7 +2,7 @@ import { request } from "./Api";
 import { getBoardlist, getBoard, insertBoard, updateBoard, deleteBoard } from "../modules/BoardModule";
 
 
-export function callGetBoardListAPI({ depNo, title, currentPage }) {
+export function callGetBoardListAPI({ depNo, title, currentPage, setTotalItems  }) {
     console.log('callGetBoardListAPI...');
 
     return async (dispatch, getState) => {
@@ -16,10 +16,16 @@ export function callGetBoardListAPI({ depNo, title, currentPage }) {
 
             // // 게시물 목록 요청
             const result = await request('GET', endpoint);
-            console.log('Number of boards received:', result.data);
+            console.log('Number of boards received:', result.data.data);
 
-            const boardList = result?.data?.data || [];
+            const boardList = result?.data?.data?.content || [];
+            const totalItems = result?.data?.data?.totalElements || {};
+            
             console.log('Board list:', boardList);
+            console.log('Board page:', totalItems);
+
+            setTotalItems(totalItems); // totalItems를 setTotalItems 함수를 통해 전달
+
 
             // 각 게시물의 작성자 이름을 가져오기 위해 게시물 목록을 순회
             const boardsWithMemberNames = await Promise.all(boardList.map(async (board) => {

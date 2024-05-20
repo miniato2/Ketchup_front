@@ -8,6 +8,7 @@ export const GET_MEMBER     = 'member/GET_MEMBER';
 export const GET_MEMBERS    = 'member/GET_MEMBERS';
 export const POST_LOGIN     = 'member/POST_LOGIN';
 export const POST_REGISTER  = 'member/POST_REGISTER';
+export const PUT_MEMBERS    = 'member/PUT_MEMBERS';
 
 
 const actions = createActions({
@@ -15,6 +16,7 @@ const actions = createActions({
     [GET_MEMBERS]: () => {},
     [POST_LOGIN]: () => {},
     [POST_REGISTER]: () => {},
+    [PUT_MEMBERS]: () => {},
 });
 
 /* 리듀서 */
@@ -33,6 +35,10 @@ const memberReducer = handleActions(
             return payload;
         },
         [POST_REGISTER]: (state, { payload }) => {
+            
+            return payload;
+        },
+        [PUT_MEMBERS]: (state, { payload }) => {
             
             return payload;
         }
