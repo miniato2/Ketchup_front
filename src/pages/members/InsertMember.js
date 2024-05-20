@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { callRegisterAPI, callDepartmentsAPI, callPositionsAPI } from "../../apis/MemberAPICalls";
 import { useEffect } from "react";
@@ -8,7 +8,7 @@ import DaumPostcodeEmbed from "react-daum-postcode";
 
 
 function InsertMember() {
-
+   
     const departments = useSelector(state => state.departmentReducer);
     const positions = useSelector(state => state.positionReducer);
    
@@ -65,6 +65,9 @@ function InsertMember() {
 
 
     useEffect(() => {
+     
+
+       
         generateMemberNo();
         dispatch(callDepartmentsAPI());
         dispatch(callPositionsAPI());
@@ -176,7 +179,7 @@ function InsertMember() {
 
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
-        const final = selectedBank + value;
+        const final = selectedBank+"  "+ value;
        
 
 
@@ -302,7 +305,7 @@ function InsertMember() {
                 [e.target.name]: (e.target.name === 'account') ? final : e.target.value
         });
 
-        console.log(form.account);
+        
 
     };
 
