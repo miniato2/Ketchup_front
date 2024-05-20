@@ -9,11 +9,11 @@ function InsertResourceForm({part}) {
         rscIsAvailable: false
     });
 
-    useEffect(
-        () => {
-            dispatch(call)
-        }
-    )
+    // useEffect(
+    //     () => {
+    //         dispatch(call)
+    //     }
+    // )
 
     return (
         <div className="rsc-form">
