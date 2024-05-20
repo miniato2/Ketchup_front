@@ -27,6 +27,8 @@ import BoardDetail from './pages/boards/BoardDetail';
 import UpdateBoard from './pages/boards/UpdateBoard';
 // 
 import Resources from './pages/resources/Resources';
+import Departments from './pages/members/Departments';
+import Positions from './pages/members/Positions';
 
 // import Error from './pages/Error';
 
@@ -97,6 +99,8 @@ function App() {
               <Route path="insert" element={<InsertMember />} />
               <Route path=":memberNo" element={<MemberDetail />} />
             </Route>
+            <Route path="deparpments" element={<Departments/>}/>
+            <Route path="positions" element={<Positions/>}/>
             <Route path='resources'>
               <Route path=':part' element={<Resources />} />
             </Route>
