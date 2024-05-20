@@ -5,7 +5,7 @@ import MailTable from "../../items/mails/MailTable";
 import { useNavigate, useParams } from "react-router-dom";
 import FormatDateTime from "../../contents/FormatDateTime";
 
-function SendMail({ checkedItems, setCheckedItems }) {
+function SendMail({ checkedItems, setCheckedItems, searchCondition, searchValue }) {
     const { part } = useParams();
     const [sortedMail, setSortedMail] = useState([]);
     const result = useSelector(state => state.mailReducer);
@@ -15,8 +15,8 @@ function SendMail({ checkedItems, setCheckedItems }) {
 
     useEffect(
         () => {
-            dispatch(callGetSendMailAPI());
-        }, []
+            dispatch(callGetSendMailAPI(searchCondition, searchValue));
+        }, [dispatch]
     );
 
     useEffect(() => {
