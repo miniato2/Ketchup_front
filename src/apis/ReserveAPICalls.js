@@ -1,8 +1,7 @@
 import { request } from './Api';
-import { GET_RESERVE, POST_RESERVE } from '../modules/ReserveModule'
+import { DELETE_RESERVE, GET_RESERVE, POST_RESERVE } from '../modules/ReserveModule'
 
 export const getReserveAPI = (rscCategory, rsvDate) => {
-
     return async (dispatch) => {
         try {
             const reserves = await request('GET', `/reserves?category=${rscCategory}&date=${rsvDate}`);
@@ -35,5 +34,15 @@ export const updateReserveAPI = async (rsvNo, updatedReserveData) => {
     } catch (error) {
         const errorMessage = error.response ? error.response.data.message : error.message;
         throw new Error(`[ReserveAPICalls중 insertReserveAPI] 오류: ${errorMessage}`);
+    }
+};
+
+export const deleteReserveAPI = async (rsvNo) => {
+    try {
+        const response = await request('delete', `/reserves/${rsvNo}`);
+        return response;
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message;
+        throw new Error(`[ReserveAPICalls중 deleteReserveAPI 오류 발생] : ${errorMessage}`);
     }
 };
