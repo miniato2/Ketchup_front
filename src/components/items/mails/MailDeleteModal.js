@@ -1,6 +1,6 @@
 import ButtonGroup from "../../contents/ButtonGroup";
 import "../../../pages/mails/mail.css";
-import { callPutDeleteMailAPI } from "../../../apis/MailAPICalls";
+import { callGetReceiveMailAPI, callGetSendMailAPI, callPutDeleteMailAPI } from "../../../apis/MailAPICalls";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -18,6 +18,11 @@ function MailDeleteModal({ setDeleteModal, part, delMailList, setDelMailList }) 
         }else if (label === "삭제") {
             await dispatch(callPutDeleteMailAPI(part, delMailList));
         }else if(label === "확인") {
+            if(part === "receive") {
+                await dispatch(callGetReceiveMailAPI());
+            }else {
+                await dispatch(callGetSendMailAPI());
+            }
             setDeleteModal(false);
             setDelMailList([]);
             navigate(`/mails/${part}`);

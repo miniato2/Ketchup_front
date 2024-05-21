@@ -2,10 +2,10 @@ import { useState } from "react";
 import "../../../pages/mails/mail.css";
 import ButtonGroup from "../../contents/ButtonGroup";
 import { useDispatch, useSelector } from "react-redux";
-import { callPutSendMailCancel } from "../../../apis/MailAPICalls";
+import { callGetMailDetailAPI, callPutSendMailCancel } from "../../../apis/MailAPICalls";
 import { useNavigate, useParams } from "react-router-dom";
 
-function SendCancelModal({ setSendCancelModal, setCancelResult, part }) {
+function SendCancelModal({ setSendCancelModal, part }) {
     const { mailNo } = useParams();
     const result = useSelector(state => state.mailReducer);
     const cancelMail = result.mailcancel || [];
@@ -25,6 +25,7 @@ function SendCancelModal({ setSendCancelModal, setCancelResult, part }) {
         } else if (label === "확인") {
             setSendCancelModal(false);
             navigate(`/mails/detail/${mailNo}`, {state: {part}});
+            await dispatch(callGetMailDetailAPI(mailNo, part));
         }
     };
 

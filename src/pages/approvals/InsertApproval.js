@@ -1,6 +1,6 @@
-import ReactQuill from "react-quill";
+import ReactQuill, {Quill} from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import Style from "./Approvals.module.css"
 import { decodeJwt } from "../../utils/tokenUtils";
 import AppLine from "../../components/approvals/AppLine";
@@ -23,7 +23,7 @@ function InsertApproval() {
     })
 
     const date = new Date();
-    const today = date.getFullYear() + '-' +  (date.getMonth()+1) + '-' + date.getDate();
+    const today = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
 
     const onClickModalControl = (e) => {
         setModalControl({
@@ -83,7 +83,7 @@ function InsertApproval() {
     } //양식 변경
 
     const onClickCancelHandler = () => {
-        navigate(`/approvals`, {replace:false})
+        navigate(`/approvals`, { replace: false })
     } //취소
 
     const onClickInsertApprovalHandler = () => {
@@ -100,56 +100,57 @@ function InsertApproval() {
             formData.append(`appLineDTOList[${index}].alSequence`, al.sequence);
         });
 
-        
+
         refLine[0].refMember.memberNo !== '' && refLine.forEach((rl, index) => {
             formData.append(`refLineDTOList[${index}].refMemberNo`, rl.refMember.memberNo);
         });
 
         if (Array.isArray(file)) {
             file.forEach((fileItem, index) => {
-                formData.append(`multipartFileList`,fileItem);
+                formData.append(`multipartFileList`, fileItem);
             });
         }
-        
+
         // formData.forEach((value, key) => {
         //     console.log(key + ': ' + value);
         //   });
 
-        if(appLine[0].alMember.memberNo === ''){
+        if (appLine[0].alMember.memberNo === '') {
             alert('결재선을 지정해 주세요');
             //결재선
-        }else if(formNo === 0){
+        } else if (formNo === 0) {
             alert('양식을 선택해 주세요');
             //양식
-        }else if(appTitle.trim() === ''){
+        } else if (appTitle.trim() === '') {
             alert('제목을 입력해 주세요');
             //제목
-        }else if(appContents.trim() === ''){
+        } else if (appContents.trim() === '') {
             alert('내용을 입력해 주세요');
             //내용
-        }else {
-            try{
+        } else {
+            try {
                 dispatch(callInsertAppAPI({ form: formData }))
-                .then(() => navigate(`/approvals`, { replace: false }));
-            }catch{
+                    .then(() => navigate(`/approvals`, { replace: false }));
+            } catch {
                 alert('에러');
             }
             //예외처리는 다시하자
         }
     } //등록
-
+      
     return (
         <main className="main" id="main">
             {modalControl.appLineModal ? <AppLineModal setModalControl={setModalControl} setAppLine={setAppLine} /> : null}
             {modalControl.refLineModal ? <RefLineModal setModalControl={setModalControl} setRefLine={setRefLine} /> : null}
-            <h1>기안등록</h1>
+            <h3>기안등록</h3>
 
-            <label>결재선</label><button className={Style.lineBtn} name='appLineModal' onClick={onClickModalControl}>추가</button>
+            <label><h5>결재선</h5></label><button className={Style.lineBtn} name='appLineModal' onClick={onClickModalControl}>추가</button>
             <AppLine appline={appLine} />
 
-            <label>참조선</label><button className={Style.lineBtn} name='refLineModal' onClick={onClickModalControl}>추가</button>
+            <label><h5>참조선</h5></label><button className={Style.lineBtn} name='refLineModal' onClick={onClickModalControl}>추가</button>
             <RefLine refline={refLine} />
 
+            <h5>문서정보</h5>
             <table className={Style.appTable}>
                 <tbody>
                     <tr>
@@ -158,6 +159,7 @@ function InsertApproval() {
                             <select onChange={onChangeForm} className={Style.formSelect}>
                                 <option value={0}>양식 선택</option>
                                 <option value={1}>1번 양식</option>
+                                <option value={2}>2번 테이블 테스트</option>
                             </select>
                         </td>
                         <th width={'12%'}>기안부서</th>
@@ -177,25 +179,14 @@ function InsertApproval() {
                     </tr>
                 </tbody>
             </table>
+            <h5>내용</h5>
             <ReactQuill
                 style={{ height: "400px", margin: "4px", overflowY: "auto" }}
                 ref={quillRef}
-                theme="snow"
                 name="appContents"
                 onChange={onChangeAppContents}
                 value={appContents}
-                modules={{
-                    toolbar: [
-                      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                      [{ 'align': [] }],
-                      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                      [{ 'color': [] }, { 'background': [] }],
-                      ['link'],
-                      ['image', 'video'],
-                      ['clean']
-                    ]
-                  }}
+                // modules={modules}
                 placeholder="내용을 입력하세요." />
             <div className={Style.appBtn}>
                 <button className="back-btn" onClick={onClickCancelHandler}>취소</button>

@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Table } from "react-bootstrap";
 import RscModal from "../../items/resources/RscModal";
+import { callGetResourcesAPI } from "../../../apis/ResourceAPICalls";
+import { useDispatch } from "react-redux";
 
 function ResourceList({ list, part }) {
+    const dispatch = useDispatch();
     const [modal, setModal] = useState(false);
     const [selectRscNo, setSelectRscNo] = useState(null);
 
-    const openRscDetail = (index) => {
+    const openRscDetail = async (index) => {
         setSelectRscNo(list[index].rscNo);
         setModal(true);
     };
@@ -65,7 +68,7 @@ function ResourceList({ list, part }) {
                                             </>)
                                     }
                                     <td>{rsc.rscCap}명</td>
-                                    <td>{rsc.rscIsAvailable ? "사용 불가능" : "사용 가능"}</td>
+                                    <td>{rsc.rscIsAvailable ? "사용 가능" : "사용 불가능"}</td>
                                     <td>
                                         <button className="back-btn" onClick={() => openRscDetail(index)}>상세</button>
                                     </td>
