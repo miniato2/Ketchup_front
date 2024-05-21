@@ -33,10 +33,11 @@ function Board({boardNo}) {
     const updateHandler = () => {
         console.log("updateHandler loginToken 확인: ", loginToken);
         // 작성자인 경우에만 수정 페이지로 이동
-        if (loginToken && loginToken.memberNo === board.memberInfo.memberNo) {
+        if (!(loginToken && (loginToken.memberNo === board.memberInfo.memberNo || loginToken.role === 'LV3'))) {
+            return <div>권한이 없습니다.</div>;
+        } else{
             navigate(`/boards/update/${boardNo}`);
-        } else {
-            alert('권한이 없습니다.');
+
         }
     
     };
