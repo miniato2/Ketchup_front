@@ -12,44 +12,44 @@ function TreePractice() {
             {
                 name: '개발팀',
                 children: [
-                    { name: '팀원1', children:[
+                    { name: '팀1', children:[
                             {name: '이후영'},
-                            {name: '고라파덕'}
+                            {name: '나몰빼미'}
 
 
                     ] },
 
-                    { name: '팀원2' },
+                    { name: '팀2' },
 
-                    { name: '팀원3' },
+                    { name: '팀3' },
                 ],
             },
             {
                 name: '인사팀',
                 children: [
-                    { name: '팀원4' },
-                    { name: '팀원5' },
+                    { name: '팀4' },
+                    { name: '팀5' },
                 ],
             },
             {
                 name: '기획팀',
                 children: [
-                    { name: '팀원6' },
-                    { name: '팀원7' },
+                    { name: '팀6' },
+                    { name: '팀7' },
                 ],
             },
             {
                 name: '회계팀',
                 children: [
-                    { name: '팀원8' },
-                    { name: '팀원9' },
+                    { name: '팀8' },
+                    { name: '팀9' },
                 ],
             },
             {
                 name: '법무팀',
                 children: [
-                    { name: '팀원10' },
-                    { name: '팀원11' },
+                    { name: '팀10' },
+                    { name: '팀11' },
                 ],
             },
         ],
