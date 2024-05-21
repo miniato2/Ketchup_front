@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { callPostResourceAPI } from "../../apis/ResourceAPICalls";
+import { callGetResourcesAPI, callPostResourceAPI } from "../../apis/ResourceAPICalls";
 import ButtonGroup from "../contents/ButtonGroup";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -22,11 +22,12 @@ function InsertResourceForm({ part, setRegistModal }) {
         rscDescr: null
     });
 
-    const buttonClick = (label) => {
+    const buttonClick = async (label) => {
         if (label == "취소") {
             setRegistModal(false);
         } else if (label == "등록") {
             submitRscClick();
+            setRegistModal(false);
         }
     };
 
@@ -79,8 +80,7 @@ function InsertResourceForm({ part, setRegistModal }) {
         };
 
         try {
-            const result = await dispatch(callPostResourceAPI({ rscDto }));
-            console.log(result);
+            await dispatch(callPostResourceAPI({ rscDto }));
         } catch (error) {
             console.error(error);
         }

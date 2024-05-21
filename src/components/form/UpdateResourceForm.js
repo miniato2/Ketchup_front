@@ -1,9 +1,15 @@
+import { useDispatch } from "react-redux";
+import { callGetResourcesAPI } from "../../apis/ResourceAPICalls";
 import ButtonGroup from "../contents/ButtonGroup";
+import { useParams } from "react-router-dom";
 
 function UpdateResourceForm({setUpdateClick}) {
-    const buttonClick = (label) => {
+    const dispatch = useDispatch();
+    const {part} = useParams();
+
+    const buttonClick = async (label) => {
         if(label == "저장") {
-            console.log("dslfjeoifnwofnwlf");
+            await dispatch(callGetResourcesAPI(part));
         }else if(label == "취소") {
             setUpdateClick(false);
         }
