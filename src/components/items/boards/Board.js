@@ -33,7 +33,7 @@ function Board({boardNo}) {
     const updateHandler = () => {
         console.log("updateHandler loginToken 확인: ", loginToken);
         // 작성자인 경우에만 수정 페이지로 이동
-        if (!(loginToken && (loginToken.memberNo === board.memberInfo.memberNo || loginToken.role === 'LV3'))) {
+        if (!(loginToken && (loginToken.memberNo === board.memberInfo.memberNo))) {
             return <div>권한이 없습니다.</div>;
         } else{
             navigate(`/boards/update/${boardNo}`);
@@ -99,7 +99,7 @@ function Board({boardNo}) {
         <div className="container">
             <div className="row">
                 <div className="col-lg-12">               
-                    {loginToken && loginToken.memberNo === board.memberInfo.memberNo && (
+                    {(loginToken && (loginToken.memberNo === board.memberInfo.memberNo)) && (
                         <ButtonGroup
                             buttons={[
                                 { label: '수정', styleClass: 'back', onClick: updateHandler },
