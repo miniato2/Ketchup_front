@@ -22,18 +22,20 @@ export default function Reserve() {
         rscCategory: "",
         rsvDate: ""
     });
-    const onDateClickHandler = () => { setInsertReserveDialogOpen(true) };
-    const [insertReserveDialogOpen, setInsertReserveDialogOpen] = useState(false);
-    const onInsertCancelHandler = () => { setInsertReserveDialogOpen(false) };
-    
-    const [detailDialogOpen, setDetailDialogOpen] = useState(false);
-    const openDetailDialog = () => { setDetailDialogOpen(true) };
-    const closeDetailDialog = () => { setDetailDialogOpen(false) };
     const [selectedReserve, setSelectedReserve] = useState([]);
+    const [selectedResource, setSelectedResource] = useState({});
+    const [insertReserveDialogOpen, setInsertReserveDialogOpen] = useState(false);
+    const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+
+    const onDateClickHandler = () => { setInsertReserveDialogOpen(true) };
+    const onInsertCancelHandler = () => { setInsertReserveDialogOpen(false) };
+    const closeDetailDialog = () => { setDetailDialogOpen(false) };
+
     const onEventClickHandler = (selected) => {
-        openDetailDialog();
+        console.log("Event clicked", selected);
+        console.log("Event's event clicked", selected.event);
         setSelectedReserve(selected.event);
-        console.log("selectedReserve에 담을 selected.event", selected.event);
+        setDetailDialogOpen(true);
     };
 
     const onInputChange = (e) => {
@@ -98,15 +100,14 @@ export default function Reserve() {
     useEffect(() => {
         console.log('reserves 확인', reserves);
         if (Array.isArray(reserves)) {
-            console.log('convertToCalendarProps 호출 전', reserves);
             const convertedReserves = convertToCalendarProps(reserves);
-            console.log('convertedReserves 확인', convertedReserves);
             setReserveData(convertedReserves);
+            const grouped = groupReservesByRsc(convertedReserves);
+            setSelectedResource(grouped);
         }
     }, [reserves]);
 
     const onClickSearch = () => {
-        fetchReserves();
         setSearchClicked(true);
     };
 
@@ -114,7 +115,6 @@ export default function Reserve() {
         if (searchClicked) {
             fetchReserves();
         }
-
     }, [searchClicked]);
 
     const groupReservesByRsc = (reserveData) => {
@@ -192,6 +192,7 @@ export default function Reserve() {
             <Dialog open={insertReserveDialogOpen} onClose={onInsertCancelHandler}>
                 <InsertReserveForm
                     onInsertCancelHandler={onInsertCancelHandler}
+                    selectedResource={selectedResource}
                 />
             </Dialog>
 
