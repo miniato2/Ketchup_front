@@ -5,7 +5,7 @@ import ReactQuill from "react-quill";
 import { callPostInsertMailAPI } from "../../apis/MailAPICalls";
 import { useNavigate } from "react-router-dom";
 
-function MailForm({ content }) {
+function MailForm({ content, mailNo, part }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const quillRef = useRef();
@@ -32,9 +32,9 @@ function MailForm({ content }) {
         setMailFile([...e.target.files]);
     };
 
-    // const goBackList = () => {
-    //     navigate(`/mails/detail/${mailNo}`);
-    // }
+    const goBackList = () => {
+        navigate(`/mails/detail/${mailNo}`, { state: { part } });
+    };
 
     const submitMailClick = async () => {
         const formData = new FormData();
@@ -102,7 +102,7 @@ function MailForm({ content }) {
                 />
             </div>
             <div className="d-flex justify-content-end mt-4">
-                {/* <button className="back-btn" onClick={goBackList}>취소</button> */}
+                <button className="back-btn" onClick={goBackList}>취소</button>
                 <button type="submit" onClick={submitMailClick} className="move-btn">전송</button>
             </div>
         </>

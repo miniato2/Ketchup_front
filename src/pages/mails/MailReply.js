@@ -3,7 +3,7 @@ import ReplyMailForm from "../../components/form/ReplyMailForm";
 
 function MailReply() {
     const location = useLocation();
-    const { mailNo, content } = location.state; // 이전 메일
+    const { mailNo, content, part } = location.state; // 이전 메일
 
     return (
         <main id="main" className="main">
@@ -11,7 +11,7 @@ function MailReply() {
                 <h2>메일</h2>
             </div>
             <div>
-                <ReplyMailForm content={content} />
+                <ReplyMailForm content={content} mailNo={mailNo} part={part} />
             </div>
         </main>
     );

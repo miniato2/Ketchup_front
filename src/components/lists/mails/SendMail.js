@@ -16,7 +16,7 @@ function SendMail({ checkedItems, setCheckedItems, searchCondition, searchValue 
     useEffect(
         () => {
             dispatch(callGetSendMailAPI(searchCondition, searchValue));
-        }, [dispatch]
+        }, [dispatch, searchCondition, searchValue]
     );
 
     useEffect(() => {

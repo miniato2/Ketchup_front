@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Table } from "react-bootstrap";
-import RscDetailModal from "../../items/resources/RscDetailModal";
+import RscModal from "../../items/resources/RscModal";
 
 function ResourceList({ list, part }) {
     const [modal, setModal] = useState(false);
+    const [selectRscNo, setSelectRscNo] = useState(null);
 
-    const openRscDetail = () => {
+    const openRscDetail = (index) => {
+        setSelectRscNo(list[index].rscNo);
         setModal(true);
     };
 
@@ -14,7 +16,7 @@ function ResourceList({ list, part }) {
 
     return (
         <>
-            {modal ? <RscDetailModal setModal={setModal} /> : null}
+            {modal ? <RscModal setModal={setModal} selectRscNo={selectRscNo} /> : null}
             <div class="card-body">
                 <Table className="table">
                     <thead>
@@ -65,7 +67,7 @@ function ResourceList({ list, part }) {
                                     <td>{rsc.rscCap}명</td>
                                     <td>{rsc.rscIsAvailable ? "사용 불가능" : "사용 가능"}</td>
                                     <td>
-                                        <button className="back-btn" onClick={openRscDetail}>상세</button>
+                                        <button className="back-btn" onClick={() => openRscDetail(index)}>상세</button>
                                     </td>
                                 </tr>
                             )
