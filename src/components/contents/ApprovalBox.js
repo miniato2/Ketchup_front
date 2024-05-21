@@ -1,6 +1,6 @@
 const ApprovalBox = ({ title, count }) => {
     return (
-        <div className="col-xxl-3 col-md-6">
+        <div >
             <div className="card info-card sales-card">
                 <div className="card-body">
                     <h5 className="card-title">{title}</h5>

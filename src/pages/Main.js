@@ -165,7 +165,9 @@ function Main() {
                     <div className="col-lg-12">
                         <div className="row">
                             {approvalData.map(({ title, count }) => (
-                                <ApprovalBox title={title} count={count} />
+                                <Link to={`/approvals`} className="col-xxl-3 col-md-6">
+                                    <ApprovalBox title={title} count={count} />
+                                </Link>
                             ))}
                         </div>
                     </div>
