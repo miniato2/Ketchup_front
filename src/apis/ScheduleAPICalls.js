@@ -11,7 +11,6 @@ export const getScheduleAPI = (dptNo) => {
       });
     } catch (error) {
       const errorMessage = error.response ? error.response.data.message : error.message;
-      console.log("일정 정보 조회에 실패하였습니다.");
       throw new Error(`[ScheduleAPICalls중 getScheduleAPI] 오류: ${errorMessage}`);
     }
   };
@@ -32,7 +31,6 @@ export const updateScheduleAPI = async (skdNo, updatedScheduleData) => {
     const response = await request('put', `/schedules/schedules/${skdNo}`, updatedScheduleData);
     return response;
   } catch (error) {
-    alert("수정에 실패하였습니다. updateScheduleAPI 오류");
     const errorMessage = error.response ? error.response.data.message : error.message;
     throw new Error(`[ScheduleAPICalls중 updateScheduleAPI] 오류: ${errorMessage}`);
   }

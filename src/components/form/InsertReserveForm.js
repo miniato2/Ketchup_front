@@ -33,9 +33,9 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
         });
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         try {
-            await insertReserveAPI(newReserveData);
+            insertReserveAPI(newReserveData);
             alert("예약이 정상적으로 등록되었습니다.");
         } catch (error) {
             console.error("예약 정보 등록하면서 오류가 발생했습니다 :", error);

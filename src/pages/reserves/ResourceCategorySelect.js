@@ -30,7 +30,6 @@ export default function ResourceCategorySelect({ value, onChange }) {
           onChange={handleCategoryChange}
           input={<OutlinedInput />}
           MenuProps={MenuProps}
-          autoFocus
         >
           <MenuItem disabled value="">
             <em><FilterListIcon/>자원 카테고리</em>
