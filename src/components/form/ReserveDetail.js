@@ -5,7 +5,7 @@ import { updateReserveAPI } from "../../apis/ReserveAPICalls";
 import moment from "moment";
 
 const token = decodeJwt(window.localStorage.getItem("accessToken"));
-const reserver = token.memberName;
+const reserver = token?.memberName;
 
 export default function ReserveDetail({ selectedReserve, closeDetailDialog }) {
     console.log("selectedReserve 상세조회에서", selectedReserve);
