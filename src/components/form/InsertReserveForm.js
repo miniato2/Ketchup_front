@@ -9,9 +9,10 @@ const reserver = token.memberName;
 
 export default function InsertReserveForm({ onInsertCancelHandler }) {
 
+    // reserveData에 내가 입력하지 않는 resources, rsvNo가 빈 값으로 들어가서 오류가 남
     const [newReserveData, setNewReserveData] = useState({
         rsvNo: "",
-        reserver: "",
+        reserver: reserver,
         rsvDescr: "",
         rsvStartDttm: "",
         rsvEndDttm: "",
@@ -26,9 +27,10 @@ export default function InsertReserveForm({ onInsertCancelHandler }) {
         });
     };
 
-    const handleSubmit = (newReserveData) => {
+    const handleSubmit = () => {
         try {
             insertReserveAPI(newReserveData);
+            console.log("newReserveData", newReserveData);
             alert("예약이 정상적으로 등록되었습니다.");
         } catch (error) {
             console.error("예약 정보 등록하면서 오류가 발생했습니다 :", error);
@@ -55,7 +57,7 @@ export default function InsertReserveForm({ onInsertCancelHandler }) {
                                     variant="outlined"
                                     name="rsvStartDttm"
                                     // value에는 변환된 ISO 8601 형식으로 입력
-                                    value={newReserveData.rsvStartDttm ? newReserveData.rsvStartDttm : ""}
+                                    value={newReserveData.rsvStartDttm}
                                     onChange={handleInputChange}
                                 />
                             </Box>
@@ -71,7 +73,7 @@ export default function InsertReserveForm({ onInsertCancelHandler }) {
                                     variant="outlined"
                                     name="rsvEndDttm"
                                     // value에는 변환된 ISO 8601 형식으로 입력
-                                    value={newReserveData.rsvEndDttm ? newReserveData.rsvEndDttm : ""}
+                                    value={newReserveData.rsvEndDttm}
                                     onChange={handleInputChange}
                                 />
                             </Box>

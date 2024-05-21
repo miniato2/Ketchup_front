@@ -27,13 +27,13 @@ export default function Reserve() {
     const onInsertCancelHandler = () => { setInsertReserveDialogOpen(false) };
     
     const [detailDialogOpen, setDetailDialogOpen] = useState(false);
-    const openDetailDialog = () => { setDetailDialogOpen(true) };
-    const closeDetailDialog = () => { setDetailDialogOpen(false) };
+    const closeDetailDialog = () => {
+         setDetailDialogOpen(false) 
+        };
     const [selectedReserve, setSelectedReserve] = useState([]);
     const onEventClickHandler = (selected) => {
-        openDetailDialog();
         setSelectedReserve(selected.event);
-        console.log("selectedReserve에 담을 selected.event", selected.event);
+        setDetailDialogOpen(true);
     };
 
     const onInputChange = (e) => {

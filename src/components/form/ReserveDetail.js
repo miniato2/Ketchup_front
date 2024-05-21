@@ -14,10 +14,11 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog }) {
         rsvNo: selectedReserve.rsvNo,
         reserver: reserver,
         rsvDescr: selectedReserve.rsvDescr,
-        rsvStartDttm: moment(selectedReserve?.start).format("YYYY-MM-DD HH:mm"),
-        rsvEndDttm: moment(selectedReserve?.end).format("YYYY-MM-DD HH:mm"),
-        resources: selectedReserve.resources
+        rsvStartDttm: moment(selectedReserve?.start).format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+        rsvEndDttm: moment(selectedReserve?.end).format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+        resources: selectedReserve.extendedProps.resources
     });
+    const reserveNo = selectedReserve.id;
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setUpdatedReserveData({
@@ -26,9 +27,10 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog }) {
         });
     };
 
-    const handleUpdateEvent = (selectedReserve, updatedReserveData) => {
+    const handleUpdateEvent = () => {
         try {
-            updateReserveAPI(selectedReserve, updatedReserveData);
+            console.log("reserveNo ??????????", reserveNo);
+            updateReserveAPI(reserveNo, updatedReserveData);
             alert("예약 수정에 성공하였습니다. handleUpdateEvent 메소드 호출 완료");
         } catch (error) {
             console.error("예약 수정 중 에러 발생 handleUpdate: ", error);
@@ -56,13 +58,13 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog }) {
                             <Typography variant="body1">예약 시작 일시: </Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField variant="outlined" name="rsvStartDttm" onChange={handleInputChange} value={updatedReserveData.rsvStartDttm} />
+                            <TextField type="datetime-local" variant="outlined" name="rsvStartDttm" onChange={handleInputChange} value={updatedReserveData.rsvStartDttm} />
                         </Grid>
                         <Grid item xs={6}>
                             <Typography variant="body1">예약 종료 일시: </Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField variant="outlined" name="rsvEndDttm" onChange={handleInputChange} value={updatedReserveData.rsvEndDttm} />
+                            <TextField type="datetime-local" variant="outlined" name="rsvEndDttm" onChange={handleInputChange} value={updatedReserveData.rsvEndDttm} />
                         </Grid>
                         <Grid item xs={6}>
                             <Typography variant="body1">사용목적: </Typography>
