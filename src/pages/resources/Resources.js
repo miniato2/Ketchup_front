@@ -16,19 +16,19 @@ function Resources() {
     useEffect(
         () => {
             dispatch(callGetResourcesAPI(part));
-        }, [part]
+        }, [dispatch, part]
     );
 
     const buttonClick = (label) => {
         if (label == "등록") {
             setRegistModal(true);
         }
-    }
+    };
 
     const buttons = [
         { label: "삭제", styleClass: "back" },
         { label: "등록", styleClass: "move", onClick: () => buttonClick("등록") }
-    ]
+    ];
 
     return (
         <>

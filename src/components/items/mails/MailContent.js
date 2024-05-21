@@ -83,7 +83,7 @@ function MailContent({ content, part, mailNo }) {
                         {
                             contentFile.length > 0 ? (
                                 contentFile.map((file, index) => (
-                                    <a key={index} className="d-block">
+                                    <a href="#" key={index} className="d-block">
                                         <i className="bi bi-files"></i>
                                         <span>{file.mailFileOriName}</span>
                                     </a>

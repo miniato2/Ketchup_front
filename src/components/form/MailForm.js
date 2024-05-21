@@ -61,9 +61,6 @@ function MailForm() {
         setReceiverInfo(prevState => prevState.filter((_, index) => index !== delIndex));
     };
 
-    console.log("🎡🎡🎡🎡🎡🎡🎡🎡🎡🎡🎡");
-    console.log(receiverInfo);
-
     const handleFileChange = (e) => {
         setMailFile([...e.target.files]);
     };
