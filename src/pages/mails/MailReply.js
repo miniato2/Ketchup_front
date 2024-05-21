@@ -11,7 +11,7 @@ function MailReply() {
                 <h2>메일</h2>
             </div>
             <div>
-                <ReplyMailForm content={content} />
+                <ReplyMailForm content={content} mailNo={mailNo} />
             </div>
         </main>
     );
