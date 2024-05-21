@@ -8,7 +8,7 @@ const token = decodeJwt(window.localStorage.getItem("accessToken"));
 const reserver = token.memberName;
 
 export default function ReserveDetail({ selectedReserve, closeDetailDialog }) {
-
+    console.log("selectedReserve 상세조회에서", selectedReserve);
     const [updateChecked, setUpdateChecked] = useState(false);
     const [updatedReserveData, setUpdatedReserveData] = useState({
         rsvNo: selectedReserve.rsvNo,
