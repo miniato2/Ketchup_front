@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { callRegisterAPI, callDepartmentsAPI, callPositionsAPI } from "../../apis/MemberAPICalls";
 import { useEffect } from "react";
@@ -8,14 +8,18 @@ import DaumPostcodeEmbed from "react-daum-postcode";
 
 
 function InsertMember() {
-
+   
     const departments = useSelector(state => state.departmentReducer);
     const positions = useSelector(state => state.positionReducer);
+   
 
-    console.log('부서: ',departments);
-    console.log('직급: ', positions)
+   
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const [selectedBank, setSelectedBank] = useState('국민');
+
+    
     const [validationMessage, setValidationMessage] = useState({
         privateEmail: '',
         memberName: '',
@@ -27,7 +31,7 @@ function InsertMember() {
 
 
     });
-
+    
 
     const [isOpen, setIsOpen] = useState(false);
     const [form, setForm] = useState({
@@ -38,7 +42,7 @@ function InsertMember() {
 
     });
 
-   
+
 
     const completeHandler = (data) => {
         console.log('컴플리트 핸들러의 데이터는??', data);
@@ -60,19 +64,16 @@ function InsertMember() {
     };
 
 
-
     useEffect(() => {
+     
+
+       
         generateMemberNo();
         dispatch(callDepartmentsAPI());
         dispatch(callPositionsAPI());
-       
-
-      
-       
-       
-
 
     }, []);
+
 
     const departmentOptions = () => {
         return departments.map(dep => (
@@ -171,14 +172,17 @@ function InsertMember() {
         return phoneRegex.test(String(phone));
     }
 
-    
+
 
 
 
 
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
-        
+        const final = selectedBank+"  "+ value;
+       
+
+
 
         if (name === "privateEmail") {
             if (!isValidEmail(value)) {
@@ -245,7 +249,7 @@ function InsertMember() {
         }
 
         if (name === "department") {
-            if (value === "" ) {
+            if (value === "") {
                 setValidationMessage({
                     ...validationMessage,
                     department: '부서를 선택해주세요'
@@ -276,7 +280,7 @@ function InsertMember() {
             }
         }
 
-        
+
         if (name === "gender") {
             if (value === "") {
                 setValidationMessage({
@@ -293,14 +297,22 @@ function InsertMember() {
             }
         }
 
+       
+
 
         setForm({
             ...form,
-            [e.target.name]: e.target.value
+                [e.target.name]: (e.target.name === 'account') ? final : e.target.value
         });
 
+        
+
+    };
 
 
+    const bankHandler = async(e) => {
+        setSelectedBank(e.target.value);
+       
     };
 
     
@@ -308,7 +320,7 @@ function InsertMember() {
     return (
 
         <main id="main">
-            {departments.length> 0 && positions.length>0 &&
+            {departments.length > 0 && positions.length > 0 &&
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <h2 style={{ marginLeft: '-1000px' }}>사원 등록</h2>
                     <label style={{ color: '#878787' }}>사번
@@ -334,7 +346,7 @@ function InsertMember() {
                             style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
                         />
                     </label>
-                    <p style={{ color: 'red', marginLeft: 400, fontSize:13}}>{validationMessage.memberName}</p>
+                    <p style={{ color: 'red', marginLeft: 400, fontSize: 13 }}>{validationMessage.memberName}</p>
                     <label style={{ color: '#878787' }}>연락처
                         <input
                             autoComplete='off'
@@ -345,7 +357,7 @@ function InsertMember() {
                             style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
                         />
                     </label>
-                    <p style={{ color: 'red', marginLeft: 400, fontSize:13 }}>{validationMessage.phone}</p>
+                    <p style={{ color: 'red', marginLeft: 400, fontSize: 13 }}>{validationMessage.phone}</p>
                     <label style={{ color: '#878787' }}>생년월일
                         <input
                             autoComplete='off'
@@ -406,7 +418,7 @@ function InsertMember() {
                             style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
                         />
                     </label>
-                    <p style={{ color: 'red', marginLeft: 400, fontSize:13 }}>{validationMessage.privateEmail}</p>
+                    <p style={{ color: 'red', marginLeft: 400, fontSize: 13 }}>{validationMessage.privateEmail}</p>
 
                     <label style={{ color: '#878787' }}>사내메일
                         <input
@@ -418,7 +430,7 @@ function InsertMember() {
                             style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
                         />
                     </label>
-                    <p style={{ color: 'red', marginLeft: 400, fontSize:13 }}>{validationMessage.companyEmail}</p>
+                    <p style={{ color: 'red', marginLeft: 400, fontSize: 13 }}>{validationMessage.companyEmail}</p>
 
                     <label style={{ color: '#878787' }}>부서
                         <select
@@ -432,7 +444,7 @@ function InsertMember() {
                             {departmentOptions()}
                         </select>
                     </label>
-                    <p style={{ color: 'red', marginLeft: 400, fontSize:13 }}>{validationMessage.department}</p>
+                    <p style={{ color: 'red', marginLeft: 400, fontSize: 13 }}>{validationMessage.department}</p>
                     <label style={{ color: '#878787' }}>직급
                         <select
                             type="text"
@@ -445,22 +457,22 @@ function InsertMember() {
                             {positionOptions()}
                         </select>
                     </label>
-                    <p style={{ color: 'red', marginLeft: 400, fontSize:13 }}>{validationMessage.position}</p>
-                    <label style={{ color: '#878787' }}>계좌번호
+                    <p style={{ color: 'red', marginLeft: 400, fontSize: 13 }}>{validationMessage.position}</p>
 
-                        {/* <select
-                        name="bank"
-                        onChange={onChangeHandler}
-                        style={{ borderWidth: '0px', marginBottom: '20px', padding: '1px', width: '70px', textAlign: 'center' }}
-                    >
-                        <option value="국민">국민</option>
-                        <option value="신한">신한</option>
-                        <option value="우리">우리</option>
-                        <option value="기업">기업</option>
-                        <option value="농협">농협</option>
-                        <option value="하나">하나</option>
-                        <option value="제일">제일</option>
-                    </select> */}
+
+                    <label style={{ color: '#878787' }}>계좌번호
+                        <select
+                            onChange={bankHandler}
+                            style={{ borderWidth: '0px', marginBottom: '20px', padding: '1px', width: '70px', textAlign: 'center' }}
+                        >
+                            <option value="국민">국민</option>
+                            <option value="신한">신한</option>
+                            <option value="우리">우리</option>
+                            <option value="기업">기업</option>
+                            <option value="농협">농협</option>
+                            <option value="하나">하나</option>
+                            <option value="제일">제일</option>
+                        </select>
                         <input
                             autoComplete='off'
                             type="text"
@@ -469,8 +481,12 @@ function InsertMember() {
                             onChange={onChangeHandler}
                             style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
                         />
-
                     </label>
+
+
+
+
+
                     <label style={{ color: '#878787' }}>사원사진
                         <input
                             type="file"

@@ -1,5 +1,5 @@
 import { request } from './Api';
-import {GET_RESERVE} from '../modules/ReserveModule'
+import { GET_RESERVE, POST_RESERVE } from '../modules/ReserveModule'
 
 export const getReserveAPI = (rscCategory, rsvDate) => {
 
@@ -15,4 +15,25 @@ export const getReserveAPI = (rscCategory, rsvDate) => {
             throw new Error(`ReserveAPICall중 getReserveAPI 오류: ${errorMessage}`);
         }
     };
+};
+
+export const insertReserveAPI = async (newReserveData) => {
+    try {
+        const response = await request('post', '/reserves', newReserveData);
+        return response;
+    } catch (error) {
+        alert("예약 등록에 실패했습니다. insertReserveAPI 호출 실패");
+        const errorMessage = error.response ? error.response.data.message : error.message;
+        throw new Error(`[ReserveAPICalls중 insertReserveAPI] 오류: ${errorMessage}`);
+    }
+};
+
+export const updateReserveAPI = async (rsvNo, updatedReserveData) => {
+    try {
+        const response = await request('put', `/reserves/${rsvNo}`, updatedReserveData);
+        return response;
+    } catch (error) {
+        const errorMessage = error.response ? error.response.data.message : error.message;
+        throw new Error(`[ReserveAPICalls중 insertReserveAPI] 오류: ${errorMessage}`);
+    }
 };

@@ -52,12 +52,12 @@ function Sidebar() {
                     </a>
                     <ul id="organization-nav" className="nav-content collapse" data-bs-parent="#organization-parent">
                         <li class="nav-item">
-                            <Link to="/organization-metting.html" style={{ color: "black", textDecorationLine: "none"}}>
+                            <Link to="/deparpments" style={{ color: "black", textDecorationLine: "none"}}>
                                 <i></i><span> - 부서관리</span>
                             </Link>
                         </li>
                         <li class="nav-item">
-                            <Link to="/organization-vehicle.html" style={{ color: "black", textDecorationLine: "none"}}>
+                            <Link to="/positions" style={{ color: "black", textDecorationLine: "none"}}>
                                 <i></i><span> - 직급관리</span>
                             </Link>
                         </li>

@@ -33,7 +33,8 @@ export const multipartRequest = async (method, url, data) => {
             data: data,
             headers: {
                 'Content-Type': 'multipart/form-data',
-                'Accept': '*/*'
+                'Accept': '*/*',
+                'Authorization': `Bearer ${token}`
             }
         });
         return response.data;

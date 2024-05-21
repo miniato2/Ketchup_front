@@ -13,6 +13,7 @@ const SearchBar = ({ onSearch }) => {
         event.preventDefault();
         // 검색어가 변경될 때 onSearch 함수를 호출하여 검색어를 전달합니다.
         onSearch(searchValue);
+        setSearchValue('');
     };
 
     return (
