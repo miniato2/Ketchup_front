@@ -124,11 +124,11 @@ export function callMembersAPI() {
     };
 }
 
-export function callPageMembersAPI(currentPage) {
+export function callPageMembersAPI(currentPage,searchKeyword) {
     console.log("=============전체 사원 호출=============");
 
     return async (dispatch, getState) => {
-        const result = await request('GET', `/members?offset=${currentPage}`);
+        const result = await request('GET', `/members?offset=${currentPage}&search=${searchKeyword}`);
         console.log("전체 사원 호출 API 결과:   ", result.data);
 
         dispatch({ type: GET_MEMBERS, payload: result.data });

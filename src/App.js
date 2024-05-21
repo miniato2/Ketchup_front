@@ -29,8 +29,11 @@ import UpdateBoard from './pages/boards/UpdateBoard';
 import Resources from './pages/resources/Resources';
 import Departments from './pages/members/Departments';
 import Positions from './pages/members/Positions';
-
+import OrganizationChart from './pages/members/OrganizationChart';
+import TreePractice from './pages/members/TreePractice';
 // import Error from './pages/Error';
+
+
 
 function App() {
   console.log("App 도착!")
@@ -99,6 +102,8 @@ function App() {
               <Route path="insert" element={<InsertMember />} />
               <Route path=":memberNo" element={<MemberDetail />} />
             </Route>
+            {/* <Route path="organizationChart" element={<OrganizationChart />} /> */}
+            <Route path="organizationChart" element={<TreePractice />} />
             <Route path="deparpments" element={<Departments/>}/>
             <Route path="positions" element={<Positions/>}/>
             <Route path='resources'>

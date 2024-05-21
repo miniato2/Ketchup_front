@@ -94,8 +94,11 @@ function MailForm() {
     };
 
     return (
+      
         <>
+          
             <div className="input-container">
+           
                 <label htmlFor="title">제목</label>
                 <input
                     type="text"
@@ -115,7 +118,7 @@ function MailForm() {
                         onChange={addReceiver}
                         value={mailForm.receivers}>
                         <option selected>수신자를 선택하세요</option>
-                        {members.map((item, index) => {
+                        {Array.isArray(members) &&members?.map((item, index) => {
                             return (
                                 <option
                                     key={index}
@@ -161,7 +164,9 @@ function MailForm() {
                 <button className="back-btn" onClick={goBackList}>취소</button>
                 <button type="submit" onClick={submitMailClick} className="move-btn">전송</button>
             </div>
+
         </>
+               
     );
 }
 
