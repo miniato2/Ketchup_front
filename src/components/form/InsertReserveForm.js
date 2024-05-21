@@ -5,7 +5,7 @@ import { insertReserveAPI } from "../../apis/ReserveAPICalls";
 
 
 const token = decodeJwt(window.localStorage.getItem("accessToken"));
-const reserver = token.memberName;
+const reserver = token?.memberName;
 
 export default function InsertReserveForm({ onInsertCancelHandler }) {
 
