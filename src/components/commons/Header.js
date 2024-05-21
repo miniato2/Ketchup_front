@@ -39,7 +39,7 @@ function Header() {
 
                             <img src={`/img/${token.imgUrl}`} width="45" height="45"  alt="Profile" className="rounded-circle" />
                             
-                            <span className="d-none d-md-block dropdown-toggle ps-2" style={{ color: "#000" }}>{token.memberName} 사원</span>
+                            <span className="d-none d-md-block dropdown-toggle ps-2" style={{ color: "#000" }}>{token.memberName} {token.positionName}</span>
                         </a>
                         <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                             <li className="dropdown-header">
