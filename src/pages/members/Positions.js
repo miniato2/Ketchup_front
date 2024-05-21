@@ -9,29 +9,30 @@ import { useNavigate } from "react-router-dom";
 
 function Positions() {
 
-    const navigate = useNavigate();
+
     const dispatch = useDispatch();
     const positionList = useSelector(state => state.positionReducer);
     const [positionDialogOpen, setPositionDialogOpen] = useState(false);
-    const onDialogClickHandler = () => { 
-        setPositionDialogOpen(prevState => !prevState); };
     const [selectedPosition, setSelectedPosition] = useState(null);
+    const [selectedPositionNos, setSelectedPositionNos] = useState({});
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [newPosition, setNewPosition] = useState({ positionName: "", positionLevel: "", authority: "", positionStatus: "Y" });
+
+
+    useEffect(() => {
+        dispatch(callPositionsAPI());
+    }, []);
+
+
+    const onDialogClickHandler = () => {
+        setPositionDialogOpen(prevState => !prevState);
+    };
+
 
     const handleEditClick = (position) => {
         setSelectedPosition(position);
         onDialogClickHandler(); // 다이얼로그 열기
     }
-
-
-
-    const [isEditMode, setIsEditMode] = useState(false);
-    const [newPosition, setNewPosition] = useState({ positionName: "", positionLevel: "", authority: "", positionStatus: "Y" });
-
-
-    console.log(useSelector(state => state.positionReducer));
-
-    const [selectedPositionNos, setSelectedPositionNos] = useState({});
-
     const handleRadioClick = (positionNo, status) => {
         setSelectedPositionNos(prevState => ({
             ...prevState,
@@ -40,12 +41,6 @@ function Positions() {
 
 
     };
-
-
-
-    useEffect(() => {
-        dispatch(callPositionsAPI());
-    }, []);
 
 
     const handleEditModeToggle = () => {
@@ -141,6 +136,8 @@ function Positions() {
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
                             </select>
                             <select style={{ marginLeft: 100 }} name="authority" onChange={handleInputChange}>
                                 <option value="">관리 권한 선택</option>
