@@ -5,7 +5,7 @@ import ReactQuill from "react-quill";
 import { callPostInsertMailAPI } from "../../apis/MailAPICalls";
 import { useNavigate } from "react-router-dom";
 
-function MailForm({ content }) {
+function MailForm({ content, mailNo, part }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const quillRef = useRef();
@@ -33,8 +33,8 @@ function MailForm({ content }) {
     };
 
     const goBackList = () => {
-        navigate(`/mails/detail/${mailNo}`);
-    }
+        navigate(`/mails/detail/${mailNo}`, { state: { part } });
+    };
 
     const submitMailClick = async () => {
         const formData = new FormData();

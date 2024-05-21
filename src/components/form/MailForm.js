@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 function MailForm() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const members = useSelector(state => state.memberReducer);
+    const members = useSelector(state => state.memberReducer || []);
     const quillRef = useRef();
 
     const [mailForm, setMailForm] = useState({
