@@ -22,18 +22,20 @@ export default function Reserve() {
         rscCategory: "",
         rsvDate: ""
     });
-    const [selectedReserve, setSelectedReserve] = useState([]);
+    const [selectedReserve, setSelectedReserve] = useState(null);
     const [selectedResource, setSelectedResource] = useState({});
     const [insertReserveDialogOpen, setInsertReserveDialogOpen] = useState(false);
     const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
-    const onDateClickHandler = () => { setInsertReserveDialogOpen(true) };
+    const onDateClickHandler = (selectInfo, resource) => {
+        setSelectedResource(resource);
+        setInsertReserveDialogOpen(true);
+    };
+
     const onInsertCancelHandler = () => { setInsertReserveDialogOpen(false) };
     const closeDetailDialog = () => { setDetailDialogOpen(false) };
 
     const onEventClickHandler = (selected) => {
-        console.log("Event clicked", selected);
-        console.log("Event's event clicked", selected.event);
         setSelectedReserve(selected.event);
         setDetailDialogOpen(true);
     };
@@ -47,7 +49,6 @@ export default function Reserve() {
     };
 
     const convertToCalendarProps = (rsvList) => {
-        console.log("rsvList 확인", rsvList);
         if (!Array.isArray(rsvList) || rsvList.length === 0) {
             return [];
         }
@@ -83,13 +84,11 @@ export default function Reserve() {
     };
 
     const fetchReserves = () => {
-        console.log("fetchReserves를 타고 있는지?");
         try {
             const { rscCategory, rsvDate } = searchConditions;
             if (!rsvDate) {
                 throw new Error("날짜를 입력해주세요.");
             }
-            console.log("API 호출 전 dispatch", { rscCategory, rsvDate });
             dispatch(getReserveAPI(rscCategory, rsvDate));
         } catch (error) {
             const errorMessage = error.response ? error.response.data.message : error.message;
@@ -98,27 +97,22 @@ export default function Reserve() {
     };
 
     useEffect(() => {
-        console.log('reserves 확인', reserves);
-        if (Array.isArray(reserves)) {
-            const convertedReserves = convertToCalendarProps(reserves);
-            setReserveData(convertedReserves);
-            const grouped = groupReservesByRsc(convertedReserves);
-            setSelectedResource(grouped);
-        }
+        const convertedReserves = convertToCalendarProps(reserves);
+        setReserveData(convertedReserves);
     }, [reserves]);
 
     const onClickSearch = () => {
-        setSearchClicked(true);
+        setSearchClicked(false);
+        setTimeout(() => {
+            setSearchClicked(true);
+        }, 0);
     };
 
     useEffect(() => {
-        if (searchClicked) {
-            fetchReserves();
-        }
+        fetchReserves();
     }, [searchClicked]);
 
     const groupReservesByRsc = (reserveData) => {
-        console.log("reserveData 확인", reserveData);
         const groupedReserves = {};
         reserveData.forEach((reserve) => {
             const rscNo = reserve.extendedProps.resources.rscNo;
@@ -132,13 +126,12 @@ export default function Reserve() {
 
     const showCalendars = () => {
         const groupedReserves = groupReservesByRsc(reserveData);
-        console.log("groupedReserves", groupedReserves);
         return Object.entries(groupedReserves).map(([rscNo, reserveList]) => {
-            console.log(`rscNo: ${rscNo}`, reserveList);
+            const resource = reserveList[0].extendedProps.resources;
             return (
                 <Grid item xs={12} md={6} key={rscNo}>
                     <Box overflowX="auto" whiteSpace="nowrap" flex="1 1 100%" ml="15px" mt="15px" >
-                        <Typography textAlign="center" variant="h4">{reserveList[0]?.extendedProps.resources.rscName}</Typography>
+                        <Typography textAlign="center" variant="h4">{resource.rscName}</Typography>
                         <FullCalendar
                             locale="ko"
                             events={reserveList}
@@ -154,7 +147,7 @@ export default function Reserve() {
                             headerToolbar={false}
                             themeSystem='bootstrap'
                             selectable={true}
-                            select={onDateClickHandler}
+                            select={(selectInfo) => onDateClickHandler(selectInfo, resource)}
                             eventClick={onEventClickHandler}
                         />
                     </Box>

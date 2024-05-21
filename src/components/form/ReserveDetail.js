@@ -5,7 +5,7 @@ import { updateReserveAPI } from "../../apis/ReserveAPICalls";
 import moment from "moment";
 
 const token = decodeJwt(window.localStorage.getItem("accessToken"));
-const reserver = token.memberName;
+const reserver = token?.memberName;
 
 export default function ReserveDetail({ selectedReserve, closeDetailDialog }) {
     console.log("selectedReserve 상세조회에서", selectedReserve);
@@ -46,14 +46,12 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog }) {
     return (
         <Box p={2}>
             <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    {selectedReserve && (
-                        <Typography variant="h5">{selectedReserve.extendedProps.resources.rscName} 예약 상세 정보</Typography>
-                    )}
-                </Grid>
                 {updateChecked ? (
                     <>
                         {/* 수정 폼 */}
+                        <Grid item xs={12}>
+                            <Typography variant="h5">{selectedReserve.extendedProps.resources.rscName} 예약 수정</Typography>
+                        </Grid>
                         <Grid item xs={6}>
                             <Typography variant="body1">예약 시작 일시: </Typography>
                         </Grid>
@@ -92,6 +90,9 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog }) {
                 ) : (
                     <>
                         {/* 상세보기 폼 */}
+                        <Grid item xs={12}>
+                            <Typography variant="h5">{selectedReserve.extendedProps.resources.rscName} 예약 상세 정보</Typography>
+                        </Grid>
                         <Grid item xs={6}>
                             <Typography variant="body1">예약일정: {moment(selectedReserve.start).format("YYYY-MM-DD HH:mm")}</Typography>
                         </Grid>
