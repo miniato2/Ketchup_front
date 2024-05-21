@@ -12,6 +12,7 @@ import ResourceCategorySelect from "./ResourceCategorySelect";
 import ReserveDateSelect from "./ReserveDateSelect";
 import InsertReserveForm from "../../components/form/InsertReserveForm";
 import ReserveDetail from "../../components/form/ReserveDetail";
+import DeleteReserveForm from "../../components/form/DeleteReserveForm";
 
 export default function Reserve() {
     const dispatch = useDispatch();
@@ -26,6 +27,7 @@ export default function Reserve() {
     const [selectedResource, setSelectedResource] = useState({});
     const [insertReserveDialogOpen, setInsertReserveDialogOpen] = useState(false);
     const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+    const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
 
     const onDateClickHandler = (selectInfo, resource) => {
         setSelectedResource(resource);
@@ -33,7 +35,11 @@ export default function Reserve() {
     };
 
     const onInsertCancelHandler = () => { setInsertReserveDialogOpen(false) };
-    const closeDetailDialog = () => { setDetailDialogOpen(false) };
+    const closeDetailDialog = () => { setDetailDialogOpen(false); };
+    const onCloseDeleteConfirm = () => {
+        setOpenDeleteConfirm(false);
+        setDetailDialogOpen(false);
+    };
 
     const onEventClickHandler = (selected) => {
         setSelectedReserve(selected.event);
@@ -182,6 +188,7 @@ export default function Reserve() {
                 )}
             </Box>
 
+            {/* 등록 폼 */}
             <Dialog open={insertReserveDialogOpen} onClose={onInsertCancelHandler}>
                 <InsertReserveForm
                     onInsertCancelHandler={onInsertCancelHandler}
@@ -189,9 +196,19 @@ export default function Reserve() {
                 />
             </Dialog>
 
+            {/* 상세조회 */}
             <Dialog open={detailDialogOpen} onClose={closeDetailDialog}>
                 <ReserveDetail
                     closeDetailDialog={closeDetailDialog}
+                    selectedReserve={selectedReserve}
+                    setOpenDeleteConfirm={setOpenDeleteConfirm}
+                />
+            </Dialog>
+
+            {/* 삭제 폼 */}
+            <Dialog open={openDeleteConfirm} onClose={onCloseDeleteConfirm}>
+                <DeleteReserveForm
+                    onCloseDeleteConfirm={onCloseDeleteConfirm}
                     selectedReserve={selectedReserve}
                 />
             </Dialog>
