@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { decodeJwt } from '../../utils/tokenUtils';
-import { callGetMemberAPI, callResignMemberAPI, callUpdateMembersAPI } from '../../apis/MemberAPICalls';
+import { callGetMemberAPI, callResignMemberAPI, callUpdateMembersAPI, callDepartmentsAPI, callPositionsAPI } from '../../apis/MemberAPICalls';
 
 
 function Member({ selectMemberNo }) {
@@ -9,10 +9,14 @@ function Member({ selectMemberNo }) {
     const dispatch = useDispatch();
     const member = useSelector(state => state.memberReducer);
     const memberDetail = member?.data;
-    console.log(memberDetail);
+    const departments = useSelector(state => state.departmentReducer);
+    const positions = useSelector(state => state.positionReducer);
+   
     const [isEditMode, setIsEditMode] = useState(false); // 수정 모드 상태 추가
     const [imagePreview, setImagePreview] = useState('');
     const [form, setForm] = useState([]);
+
+    console.log(memberDetail);
    
     
 
@@ -30,6 +34,8 @@ function Member({ selectMemberNo }) {
 
     useEffect(() => {
         dispatch(callGetMemberAPI({ memberNo: selectMemberNo }));
+        dispatch(callDepartmentsAPI());
+        dispatch(callPositionsAPI());
     }, []);
 
    
@@ -90,6 +96,18 @@ function Member({ selectMemberNo }) {
 
     };
 
+    const departmentOptions = () => {
+        return departments.map(dep => (
+            <option key={dep.depNo} value={dep.depNo}>{dep.depName}</option>
+        ));
+    };
+
+    const positionOptions = () => {
+        return positions.map(position => (
+            <option key={position.positionNo} value={position.positionNo}>{position.positionName}</option>
+        ));
+    };
+
 
 
 
@@ -109,7 +127,7 @@ function Member({ selectMemberNo }) {
                         <input
                             type="text"
                             placeholder="사번"
-                            readOnly={!isEditMode}
+                            readOnly={true}
                             defaultValue={memberDetail.memberNo || ''}
                             style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
                         />
@@ -181,23 +199,33 @@ function Member({ selectMemberNo }) {
                         style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
                     />
                     </label>
-                    <label style={{ color: '#878787' }}>부서<input
-                        type="text"
-                        placeholder="부서명"
-                        readOnly={!isEditMode}
-                        defaultValue={memberDetail.department.depName || ''}
-                        onChange={onChangeHandler}
-                        style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
-                    />
+                   
+                    <label style={{ color: '#878787' }}>부서
+                        <select
+                          disabled={!isEditMode}
+                            type="text"
+                            name="department"
+                            onChange={onChangeHandler}
+                            style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
+                            defaultValue={memberDetail.department.depNo || ''}
+                        >
+                            <option value="">부서를 선택해주세요</option>
+                            {departmentOptions()}
+                        </select>
                     </label>
-                    <label style={{ color: '#878787' }}>직급<input
-                        type="text"
-                        placeholder="직급명"
-                        readOnly={!isEditMode}
-                        defaultValue={memberDetail.position.positionName || ''}
-                        onChange={onChangeHandler}
-                        style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
-                    />
+                   
+                    <label style={{ color: '#878787' }}>직급
+                        <select
+                          disabled={!isEditMode}
+                            type="text"
+                            name="position"
+                            onChange={onChangeHandler}
+                            style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
+                            defaultValue={memberDetail.position.positionNo || ''}
+                        >
+                            <option value="">직급을 선택해주세요</option>
+                            {positionOptions()}
+                        </select>
                     </label>
                     <label style={{ color: '#878787' }}>계좌번호<input
                         type="text"
@@ -205,6 +233,7 @@ function Member({ selectMemberNo }) {
                         readOnly={!isEditMode}
                         defaultValue={memberDetail.account || ''}
                         onChange={onChangeHandler}
+                        name='account'
                         style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
                     />
                     </label>
