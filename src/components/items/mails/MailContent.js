@@ -25,7 +25,7 @@ function MailContent({ content, part, mailNo }) {
 
     const buttonClick = (label) => {
         if (label === "답장") {
-            navigate(`/mails/reply`, { state: { mailNo, content } });
+            navigate(`/mails/reply`, { state: { mailNo, content , part} });
         } else if (label === "발송 취소") {
             setSendCancelModal(true);
         } else if (label === "삭제") {
@@ -37,9 +37,6 @@ function MailContent({ content, part, mailNo }) {
         { label: "삭제", styleClass: "back", onClick: () => buttonClick("삭제") },
         { label: "답장", styleClass: "move", onClick: () => buttonClick("답장") }
     ];
-
-    console.log("🎍🎍🎍🎍🎍");
-    console.log(content.sendCancelStatus);
 
     const NSendButtons = [
         { label: "삭제", styleClass: "back", onClick: () => buttonClick("삭제") },
@@ -55,7 +52,7 @@ function MailContent({ content, part, mailNo }) {
 
     return (
         <>
-            {sendCancelModal && <SendCancelModal setSendCancelModal={setSendCancelModal} />}
+            {sendCancelModal && <SendCancelModal setSendCancelModal={setSendCancelModal} part={part} />}
             {deleteModal ? <MailDeleteModal setDeleteModal={setDeleteModal} part={part} delMailList={delMailList} setDelMailList={setDelMailList} /> : null}
             <div>
                 <div className="mail-title">

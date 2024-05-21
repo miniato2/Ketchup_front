@@ -38,3 +38,14 @@
 .rsc-radio label {
     margin:10px 10px;
 }
+
+/* RscDetailContent.js */
+.detail-title {
+    display: inline-block;
+    width:30%;
+    margin:10px 0;
+}
+.detail-content {
+    display: inline-block;
+    width:70%;
+}

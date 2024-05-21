@@ -55,9 +55,8 @@ const Notices = () => {
   // 현재 페이지에 보여질 필독 공지와 일반 공지 구하기
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentPinnedNotices = pinnedNotices;                                                 // 모든 페이지에서 필독 공지는 상단에 표시
   const currentNormalNotices = sortedNormalNotices.slice(indexOfFirstItem, indexOfLastItem);  // 현재 페이지에 보여질 일반 공지
-  const currentItems = [...currentPinnedNotices, ...currentNormalNotices];                    // 현재 페이지의 필독 공지와 일반 공지 목록
+  const currentItems = [...pinnedNotices, ...currentNormalNotices];                    // 현재 페이지의 필독 공지와 일반 공지 목록
   console.log("currentItems : ", currentItems);
 
   // 컬럼 제목 목록
@@ -65,7 +64,7 @@ const Notices = () => {
     ['noticeNo', '공지번호'],
     ['noticeTitle', '제목'],
     ['memberName', '작성자'],
-    ['noticeCreateDttm', '일']
+    ['noticeCreateDttm', '등록일']
   ];
 
   const handleRowClick = (index) => {
@@ -125,9 +124,7 @@ const Notices = () => {
               )}            
             </>
           )}
-          {/* <BootstrapTable data={currentItems} columns={columns} onRowClick={handleRowClick} />
-          <PaginationButtons totalItems={totalItems} itemsPerPage={itemsPerPage} currentPage={currentPage} onPageChange={(pageNumber) => setCurrentPage(pageNumber)} /> */}
-        </div>
+          </div>
       </div>
     </main>
   );

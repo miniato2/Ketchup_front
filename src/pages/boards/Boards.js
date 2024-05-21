@@ -143,6 +143,7 @@ import { callGetBoardListAPI } from "../../apis/BoardAPICalls";
 import PaginationButtons from "../../components/contents/PaginationButtons";
 import { decodeJwt } from "../../utils/tokenUtils";
 import { callDepartmentsAPI } from "../../apis/MemberAPICalls";
+import FormatDateTime from "../../components/contents/FormatDateTime";
 
 function Boards() {
     const dispatch = useDispatch();
@@ -173,16 +174,12 @@ function Boards() {
         fetchDepartments();
     }, [dispatch]);
 
-    const onChangeHandler = (e) => {
-        setTitle(e.target.value);
-    }
-
     useEffect(() => {
         const fetchBoardList = async (searchKeyword = '') => {
             try {
                 let departmentNoToFetch = selectedDepartment || depNo; // 선택한 부서가 없을 경우 사용자의 부서를 기본값으로 설정
                 if (userRole === 'LV3') { // LV3 사용자인 경우 선택한 부서로 설정
-                    departmentNoToFetch = selectedDepartment;
+                    departmentNoToFetch = selectedDepartment || depNo;
                 }
     
                 const response = await dispatch(callGetBoardListAPI({
@@ -197,6 +194,7 @@ function Boards() {
                 } else {
                     setNoRecords(false);
                 }
+               
             } catch (error) {
                 console.error("Error fetching board list:", error);
                 setNoRecords(true);
@@ -204,13 +202,19 @@ function Boards() {
         };
         fetchBoardList();
     }, [selectedDepartment, depNo, title, currentPage, userRole, dispatch]);
-    
+
     const columns = [
         ['boardNo', '번호'],
         ['boardTitle', '제목'],
-        ['memberName', "작성자"],
-        ['boardCreateDttm', '작성일']
+        ['memberName', '작성자'],
+        ['boardCreateDttm', '등록일']
     ];
+    
+    const formattedBoardList = boardList.map(board => ({
+        ...board,
+        boardCreateDttm: FormatDateTime(board.boardCreateDttm)
+    }));
+
 
     const handleRowClick = (index) => {
         const selectedBoard = boardList[index];
@@ -220,8 +224,9 @@ function Boards() {
     const handleSearch = (searchKeyword) => {
         setCurrentPage(1);
         setTitle(searchKeyword);
-        setTitle('');
     };
+
+    
 
     const handleDepartmentChange = (event) => {
         setSelectedDepartment(Number(event.target.value));
@@ -261,7 +266,7 @@ function Boards() {
                             검색어에 해당하는 게시물이 없습니다.
                         </p>
                     ) : (
-                        <BootstrapTable data={boardList} columns={columns} onRowClick={handleRowClick} />
+                        <BootstrapTable data={formattedBoardList} columns={columns} onRowClick={handleRowClick} />
                     )}
                     <PaginationButtons totalItems={totalItems} itemsPerPage={10} currentPage={currentPage} onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
                 </div>
