@@ -1,86 +1,93 @@
-import { Tree, AnimatedTree } from 'react-tree-graph';
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { callMembersAPI, callDepartmentsAPI, callPositionsAPI } from "../../apis/MemberAPICalls";
+import Tree from 'react-d3-tree';
 
 
-function TreePractice() {
+function OrganizationChart() {
+    const dispatch = useDispatch();
+    const members = useSelector(state => state.memberReducer);
+    const departments = useSelector(state => state.departmentReducer);
+    const positions = useSelector(state => state.positionReducer);
+    const [treeData, setTreeData] = useState([]);
+
+
+    useEffect(() => {
+        dispatch(callMembersAPI());
+        dispatch(callDepartmentsAPI());
+        dispatch(callPositionsAPI());
+    }, [dispatch]);
 
 
 
 
-    const data = {
-        name: '대표 남윤진',
-        children: [
-            {
-                name: '개발팀',
-                children: [
-                    { name: '팀1', children:[
-                            {name: '이후영'},
-                            {name: '나몰빼미'}
 
+    useEffect(() => {
+        if (members.length > 0 && departments.length > 0 && positions.length > 0) {
+            const data = {
+                name: '남윤진대표',
+                children: departments.map((department) => ({
+                    name: department.depName,
+                    children: members
+                        .filter((member) => member.department.depNo === department.depNo)
+                        .sort((a, b) => b.position.positionLevel - a.position.positionLevel)
+                        .filter((member) => !(member.position.positionName === '대표'))
+                        .map((member) => ({
+                           
+                            name: `${member.memberName}${member.position.positionName}`
+                           
+                        }))
+                       
+                }))
+            };
 
-                    ] },
+            setTreeData([data]);
+            console.log(data);
+        }
+    }, [members, departments, positions]);
 
-                    { name: '팀2' },
-
-                    { name: '팀3' },
-                ],
-            },
-            {
-                name: '인사팀',
-                children: [
-                    { name: '팀4' },
-                    { name: '팀5' },
-                ],
-            },
-            {
-                name: '기획팀',
-                children: [
-                    { name: '팀6' },
-                    { name: '팀7' },
-                ],
-            },
-            {
-                name: '회계팀',
-                children: [
-                    { name: '팀8' },
-                    { name: '팀9' },
-                ],
-            },
-            {
-                name: '법무팀',
-                children: [
-                    { name: '팀10' },
-                    { name: '팀11' },
-                ],
-            },
-        ],
+    const containerStyles = {
+        width: '100%',
+        height: '200vh',
     };
+
+    const renderCustomNodeElement = ({ nodeDatum }) => (
+        <g>
+            <rect width="150" height="50" x="-75" y="-25" fill="white" stroke="black" strokeWidth="1" />
+            <text fill="black" x="0" y="0" textAnchor="middle" alignmentBaseline="middle">
+                {nodeDatum.name}
+            </text>
+        </g>
+    );
+
+
+
+
+
+
+
 
 
     return (
-
-
-        <div>
-
-
-
-            <main id="main">
-                <br></br>
+        <main id="main">
+            <div className="container">
                 <h2>조직도</h2>
-
-
-                <AnimatedTree
-                    data={data}
-                    height={400}
-                    width={400} />
-
-            </main>
-        </div>
-
-
-
-
+                <div style={containerStyles}>
+                    {treeData.length > 0 && (
+                        <Tree
+                            data={treeData}
+                            orientation="vertical"
+                            translate={{ x: 600, y: 200 }}
+                            pathFunc="elbow"
+                            renderCustomNodeElement={renderCustomNodeElement}
+                            nodeSize={{ x: 200, y: 150 }}
+                            separation= {{ siblings: 1, nonSiblings: 1} }
+                        />
+                    )}
+                </div>
+            </div>
+        </main>
     );
-
 }
 
-export default TreePractice;
+export default OrganizationChart;
