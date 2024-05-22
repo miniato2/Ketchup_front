@@ -749,9 +749,9 @@ h6 {
   /* padding: 10px; */
 }
 
-/* #mainbox { 
-
-} */
+#mainbox { 
+  margin-top:40px;
+}
 /*--------------------------------------------------------------
 # search(검색 css)
 --------------------------------------------------------------*/
@@ -825,8 +825,10 @@ h6 {
 --------------------------------------------------------------*/
 /* 버튼 형식 */
 .btn-group {
-  float: right;
-  justify-content: space-between;
+  /* float: right; */
+  /* justify-content: space-between; */
+  display: flex;
+  justify-content: end;
   margin-top: 15px;
   margin-bottom: 30px;
 }

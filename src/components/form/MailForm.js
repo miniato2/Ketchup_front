@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { callMembersAPI } from "../../apis/MemberAPICalls";
 import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css';
 import { callPostInsertMailAPI } from "../../apis/MailAPICalls";
 import { useNavigate } from "react-router-dom";
+import Editor from "../contents/Editor";
 
 function MailForm() {
     const navigate = useNavigate();
@@ -72,9 +74,13 @@ function MailForm() {
     const submitMailClick = async () => {
         const formData = new FormData();
 
+        console.log("🍜🍜🍜🍜🍜🍜🍜");
+        const mailContent = quillRef.current.getEditor().root.innerHTML;
+        console.log(mailContent);
+
         const mailDto = {
             mailTitle: mailForm.mailTitle,
-            mailContent: mailForm.mailContent.ops[0].insert,
+            mailContent: mailContent,
             receivers: mailForm.receivers
         };
 
@@ -110,12 +116,12 @@ function MailForm() {
                 <label>받는 사람</label>
                 <div>
                     <select
-                        className="form-select"
+                        className="form-select w-100"
                         id="recipient"
                         onChange={addReceiver}
                         value={mailForm.receivers}>
                         <option selected>수신자를 선택하세요</option>
-                        {members.map((item, index) => {
+                        {Array.isArray(members) && members?.map((item, index) => {
                             return (
                                 <option
                                     key={index}
@@ -127,9 +133,9 @@ function MailForm() {
                     </select>
                     <div className="mt-3">
                         {receiverInfo.map((receiver, index) => (
-                            <div key={index} className="d-inline selected-recipient">
+                            <div key={index} className="d-inline selected-recipient pl-3">
                                 <span>{receiver.receiverMem}</span>
-                                <i className="bi bi-x" onClick={() => removeReceiver(index)}></i>
+                                <i className="bi bi-x mx-2" onClick={() => removeReceiver(index)}></i>
                             </div>
                         ))}
                     </div>
@@ -143,16 +149,23 @@ function MailForm() {
             </div>
             <div>
                 <ReactQuill
-                    style={{ height: "400px", overflowY: 'scroll' }}
+                    style={{ height: "400px", margin: "4px", overflowY: "auto" }}
                     ref={quillRef}
-                    value={mailForm.mailContent}
                     theme="snow"
-                    onChange={(content, delta, source, editor) => {
-                        const value = editor.getContents();
-                        setMailForm({
-                            ...mailForm,
-                            mailContent: value
-                        });
+                    value={mailForm.mailContent}
+                    onChange={(content) => setMailForm({ ...mailForm, mailContent: content })}
+                    modules={{
+                        toolbar: [
+                            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                            // [{ 'font': [] }],
+                            [{ 'align': [] }],
+                            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                            [{ 'color': [] }, { 'background': [] }],
+                            ['link'],
+                            ['image', 'video'],
+                            ['clean']
+                        ]
                     }}
                     placeholder="내용을 입력하세요."
                 />
