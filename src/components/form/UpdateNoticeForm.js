@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { callGetNoticeAPI, callUpdateNoticeAPI } from "../../apis/NoticeAPICalls";
 import ButtonGroup from "../../components/contents/ButtonGroup";
 import Editor from "../contents/Editor";
+import { decodeJwt } from "../../utils/tokenUtils";
 
 function UpdateNoticeForm() {
     const { noticeNo } = useParams();
@@ -14,34 +15,38 @@ function UpdateNoticeForm() {
     const [files, setFiles] = useState([]);
     const [fix, setFix] = useState(false);
     const [content, setContent] = useState('');
-    const [setFileList] = useState([]);
+    const [noticeFileNo, setNoticeFileNo] = useState([]); // 삭제할 파일의 ID를 저장할 상태 추가
+
+    const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
 
     const handleFixChange = (e) => {
         const isChecked = e.target.checked;
         setFix(isChecked);
     };
 
-    let memberNo = '';
-
-    const loginToken = window.localStorage.getItem("accessToken");
-    memberNo = loginToken.memberNo;
-
     // 파일 삭제 함수
-    const handleDeleteFile = (index) => {
+    const handleDeleteFile = (index, file) => {
         const updatedFiles = [...files];
         updatedFiles.splice(index, 1);
         setFiles(updatedFiles);
+
+        // 삭제된 파일의 ID를 삭제 목록에 추가
+        if (file.noticeFileNo) {
+            setNoticeFileNo((prevIds) => [...prevIds, file.noticeFileNo]);
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         const formData = new FormData();
-        formData.append('noticeDTO', new Blob([JSON.stringify({ noticeTitle: title, memberNo: memberNo, noticeFix: fix ? 'Y' : 'N', noticeContent: content })], { type: 'application/json' }));
+        formData.append('noticeDTO', new Blob([JSON.stringify({ noticeTitle: title, memberNo: loginToken.memberNo, noticeFix: fix ? 'Y' : 'N', noticeContent: content })], { type: 'application/json' }));
         files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
-
+    
+        console.log("handleSubmit [ noticeFileNo ] : ", noticeFileNo);
+    
         try {
-            await dispatch(callUpdateNoticeAPI(formData, noticeNo));
+            await dispatch(callUpdateNoticeAPI(formData, noticeNo, noticeFileNo)); // 수정된 부분
             navigate(`/notices/${noticeNo}`);
         } catch (error) {
             console.error(error);
@@ -52,10 +57,7 @@ function UpdateNoticeForm() {
         const selectedFiles = Array.from(e.target.files);
         console.log('선택된 파일 목록:', selectedFiles);
         setFiles((prevFiles) => [...prevFiles, ...selectedFiles]); // 기존 파일 목록과 새로 선택된 파일을 합쳐서 업데이트
-
-        setFileList((prevFileList) => [...prevFileList, ...selectedFiles.map(file => file.name)]);
     };
-
 
     const buttons = [
         { label: '취소', onClick: () => navigate(-1), styleClass: 'back' },
@@ -72,10 +74,10 @@ function UpdateNoticeForm() {
 
     useEffect(() => {
         if (notice) {
-            setTitle(notice.noticeTitle);
-            setContent(notice.noticeContent);
-            setFix(notice.noticeFix === 'Y');
-            setFiles(notice.noticeFileList || []);
+            setTitle(notice.notice.noticeTitle);
+            setContent(notice.notice.noticeContent);
+            setFix(notice.notice.noticeFix === 'Y');
+            setFiles(notice.notice.noticeFileList || []);
         }
     }, [notice]);
 
@@ -94,7 +96,7 @@ function UpdateNoticeForm() {
                             <li style={{ listStyle: 'none' }} key={index}>
                                 <span>{file.noticeFileOriName || file.name}</span> &nbsp;
                                 {/* 파일 삭제 버튼 */}
-                                <button onClick={() => handleDeleteFile(index)} style={{ border: 'none', background: 'none', cursor: 'pointer' }}>x</button>
+                                <button onClick={() => handleDeleteFile(index, file)} style={{ border: 'none', background: 'none', cursor: 'pointer' }}>x</button>
                             </li>
                         ))}
                     </ul>

@@ -32,7 +32,7 @@ export function callGetBoardListAPI({ depNo, title, currentPage, setTotalItems  
                 // 각 게시물의 작성자 memberNo를 이용해 memberName을 조회
                 const memberInfoResult = await request('GET', `/members/${board.memberNo}`);
                 // 게시물 목록에 작성자 이름을 추가
-                return { ...board, memberName: memberInfoResult.data.memberName };
+                return { ...board, memberName: memberInfoResult.data.memberName, positionName: memberInfoResult.data.position.positionName };
             }));
 
             // 수정된 게시물 목록을 저장
@@ -57,7 +57,7 @@ export function callGetBoardAPI(boardNo) {
             console.log('getBoard result : ', boardResult);
 
             // 공지 작성자의 정보 가져오기
-            const memberInfoResult = await request('GET', `/members/${boardResult.data.memberNo}`);
+            const memberInfoResult = await request('GET', `/members/${boardResult.data.board.memberNo}`);
             console.log('getMemberInfo result : ', memberInfoResult);
 
             // 공지사항 정보에 작성자의 정보 추가하여 저장
@@ -109,13 +109,15 @@ export const callInsertBoardAPI = (formData) => {
     };
 };
 
-export function callUpdateBoardAPI(formData, boardNo) {
+export function callUpdateBoardAPI(formData, boardNo, boardFileNo) {
     console.log('callUpdateBoardAPI...');
 
     const requestURL = `http://localhost:8080/boards/${boardNo}`;
 
     return async (dispatch, getState) => {
         try {
+            boardFileNo.forEach(id => formData.append('boardFileNo', id));
+
 
             const response = await fetch(requestURL, {
                 method: 'PUT',
