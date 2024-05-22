@@ -31,6 +31,9 @@ npm install
 # router 설정 
 npm install react-router-dom
 
+# 트리그래프 
+npm install react-d3-tree
+
 # reducx install 설정 
 npm install redux@4.2.1
 npm install redux-devtools-extension
