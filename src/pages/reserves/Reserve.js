@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import './Reserve.css';
+import Scrolls from "../../components/scrolls/Scrolls";
 import ResourceCategorySelect from "./ResourceCategorySelect";
 import ReserveDateSelect from "./ReserveDateSelect";
 import InsertReserveForm from "../../components/form/InsertReserveForm";
@@ -173,57 +174,59 @@ export default function Reserve() {
             startTime: '09:00',
             endTime: '19:00',
         };
-        return Object.entries(groupedReserves).map(([rscNo, reserveList]) => {
-            const resource = reserveList[0].extendedProps.resources;
-            let infoMeasurement = "";
-            let capMeasurement = "";
-            if (searchConditions.rscCategory === "회의실") {
-                infoMeasurement = "위치";
-                capMeasurement = "수용 가능 인원";
-            } else if (searchConditions.rscCategory === "차량") {
-                infoMeasurement = "차량 번호";
-                capMeasurement = "승차 정원";
-            }
 
-            return (
-                <Grid item xs={12} md={6} key={rscNo}>
-                    <Box container direction="row" overflowX="auto" overflowY="hidden" whiteSpace="nowrap" flex="1 1 100%" ml="15px" height="480px">
-                        <Typography textAlign="center" variant="h4">{resource.rscName}</Typography>
-                        <Table>
-                            <TableRow>
-                                <TableCell align="center" sx={{fontSize: '18px'}}>{infoMeasurement}</TableCell>
-                                <TableCell align="center" sx={{fontSize: '18px'}}>{resource.rscInfo}</TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell align="center" sx={{fontSize: '18px'}}>{capMeasurement}</TableCell>
-                                <TableCell align="center" sx={{fontSize: '18px'}}>{resource.rscCap}</TableCell>
-                            </TableRow>
-                        </Table>
+        return (
+            <Scrolls>
+                {Object.entries(groupedReserves).map(([rscNo, reserveList]) => {
+                    const resource = reserveList[0].extendedProps.resources;
+                    let infoMeasurement = "";
+                    let capMeasurement = "";
+                    if (searchConditions.rscCategory === "회의실") {
+                        infoMeasurement = "위치";
+                        capMeasurement = "수용 가능 인원";
+                    } else if (searchConditions.rscCategory === "차량") {
+                        infoMeasurement = "차량 번호";
+                        capMeasurement = "승차 정원";
+                    }
 
-                        <FullCalendar
-                            locale="ko"
-                            events={reserveList}
-                            initialView="timeGridDay"
-                            initialDate={searchConditions.rsvDate}
-                            plugins={[
-                                dayGridPlugin,
-                                timeGridPlugin,
-                                interactionPlugin,
-                                listPlugin
-                            ]}
-                            height="50vh"
-                            headerToolbar={false}
-                            themeSystem='bootstrap'
-                            selectable={true}
-                            select={(selectInfo) => onDateClickHandler(selectInfo, resource)}
-                            eventClick={onEventClickHandler}
-                            businessHours={businessHours}
-                            slotMinTime="08:00"
-                        />
-                    </Box>
-                </Grid>
-            );
-        });
+                    return (
+                        <Box key={rscNo} height="480px" width="100%">
+                            <Typography textAlign="center" variant="h4">{resource.rscName}</Typography>
+                            <Table>
+                                <TableRow>
+                                    <TableCell align="center" sx={{ fontSize: '18px' }}>{infoMeasurement}</TableCell>
+                                    <TableCell align="center" sx={{ fontSize: '18px' }}>{resource.rscInfo}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="center" sx={{ fontSize: '18px' }}>{capMeasurement}</TableCell>
+                                    <TableCell align="center" sx={{ fontSize: '18px' }}>{resource.rscCap}</TableCell>
+                                </TableRow>
+                            </Table>
+                            <FullCalendar
+                                locale="ko"
+                                events={reserveList}
+                                initialView="timeGridDay"
+                                initialDate={searchConditions.rsvDate}
+                                plugins={[
+                                    dayGridPlugin,
+                                    timeGridPlugin,
+                                    interactionPlugin,
+                                    listPlugin
+                                ]}
+                                height="50vh"
+                                headerToolbar={false}
+                                themeSystem='bootstrap'
+                                selectable={true}
+                                select={(selectInfo) => onDateClickHandler(selectInfo, resource)}
+                                eventClick={onEventClickHandler}
+                                businessHours={businessHours}
+                                slotMinTime="08:00"
+                            />
+                        </Box>
+                    );
+                })}
+            </Scrolls>
+        );
     };
 
     return (

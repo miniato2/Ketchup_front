@@ -1,6 +1,9 @@
 # react-horizontal-scrolling-menu 설치 필요
 npm i react-horizontal-scrolling-menu
 
+# react-inputs-validation 설치 필요
+npm i react-inputs-validation 
+
 # material UI install
 npm i @mui/material @emotion/react @emotion/styled @mui/icons-material
 
@@ -27,7 +30,6 @@ npm install
 
 # router 설정 
 npm install react-router-dom
-
 
 # reducx install 설정 
 npm install redux@4.2.1
