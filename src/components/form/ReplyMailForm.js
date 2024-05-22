@@ -33,8 +33,8 @@ function MailForm({ content, mailNo, part }) {
     };
 
     const goBackList = () => {
-        navigate(`/mails/detail/${mailNo}`);
-    }
+        navigate(`/mails/detail/${mailNo}`, { state: { part } });
+    };
 
     const submitMailClick = async () => {
         const formData = new FormData();

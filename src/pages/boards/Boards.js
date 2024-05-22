@@ -8,17 +8,20 @@
 // import PaginationButtons from "../../components/contents/PaginationButtons";
 // import { decodeJwt } from "../../utils/tokenUtils";
 // import { callDepartmentsAPI } from "../../apis/MemberAPICalls";
+// import FormatDateTime from "../../components/contents/FormatDateTime";
 
 // function Boards() {
 //     const dispatch = useDispatch();
-//     const result = useSelector(state => state.boardReducer);
-//     const departments = useSelector(state => state.departmentReducer);
-//     const boardList = result.boardlist || [];
-//     const [totalItems, setTotalItems] = useState(0);
 //     const navigate = useNavigate();
-//     const [selectedDepartment, setSelectedDepartment] = useState('');
+
+//     const result = useSelector(state => state.boardReducer);
+//     const boardList = result.boardlist || [];
+//     const departments = useSelector(state => state.departmentReducer);
+
+//     const [totalItems, setTotalItems] = useState(0);
+//     const [selectedDepartment, setSelectedDepartment] = useState(null);
 //     const [currentPage, setCurrentPage] = useState(1);
-//     const [title, setTitle] = useState('');
+//     const [searchKeyword, setSearchKeyword] = useState('');
 //     const [noRecords, setNoRecords] = useState(false);
 
 //     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
@@ -38,15 +41,16 @@
 //         fetchDepartments();
 //     }, [dispatch]);
 
-//     const onChangeHandler = (e) => {
-//         setTitle(e.target.value);
-//     }
-
 //     useEffect(() => {
 //         const fetchBoardList = async (searchKeyword = '') => {
 //             try {
+//                 let departmentNoToFetch = selectedDepartment || depNo; // 선택한 부서가 없을 경우 사용자의 부서를 기본값으로 설정
+//                 if (userRole === 'LV3') { // LV3 사용자인 경우 선택한 부서로 설정
+//                     departmentNoToFetch = selectedDepartment || depNo;
+//                 }
+
 //                 const response = await dispatch(callGetBoardListAPI({
-//                     depNo: selectedDepartment || depNo,
+//                     depNo: departmentNoToFetch,
 //                     title: typeof searchKeyword === 'string' ? searchKeyword.toLowerCase() : '',
 //                     currentPage: currentPage,
 //                     setTotalItems: setTotalItems
@@ -57,20 +61,28 @@
 //                 } else {
 //                     setNoRecords(false);
 //                 }
+
 //             } catch (error) {
 //                 console.error("Error fetching board list:", error);
 //                 setNoRecords(true);
 //             }
 //         };
-//         fetchBoardList();
-//     }, [selectedDepartment, depNo, title, currentPage, dispatch]);
-    
+//         fetchBoardList(searchKeyword); // 검색어가 변경될 때마다 API 호출
+//     }, [dispatch, depNo, selectedDepartment, searchKeyword, currentPage]);
+
 //     const columns = [
 //         ['boardNo', '번호'],
 //         ['boardTitle', '제목'],
-//         ['memberName', "작성자"],
-//         ['boardCreateDttm', '작성일']
+//         ['memberName', '작성자'],
+//         ['boardCreateDttm', '등록일']
 //     ];
+
+//     const formattedBoardList = boardList.map(board => ({
+//         ...board,
+//         memberName: `${board.memberName} ${board.positionName}`,
+//         boardCreateDttm: FormatDateTime(board.boardCreateDttm)
+//     }));
+
 
 //     const handleRowClick = (index) => {
 //         const selectedBoard = boardList[index];
@@ -79,8 +91,7 @@
 
 //     const handleSearch = (searchKeyword) => {
 //         setCurrentPage(1);
-//         setTitle(searchKeyword);
-//         setTitle('');
+//         setSearchKeyword(searchKeyword);
 //     };
 
 //     const handleDepartmentChange = (event) => {
@@ -94,7 +105,7 @@
 //                 {userRole === 'LV3' && (
 //                     <div>
 //                         <select onChange={handleDepartmentChange} value={selectedDepartment}>
-//                             <option value="">부서 선택</option>
+//                             <option value={null}>부서 선택</option>
 //                             {departments.map(department => (
 //                                 <option key={department.depNo} value={department.depNo}>{department.depName}</option>
 //                             ))}
@@ -102,11 +113,11 @@
 //                     </div>
 //                 )}
 //                 {(userRole === 'LV1' || userRole === 'LV2') && (
-//                     <ul>
-//                         <li>{depName}</li>
+//                     <ul style={{ margin: 0, padding: 0 }}>
+//                         <li style={{ listStyle: 'none' }}>{depName}</li>
 //                     </ul>
 //                 )}
-//                 <SearchBar onSearch={handleSearch} />
+//                 <SearchBar onSearch={handleSearch} value={searchKeyword} name={'제목 검색'} />
 //             </div>
 
 //             <div className="col-lg-12">
@@ -117,11 +128,9 @@
 //                     </Link>
 
 //                     {noRecords ? (
-//                         <p style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-40%, -50%)', textAlign: 'center', width: '100%' }}>
-//                             검색어에 해당하는 게시물이 없습니다.
-//                         </p>
+//                         <p style={{ textAlign: 'center' }}>'{searchKeyword}' 제목 공지가 없습니다.</p>
 //                     ) : (
-//                         <BootstrapTable data={boardList} columns={columns} onRowClick={handleRowClick} />
+//                         <BootstrapTable data={formattedBoardList} columns={columns} onRowClick={handleRowClick} />
 //                     )}
 //                     <PaginationButtons totalItems={totalItems} itemsPerPage={10} currentPage={currentPage} onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
 //                 </div>
@@ -147,15 +156,16 @@ import FormatDateTime from "../../components/contents/FormatDateTime";
 
 function Boards() {
     const dispatch = useDispatch();
-    const result = useSelector(state => state.boardReducer);
-    const departments = useSelector(state => state.departmentReducer);
-    const boardList = result.boardlist || [];
-    const [totalItems, setTotalItems] = useState(0);
     const navigate = useNavigate();
+
+    const result = useSelector(state => state.boardReducer);
+    const boardList = result.boardlist || [];
+    const departments = useSelector(state => state.departmentReducer);
+
+    const [totalItems, setTotalItems] = useState(0);
     const [selectedDepartment, setSelectedDepartment] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [title, setTitle] = useState('');
-    const [noRecords, setNoRecords] = useState(false);
+    const [searchKeyword, setSearchKeyword] = useState('');
 
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const userRole = loginToken.role;
@@ -175,33 +185,26 @@ function Boards() {
     }, [dispatch]);
 
     useEffect(() => {
-        const fetchBoardList = async (searchKeyword = '') => {
+        const fetchBoardList = async () => {
             try {
                 let departmentNoToFetch = selectedDepartment || depNo; // 선택한 부서가 없을 경우 사용자의 부서를 기본값으로 설정
                 if (userRole === 'LV3') { // LV3 사용자인 경우 선택한 부서로 설정
                     departmentNoToFetch = selectedDepartment || depNo;
                 }
-    
+
                 const response = await dispatch(callGetBoardListAPI({
                     depNo: departmentNoToFetch,
                     title: typeof searchKeyword === 'string' ? searchKeyword.toLowerCase() : '',
                     currentPage: currentPage,
                     setTotalItems: setTotalItems
                 }));
-    
-                if (response && response.payload && response.payload.length === 0) {
-                    setNoRecords(true);
-                } else {
-                    setNoRecords(false);
-                }
-               
+
             } catch (error) {
                 console.error("Error fetching board list:", error);
-                setNoRecords(true);
             }
         };
         fetchBoardList();
-    }, [selectedDepartment, depNo, title, currentPage, userRole, dispatch]);
+    }, [dispatch, depNo, selectedDepartment, searchKeyword, currentPage]);
 
     const columns = [
         ['boardNo', '번호'],
@@ -209,9 +212,10 @@ function Boards() {
         ['memberName', '작성자'],
         ['boardCreateDttm', '등록일']
     ];
-    
+
     const formattedBoardList = boardList.map(board => ({
         ...board,
+        memberName: `${board.memberName} ${board.positionName}`,
         boardCreateDttm: FormatDateTime(board.boardCreateDttm)
     }));
 
@@ -223,10 +227,8 @@ function Boards() {
 
     const handleSearch = (searchKeyword) => {
         setCurrentPage(1);
-        setTitle(searchKeyword);
+        setSearchKeyword(searchKeyword);
     };
-
-    
 
     const handleDepartmentChange = (event) => {
         setSelectedDepartment(Number(event.target.value));
@@ -247,11 +249,12 @@ function Boards() {
                     </div>
                 )}
                 {(userRole === 'LV1' || userRole === 'LV2') && (
-                    <ul>
-                        <li>{depName}</li>
+                    <ul style={{ margin: 0, padding: 0 }}>
+                        <li style={{ listStyle: 'none' }}>{depName}</li>
                     </ul>
+
                 )}
-                <SearchBar onSearch={handleSearch} />
+                <SearchBar onSearch={handleSearch} value={searchKeyword} name={'제목 검색'} />
             </div>
 
             <div className="col-lg-12">
@@ -261,11 +264,14 @@ function Boards() {
                         <ButtonGroup buttons={[{ label: '등록', styleClass: 'move' }]} />
                     </Link>
 
-                    {noRecords ? (
-                        <p style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-40%, -50%)', textAlign: 'center', width: '100%' }}>
-                            검색어에 해당하는 게시물이 없습니다.
-                        </p>
-                    ) : (
+                    {formattedBoardList.length === 0 && (
+                        <>
+                            <BootstrapTable data={formattedBoardList} columns={columns} onRowClick={handleRowClick} />
+                            <p style={{ textAlign: 'center' }}>'{searchKeyword}' 제목 게시물이 없습니다.</p>
+                        </>
+                    )}
+
+                    {formattedBoardList.length > 0 && (
                         <BootstrapTable data={formattedBoardList} columns={columns} onRowClick={handleRowClick} />
                     )}
                     <PaginationButtons totalItems={totalItems} itemsPerPage={10} currentPage={currentPage} onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
