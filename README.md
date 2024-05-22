@@ -1,3 +1,8 @@
+# 조직도 렌더링을 위해 2개 라이브러리 설치 필요
+npm install -g bower (맥북에서 permission denied 오류날 경우 "sudo npm install -g bower
+")
+npm i react-bootstrap-treeview
+
 # react-horizontal-scrolling-menu 설치 필요
 npm i react-horizontal-scrolling-menu
 
@@ -5,7 +10,14 @@ npm i react-horizontal-scrolling-menu
 npm i react-inputs-validation 
 
 # material UI install
-npm i @mui/material @emotion/react @emotion/styled @mui/icons-material
+npm i @mui/material @emotion/react @emotion/styled @mui/icons-material 
+
+# 추가적인 mui 패키지 설치
+@date-io/date-fns date-fns @mui/x-date-pickers @mui/material @emotion/styled date-fns
+
+# 위에 안되면 아래 설치
+npm install @mui/material @emotion/react @emotion/styled @mui/icons-material @mui/x-date-pickers --legacy-peer-deps
+npm install date-fns@2.28.0 --legacy-peer-deps
 
 # Fullcalendar install
 npm i @fullcalendar/core @fullcalendar/react @fullcalendar/daygrid @fullcalendar/timegrid @fullcalendar/list @fullcalendar/interaction
@@ -30,6 +42,10 @@ npm install
 
 # router 설정 
 npm install react-router-dom
+
+# 트리그래프 
+npm install react-d3-tree
+
 
 # reducx install 설정 
 npm install redux@4.2.1

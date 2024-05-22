@@ -30,7 +30,8 @@ import Resources from './pages/resources/Resources';
 import Departments from './pages/members/Departments';
 import Positions from './pages/members/Positions';
 import OrganizationChart from './pages/members/OrganizationChart';
-import TreePractice from './pages/members/TreePractice';
+import TreePractice from './pages/members/TreePractice'
+
 // import Error from './pages/Error';
 
 

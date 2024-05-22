@@ -5,13 +5,15 @@ import { updateReserveAPI } from "../../apis/ReserveAPICalls";
 import moment from "moment";
 
 const token = decodeJwt(window.localStorage.getItem("accessToken"));
-const reserver = token?.memberName;
+// 사용자와 예약자를 대조해서 맞는지 확인해야함. 아이디로 비교해야함. 문제는 ReserveDetail 예약자에는 예약자의 이름이 보여져야하지만, 대조는 아이디를 해야함.
+const loggedInUserId = token?.memberNo;
 
 export default function ReserveDetail({ selectedReserve, closeDetailDialog, setOpenDeleteConfirm }) {
+    console.log("selectedReserve", selectedReserve);
     const [updateChecked, setUpdateChecked] = useState(false);
     const [updatedReserveData, setUpdatedReserveData] = useState({
         rsvNo: selectedReserve.rsvNo,
-        reserver: reserver,
+        reserver: "",
         rsvDescr: selectedReserve.rsvDescr,
         rsvStartDttm: moment(selectedReserve.start).format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
         rsvEndDttm: moment(selectedReserve.end).format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
@@ -41,13 +43,13 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog, setO
 
     // TODO LIST. 추후에 업데이트해야함. 예약자의 아이디와 사용자의 아이디의 일치여부 판별 필요함.
     const isReserver = () => {
-        return reserver === updatedReserveData.reserver;
+        // return loggedInUserId === updatedReserveData.reserver;
     };
 
     useEffect(() => {
         setUpdatedReserveData({
             rsvNo: selectedReserve.rsvNo,
-            reserver: reserver,
+            reserver: "",
             rsvDescr: selectedReserve.title,
             rsvStartDttm: moment(selectedReserve.start).format("YYYY-MM-DDTHH:mm"),
             rsvEndDttm: moment(selectedReserve.end).format("YYYY-MM-DDTHH:mm"),

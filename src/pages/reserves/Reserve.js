@@ -190,7 +190,7 @@ export default function Reserve() {
                     }
 
                     return (
-                        <Box key={rscNo} height="480px" width="100%">
+                        <Box key={rscNo}  >
                             <Typography textAlign="center" variant="h4">{resource.rscName}</Typography>
                             <Table>
                                 <TableRow>
@@ -232,7 +232,7 @@ export default function Reserve() {
     return (
         <main id="main" className="main">
             <Box p={2}>
-                <Grid container spacing={3} alignItems="center" mt={2} mb={4} sx={{ backgroundColor: "rgb(236, 11, 11, 0.17)", borderRadius: "10px", height: "230px" }}>
+                <Grid container spacing={3} alignItems="center" mt={1} mb={4} sx={{ backgroundColor: "rgb(236, 11, 11, 0.17)", borderRadius: "10px", height: "230px" }}>
                     <Grid item xs={12}>
                         <h1 style={{ marginTop: 15 }}>자원예약</h1>
                     </Grid>
@@ -257,7 +257,8 @@ export default function Reserve() {
                     </Box>
                 )}
             </Box>
-
+            
+            {/* 유효성 검사 알림창 */}
             <Snackbar
                 anchorOrigin={{ vertical, horizontal }}
                 style={{ marginTop: '45px' }}
