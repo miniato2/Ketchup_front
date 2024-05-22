@@ -4,7 +4,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 export default function ReserveDateSelect({ value, onChange }) {
   return (
-    <FormControl sx={{ m: 1, width: "371px" }} xs={6}>
+    <FormControl sx={{ m: 1, width: "610px" }} xs={6}>
       <TextField
         variant="outlined"
         name="rsvDate"

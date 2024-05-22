@@ -1,5 +1,5 @@
-# react-inputs-validation 설치 필요
-npm i react-inputs-validation 
+# react-horizontal-scrolling-menu 설치 필요
+npm i react-horizontal-scrolling-menu
 
 # material UI install
 npm i @mui/material @emotion/react @emotion/styled @mui/icons-material
