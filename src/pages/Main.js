@@ -153,7 +153,7 @@ function Main() {
             ) : (
                 <>
                     {/* 메인 환영 */}
-                    <div className="pagetitle">
+                    <div className="pagetitle col-lg-12">
                         <div id="mainbox" className="p-4 p-md-5 mb-4 rounded text-body-emphasis" style={{ backgroundColor: "rgb(236, 11, 11, 0.17)" }}>
                             <div className="col-lg-6 px-0">
                                 <h1 className="display-1" style={{ fontSize: "45px" }}>안녕하세요, {loginToken.memberName} 사원님!</h1>
