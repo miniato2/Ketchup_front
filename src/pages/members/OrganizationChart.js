@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { callMembersAPI, callDepartmentsAPI, callPositionsAPI } from "../../apis/MemberAPICalls";
-import { Table } from "react-bootstrap";
+import { Table,Card,ListGroup } from "react-bootstrap";
 
 function OrganizationChart() {
     const dispatch = useDispatch();
@@ -17,36 +17,30 @@ function OrganizationChart() {
 
     return (
         <main id="main">
-            <div>
+            <div className="container">
                 <h2>조직도</h2>
-                <div className="search" style={{ width: 100, marginLeft: 1350 }}></div>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>부서</th>
-                            <th>직원 목록</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {departments.map((department) => (
-                            <tr key={department.depNo}>
-                                <td>{department.depName}</td>
-                                <td>
-                                    <ul>
+                <h3>대표 남윤진</h3>
+                <div className="row">
+                    {departments.map((department) => (
+                        <div key={department.depNo} className="col-md-4 mb-4">
+                            <Card>
+                                <Card.Header>{department.depName}</Card.Header>
+                                <Card.Body>
+                                    <ListGroup variant="flush">
                                         {Array.isArray(members) && members
                                             .filter((member) => member.department.depNo === department.depNo)
                                             .sort((a, b) => b.position.positionLevel - a.position.positionLevel)
                                             .map((member) => (
-                                                <li key={member.memberNo}>
-                                                    {member.memberName} {member.position.positionName}
-                                                </li>
+                                                <ListGroup.Item key={member.memberNo}>
+                                                    {member.memberName} - {member.position.positionName}
+                                                </ListGroup.Item>
                                             ))}
-                                    </ul>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                                    </ListGroup>
+                                </Card.Body>
+                            </Card>
+                        </div>
+                    ))}
+                </div>
             </div>
         </main>
     );
