@@ -3,20 +3,27 @@ import { useEffect, useState } from "react";
 import { decodeJwt } from "../../utils/tokenUtils";
 import { insertReserveAPI } from "../../apis/ReserveAPICalls";
 
-
 const token = decodeJwt(window.localStorage.getItem("accessToken"));
-const reserver = token.memberName;
+const reserverId = token?.memberNo;
+const reserverName = token?.memberName;
 
-export default function InsertReserveForm({ onInsertCancelHandler }) {
-
+export default function InsertReserveForm({ onInsertCancelHandler, selectedResource }) {
     const [newReserveData, setNewReserveData] = useState({
-        rsvNo: "",
-        reserver: "",
+        reserver: reserverId,
         rsvDescr: "",
         rsvStartDttm: "",
         rsvEndDttm: "",
-        resources: ""
+        resources: {}
     });
+
+    useEffect(() => {
+        if (selectedResource) {
+            setNewReserveData(prevData => ({
+                ...prevData,
+                resources: selectedResource
+            }));
+        }
+    }, [selectedResource]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -26,7 +33,7 @@ export default function InsertReserveForm({ onInsertCancelHandler }) {
         });
     };
 
-    const handleSubmit = (newReserveData) => {
+    const handleSubmit = () => {
         try {
             insertReserveAPI(newReserveData);
             alert("예약이 정상적으로 등록되었습니다.");
@@ -38,7 +45,7 @@ export default function InsertReserveForm({ onInsertCancelHandler }) {
     }
 
     return (
-        <form onSubmit={(e) => { e.preventDefault(); handleSubmit(newReserveData); }}>
+        <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
             <Grid container spacing={4} justifyContent="left" ml={10}>
                 <Grid item xs={6} md={8}>
                     <Box sx={{
@@ -54,8 +61,7 @@ export default function InsertReserveForm({ onInsertCancelHandler }) {
                                     label="예약 시작 일시"
                                     variant="outlined"
                                     name="rsvStartDttm"
-                                    // value에는 변환된 ISO 8601 형식으로 입력
-                                    value={newReserveData.rsvStartDttm ? newReserveData.rsvStartDttm : ""}
+                                    value={newReserveData.rsvStartDttm}
                                     onChange={handleInputChange}
                                 />
                             </Box>
@@ -70,8 +76,7 @@ export default function InsertReserveForm({ onInsertCancelHandler }) {
                                     label="예약 종료 일시"
                                     variant="outlined"
                                     name="rsvEndDttm"
-                                    // value에는 변환된 ISO 8601 형식으로 입력
-                                    value={newReserveData.rsvEndDttm ? newReserveData.rsvEndDttm : ""}
+                                    value={newReserveData.rsvEndDttm}
                                     onChange={handleInputChange}
                                 />
                             </Box>
@@ -95,7 +100,7 @@ export default function InsertReserveForm({ onInsertCancelHandler }) {
                             <Box sx={{
                                 '& .MuiTextField-root': { m: 1, width: '20ch' }
                             }}>
-                                <Typography variant="body1" value={reserver}>{reserver}</Typography>
+                                <Typography variant="body1">{reserverName}</Typography>
                             </Box>
                         </ListItem>
                     </Box>

@@ -37,7 +37,7 @@ function Sidebar() {
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" to="#">
+                    <Link className="nav-link collapsed" to="/organizationChart">
                         <i className="bi bi-diagram-3"></i><span>조직도</span>
                     </Link>
                 </li>

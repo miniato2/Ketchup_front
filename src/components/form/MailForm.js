@@ -100,8 +100,11 @@ function MailForm() {
     };
 
     return (
+      
         <>
+          
             <div className="input-container">
+           
                 <label htmlFor="title">제목</label>
                 <input
                     type="text"
@@ -174,7 +177,9 @@ function MailForm() {
                 <button className="back-btn" onClick={goBackList}>취소</button>
                 <button type="submit" onClick={submitMailClick} className="move-btn">전송</button>
             </div>
+
         </>
+               
     );
 }
 

@@ -2,8 +2,9 @@ import { useState } from 'react';
 import '../../style.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-const SearchBar = ({ onSearch }) => {
+const SearchBar = ({ onSearch, name }) => {
     const [searchValue, setSearchValue] = useState('');
+    
 
     const handleChange = (event) => {
         setSearchValue(event.target.value);
@@ -16,10 +17,12 @@ const SearchBar = ({ onSearch }) => {
         setSearchValue('');
     };
 
+
+
     return (
         <div className="search-bar">
             <form className="search-form d-flex align-items-center" onSubmit={handleSubmit}>
-                <input type="text" name="query" placeholder="제목 검색" title="Enter search keyword" onChange={handleChange} />
+                <input type="text" name="query" placeholder={name} title="Enter search keyword" onChange={handleChange} />
                 <button type="submit" title="Search"><i className="bi bi-search"></i></button>
             </form>
         </div>

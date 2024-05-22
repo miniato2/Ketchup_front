@@ -6,12 +6,16 @@ const initialState = [];
 /* 액션 */
 
 export const GET_POSITIONS    = 'member/GET_POSITIONS';
+export const POST_POSITIONS    = 'member/POST_POSITIONS';
+export const DELETE_POSITIONS    = 'member/DELETE_POSITIONS';
 
 
 
 const actions = createActions({
    
     [GET_POSITIONS]: () => {},
+    [POST_POSITIONS]: () => {},
+    [DELETE_POSITIONS]: () => {}
    
 });
 
@@ -20,6 +24,16 @@ const positionReducer = handleActions(
     {
        
         [GET_POSITIONS]: (state, { payload }) => {
+            
+            return payload;
+        },
+
+        [POST_POSITIONS]: (state, { payload }) => {
+            
+            return payload;
+        },
+
+        [DELETE_POSITIONS]: (state, { payload }) => {
             
             return payload;
         },
