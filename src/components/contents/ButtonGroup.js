@@ -3,7 +3,7 @@ import '../../style.css';
 const ButtonGroup = ({ buttons }) => {
     return (
         <>
-            <div className="btn-group">
+            <div className="btn-group d-flex justify-content-end">
                 {buttons.map((button, index) => (
                     <button type="button" className={`${button.styleClass}-btn`} key={index} onClick={button.onClick} disabled={button.styleClass === 'disable'}>{button.label}</button>
                 ))}

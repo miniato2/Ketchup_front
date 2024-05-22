@@ -7,6 +7,7 @@ import MailDeleteModal from "./MailDeleteModal";
 import ReplyMailContent from "./ReplyMailContent";
 import { callGetMailDetailAPI } from "../../../apis/MailAPICalls";
 import { useDispatch, useSelector } from "react-redux";
+import DOMPurify from "isomorphic-dompurify"
 
 function MailContent({ content, part, mailNo }) {
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ function MailContent({ content, part, mailNo }) {
 
     const buttonClick = (label) => {
         if (label === "답장") {
-            navigate(`/mails/reply`, { state: { mailNo, content , part} });
+            navigate(`/mails/reply`, { state: { mailNo, content, part } });
         } else if (label === "발송 취소") {
             setSendCancelModal(true);
         } else if (label === "삭제") {
@@ -55,11 +56,13 @@ function MailContent({ content, part, mailNo }) {
             {sendCancelModal && <SendCancelModal setSendCancelModal={setSendCancelModal} part={part} />}
             {deleteModal ? <MailDeleteModal setDeleteModal={setDeleteModal} part={part} delMailList={delMailList} setDelMailList={setDelMailList} /> : null}
             <div>
+                <div>
+                {
+                    part === 'receive' ? <ButtonGroup buttons={receiveButtons} /> : content.sendCancelStatus === 'Y' ? <ButtonGroup buttons={YSendButtons} /> : <ButtonGroup buttons={NSendButtons} />
+                }
+                </div>
                 <div className="mail-title">
-                    <h2 className="d-inline">{content.mailTitle}</h2>
-                    {
-                        part === 'receive' ? <ButtonGroup buttons={receiveButtons} /> : content.sendCancelStatus === 'Y' ? <ButtonGroup buttons={YSendButtons} /> : <ButtonGroup buttons={NSendButtons} />
-                    }
+                    <h4>{content.mailTitle}</h4>
                 </div>
                 <p className="send-time">{formatDate}</p>
                 <div className="r-color">
@@ -96,10 +99,9 @@ function MailContent({ content, part, mailNo }) {
 
                 </div>
                 <hr />
-                <div>
-                    {content.mailContent}
-                </div>
+                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content.mailContent) }} />
             </div>
+            {/* 답장 이전 메일 보여 주기 */}
             {/* {
                 content.replyMailNo != 0 ? <ReplyMailContent replyMailNo={content.replyMailNo} /> : null
             } */}

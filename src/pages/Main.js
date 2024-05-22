@@ -59,7 +59,10 @@ function Main() {
     };
 
     useEffect(() => {
-        dispatch(callGetNoticeListAPI());
+        const currentPage = 1; // 현재 페이지를 1로 설정하거나, 다른 값으로 설정 가능
+        const title = ''; // 검색할 제목이 없으면 빈 문자열로 설정
+        const setTotalItems = () => {}; // 빈 함수 설정
+        dispatch(callGetNoticeListAPI({ currentPage, title, setTotalItems }));
 
         const fetchSchedules = () => {
             try {
@@ -98,16 +101,17 @@ function Main() {
     }, [schedules]);
 
     // 공지사항 목록 Redux store에서 가져오기
-    const noticeList = useSelector(state => state.noticeReducer.noticelist);
+    const result = useSelector(state => state.noticeReducer);
+    const noticeList = result?.noticelist?.noticesWithMemberNames || [];
 
-    const formattedNoticeList = noticeList ? noticeList
-        .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
-        .slice(0, 3) // 최신 3개의 공지만 표시
+    const formattedNoticeList = noticeList
+    .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
+    .slice(0, 3)
         .map(item => ({
             ...item,
             noticeTitle: (
                 <>
-                    {item.noticeFix === 'Y' && ( // 필독 공지인 경우에만 [ 필독 ]을 붙임
+                    {item.noticeFix === 'Y' && (
                         <span style={{ marginRight: '5px' }}>
                             [ 필독&nbsp;
                             <span style={{ color: '#EC0B0B' }}>
@@ -119,8 +123,9 @@ function Main() {
                     {item.noticeTitle}
                 </>
             ),
+            memberName: `${item.memberName} ${item.positionName}`,
             noticeCreateDttm: FormatDateTime(item.noticeCreateDttm)
-        })) : [];
+        }));
 
     // 컬럼 제목 목록
     const columns = [
@@ -131,11 +136,7 @@ function Main() {
     ];
 
     const handleRowClick = (index) => {
-        // 클릭된 행의 noticeNo를 가져와서 상세 페이지로 이동합니다.
-        const noticeNo = noticeList[index]?.noticeNo;
-
-        console.log('handleRowClick [ noticeNo ] : ', noticeNo);
-
+        const noticeNo = formattedNoticeList[index]?.noticeNo; // 수정된 부분
         navigate(`/notices/${noticeNo}`);
     };
 
@@ -153,7 +154,7 @@ function Main() {
             ) : (
                 <>
                     {/* 메인 환영 */}
-                    <div className="pagetitle">
+                    <div className="pagetitle col-lg-12">
                         <div id="mainbox" className="p-4 p-md-5 mb-4 rounded text-body-emphasis" style={{ backgroundColor: "rgb(236, 11, 11, 0.17)" }}>
                             <div className="col-lg-6 px-0">
                                 <h1 className="display-1" style={{ fontSize: "45px" }}>안녕하세요, {loginToken.memberName} 사원님!</h1>
@@ -164,7 +165,7 @@ function Main() {
 
                     {/* 전자결재 */}
                     <div className="col-lg-12">
-                        <div className="row">
+                        <div className="row" style={{ textDecoration: 'none'}}>
                             {approvalData.map(({ title, count }) => (
                                 <Link to={`/approvals`} className="col-xxl-3 col-md-6">
                                     <ApprovalBox title={title} count={count} />

@@ -21,7 +21,28 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
 
   return (
     <div class="card-body">
-      <Table className="table">
+      <Table>
+        <colgroup>
+          <col style={{ width: "8%" }} />
+          <col style={{ width: "8%" }} />
+          {part === 'receive' ? (
+            <>
+              <col style={{ width: "8%" }} />
+              <col style={{ width: "46%" }} />
+              <col style={{ width: "15%" }} />
+              <col style={{ width: "15%" }} />
+            </>
+            ) : (
+            <>
+              <col style={{ width: "44%" }} />
+              <col style={{ width: "15%" }} />
+              <col style={{ width: "15%" }} />
+              <col style={{ width: "10%" }} />
+            </>
+            )
+          }
+          <col style={{ width: "15%" }} />
+        </colgroup>       
         <thead>
           <tr style={{ textAlign: 'center' }}>
             <th>
@@ -32,15 +53,18 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
             </th>
             <th>번호</th>
             {Array.isArray(columns) && columns.map(([key, label], index) => (
-              <th scope='col' style={key === '제목' ? { width: "600px", padding: "10px" } : { padding: "10px" }} key={index}>{label}</th>
+              <th key={index}>{label}</th>
             )
             )}
+            {
+              part === 'send' ? <th>발송 취소</th> : null
+            }
           </tr>
         </thead>
         <tbody>
           {Array.isArray(data) && data.map((item, index) => (
-            <tr key={index} className={part === 'receive' ? (item.readTime !== '읽음' ? 'unreadRow' : '') : ''}>
-              <td style={{ padding: "15px", textAlign: 'center' }}>
+            <tr key={index} className={`${part === 'receive' ? (item.readTime !== '읽음' ? 'unreadRow' : '') : ''} mail-tr`}>
+              <td>
                 <input
                   type="checkbox"
                   checked={checkedItems[item.mailNo] || false}
@@ -48,9 +72,11 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
               </td>
               <td>{data.length - index}</td>
               {columns.map(([key], columnIndex) => (
-                <td style={{ padding: "15px" }} key={columnIndex}>
+                <td key={columnIndex}>
                   {key === 'mailTitle' ?
-                    (<span style={{ cursor: "pointer" }} onClick={onRowClick(data.length - index - 1)} >{item[key]}</span>)
+                    (<span 
+                        className="mail-cursor ellipsis"
+                        onClick={onRowClick(data.length - index - 1)} >{item[key]}</span>)
                     : (
                       key === 'readTime' ? (
                         item[key] === '읽음' ? (
@@ -59,7 +85,7 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
                           <i className="bi bi-envelope m-icon"></i>
                         )
                       ) : (key === 'receiverName' ?
-                        <span style={{ cursor: "pointer" }} className="dropdown">
+                        <span className="mail-cursor dropdown">
                           <a href="#" className="receiver-time" data-bs-toggle="dropdown">{item[key]}</a>
                           <ul className="dropdown-menu">
                             <li className="dropdown-item">
@@ -72,6 +98,9 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
                   }
                 </td>
               ))}
+              {
+                part === 'send' ? <td>--</td> : null
+              }
             </tr>
           ))
           }
