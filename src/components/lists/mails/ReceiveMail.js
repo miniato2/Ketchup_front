@@ -16,7 +16,7 @@ function ReceiveMail({ checkedItems, setCheckedItems, searchCondition, searchVal
     useEffect(
         () => {
             dispatch(callGetReceiveMailAPI(searchCondition, searchValue));
-        }, [dispatch]
+        }, [dispatch, searchCondition, searchValue]
     );
 
     useEffect(() => {

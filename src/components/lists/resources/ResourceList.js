@@ -2,28 +2,48 @@ import { useState } from "react";
 import { Table } from "react-bootstrap";
 import RscModal from "../../items/resources/RscModal";
 
-function ResourceList({ list, part }) {
+function ResourceList({ list, part, selectedItems, setSelectedItems }) {
     const [modal, setModal] = useState(false);
     const [selectRscNo, setSelectRscNo] = useState(null);
 
-    const openRscDetail = (index) => {
+    const openRscDetail = async (index) => {
         setSelectRscNo(list[index].rscNo);
         setModal(true);
     };
 
-    console.log("🎍🎍🎍🎍🎍🎍");
-    console.log(list);
+    const handleCheckboxChange = (index) => {
+        const selectedItem = list[index].rscNo;
+        if (selectedItems.includes(selectedItem)) {
+            setSelectedItems(selectedItems.filter(item => item !== selectedItem));
+        } else {
+            setSelectedItems([...selectedItems, selectedItem]);
+        }
+    };
 
     return (
         <>
-            {modal ? <RscModal setModal={setModal} selectRscNo={selectRscNo} /> : null}
+            {modal && <RscModal setModal={setModal} selectRscNo={selectRscNo} />}
             <div class="card-body">
-                <Table className="table">
+                <Table>
+                    <colgroup>
+                        <col style={{ width: "7%" }} />
+                        <col style={{ width: "8%" }} />
+                        <col style={{ width: "17%" }} />
+                        <col style={{ width: "17%" }} />
+                        <col style={{ width: "17%" }} />
+                        <col style={{ width: "17%" }} />
+                        <col style={{ width: "17%" }} />
+                    </colgroup>
                     <thead>
                         <tr style={{ textAlign: 'center' }}>
                             <th>
-                                <input
+                            <input
                                     type="checkbox"
+                                    onChange={() => {
+                                        const allChecked = list.length === selectedItems.length;
+                                        setSelectedItems(allChecked ? [] : list.map(item => item.rscNo));
+                                    }}
+                                    checked={list.length > 0 && list.length === selectedItems.length}
                                 />
                             </th>
                             <th>번호</th>
@@ -36,8 +56,8 @@ function ResourceList({ list, part }) {
                                     </>)
                                     :
                                     (<>
-                                        <th>차량 번호</th>
                                         <th>차량</th>
+                                        <th>차량 번호</th>
                                         <th>탑승 가능 인원</th>
                                     </>)
                             }
@@ -46,32 +66,29 @@ function ResourceList({ list, part }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {
-                            list.map((rsc, index) =>
-                                <tr key={index}>
-                                    <td style={{ padding: "15px", textAlign: 'center' }}>
-                                        <input
-                                            type="checkbox" />
-                                    </td>
-                                    <td>{rsc.rscNo}</td>
-                                    {
-                                        part === 'conferences' ?
-                                            (<>
-                                                <td>{rsc.rscName}</td>
-                                                <td>{rsc.rscInfo}</td>
-                                            </>) : (<>
-                                                <td>{rsc.rscInfo}</td>
-                                                <td>{rsc.rscName}</td>
-                                            </>)
-                                    }
-                                    <td>{rsc.rscCap}명</td>
-                                    <td>{rsc.rscIsAvailable ? "사용 불가능" : "사용 가능"}</td>
-                                    <td>
-                                        <button className="back-btn" onClick={() => openRscDetail(index)}>상세</button>
-                                    </td>
-                                </tr>
-                            )
-                        }
+                        {list.length > 0 ? (list.map((rsc, index) =>
+                            <tr key={index} className="rsc-tr">
+                                <td>
+                                    <input
+                                        type="checkbox"
+                                        onChange={() => handleCheckboxChange(index)}
+                                        checked={selectedItems.includes(rsc.rscNo)} />
+                                </td>
+                                <td>{rsc.rscNo}</td>
+                                <td>{rsc.rscName}</td>
+                                <td>{rsc.rscInfo}</td>
+                                <td>{rsc.rscCap}명</td>
+                                <td>{rsc.rscIsAvailable ? "사용 가능" : "사용 불가능"}</td>
+                                <td>
+                                    <button className="back-btn" onClick={() => openRscDetail(index)}>상세</button>
+                                </td>
+                            </tr>
+                        )) : (
+                            <tr>
+                                <td colspan="7">등록된 {part === 'conferences' ? "회의실" : "차량"}이 없습니다.</td>
+                            </tr>
+                        )
+                    }
                     </tbody>
                 </Table>
             </div>

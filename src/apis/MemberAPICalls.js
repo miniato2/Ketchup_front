@@ -1,6 +1,6 @@
 import { GET_MEMBER, GET_MEMBERS, POST_LOGIN, POST_REGISTER, PUT_MEMBERS} from '../modules/MemberModule';
 import { GET_DEPARTMENTS } from '../modules/DepartmentModule';
-import { GET_POSITIONS } from '../modules/PositionModule';
+import { GET_POSITIONS ,POST_POSITIONS, DELETE_POSITIONS} from '../modules/PositionModule';
 import { request,multipartRequest } from './Api';
 import { useNavigate } from 'react-router-dom';
 
@@ -124,11 +124,11 @@ export function callMembersAPI() {
     };
 }
 
-export function callPageMembersAPI(currentPage) {
+export function callPageMembersAPI(currentPage,searchKeyword) {
     console.log("=============전체 사원 호출=============");
 
     return async (dispatch, getState) => {
-        const result = await request('GET', `/members?offset=${currentPage}`);
+        const result = await request('GET', `/members?offset=${currentPage}&search=${searchKeyword}`);
         console.log("전체 사원 호출 API 결과:   ", result.data);
 
         dispatch({ type: GET_MEMBERS, payload: result.data });
@@ -176,11 +176,6 @@ export function callPositionsAPI() {
 }
 
 
-
-
-
-
-
 export const callUpdateMembersAPI = ({ form }) => {
 
     if(form.memberImage!==undefined){
@@ -206,13 +201,13 @@ export const callUpdateMembersAPI = ({ form }) => {
     // 이미지 파일을 Blob으로 추가
    
     formData.append('memberImage', form.memberImage);
-    console.log('----------------여기가 API 실행중', form.memberImage);
+  
    
   
     return async (dispatch) => {
         try {
             const result = await multipartRequest('PUT','/members', formData);
-            console.log('[MemberAPICalls] callUpdateMembersAPI RESULT : ', result);
+         
 
             if (result.status === 201) {
                 dispatch({ type: PUT_MEMBERS, payload: result });
@@ -225,11 +220,9 @@ export const callUpdateMembersAPI = ({ form }) => {
     }
     else{
 
-        console.log('이미지없는 수정 시작!! 제발 나와줘',form)
-
         return async (dispatch, getState) => {
             const result = await request('PUT','/membersNoImage', form);
-            console.log('이미지없는 수정 결과는? : ', result);
+         
             if (result.status == 200) {
                 dispatch({ type: PUT_MEMBERS, payload: result });
             } else {
@@ -243,4 +236,30 @@ export const callUpdateMembersAPI = ({ form }) => {
 
 
 };
+
+
+export function callAddPositionAPI (form) {
+    
+
+    return async (dispatch,getState) => {
+        const result = await request('POST','/signupPosition',form);
+       
+
+        dispatch({type: POST_POSITIONS, payload: result.data})
+
+    };
+
+}
+
+export function callDeletePositionAPI (positionNo) {
+   
+
+    return async (dispatch,getState) => {
+        const result = await request('DELETE', `/positions/${positionNo}`);
+
+        dispatch({type: DELETE_POSITIONS, payload: result.data})
+
+    };
+
+}
 

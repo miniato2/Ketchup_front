@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { callGetResourcesAPI } from "../../apis/ResourceAPICalls";
+import { callDeleteResourceAPI, callGetResourcesAPI } from "../../apis/ResourceAPICalls";
 import ResourceList from "../../components/lists/resources/ResourceList";
 import ButtonGroup from "../../components/contents/ButtonGroup";
 import RscRegistModal from "../../components/items/resources/RscRegistModal";
@@ -9,41 +9,66 @@ import RscRegistModal from "../../components/items/resources/RscRegistModal";
 function Resources() {
     const { part } = useParams();
     const result = useSelector(state => state.resourceReducer);
-    const resourceList = result.resourcelist || [];
+    const resourceList = result.resourcelist;
     const dispatch = useDispatch();
     const [registModal, setRegistModal] = useState(false);
+    const [selectedItems, setSelectedItems] = useState([]);
+
+    console.log("💙💙💙💙💙💙💙");
+    console.log(resourceList);
 
     useEffect(
         () => {
             dispatch(callGetResourcesAPI(part));
-        }, [part]
+        }, [dispatch, part]
     );
+
+    const buttons = [
+        { label: "삭제", styleClass: "back", onClick: () => buttonClick("삭제") },
+        { label: "등록", styleClass: "move", onClick: () => buttonClick("등록") }
+    ];
 
     const buttonClick = (label) => {
         if (label == "등록") {
             setRegistModal(true);
+        } else if (label == "삭제") {
+            rscDelete();
         }
-    }
+    };
 
-    const buttons = [
-        { label: "삭제", styleClass: "back" },
-        { label: "등록", styleClass: "move", onClick: () => buttonClick("등록") }
-    ]
+    const rscDelete = () => {
+        dispatch(callDeleteResourceAPI(selectedItems));
+        console.log("선택된 항목을 삭제합니다:", selectedItems);
+        setSelectedItems([]);
+    };
 
     return (
         <>
-            {registModal ? <RscRegistModal setRegistModal={setRegistModal} part={part} /> : null} 
+            {registModal && <RscRegistModal setRegistModal={setRegistModal} part={part} />}
             <main id="main" className="main">
                 <div className="title">
-                    <h2>자원 관리</h2>
-                    {part === 'conferences' ? <h5>회의실 관리</h5> : <h5>차량 관리</h5>}
+                    {part === 'conferences' ? <h2>회의실</h2> : <h2>차량</h2>}
                 </div>
-                <div>
-                    <ButtonGroup buttons={buttons} />
-                </div>
-                <div>
-                    <ResourceList list={resourceList} part={part} />
-                </div>
+                {!resourceList && resourceList === 0 ? (
+                    <div>
+                        <h5 className="text-center my-5">자원 관리 권한이 없습니다.</h5>
+                    </div>
+                ) : (
+                        <>
+                            <div>
+                                <ButtonGroup buttons={buttons} />
+                            </div>
+                            <div>
+                                <ResourceList
+                                    list={resourceList}
+                                    part={part}
+                                    selectedItems={selectedItems}
+                                    setSelectedItems={setSelectedItems} />
+                            </div>
+                        </>
+                    )
+                }
+
             </main>
         </>
     );

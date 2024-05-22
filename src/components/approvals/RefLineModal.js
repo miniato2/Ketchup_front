@@ -3,10 +3,12 @@ import Style from "./AppLine.module.css";
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { callMembersAPI } from '../../apis/MemberAPICalls';
+import { decodeJwt } from "../../utils/tokenUtils";
 
 function RefLineModal({ setModalControl, setRefLine }) {
     const column = ['번호', '부서', '이름', '직급'];
 
+    const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const dispatch = useDispatch();
     const memberList = useSelector(state => state.memberReducer);
     const [selectedMember, setSelectedMember] = useState({
@@ -41,7 +43,7 @@ function RefLineModal({ setModalControl, setRefLine }) {
     }
 
     const onDoubleClickList = (member) => {
-        if(!selectedRefList.find(item => item.refMember.memberNo === member.memberNo)){
+        if(!selectedRefList.find(item => item.refMember.memberNo === member.memberNo) && member.memberNo !== loginToken.memberNo){
             setSelectedRefList([
                 ...selectedRefList,
                 {
@@ -57,7 +59,9 @@ function RefLineModal({ setModalControl, setRefLine }) {
     }
 
     const onClickAddButton = () => {
-        if (selectedMember.refMember.memberNo !== '' && !selectedRefList.find(item => item.refMember.memberNo === selectedMember.refMember.memberNo)) {
+        if ( selectedMember.refMember.memberNo !== loginToken.memberNo &&
+            selectedMember.refMember.memberNo !== '' &&
+            !selectedRefList.find(item => item.refMember.memberNo === selectedMember.refMember.memberNo)) {
             setSelectedRefList([
                 ...selectedRefList,
                 {
@@ -96,7 +100,7 @@ function RefLineModal({ setModalControl, setRefLine }) {
                             <ul>
                                 {Object.entries(groupByDepartment()).map(([department, members]) => (
                                     <li key={department}>
-                                        <h5>{department}</h5>
+                                        <h5 style={{marginTop: '5px',marginBottom: '0px'}}>{department}</h5>
                                         <ul>
                                             {members.map((member, index) => (
                                                 <li key={member.memberNo}
@@ -105,6 +109,7 @@ function RefLineModal({ setModalControl, setRefLine }) {
                                                     className={selectedMember.refMember.memberNo === member.memberNo ? AppModalCss.selectedLi : ''}
                                                 >
                                                     {member.memberName}
+                                                    &nbsp;
                                                     {member.position.positionName}
                                                 </li>
                                             ))}

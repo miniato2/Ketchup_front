@@ -3,8 +3,10 @@ import AppModalCss from './AppModal.module.css';
 import Style from "./AppLine.module.css";
 import { useDispatch, useSelector } from 'react-redux';
 import { callMembersAPI } from '../../apis/MemberAPICalls';
+import { decodeJwt } from "../../utils/tokenUtils";
 
 function AppLineModal({ setModalControl, setAppLine }) {
+    const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const dispatch = useDispatch();
     const memberList = useSelector(state => state.memberReducer); //전체 사원
 
@@ -50,7 +52,7 @@ function AppLineModal({ setModalControl, setAppLine }) {
     }
 
     const onDoubleClickList = (member) => {
-        if(!selectedAppList.find(item => item.alMember.memberNo === member.memberNo)){
+        if(!selectedAppList.find(item => item.alMember.memberNo === member.memberNo) && member.memberNo !== loginToken.memberNo){
             setSelectedAppList([
                 ...selectedAppList,
                 {
@@ -73,7 +75,9 @@ function AppLineModal({ setModalControl, setAppLine }) {
     }
 
     const onClickAddButton = () => {
-        if (selectedMember.alMember.memberNo !== '' && !selectedAppList.find(item => item.alMember.memberNo === selectedMember.alMember.memberNo)) {
+        if ( selectedMember.alMember.memberNo !== loginToken.memberNo && 
+            selectedMember.alMember.memberNo !== '' && 
+            !selectedAppList.find(item => item.alMember.memberNo === selectedMember.alMember.memberNo)) {
             setSelectedAppList([
                 ...selectedAppList,
                 {
@@ -124,19 +128,18 @@ function AppLineModal({ setModalControl, setAppLine }) {
         }
     }
 
-
     return (
         <div className={AppModalCss.appModal}>
             <div className={AppModalCss.appModalBox}>
                 <h1>결재선 추가</h1>
                 <div className={AppModalCss.appModalContents}>
-                    <div className={AppModalCss.members}>
+                    <div>
                         <h5>조직도</h5>
-                        <div>
+                        <div className={AppModalCss.members}>
                             <ul>
                                 {Object.entries(groupByDepartment()).map(([department, members]) => (
                                     <li key={department}>
-                                        <h5>{department}</h5>
+                                        <h5 style={{marginTop: '5px',marginBottom: '0px'}}>{department}</h5>
                                         <ul>
                                             {members.map((member, index) => (
                                                 <li key={member.memberNo}
@@ -145,6 +148,7 @@ function AppLineModal({ setModalControl, setAppLine }) {
                                                     className={selectedMember.alMember.memberNo === member.memberNo ? AppModalCss.selectedLi : ''}
                                                 >
                                                     {member.memberName}
+                                                    &nbsp;
                                                     {member.position.positionName}
                                                 </li>
                                             ))}
@@ -159,8 +163,9 @@ function AppLineModal({ setModalControl, setAppLine }) {
                         <br></br>
                         <button onClick={() => onClickRmvButton()}>삭제</button>
                     </div>
-                    <div className={AppModalCss.appMem}>
+                    <div >
                         <h5>결재자</h5>
+                        <div className={AppModalCss.appMem}>
                         <table className={Style.appTable}>
                             <thead>
                                 <tr>
@@ -187,6 +192,7 @@ function AppLineModal({ setModalControl, setAppLine }) {
                                 ))}
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
                 <div className={AppModalCss.appBtns}>

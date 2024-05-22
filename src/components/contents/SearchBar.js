@@ -4,6 +4,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const SearchBar = ({ onSearch, name }) => {
     const [searchValue, setSearchValue] = useState('');
+    
 
     const handleChange = (event) => {
         setSearchValue(event.target.value);
@@ -15,6 +16,8 @@ const SearchBar = ({ onSearch, name }) => {
         onSearch(searchValue);
         setSearchValue('');
     };
+
+
 
     return (
         <div className="search-bar">

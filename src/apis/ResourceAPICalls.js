@@ -1,4 +1,4 @@
-import { getResourcedetail, getResources, postResources } from "../modules/ResourceModule";
+import { deleteResource, getResourcedetail, getResources, postResources, putResource } from "../modules/ResourceModule";
 import { request } from "./Api";
 
 export function callGetResourcesAPI(part) {
@@ -12,7 +12,6 @@ export function callGetResourcesAPI(part) {
     };
 }
 
-// 자원 등록 - 아직 미완성
 export function callPostResourceAPI({rscDto}) {
     console.log("insertResource api call...");
 
@@ -28,7 +27,7 @@ export function callPostResourceAPI({rscDto}) {
                 },
                 body: JSON.stringify(rscDto)
             }).then(response => response.json());
-            console.log(result.data);
+            console.log(result);
 
             dispatch(postResources(result.data));
         }catch(error) {
@@ -46,5 +45,46 @@ export function callGetResourceDetailAPI(rscNo) {
         console.log(result.data);
 
         dispatch(getResourcedetail(result.data));
+    };
+}
+
+export function callPutResourceAPI({selectRscNo, updateRscDto}) {
+    console.log("putResource api call...");
+    console.log("💚💚💚💚💚💚💚💚");
+    console.log(selectRscNo);
+    console.log(updateRscDto);
+
+    const requestURL = `http://localhost:8080/resources/${selectRscNo}`;
+
+    return async (dispatch, getState) => {
+        try {
+            const result = await fetch(requestURL, {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Authorization': 'Bearer ' + window.localStorage.getItem('accessToken')
+                },
+                body: JSON.stringify(updateRscDto)
+            }).then(response => response.json());
+            console.log(result.data);
+
+            dispatch(putResource(result.data));
+        }catch(error) {
+            console.log("자원 수정에 실패했습니다.", error);
+        }
+    };
+}
+
+export function callDeleteResourceAPI(selectedItems) {
+    console.log("deleteResource api call...");
+
+    return async (dispatch, getState) => {
+        let result = '';
+        for(let i = 0; i < selectedItems.length; i++) {
+            result += await request('DELETE', `/resources/${selectedItems[i]}`);
+        }
+        console.log(result);
+
+        dispatch(deleteResource(result));
     };
 }
