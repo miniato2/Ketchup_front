@@ -66,6 +66,7 @@ function Positions() {
     const cancelEdit = () => {
         setIsEditMode(false);
         setNewPosition({ positionName: "", positionLevel: "", authority: "" });
+       
     }
 
     const deletePosition = async (positionNo) => {

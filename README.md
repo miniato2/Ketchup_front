@@ -28,7 +28,10 @@ npm install
 # router 설정 
 npm install react-router-dom
 
-# 트리그래프 
+# 트리그래프 순서중요
+
+npm install -g bower
+npm install react-bootstrap-treeview
 npm install react-d3-tree
 
 
