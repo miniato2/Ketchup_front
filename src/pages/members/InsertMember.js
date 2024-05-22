@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { callRegisterAPI, callDepartmentsAPI, callPositionsAPI } from "../../apis/MemberAPICalls";
 import { useEffect } from "react";
@@ -65,8 +65,6 @@ function InsertMember() {
 
 
     useEffect(() => {
-     
-
        
         generateMemberNo();
         dispatch(callDepartmentsAPI());
@@ -94,7 +92,7 @@ function InsertMember() {
         const today = new Date();
         const year = today.getFullYear().toString().slice(2); // 연도의 마지막 두 자리
         const month = (today.getMonth() + 1).toString().padStart(2, '0'); // 월을 두 자리로
-        const randomNum = Math.floor(Math.random() * 1000) + 10; // 1에서 100 사이의 랜덤 숫자
+        const randomNum = Math.floor(Math.random() * 1000) + 10; // 10에서 100 사이의 랜덤 숫자
 
         const generatedMemberNo = year + month + randomNum;
         setForm(prevForm => ({
