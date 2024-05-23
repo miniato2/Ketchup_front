@@ -92,3 +92,11 @@
     color:#EC0B0B;
     margin-right:20px;
 }
+
+/* SearchBarValue.js */
+.search-condition {
+    width:150px;
+}
+.mail-search {
+    margin-right:15px;
+}

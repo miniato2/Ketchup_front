@@ -15,17 +15,20 @@ const Notices = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const result = useSelector(state => state.noticeReducer);
-
   const noticeList = result?.noticelist?.noticesWithMemberNames || [];
-
-  console.log("Notices [ result ] : ", result);
-  console.log("Notices [ noticeList ] : ", noticeList);
+  const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
 
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState('');
 
-  const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
+  useEffect(() => {
+    dispatch(callGetNoticeListAPI({
+      currentPage,
+      title: searchKeyword.toLowerCase(),
+      setTotalItems: setTotalItems
+    }));
+  }, [dispatch, currentPage, searchKeyword]);
 
   const pinnedNotices = noticeList
     .filter(notice => notice.noticeFix === 'Y')
@@ -46,28 +49,13 @@ const Notices = () => {
       noticeCreateDttm: FormatDateTime(notice.noticeCreateDttm)
     }));
 
-  console.log("pinnedNotices ; ", pinnedNotices);
-
   const normalNotices = noticeList.filter(notice => notice.noticeFix !== 'Y').map(notice => ({
     ...notice,
     memberName: `${notice.memberName} ${notice.positionName}`,
     noticeCreateDttm: FormatDateTime(notice.noticeCreateDttm)
   }));
 
-  console.log("totalItems : ", totalItems);
   const mergedNoticeList = [...pinnedNotices, ...normalNotices];
-
-  useEffect(() => {
-    setTotalItems(normalNotices);
-
-    // API 호출
-    dispatch(callGetNoticeListAPI({
-      currentPage: currentPage,
-      title: typeof searchKeyword === 'string' ? searchKeyword.toLowerCase() : '',
-      setTotalItems: setTotalItems
-    }));
-  }, [dispatch, currentPage, searchKeyword]);
-
 
   const columns = [
     ['noticeNo', '공지번호'],
@@ -102,16 +90,12 @@ const Notices = () => {
             </Link>
           )}
 
-          {/* 검색 결과가 없을 때 '00' 표시 */}
-          {normalNotices.length === 0 && (
+          {normalNotices.length === 0 ? (
             <>
               <BootstrapTable data={mergedNoticeList} columns={columns} onRowClick={handleRowClick} />
               <p style={{ textAlign: 'center' }}>'{searchKeyword}' 제목 공지가 없습니다.</p>
             </>
-          )}
-
-          {/* 검색 결과가 없을 때 '00' 표시 */}
-          {normalNotices.length > 0 && (
+          ) : (
             <>
               <BootstrapTable data={mergedNoticeList} columns={columns} onRowClick={handleRowClick} />
             </>

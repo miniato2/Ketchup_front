@@ -4,6 +4,8 @@ import { request } from "./Api";
 // 받은 메일
 export function callGetReceiveMailAPI(searchCondition, searchValue) {
     console.log("getReceivemail api call...");
+    console.log("➰➰➰➰➰➰➰➰➰");
+    console.log(searchCondition + "/" + searchValue);
 
     return async (dispatch, getState) => {
         let url = '/mails?part=receive';

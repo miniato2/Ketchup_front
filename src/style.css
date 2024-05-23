@@ -680,6 +680,10 @@ h6 {
   color: #808080;
 }
 
+.sidebar-nav .nav-link.active-link i {  /* icon color*/
+  color: #EC0B0B;
+}
+
 .sidebar-nav .nav-link:hover {
   color: #EC0B0B;
 }
@@ -900,7 +904,7 @@ tbody th a {
 }
 
 .table .title-cell {
-  max-width: 280px; /* 레이아웃에 맞게 조정 */
+  max-width: 600px; /* 레이아웃에 맞게 조정 */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -2,7 +2,7 @@ import Table from 'react-bootstrap/Table';
 import '../../../style.css';
 import '../../../pages/mails/mail.css';
 
-const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedItems }) => {
+const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedItems, isLoading }) => {
   const toggleCheckbox = (mailNo) => {
     setCheckedItems(prevState => ({
       ...prevState,
@@ -32,17 +32,17 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
               <col style={{ width: "15%" }} />
               <col style={{ width: "15%" }} />
             </>
-            ) : (
+          ) : (
             <>
               <col style={{ width: "44%" }} />
               <col style={{ width: "15%" }} />
               <col style={{ width: "15%" }} />
               <col style={{ width: "10%" }} />
             </>
-            )
+          )
           }
           <col style={{ width: "15%" }} />
-        </colgroup>       
+        </colgroup>
         <thead>
           <tr style={{ textAlign: 'center' }}>
             <th>
@@ -62,48 +62,60 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
           </tr>
         </thead>
         <tbody>
-          {Array.isArray(data) && data.map((item, index) => (
-            <tr key={index} className={`${part === 'receive' ? (item.readTime !== '읽음' ? 'unreadRow' : '') : ''} mail-tr`}>
-              <td>
-                <input
-                  type="checkbox"
-                  checked={checkedItems[item.mailNo] || false}
-                  onChange={() => toggleCheckbox(item.mailNo)} />
-              </td>
-              <td>{data.length - index}</td>
-              {columns.map(([key], columnIndex) => (
-                <td key={columnIndex}>
-                  {key === 'mailTitle' ?
-                    (<span 
-                        className="mail-cursor ellipsis"
-                        onClick={onRowClick(data.length - index - 1)} >{item[key]}</span>)
-                    : (
-                      key === 'readTime' ? (
-                        item[key] === '읽음' ? (
-                          <i className="bi bi-envelope-open m-icon"></i>
-                        ) : (
-                          <i className="bi bi-envelope m-icon"></i>
-                        )
-                      ) : (key === 'receiverName' ?
-                        <span className="mail-cursor dropdown">
-                          <a href="#" className="receiver-time" data-bs-toggle="dropdown">{item[key]}</a>
-                          <ul className="dropdown-menu">
-                            <li className="dropdown-item">
-                              <span>{item[key]}</span>
-                            </li>
-                          </ul>
-                        </span>
-                        : item[key])
-                    )
-                  }
-                </td>
-              ))}
-              {
-                part === 'send' ? <td>--</td> : null
-              }
+          {isLoading ? (
+            <tr className="mail-tr">
+              <td></td>
             </tr>
-          ))
-          }
+          ) : 
+          (data.length === 0 ? (
+            <tr className="mail-tr">
+              <td colSpan="7">
+                {part === 'receive' ? "받은 메일이 없습니다." : "보낸 메일이 없습니다."}
+              </td>
+            </tr>
+          ): (
+              Array.isArray(data) && data.map((item, index) => (
+          <tr key={index} className={`${part === 'receive' ? (item.readTime !== '읽음' ? 'unreadRow' : '') : ''} mail-tr`}>
+            <td>
+              <input
+                type="checkbox"
+                checked={checkedItems[item.mailNo] || false}
+                onChange={() => toggleCheckbox(item.mailNo)} />
+            </td>
+            <td>{data.length - index}</td>
+            {columns.map(([key], columnIndex) => (
+              <td key={columnIndex}>
+                {key === 'mailTitle' ?
+                  (<span
+                    className="mail-cursor ellipsis"
+                    onClick={onRowClick(data.length - index - 1)} >{item[key]}</span>)
+                  : (
+                    key === 'readTime' ? (
+                      item[key] === '읽음' ? (
+                        <i className="bi bi-envelope-open m-icon"></i>
+                      ) : (
+                        <i className="bi bi-envelope m-icon"></i>
+                      )
+                    ) : (key === 'receiverName' ?
+                      <span className="mail-cursor dropdown">
+                        <a href="#" className="receiver-time" data-bs-toggle="dropdown">{item[key]}</a>
+                        <ul className="dropdown-menu">
+                          <li className="dropdown-item">
+                            <span>{item[key]}</span>
+                          </li>
+                        </ul>
+                      </span>
+                      : item[key])
+                  )
+                }
+              </td>
+            ))}
+            {
+              part === 'send' ? <td>--</td> : null
+            }
+          </tr>
+          ))))
+        }
         </tbody>
       </Table>
     </div>
