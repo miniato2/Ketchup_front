@@ -1,82 +1,88 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import '../../style.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function Sidebar() {
+
+    const location = useLocation();
+
+    const isOrganizationActive = location.pathname.startsWith('/deparpments') || location.pathname.startsWith('/positions');
+    const isResourceManagementNav = location.pathname.startsWith('/resources/conferences') ||  location.pathname.startsWith('/resources/vehicles');
+
     return (
         <aside id="sidebar" className="sidebar">
             <ul className="sidebar-nav" id="sidebar-nav">
                 <li className="nav-item">
-                    <NavLink  className="nav-link collapsed" to="/notices">
+                    <NavLink className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link collapsed"} to="/notices">
                         <i className="bi bi-megaphone"></i><span>공지사항</span>
                     </NavLink >
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" to="/approvals">
+                    <NavLink className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link collapsed"} to="/approvals">
                         <i className="bi bi-pencil-square"></i><span>전자결재</span>
-                    </Link>
+                    </NavLink>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" to="/calendar">
+                    <NavLink className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link collapsed"} to="/calendar">
                         <i className="bi bi-calendar-event"></i><span>일정</span>
-                    </Link>
+                    </NavLink>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link collapsed" to="/mails/receive">
+                    <NavLink className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link collapsed"} to="/mails/receive">
                         <i className="bi bi-envelope"></i><span>메일</span>
-                    </Link>
+                    </NavLink>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" to="/boards">
+                    <NavLink className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link collapsed"} to="/boards">
                         <i className="bi bi-file-text"></i><span>자료실</span>
-                    </Link>
+                    </NavLink>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" to="/reserve">
+                    <NavLink className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link collapsed"} to="/reserve">
                         <i className="bi bi-clock"></i><span>자원예약</span>
-                    </Link>
+                    </NavLink>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" to="/organizationChart">
+                    <NavLink className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link collapsed"} to="/organizationChart">
                         <i className="bi bi-diagram-3"></i><span>조직도</span>
-                    </Link>
+                    </NavLink>
                 </li>
                 <li class="nav-item">
-                    <Link className="nav-link collapsed" to="/members">
+                    <NavLink className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link collapsed"} to="/members">
                         <i className="bi bi-person-badge"></i><span>사원</span>
-                    </Link>
+                    </NavLink>
                 </li>
                 <li class="nav-item">
-                    <a className="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#organization-nav">
+                    <a className={isOrganizationActive ? "nav-link active-link" : "nav-link collapsed"} data-bs-toggle="collapse" data-bs-target="#organization-nav">
                         <i className="bi bi-diagram-3"></i><span>조직</span><i className="bi bi-chevron-down ms-auto"></i>
                     </a>
                     <ul id="organization-nav" className="nav-content collapse" data-bs-parent="#organization-parent">
                         <li class="nav-item">
-                            <Link to="/deparpments" style={{ color: "black", textDecorationLine: "none"}}>
+                            <NavLink to="/deparpments" className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link"} style={{ color: "black", textDecorationLine: "none"}}>
                                 <i></i><span> - 부서관리</span>
-                            </Link>
+                            </NavLink>
                         </li>
                         <li class="nav-item">
-                            <Link to="/positions" style={{ color: "black", textDecorationLine: "none"}}>
+                            <NavLink  to="/positions" className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link"} style={{ color: "black", textDecorationLine: "none"}}>
                                 <i></i><span> - 직급관리</span>
-                            </Link>
+                            </NavLink>
                         </li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a className="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#resource-management-nav">
+                    <a className={isResourceManagementNav ? "nav-link active-link" : "nav-link collapsed"} data-bs-toggle="collapse" data-bs-target="#resource-management-nav">
                         <i className="bi bi-people"></i><span>자원관리</span><i className="bi bi-chevron-down ms-auto"></i>
                     </a>              
                     <ul id="resource-management-nav" className="nav-content collapse" data-bs-parent="#resource-management-parent">                    
                         <li class="nav-item">
-                            <Link to="/resources/conferences" style={{ color: "black", textDecorationLine: "none"}}>
+                            <NavLink  to="/resources/conferences" className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link"} style={{ color: "black", textDecorationLine: "none"}}>
                                 <i></i><span> - 회의실</span>
-                            </Link>
+                            </NavLink>
                         </li>
                         <li class="nav-item">
-                            <Link to="/resources/vehicles" style={{ color: "black", textDecorationLine: "none"}}>
+                            <NavLink to="/resources/vehicles" className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link"} style={{ color: "black", textDecorationLine: "none"}}>
                                 <i></i><span> - 차량</span>
-                            </Link>
+                            </NavLink>
                         </li>
                     </ul>
                 </li>

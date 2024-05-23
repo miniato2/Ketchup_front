@@ -1,6 +1,4 @@
-import ReactQuill, {Quill} from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { useRef, useState, useEffect, useMemo } from "react";
+import { useState } from "react";
 import Style from "./Approvals.module.css"
 import { decodeJwt } from "../../utils/tokenUtils";
 import AppLine from "../../components/approvals/AppLine";
@@ -10,12 +8,14 @@ import AppLineModal from "../../components/approvals/AppLineModal";
 import RefLineModal from "../../components/approvals/RefLineModal";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Editor } from '@tinymce/tinymce-react';
+
 
 function InsertApproval() {
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
-    const quillRef = useRef(null);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
 
     const [modalControl, setModalControl] = useState({
         appLineModal: false,
@@ -36,6 +36,7 @@ function InsertApproval() {
     const [formNo, setFormNo] = useState(0);
     const [appTitle, setAppTitle] = useState('');
     const [appContents, setAppContents] = useState('');
+    const [formValue, setFormValue] = useState('');
 
     console.log(appContents);
 
@@ -61,9 +62,9 @@ function InsertApproval() {
 
     } //제목
 
-    const onChangeAppContents = (e) => {
-        setAppContents(e);
-    } //내용
+    const onChangeAppContents = (content) => { // 에디터 내용이 변경될 때 호출되는 함수
+        setAppContents(content); // appContents state 업데이트
+      };//내용
 
     const onChangeFileUpload = (e) => {
         const filesArray = Array.from(e.target.files);
@@ -76,7 +77,7 @@ function InsertApproval() {
 
         if (result.status == 200) {
             setFormNo(result.data.formNo);
-            setAppContents(result.data.formContents);
+            setFormValue(result.data.formContents);
         } else {
             console.log('실패');
         }
@@ -106,7 +107,7 @@ function InsertApproval() {
         });
 
         if (Array.isArray(file)) {
-            file.forEach((fileItem, index) => {
+            file.forEach((fileItem) => {
                 formData.append(`multipartFileList`, fileItem);
             });
         }
@@ -137,11 +138,11 @@ function InsertApproval() {
             //예외처리는 다시하자
         }
     } //등록
-      
+
     return (
         <main className="main" id="main">
-            {modalControl.appLineModal ? <AppLineModal setModalControl={setModalControl} setAppLine={setAppLine} /> : null}
-            {modalControl.refLineModal ? <RefLineModal setModalControl={setModalControl} setRefLine={setRefLine} /> : null}
+            {modalControl.appLineModal ? <AppLineModal setModalControl={setModalControl} appLine={appLine} setAppLine={setAppLine} /> : null}
+            {modalControl.refLineModal ? <RefLineModal setModalControl={setModalControl} refLine={refLine} setRefLine={setRefLine} /> : null}
             <h3>기안등록</h3>
 
             <label><h5>결재선</h5></label><button className={Style.lineBtn} name='appLineModal' onClick={onClickModalControl}>추가</button>
@@ -157,9 +158,13 @@ function InsertApproval() {
                         <th width={'12%'}>양식</th>
                         <td width={'38%'}>
                             <select onChange={onChangeForm} className={Style.formSelect}>
-                                <option value={0}>양식 선택</option>
-                                <option value={1}>1번 양식</option>
-                                <option value={2}>2번 테이블 테스트</option>
+                                <option value={0}>양식선택</option>
+                                <option value={1}>업무제안</option>
+                                <option value={2}>출장신청</option>
+                                <option value={3}>휴가신청</option>
+                                <option value={4}>지출품의</option>
+                                <option value={5}>개인정보수정</option>
+                                <option value={6}>기타</option>
                             </select>
                         </td>
                         <th width={'12%'}>기안부서</th>
@@ -180,14 +185,30 @@ function InsertApproval() {
                 </tbody>
             </table>
             <h5>내용</h5>
-            <ReactQuill
-                style={{ height: "400px", margin: "4px", overflowY: "auto" }}
-                ref={quillRef}
-                name="appContents"
-                onChange={onChangeAppContents}
-                value={appContents}
-                // modules={modules}
-                placeholder="내용을 입력하세요." />
+
+            <Editor
+                apiKey='gpny7ynxol7wh1ohidmu4i9q5rb68uahrrop6uo0m4ixs78c'
+                initialValue={formValue}
+                init={{
+                    statusbar: false,
+                    resize: false,
+                    height: 700,
+                    menubar: false,
+                    plugins: [
+                        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount', 'table'
+                    ],
+                    toolbar: 'undo redo | blocks | ' +
+                        'bold italic forecolor | alignleft aligncenter ' +
+                        'alignright alignjustify | bullist numlist outdent indent | ' +
+                        'removeformat | help | ' +
+                        'table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol',
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                }}
+                onEditorChange={onChangeAppContents}
+            />
+
             <div className={Style.appBtn}>
                 <button className="back-btn" onClick={onClickCancelHandler}>취소</button>
                 <button className="move-btn" onClick={onClickInsertApprovalHandler}>등록</button>

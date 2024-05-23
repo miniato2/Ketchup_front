@@ -1,6 +1,6 @@
 import { GET_MEMBER, GET_MEMBERS, POST_LOGIN, POST_REGISTER, PUT_MEMBERS} from '../modules/MemberModule';
 import { GET_DEPARTMENTS } from '../modules/DepartmentModule';
-import { GET_POSITIONS ,POST_POSITIONS, DELETE_POSITIONS} from '../modules/PositionModule';
+import { GET_POSITIONS ,POST_POSITIONS, DELETE_POSITIONS, PUT_POSITIONS} from '../modules/PositionModule';
 import { request,multipartRequest } from './Api';
 import { useNavigate } from 'react-router-dom';
 
@@ -163,10 +163,23 @@ export function callDepartmentsAPI() {
 }
 
 export function callPositionsAPI() {
-    console.log("============전체 직급 호출==============");
+    console.log("============사용중 직급 호출==============");
 
     return async (dispatch,getState) => {
         const result = await request('GET','/noPagePositions');
+        console.log("전체 직급 호출 API 결과:  ", result.data);
+
+        dispatch({type: GET_POSITIONS, payload: result.data})
+
+    };
+
+}
+
+export function callAllPositionsAPI() {
+    console.log("============전체 직급 호출==============");
+
+    return async (dispatch,getState) => {
+        const result = await request('GET','/Positions');
         console.log("전체 직급 호출 API 결과:  ", result.data);
 
         dispatch({type: GET_POSITIONS, payload: result.data})
@@ -261,5 +274,35 @@ export function callDeletePositionAPI (positionNo) {
 
     };
 
+}
+
+export function callUpdatePositionAPI(positionNo,form) {
+    console.log("=============직급 수정 진행=============");
+    console.log('API 내부 positionNO', positionNo);
+    console.log('API 내부 form', form);
+
+    return async (dispatch, getState) => {
+        const result = await request('PUT', `/signupPosition/${positionNo}`,form);
+        console.log('수정결과 ',result);
+
+        dispatch({ type: PUT_POSITIONS, payload: result });
+    };
+}
+
+
+export function callUpdatePositionStatusAPI(positionNo) {
+   
+    console.log('API 내부 positionNO', positionNo);
+    const fakeDTO = {
+        positionDTO:null
+    };
+   
+
+    return async (dispatch, getState) => {
+        const result = await request('PUT', `/signupPosition/${positionNo}`,fakeDTO);
+        console.log('수정결과 ',result);
+
+        dispatch({ type: PUT_POSITIONS, payload: result });
+    };
 }
 

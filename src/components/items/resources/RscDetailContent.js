@@ -25,7 +25,7 @@ function RscDetailContent({setModal, setUpdateClick, resourceDetail}) {
                     <span className="detail-title">{rscCate === '회의실' ? "위치" : "차량 번호"}</span><span className="detail-content">{resourceDetail.rscInfo}</span>
                     <span className="detail-title">{rscCate === '회의실' ? "수용 가능 인원" : "탑승 가능 인원"}</span><span className="detail-content">{resourceDetail.rscCap}명</span>
                     <span className="detail-title">상태</span><span className="detail-content">{resourceDetail.rscIsAvailable ? "사용 가능" : "사용 불가능"}</span>
-                    <span className="detail-title">비고</span><span className="detail-content">{resourceDetail.rscDescr}</span>
+                    <span className="detail-title">비고</span><span className="detail-content">{resourceDetail.rscDescr ? resourceDetail.rscDescr : "-"}</span>
                 </div>
             </div>
             <ButtonGroup buttons={detailButtons} />

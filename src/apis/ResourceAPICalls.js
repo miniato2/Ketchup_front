@@ -79,12 +79,12 @@ export function callDeleteResourceAPI(selectedItems) {
     console.log("deleteResource api call...");
 
     return async (dispatch, getState) => {
-        let result = '';
+        let result;
         for(let i = 0; i < selectedItems.length; i++) {
-            result += await request('DELETE', `/resources/${selectedItems[i]}`);
+            result = await request('DELETE', `/resources/${selectedItems[i]}`);
         }
-        console.log(result);
+        console.log(result.data);
 
-        dispatch(deleteResource(result));
+        dispatch(deleteResource(result.data));
     };
 }

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { callMembersAPI } from '../../apis/MemberAPICalls';
 import { decodeJwt } from "../../utils/tokenUtils";
 
-function RefLineModal({ setModalControl, setRefLine }) {
+function RefLineModal({ setModalControl, refLine,setRefLine }) {
     const column = ['번호', '부서', '이름', '직급'];
 
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
@@ -23,6 +23,10 @@ function RefLineModal({ setModalControl, setRefLine }) {
 
     useEffect(() => {
         dispatch(callMembersAPI());
+        console.log('refLine', refLine[0].refMember.memberNo)
+        if(refLine[0].refMember.memberNo !== ''){
+            setSelectedRefList(refLine);
+        }
     }, [])
 
     const groupByDepartment = () => {

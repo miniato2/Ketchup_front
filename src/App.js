@@ -37,7 +37,7 @@ import TreePractice from './pages/members/TreePractice'
 
 
 function App() {
-  console.log("App 도착!")
+ 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // 로그인 상태 확인 로직 추가

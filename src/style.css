@@ -60,6 +60,7 @@ h6 {
 --------------------------------------------------------------*/
 .pagetitle {
   margin-bottom: 10px;
+  
 }
 
 .pagetitle h1 {
@@ -252,12 +253,27 @@ h6 {
 
 .card-body {
   padding: 0 20px 20px 20px;
-  text-decoration: none;
 }
 
 .card-img-overlay {
   background-color: rgba(255, 255, 255, 0.6);
 }
+
+/*--------------------------------------------------------------
+# approval
+--------------------------------------------------------------*/
+.approval-box-link {
+  text-decoration: none;
+}
+
+.approval-box-link:hover {
+  text-decoration: none;
+}
+
+.approval-box-link .card-title {
+  text-decoration: none;
+}
+
 
 /* Alerts */
 .alert-heading {
@@ -342,18 +358,18 @@ h6 {
 .nav-tabs-bordered .nav-link {
   margin-bottom: -2px;
   border: none;
-  color: #2c384e;
+  color: #EC0B0B;
 }
 
 .nav-tabs-bordered .nav-link:hover,
 .nav-tabs-bordered .nav-link:focus {
-  color: #4154f1;
+  color: #EC0B0B;
 }
 
 .nav-tabs-bordered .nav-link.active {
   background-color: #fff;
-  color: #4154f1;
-  border-bottom: 2px solid #4154f1;
+  color: #EC0B0B;
+  border-bottom: 2px solid #EC0B0B;
 }
 
 /*--------------------------------------------------------------
@@ -578,7 +594,12 @@ h6 {
 
 .active-link {
   font-weight: bold;
-  color: #007bff;
+  color: #EC0B0B;
+}
+
+.active-link span {
+  font-weight: bold;
+  color: #EC0B0B;
 }
 
 @media (min-width: 1200px) {
@@ -636,7 +657,7 @@ h6 {
   align-items: center;
   font-size: 15px;
   font-weight: 600;
-  color: #808080;               /* 홈 text color */
+  color: #EC0B0B;               /* 홈 text color */
   transition: 0.3;
   /* background: #f6f9ff; */
   padding: 10px 15px;
@@ -646,7 +667,7 @@ h6 {
 .sidebar-nav .nav-link i {
   font-size: 16px;
   margin-right: 10px;
-  color: #808080;               /* 홈 color */
+  color: #EC0B0B;               /* 홈 color */
 }
 
 .sidebar-nav .nav-link.collapsed {
@@ -659,9 +680,12 @@ h6 {
   color: #808080;
 }
 
+.sidebar-nav .nav-link.active-link i {  /* icon color*/
+  color: #EC0B0B;
+}
+
 .sidebar-nav .nav-link:hover {
   color: #EC0B0B;
-  /* background: #fef5f5; */
 }
 
 .sidebar-nav .nav-link:hover i {
@@ -734,10 +758,6 @@ h6 {
 
 .nav-item {
   list-style: none;
-}
-
-.nav-item li:hover {
-  background-color: #ffefef;
 }
 
 #toggle-nav li {
@@ -826,8 +846,8 @@ h6 {
 --------------------------------------------------------------*/
 /* 버튼 형식 */
 .btn-group {
-  /* float: right; */
-  /* justify-content: space-between; */
+  /* float: right;   
+  justify-content: space-between;  */
   display: flex;
   justify-content: end;
   margin-top: 15px;
@@ -840,7 +860,6 @@ h6 {
   height: 38px;         /* 버튼 높이*/
   border-radius: 5px;   /* 버튼 둥글기*/
   background-color: white;
-  
 }
 
 .move-btn {
@@ -857,6 +876,9 @@ h6 {
 --------------------------------------------------------------*/
 .table {
   text-align: center;
+}
+.table td, .table th{
+  vertical-align: middle;
 }
 
 .table-border {
@@ -879,6 +901,13 @@ tbody th a {
   color: #000;
   text-decoration-line: none;
   font-weight: 200;
+}
+
+.table .title-cell {
+  max-width: 600px; /* 레이아웃에 맞게 조정 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /*--------------------------------------------------------------

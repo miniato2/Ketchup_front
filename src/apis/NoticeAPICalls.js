@@ -15,17 +15,28 @@ export function callGetNoticeListAPI({currentPage, title, setTotalItems}) {
             const result = await request('GET', endpoint);
             console.log('Number of notices received:', result);
 
-            const noticeList = result?.data?.data?.content || [];
-            const totalItems = result?.data?.data?.totalElements || {};
+            // 필독 공지와 일반 공지를 분리하여 변수에 할당
+            const fixedNotices = result?.data?.data?.fixedNotices || [];
+            const normalNotices = result?.data?.data?.normalNotices?.content || [];
+            const totalItems = result?.data?.data?.normalNotices?.totalElements || {};
+
+            console.log(fixedNotices);
+            console.log(normalNotices);
+            console.log(totalItems);
+
             console.log("callGetNoticeListAPI [ totalItems : ", totalItems);
             setTotalItems(totalItems); // totalItems를 setTotalItems 함수를 통해 전달
 
+            // 필독 공지와 일반 공지를 합친 배열 생성
+            const noticeList = [...fixedNotices, ...normalNotices];
 
+            // 공지 목록에서 각 공지마다 회원 정보를 추가하여 배열을 구성
             const noticesWithMemberNames = await Promise.all(noticeList.map(async (notice) => {
                 const memberInfoResult = await request('GET', `/members/${notice.memberNo}`);
                 return { ...notice, memberName: memberInfoResult.data.memberName, positionName: memberInfoResult.data.position.positionName };
             }));
-
+            
+            console.log("noticesWithMemberNames : ", noticesWithMemberNames);
             dispatch(getNoticelist({ noticesWithMemberNames }));
         } catch (error) {
             console.error('Error fetching notice list:', error);
