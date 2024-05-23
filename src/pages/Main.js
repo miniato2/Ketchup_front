@@ -165,9 +165,9 @@ function Main() {
 
                     {/* 전자결재 */}
                     <div className="col-lg-12">
-                        <div className="row" style={{ textDecoration: 'none'}}>
+                        <div className="row" >
                             {approvalData.map(({ title, count }) => (
-                                <Link to={`/approvals`} className="col-xxl-3 col-md-6">
+                                <Link to={`/approvals`} className="col-xxl-3 col-md-6  approval-box-link">
                                     <ApprovalBox title={title} count={count} />
                                 </Link>
                             ))}
