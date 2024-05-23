@@ -11,7 +11,7 @@ function Positions() {
 
 
     const dispatch = useDispatch();
-    const { positionList, update } = useSelector(state => state.positionReducer);
+    const positionList = useSelector(state => state.positionReducer);
   
     const [positionDialogOpen, setPositionDialogOpen] = useState(false);
     const [selectedPosition, setSelectedPosition] = useState(null);
@@ -23,7 +23,7 @@ function Positions() {
     
     useEffect(() => {
         dispatch(callAllPositionsAPI());
-    }, [update]);
+    }, []);
 
 
     const onDialogClickHandler = () => {
@@ -62,12 +62,13 @@ function Positions() {
     const addPosition = async () => {
         await dispatch(callAddPositionAPI(newPosition));
         setIsEditMode(false);
-        await dispatch(callPositionsAPI());
+        await dispatch(callAllPositionsAPI());
     }
 
     const cancelEdit = () => {
         setIsEditMode(false);
         setNewPosition({ positionName: "", positionLevel: "", authority: "" });
+     dispatch(callAllPositionsAPI());
        
     }
 
@@ -76,8 +77,9 @@ function Positions() {
         await dispatch(callPositionsAPI());
     }
 
-    const changePositionStatus = (positionNo) =>{
-        dispatch(callUpdatePositionStatusAPI(positionNo))
+    const changePositionStatus = async(positionNo) =>{
+       await dispatch(callUpdatePositionStatusAPI(positionNo))
+        await dispatch(callAllPositionsAPI());
 
     }
 

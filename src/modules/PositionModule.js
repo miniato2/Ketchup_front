@@ -27,7 +27,7 @@ const positionReducer = handleActions(
 
         [GET_POSITIONS]: (state, { payload }) => {
 
-            return {positionList:payload};
+            return payload;
         },
 
         [POST_POSITIONS]: (state, { payload }) => {
@@ -36,7 +36,7 @@ const positionReducer = handleActions(
         },
         [PUT_POSITIONS]: (state, { payload }) => {
 
-            return {update:payload};
+            return payload;
         },
         [DELETE_POSITIONS]: (state, { payload }) => {
 
