@@ -3,7 +3,7 @@ import AppCatCss from './AppCategory.module.css';
 import { callGetApprovalCountAPI } from '../../apis/ApprovalAPICalls';
 import { decodeJwt } from "../../utils/tokenUtils";
 
-function AppCategory({ category, setCategory, setCurrentPage, setStatus, setSearch, appList}) {
+function AppCategory({ category, setCategory, appList}) {
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const [approvalCount, setApprovalCount] = useState();
     const approvalData = [
@@ -31,9 +31,6 @@ function AppCategory({ category, setCategory, setCurrentPage, setStatus, setSear
 
     const onClickHandler = (categoryNo) => {
         setCategory(categoryNo);
-        setCurrentPage(1);
-        setStatus('전체');
-        setSearch('');
     }
 
     return (
