@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Typography, Dialog } from "@mui/material";
+import { Box, Button, Grid, Typography, Dialog, Snackbar, Alert, Table, TableCell, TableRow } from "@mui/material";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -8,32 +8,57 @@ import { getReserveAPI } from "../../apis/ReserveAPICalls";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import './Reserve.css';
+import Scrolls from "../../components/scrolls/Scrolls";
 import ResourceCategorySelect from "./ResourceCategorySelect";
 import ReserveDateSelect from "./ReserveDateSelect";
 import InsertReserveForm from "../../components/form/InsertReserveForm";
 import ReserveDetail from "../../components/form/ReserveDetail";
+import DeleteReserveForm from "../../components/form/DeleteReserveForm";
 
 export default function Reserve() {
     const dispatch = useDispatch();
     const reserves = useSelector(state => state.reserveReducer);
     const [reserveData, setReserveData] = useState([]);
+    const [showErrorAlertRscCategory, setShowErrorAlertRscCategory] = useState(false);
+    const [showErrorAlertRsvDate, setShowErrorAlertRsvDate] = useState(false);
     const [searchClicked, setSearchClicked] = useState(false);
     const [searchConditions, setSearchConditions] = useState({
         rscCategory: "",
         rsvDate: ""
     });
-    const [selectedReserve, setSelectedReserve] = useState([]);
+    const [selectedReserve, setSelectedReserve] = useState(null);
     const [selectedResource, setSelectedResource] = useState({});
     const [insertReserveDialogOpen, setInsertReserveDialogOpen] = useState(false);
     const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+    const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
 
-    const onDateClickHandler = () => { setInsertReserveDialogOpen(true) };
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+    const [snackbarSeverity, setSnackbarSeverity] = useState("error");
+    const vertical = 'top';
+    const horizontal = 'right';
+    const setSearchErrorAlert = (categoryError, dateError) => {
+        setShowErrorAlertRscCategory(categoryError);
+        setShowErrorAlertRsvDate(dateError);
+    };
+    const handleSnackbarClose = () => {
+        setSnackbarOpen(false);
+    };
+
+    const onDateClickHandler = (selectInfo, resource) => {
+        setSelectedResource(resource);
+        setInsertReserveDialogOpen(true);
+    };
+
     const onInsertCancelHandler = () => { setInsertReserveDialogOpen(false) };
-    const closeDetailDialog = () => { setDetailDialogOpen(false) };
+    const closeDetailDialog = () => { setDetailDialogOpen(false); };
+    const onCloseDeleteConfirm = () => {
+        setOpenDeleteConfirm(false);
+        setDetailDialogOpen(false);
+    };
 
     const onEventClickHandler = (selected) => {
-        console.log("Event clicked", selected);
-        console.log("Event's event clicked", selected.event);
         setSelectedReserve(selected.event);
         setDetailDialogOpen(true);
     };
@@ -47,7 +72,6 @@ export default function Reserve() {
     };
 
     const convertToCalendarProps = (rsvList) => {
-        console.log("rsvList 확인", rsvList);
         if (!Array.isArray(rsvList) || rsvList.length === 0) {
             return [];
         }
@@ -83,13 +107,11 @@ export default function Reserve() {
     };
 
     const fetchReserves = () => {
-        console.log("fetchReserves를 타고 있는지?");
         try {
             const { rscCategory, rsvDate } = searchConditions;
             if (!rsvDate) {
                 throw new Error("날짜를 입력해주세요.");
             }
-            console.log("API 호출 전 dispatch", { rscCategory, rsvDate });
             dispatch(getReserveAPI(rscCategory, rsvDate));
         } catch (error) {
             const errorMessage = error.response ? error.response.data.message : error.message;
@@ -98,27 +120,42 @@ export default function Reserve() {
     };
 
     useEffect(() => {
-        console.log('reserves 확인', reserves);
-        if (Array.isArray(reserves)) {
-            const convertedReserves = convertToCalendarProps(reserves);
-            setReserveData(convertedReserves);
-            const grouped = groupReservesByRsc(convertedReserves);
-            setSelectedResource(grouped);
-        }
+        const convertedReserves = convertToCalendarProps(reserves);
+        setReserveData(convertedReserves);
     }, [reserves]);
 
     const onClickSearch = () => {
-        setSearchClicked(true);
+        if (searchConditions.rscCategory === "" && searchConditions.rsvDate === "") {
+            setSearchErrorAlert(true, true);
+            setSnackbarMessage("자원 카테고리와 날짜를 선택해주세요.");
+            setSnackbarSeverity("warning");
+            setSnackbarOpen(true);
+            return;
+        } else if (searchConditions.rscCategory === "") {
+            setSearchErrorAlert(true, false);
+            setSnackbarMessage("자원 카테고리를 선택해주세요.");
+            setSnackbarSeverity("warning");
+            setSnackbarOpen(true);
+            return;
+        } else if (searchConditions.rsvDate === "") {
+            setSearchErrorAlert(false, true);
+            setSnackbarMessage("날짜를 선택해주세요.");
+            setSnackbarSeverity("warning");
+            setSnackbarOpen(true);
+            return;
+        }
+        setSearchClicked(false);
+        setSearchErrorAlert(false, false);
+        setTimeout(() => {
+            setSearchClicked(true);
+        }, 0);
     };
 
     useEffect(() => {
-        if (searchClicked) {
-            fetchReserves();
-        }
+        fetchReserves();
     }, [searchClicked]);
 
     const groupReservesByRsc = (reserveData) => {
-        console.log("reserveData 확인", reserveData);
         const groupedReserves = {};
         reserveData.forEach((reserve) => {
             const rscNo = reserve.extendedProps.resources.rscNo;
@@ -132,51 +169,80 @@ export default function Reserve() {
 
     const showCalendars = () => {
         const groupedReserves = groupReservesByRsc(reserveData);
-        console.log("groupedReserves", groupedReserves);
-        return Object.entries(groupedReserves).map(([rscNo, reserveList]) => {
-            console.log(`rscNo: ${rscNo}`, reserveList);
-            return (
-                <Grid item xs={12} md={6} key={rscNo}>
-                    <Box overflowX="auto" whiteSpace="nowrap" flex="1 1 100%" ml="15px" mt="15px" >
-                        <Typography textAlign="center" variant="h4">{reserveList[0]?.extendedProps.resources.rscName}</Typography>
-                        <FullCalendar
-                            locale="ko"
-                            events={reserveList}
-                            initialView="dayGridDay"
-                            initialDate={searchConditions.rsvDate}
-                            plugins={[
-                                dayGridPlugin,
-                                timeGridPlugin,
-                                interactionPlugin,
-                                listPlugin
-                            ]}
-                            height="50vh"
-                            headerToolbar={false}
-                            themeSystem='bootstrap'
-                            selectable={true}
-                            select={onDateClickHandler}
-                            eventClick={onEventClickHandler}
-                        />
-                    </Box>
-                </Grid>
-            );
-        });
+        const businessHours = {
+            daysOfWeek: [1, 2, 3, 4, 5],
+            startTime: '09:00',
+            endTime: '19:00',
+        };
+
+        return (
+            <Scrolls>
+                {Object.entries(groupedReserves).map(([rscNo, reserveList]) => {
+                    const resource = reserveList[0].extendedProps.resources;
+                    let infoMeasurement = "";
+                    let capMeasurement = "";
+                    if (searchConditions.rscCategory === "회의실") {
+                        infoMeasurement = "위치";
+                        capMeasurement = "수용 가능 인원";
+                    } else if (searchConditions.rscCategory === "차량") {
+                        infoMeasurement = "차량 번호";
+                        capMeasurement = "승차 정원";
+                    }
+
+                    return (
+                        <Box key={rscNo} height="480px" width="100%">
+                            <Typography textAlign="center" variant="h4">{resource.rscName}</Typography>
+                            <Table>
+                                <TableRow>
+                                    <TableCell align="center" sx={{ fontSize: '18px' }}>{infoMeasurement}</TableCell>
+                                    <TableCell align="center" sx={{ fontSize: '18px' }}>{resource.rscInfo}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="center" sx={{ fontSize: '18px' }}>{capMeasurement}</TableCell>
+                                    <TableCell align="center" sx={{ fontSize: '18px' }}>{resource.rscCap}</TableCell>
+                                </TableRow>
+                            </Table>
+                            <FullCalendar
+                                locale="ko"
+                                events={reserveList}
+                                initialView="timeGridDay"
+                                initialDate={searchConditions.rsvDate}
+                                plugins={[
+                                    dayGridPlugin,
+                                    timeGridPlugin,
+                                    interactionPlugin,
+                                    listPlugin
+                                ]}
+                                height="50vh"
+                                headerToolbar={false}
+                                themeSystem='bootstrap'
+                                selectable={true}
+                                select={(selectInfo) => onDateClickHandler(selectInfo, resource)}
+                                eventClick={onEventClickHandler}
+                                businessHours={businessHours}
+                                slotMinTime="08:00"
+                            />
+                        </Box>
+                    );
+                })}
+            </Scrolls>
+        );
     };
 
     return (
         <main id="main" className="main">
             <Box p={2}>
-                <Grid container spacing={2} alignItems="center" mb={8} sx={{ backgroundColor: "rgb(236, 11, 11, 0.17)", borderRadius: "10px" }}>
+                <Grid container spacing={3} alignItems="center" mt={2} mb={4} sx={{ backgroundColor: "rgb(236, 11, 11, 0.17)", borderRadius: "10px", height: "230px" }}>
                     <Grid item xs={12}>
                         <h1 style={{ marginTop: 15 }}>자원예약</h1>
                     </Grid>
-                    <Grid item md={4} xs={12}>
+                    <Grid item xs={12} md={5}>
                         <ResourceCategorySelect value={searchConditions.rscCategory} onChange={(value) => setSearchConditions({ ...searchConditions, rscCategory: value })} />
                     </Grid>
-                    <Grid item md={4} xs={10}>
+                    <Grid item md={5} xs={10}>
                         <ReserveDateSelect value={searchConditions.rsvDate} onChange={(e) => setSearchConditions({ ...searchConditions, rsvDate: e.target.value })} />
                     </Grid>
-                    <Grid item md={2} xs={2} >
+                    <Grid item md="auto" xs="auto" >
                         <Button onClick={onClickSearch}>조회</Button>
                     </Grid>
                 </Grid>
@@ -185,10 +251,26 @@ export default function Reserve() {
                         {showCalendars()}
                     </Grid>
                 ) : (
-                    <Typography fontSize={38}>검색 조건을 입력하여 검색해주세요.</Typography>
+                    <Box height={'480px'} display="flex" flexDirection="column" justifyContent="center" alignItems="center" margin={'auto'}>
+                        <Typography fontSize={24} textAlign={'center'}>검색 조건을 입력하여 검색해주세요.</Typography>
+                        <img src="/img/searchConditionRequired.png" alt="searchConditionRequired" style={{ display: "block", margin: "0 auto", maxWidth: "100%", height: "auto" }} />
+                    </Box>
                 )}
             </Box>
 
+            <Snackbar
+                anchorOrigin={{ vertical, horizontal }}
+                style={{ marginTop: '45px' }}
+                open={snackbarOpen}
+                autoHideDuration={4000}
+                onClose={handleSnackbarClose}
+            >
+                <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+
+            {/* 등록 폼 */}
             <Dialog open={insertReserveDialogOpen} onClose={onInsertCancelHandler}>
                 <InsertReserveForm
                     onInsertCancelHandler={onInsertCancelHandler}
@@ -196,9 +278,19 @@ export default function Reserve() {
                 />
             </Dialog>
 
+            {/* 상세조회 */}
             <Dialog open={detailDialogOpen} onClose={closeDetailDialog}>
                 <ReserveDetail
                     closeDetailDialog={closeDetailDialog}
+                    selectedReserve={selectedReserve}
+                    setOpenDeleteConfirm={setOpenDeleteConfirm}
+                />
+            </Dialog>
+
+            {/* 삭제 폼 */}
+            <Dialog open={openDeleteConfirm} onClose={onCloseDeleteConfirm}>
+                <DeleteReserveForm
+                    onCloseDeleteConfirm={onCloseDeleteConfirm}
                     selectedReserve={selectedReserve}
                 />
             </Dialog>

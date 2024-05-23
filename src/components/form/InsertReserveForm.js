@@ -4,12 +4,10 @@ import { decodeJwt } from "../../utils/tokenUtils";
 import { insertReserveAPI } from "../../apis/ReserveAPICalls";
 
 const token = decodeJwt(window.localStorage.getItem("accessToken"));
-const reserverId = token.memberNo;
-const reserverName = token.memberName;
+const reserverId = token?.memberNo;
+const reserverName = token?.memberName;
 
 export default function InsertReserveForm({ onInsertCancelHandler, selectedResource }) {
-
-    console.log("selectedResource 등록할때?!", selectedResource);
     const [newReserveData, setNewReserveData] = useState({
         reserver: reserverId,
         rsvDescr: "",
@@ -20,15 +18,10 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
 
     useEffect(() => {
         if (selectedResource) {
-            const resourceValues = Object.values(selectedResource);
-            if(resourceValues.length > 0 && resourceValues[0].length > 0) {
-                const firstResource = resourceValues[0][0].extendedProps.resources;
-                setNewReserveData(prevData => ({
-                    ...prevData,
-                    resources: firstResource
-                }));
-                console.log("Updated newReserveData with selectedResources", firstResource);
-            }
+            setNewReserveData(prevData => ({
+                ...prevData,
+                resources: selectedResource
+            }));
         }
     }, [selectedResource]);
 
@@ -43,7 +36,6 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
     const handleSubmit = () => {
         try {
             insertReserveAPI(newReserveData);
-            console.log("newReserveData", newReserveData);
             alert("예약이 정상적으로 등록되었습니다.");
         } catch (error) {
             console.error("예약 정보 등록하면서 오류가 발생했습니다 :", error);
@@ -53,7 +45,7 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
     }
 
     return (
-        <form onSubmit={(e) => { e.preventDefault(); handleSubmit(newReserveData); }}>
+        <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
             <Grid container spacing={4} justifyContent="left" ml={10}>
                 <Grid item xs={6} md={8}>
                     <Box sx={{

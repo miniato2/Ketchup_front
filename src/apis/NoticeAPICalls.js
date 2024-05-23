@@ -1,34 +1,43 @@
 import { request } from "./Api";
 import { getNoticelist, getNotice, insertNotice, updateNotice, deleteNotice } from "../modules/NoticeModule";
 
-export function callGetNoticeListAPI(title = '') {
+export function callGetNoticeListAPI({currentPage, title, setTotalItems}) {
     console.log('callNoticeListAPI...');
 
     return async (dispatch, getState) => {
         try {
-            let endpoint = '/notices';
+            let endpoint = `/notices?page=${currentPage}`;
+
             if (title) {
-                endpoint += `?title=${title.toLowerCase()}`;
+                endpoint += `&title=${title.toLowerCase()}`;
             }
 
             const result = await request('GET', endpoint);
-            console.log('Number of notices received:', result.data.data.content.length);
+            console.log('Number of notices received:', result);
 
-            // 각 공지의 작성자 이름을 가져오기 위해 공지 목록을 순회합니다.
-            const noticesWithMemberNames = await Promise.all(result.data.data.content.map(async (notice) => {
-                // 각 공지의 작성자 memberNo를 이용해 memberName을 조회합니다.
+            // 필독 공지와 일반 공지를 분리하여 변수에 할당
+            const fixedNotices = result?.data?.data?.fixedNotices || [];
+            const normalNotices = result?.data?.data?.normalNotices?.content || [];
+            const totalItems = result?.data?.data?.normalNotices?.totalElements || {};
+
+            console.log("callGetNoticeListAPI [ totalItems : ", totalItems);
+            setTotalItems(totalItems); // totalItems를 setTotalItems 함수를 통해 전달
+
+            // 필독 공지와 일반 공지를 합친 배열 생성
+            const noticeList = [...fixedNotices, ...normalNotices];
+
+            // 공지 목록에서 각 공지마다 회원 정보를 추가하여 배열을 구성
+            const noticesWithMemberNames = await Promise.all(noticeList.map(async (notice) => {
                 const memberInfoResult = await request('GET', `/members/${notice.memberNo}`);
-                // 공지 목록에 작성자 이름을 추가합니다.
-                return { ...notice, memberName: memberInfoResult.data.memberName };
+                return { ...notice, memberName: memberInfoResult.data.memberName, positionName: memberInfoResult.data.position.positionName };
             }));
-
-            // 수정된 공지 목록을 저장합니다.
-            dispatch(getNoticelist(noticesWithMemberNames));
+            
+            console.log("noticesWithMemberNames : ", noticesWithMemberNames);
+            dispatch(getNoticelist({ noticesWithMemberNames }));
         } catch (error) {
             console.error('Error fetching notice list:', error);
-            // 에러가 발생한 경우에 대한 처리를 추가할 수 있습니다.
         }
-    }
+    };
 }
 
 export function callGetNoticeAPI(noticeNo) {
@@ -44,7 +53,7 @@ export function callGetNoticeAPI(noticeNo) {
             console.log('getNotice result : ', noticeResult);
 
             // 공지 작성자의 정보 가져오기
-            const memberInfoResult = await request('GET', `/members/${noticeResult.data.memberNo}`);
+            const memberInfoResult = await request('GET', `/members/${noticeResult.data.notice.memberNo}`);
             console.log('getMemberInfo result : ', memberInfoResult);
 
             // 공지사항 정보에 작성자의 정보 추가하여 저장
@@ -96,14 +105,16 @@ export const callInsertNoticeAPI = (formData) => {
     };
 };
 
-export function callUpdateNoticeAPI( formData, noticeNo ) {
+export function callUpdateNoticeAPI( formData, noticeNo, noticeFileNo ) {
     console.log('callUpdateNoticeAPI...');
 
     const requestURL = `http://localhost:8080/notices/${noticeNo}`;
 
     return async (dispatch, getState) => {
         try {
-            
+
+            noticeFileNo.forEach(id => formData.append('noticeFileNo', id));
+
             const response = await fetch(requestURL, {
                 method: 'PUT',
                 body: formData,
@@ -111,6 +122,14 @@ export function callUpdateNoticeAPI( formData, noticeNo ) {
                     'Authorization': 'Bearer ' + window.localStorage.getItem('accessToken'),
                 }
             });
+
+            
+            if (!response.ok) {
+                // 응답이 성공적이지 않을 때 처리
+                const errorResult = await response.json();
+                console.error('[callUpdateNoticeAPI] Error:', errorResult.message);
+                throw new Error(errorResult.message || 'Error updating notice');
+            }
 
             const result = await response.json();
 

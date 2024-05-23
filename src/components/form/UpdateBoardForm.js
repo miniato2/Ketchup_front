@@ -14,7 +14,7 @@ function UpdateBoardForm() {
     const [title, setTitle] = useState('');
     const [files, setFiles] = useState([]);
     const [content, setContent] = useState('');
-    const [fileList, setFileList] = useState([]);
+    const [boardFileNo, setBoardFileNo] = useState([]); // 삭제할 파일의 ID를 저장할 상태 추가
 
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const memberNo = loginToken.memberNo;
@@ -22,13 +22,18 @@ function UpdateBoardForm() {
     console.log("memberNo : ", memberNo);
     console.log("departmentNo : ", departmentNo);
 
-
     // 파일 삭제 함수
-    const handleDeleteFile = (index) => {
+    const handleDeleteFile = (index, file) => {
         const updatedFiles = [...files];
         updatedFiles.splice(index, 1);
         setFiles(updatedFiles);
+
+        // 삭제된 파일의 ID를 삭제 목록에 추가
+        if (file.boardFileNo) {
+            setBoardFileNo((prevIds) => [...prevIds, file.boardFileNo]);
+        }
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -40,7 +45,7 @@ function UpdateBoardForm() {
         try {
             console.log("handleSubmit [ callUpdateBoardAPI formData ] : ", formData);
             console.log("handleSubmit [ callUpdateBoardAPI boardNo ] : ", boardNo);
-            await dispatch(callUpdateBoardAPI(formData, boardNo));
+            await dispatch(callUpdateBoardAPI(formData, boardNo, boardFileNo));
             navigate(`/boards/${boardNo}`);
         } catch (error) {
             console.error(error);
@@ -51,10 +56,7 @@ function UpdateBoardForm() {
         const selectedFiles = Array.from(e.target.files);
         console.log('선택된 파일 목록:', selectedFiles);
         setFiles((prevFiles) => [...prevFiles, ...selectedFiles]); // 기존 파일 목록과 새로 선택된 파일을 합쳐서 업데이트
-
-        setFileList((prevFileList) => [...prevFileList, ...selectedFiles.map(file => file.name)]);
     };
-
 
     const buttons = [
         { label: '취소', onClick: () => navigate(-1), styleClass: 'back' },
@@ -71,9 +73,9 @@ function UpdateBoardForm() {
 
     useEffect(() => {
         if (board) {
-            setTitle(board.boardTitle);
-            setContent(board.boardContent);
-            setFiles(board.boardFileList || []);
+            setTitle(board.board.boardTitle);
+            setContent(board.board.boardContent);
+            setFiles(board.board.boardFileList || []);
         }
     }, [board]);
 
@@ -92,7 +94,7 @@ function UpdateBoardForm() {
                             <li style={{ listStyle: 'none' }} key={index}>
                                 <span>{file.boardFileOriName || file.name}</span> &nbsp;
                                 {/* 파일 삭제 버튼 */}
-                                <button onClick={() => handleDeleteFile(index)} style={{ border: 'none', background: 'none', cursor: 'pointer' }}>x</button>
+                                <button onClick={() => handleDeleteFile(index, file)} style={{ border: 'none', background: 'none', cursor: 'pointer' }}>x</button>
                             </li>
                         ))}
                     </ul>

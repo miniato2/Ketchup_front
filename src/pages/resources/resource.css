@@ -30,6 +30,11 @@
 }
 .rsc-form input {
     border:none;
+    border-bottom:1px solid #000;
+}
+.input-number {
+    display:inline-block;
+    width:20%;
 }
 .rsc-radio, .rsc-form textarea {
     display: inline-block;
@@ -37,6 +42,16 @@
 }
 .rsc-radio label {
     margin:10px 10px;
+}
+
+/* InsertResourceForm.js */
+.rsc-location {
+    display: inline-block;
+    width:70%;
+}
+.rsc-tr td:not(:last-child) {
+    padding:15px;
+    text-align:center;
 }
 
 /* RscDetailContent.js */

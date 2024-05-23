@@ -1,15 +1,6 @@
-import { useEffect } from "react";
 import ButtonGroup from "../../contents/ButtonGroup";
-import { useDispatch, useSelector } from "react-redux";
-import { callGetResourceDetailAPI } from "../../../apis/ResourceAPICalls";
 
-function RscDetailContent({setModal, setUpdateClick, selectRscNo}) {
-    const result = useSelector(state => state.resourceReducer);
-    const resourceDetail = result.resourcedetail || [];
-    const dispatch = useDispatch();
-
-    console.log("🍖🍖🍖🍖🍖");
-    console.log(selectRscNo);
+function RscDetailContent({setModal, setUpdateClick, resourceDetail}) {
     const buttonClick = (label) => {
         if(label == "수정") {
             setUpdateClick(true);
@@ -22,12 +13,6 @@ function RscDetailContent({setModal, setUpdateClick, selectRscNo}) {
         {label: "취소", styleClass: "back", onClick: () => buttonClick("취소")},
         {label: "수정", styleClass: "move", onClick: () => buttonClick("수정")}
     ];
-
-    useEffect(
-        () => {
-            dispatch(callGetResourceDetailAPI(selectRscNo));
-        }, [selectRscNo]
-    );
 
     const rscCate = resourceDetail.rscCategory;
 
