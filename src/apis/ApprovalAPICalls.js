@@ -35,7 +35,7 @@ export const callInsertAppAPI = ({ form }) => {
     return async (dispatch, getState) => {
         const result = await request('POST', requestURL, form);
         console.log('api result', result);
-        if (result.status == 200) {
+        if (result.status === 200 && result.data === '성공') {
             dispatch(postApproval(result));
         } else {
             throw new Error('에러');
@@ -63,7 +63,7 @@ export const callUpdateApprovalAPI = (appUpdate, approvalNo) => {
     return async (dispatch, getState) => {
         const result = await request('PUT', requestURL, appUpdate);
         console.log('api 결과 ', result);
-        if (result.status == 200) {
+        if (result.status === 200 && result.data === '성공') {
             dispatch(putApproval(result));
         } else {
             throw new Error('에러');

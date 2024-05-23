@@ -6,6 +6,7 @@ function AppList({ data }) {
     const column = ['상태', '구분', '제목', '기안자', '기안일자', '결재일자'];
     const navigate = useNavigate();
 
+    console.log('data',data);
     const onClickHandler = (approvalNo) => {
         navigate(`/approvals/${approvalNo}`, {replace:false})
     }
@@ -16,18 +17,19 @@ function AppList({ data }) {
                 <thead>
                     <tr style={{ textAlign: 'center' }}>
                         {column.map((item) => (
-                            <th scope='col' style={item === '제목' ? { width: '50%', padding: "10px" } : { padding: "10px", width: '10%' }} key={item.index}>{item}</th>
+                            <th scope='col' style={item === '제목' ? { width: '50%', padding: "10px"} : { padding: "10px", width: '10%' }} key={item.index}>{item}</th>
                         ))}
                     </tr>
                 </thead>
                 <tbody>
                     {Array.isArray(data) && data.map((item) => (
-                        <tr style={item.key === '제목' ? { padding: "10px", width: '50%', verticalAlign: 'middle' } : { padding: "10px", width: '10%', verticalAlign: 'middle'}} key={item.index}
+                        <tr style={item.key === '제목' ? { padding: "10px", width: '50%'} : { padding: "10px", width: '10%'}} key={item.index}
                         onClick={() => onClickHandler(item.approvalNo)}>
                             <td>{item.appStatus}</td>
                             <td>{item.form.formName}</td>
-                            <td style={{ textAlign: 'left' }}>
+                            <td style={{ textAlign: 'left'}}>
                                 {item.appTitle}<br />
+                                {item.member.memberName}-
                                 {Array.isArray(item.appLineList) && item.appLineList.map((appLine, index) => (
                                     <span key={index} style={appLine.alSequence === item.sequence? {color: 'red'} : {}}>
                                         {appLine.alMember.memberName}
@@ -37,7 +39,7 @@ function AppList({ data }) {
                             </td>
                             <td>{item.member.memberName}</td>
                             <td>{item.appDate}</td>
-                            <td>{item.alDate? item.appFinalDate : '-'}</td>
+                            <td>{item.appFinalDate? item.appFinalDate : '-'}</td>
                         </tr>
                     ))}
                     {Array.isArray(data) && data.length === 0 && 

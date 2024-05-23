@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { callMembersAPI } from '../../apis/MemberAPICalls';
 import { decodeJwt } from "../../utils/tokenUtils";
 
-function AppLineModal({ setModalControl, setAppLine }) {
+function AppLineModal({ setModalControl, appLine, setAppLine }) {
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const dispatch = useDispatch();
     const memberList = useSelector(state => state.memberReducer); //전체 사원
@@ -36,11 +36,15 @@ function AppLineModal({ setModalControl, setAppLine }) {
 
     const column = ['순번', '부서', '이름', '직급', '구분'];
 
-    console.log('api 호출결과', memberList);
-    console.log('추가 된 appLine', selectedAppList);
+    console.log('========================',selectedAppList);
+
 
     useEffect(() => {
         dispatch(callMembersAPI());
+        if(appLine[0].sequence !== ''){
+            setSelectedAppList(appLine);
+            setCount(appLine.length + 1);
+        }
     }, [])
 
     const onClickList = (member) => {
@@ -52,6 +56,7 @@ function AppLineModal({ setModalControl, setAppLine }) {
     }
 
     const onDoubleClickList = (member) => {
+        console.log('member ================',member)
         if(!selectedAppList.find(item => item.alMember.memberNo === member.memberNo) && member.memberNo !== loginToken.memberNo){
             setSelectedAppList([
                 ...selectedAppList,
@@ -185,7 +190,6 @@ function AppLineModal({ setModalControl, setAppLine }) {
                                             <select onChange={(e) => onChangeType(item, e)}>
                                                 <option value={'일반'}>일반</option>
                                                 <option value={'전결'}>전결</option>
-                                                {/* 직급따라서 전결 선택할 수 있는 로직 필요 */}
                                             </select>
                                         </td>
                                     </tr>

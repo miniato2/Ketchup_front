@@ -872,6 +872,9 @@ h6 {
 .table {
   text-align: center;
 }
+.table td, .table th{
+  vertical-align: middle;
+}
 
 .table-border {
   font-size: 15px;
