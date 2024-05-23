@@ -89,7 +89,7 @@ function Board({ boardNo }) {
             </div>
             <div className="row">
                 <div className="col-lg-12" style={{ borderBottom: '0.5px solid lightgray' }}>
-                    <h1 style={loginToken && loginToken.memberNo !== board.memberInfo.memberNo ? { marginTop: '30px' } : {}}>{board.board.boardTitle}</h1>
+                    <h2 style={loginToken && loginToken.memberNo !== board.memberInfo.memberNo ? { marginTop: '30px' } : {}}>{board.board.boardTitle}</h2>
                     <div style={{ marginBottom: '30px' }}>
                         <img src={`/img/${board.memberInfo.imgUrl}`} width="30" height="30" alt="profile" />&nbsp;
                         <span className="">{board.memberInfo.memberName}</span>&nbsp;
@@ -122,14 +122,14 @@ function Board({ boardNo }) {
                     {/* 다음 글 */}
                     {board.nextBoard && (
                         <div onClick={() => navigate(`/boards/${board.nextBoard.boardNo}`)}  style={{ cursor: 'pointer' }}>
-                            <i className="bi bi-caret-up" />
+                            <i className="bi bi-caret-up" />&nbsp;
                             <span>다음글 |  {board.nextBoard.boardTitle}</span>
                         </div>
                     )}
 
                     {!board.nextBoard && (
                         <div>
-                            <i className="bi bi-caret-up" />
+                            <i className="bi bi-caret-up" />&nbsp;
                             <span>다음글 |  <span>다음글이 없습니다.</span></span>
                         </div>
                     )}
@@ -137,13 +137,13 @@ function Board({ boardNo }) {
                     {/* 이전 글 */}
                     {board.previousBoard && (
                         <div onClick={() => navigate(`/boards/${board.previousBoard.boardNo}`)}  style={{ cursor: 'pointer' }}>
-                            <i className="bi bi-caret-down" />
+                            <i className="bi bi-caret-down" />&nbsp;
                             <span>이전글 |  {board.previousBoard.boardTitle}</span>
                         </div>
                     )}
                     {!board.previousBoard && (
                         <div>
-                            <i className="bi bi-caret-down" />
+                            <i className="bi bi-caret-down" />&nbsp;
                             <span>이전글 |  <span>이전글이 없습니다.</span></span>
                         </div>
                     )}

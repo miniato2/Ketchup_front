@@ -6,6 +6,7 @@ import ButtonGroup from "../../contents/ButtonGroup";
 import FormatDate from "../../contents/FormatDate";
 import DOMPurify from "isomorphic-dompurify"
 import { decodeJwt } from "../../../utils/tokenUtils";
+import { BsMegaphone } from "react-icons/bs";
 
 function Notice({ noticeNo }) {
     console.log('Notice [ noticeNo ] : ', noticeNo);
@@ -75,6 +76,23 @@ function Notice({ noticeNo }) {
         }
     }
 
+    // 필독 공지 제목 처리
+    // const noticeTitle = notice.notice.noticeFix === 'Y'
+    //     ? `[ 필독 ] ${notice.notice.noticeTitle}`
+    //     : notice.notice.noticeTitle;
+
+    // 필독 공지 제목 처리
+    const noticeTitle = (
+        <span>
+            {notice.notice.noticeFix === 'Y' && (
+                <>
+                    [ 필독  <BsMegaphone style={{ color: '#EC0B0B' }} /> ]
+                </>
+            )}
+            {notice.notice.noticeTitle}
+        </span>
+    );
+
     return (
         // notice && (
         <div className="container">
@@ -93,7 +111,7 @@ function Notice({ noticeNo }) {
             </div>
             <div className="row">
                 <div className="col-lg-12" style={{ borderBottom: '0.5px solid lightgray' }}>
-                    <h1 style={loginToken && loginToken.memberNo !== notice.memberInfo.memberNo ? { marginTop: '30px' } : {}}>{notice.notice.noticeTitle}</h1>
+                    <h2 style={loginToken && loginToken.memberNo !== notice.memberInfo.memberNo ? { marginTop: '30px' } : {}}>{noticeTitle}</h2>
                     <div style={{ marginBottom: '30px' }}>
                         <img src={`/img/${notice.memberInfo.imgUrl}`} width="30" height="30" alt="profile" />&nbsp;
                         <span className="">{notice.memberInfo.memberName}</span>&nbsp;
@@ -126,14 +144,20 @@ function Notice({ noticeNo }) {
                     {/* 다음 글 */}
                     {notice.nextNotice && (
                         <div onClick={() => navigate(`/notices/${notice.nextNotice.noticeNo}`)} style={{ cursor: 'pointer' }}>
-                            <i className="bi bi-caret-up" />
-                            <span>다음글 |  {notice.nextNotice.noticeTitle}</span>
+                            <i className="bi bi-caret-up" />&nbsp;
+                            <span>다음글 |&nbsp;
+                                {notice.nextNotice.noticeFix === 'Y' && (
+                                    <>
+                                        [ 필독  <BsMegaphone style={{ color: '#EC0B0B' }} /> ]
+                                    </>
+                                )}
+                                {notice.nextNotice.noticeTitle}</span>
                         </div>
                     )}
 
                     {!notice.nextNotice && (
                         <div>
-                            <i className="bi bi-caret-up" />
+                            <i className="bi bi-caret-up" />&nbsp;
                             <span>다음글 |  <span>다음글이 없습니다.</span></span>
                         </div>
                     )}
@@ -141,13 +165,19 @@ function Notice({ noticeNo }) {
                     {/* 이전 글 */}
                     {notice.previousNotice && (
                         <div onClick={() => navigate(`/notices/${notice.previousNotice.noticeNo}`)} style={{ cursor: 'pointer' }}>
-                            <i className="bi bi-caret-down" />
-                            <span>이전글 |  {notice.previousNotice.noticeTitle}</span>
+                            <i className="bi bi-caret-down" />&nbsp;
+                            <span>이전글 |&nbsp;
+                                {notice.previousNotice.noticeFix === 'Y' && (
+                                    <>
+                                        [ 필독  <BsMegaphone style={{ color: '#EC0B0B' }} /> ]
+                                    </>
+                                )}
+                                {notice.previousNotice.noticeTitle}</span>
                         </div>
                     )}
                     {!notice.previousNotice && (
                         <div>
-                            <i className="bi bi-caret-down" />
+                            <i className="bi bi-caret-down" />&nbsp;
                             <span>이전글 |  <span>이전글이 없습니다.</span></span>
                         </div>
                     )}

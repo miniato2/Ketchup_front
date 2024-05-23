@@ -15,6 +15,7 @@ const Notices = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const result = useSelector(state => state.noticeReducer);
+
   const noticeList = result?.noticelist?.noticesWithMemberNames || [];
 
   console.log("Notices [ result ] : ", result);
@@ -26,22 +27,26 @@ const Notices = () => {
 
   const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
 
-  const pinnedNotices = noticeList.filter(notice => notice.noticeFix === 'Y').map(notice => ({
-    ...notice,
-    noticeTitle: (
-      <>
-        <span style={{ marginRight: '5px' }}>
-          [ 필독&nbsp;
-          <span style={{ color: '#EC0B0B' }}>
-            <BsMegaphone />
-          </span>
-          &nbsp;]
-        </span>{notice.noticeTitle}
-      </>
-    ),
-    memberName: `${notice.memberName} ${notice.positionName}`,
-    noticeCreateDttm: FormatDateTime(notice.noticeCreateDttm)
-  }));
+  const pinnedNotices = noticeList
+    .filter(notice => notice.noticeFix === 'Y')
+    .map(notice => ({
+      ...notice,
+      noticeTitle: (
+        <>
+          <span style={{ marginRight: '5px' }}>
+            [ 필독&nbsp;
+            <span style={{ color: '#EC0B0B' }}>
+              <BsMegaphone />
+            </span>
+            &nbsp;]
+          </span>{notice.noticeTitle}
+        </>
+      ),
+      memberName: `${notice.memberName} ${notice.positionName}`,
+      noticeCreateDttm: FormatDateTime(notice.noticeCreateDttm)
+    }));
+
+  console.log("pinnedNotices ; ", pinnedNotices);
 
   const normalNotices = noticeList.filter(notice => notice.noticeFix !== 'Y').map(notice => ({
     ...notice,
@@ -54,13 +59,13 @@ const Notices = () => {
 
   useEffect(() => {
     setTotalItems(normalNotices);
- 
-  // API 호출
-  dispatch(callGetNoticeListAPI({
-    currentPage: currentPage,
-    title: typeof searchKeyword === 'string' ? searchKeyword.toLowerCase() : '',
-    setTotalItems: setTotalItems
-  }));
+
+    // API 호출
+    dispatch(callGetNoticeListAPI({
+      currentPage: currentPage,
+      title: typeof searchKeyword === 'string' ? searchKeyword.toLowerCase() : '',
+      setTotalItems: setTotalItems
+    }));
   }, [dispatch, currentPage, searchKeyword]);
 
 
