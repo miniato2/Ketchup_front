@@ -6,7 +6,7 @@ function Editor({content, setContent}) {
   const quillRef = useRef(null);
 
   return (
-    <div className="editor-container" >
+    <div>
       <ReactQuill
         style={{ height: "350px", margin: "4px", overflowY: 'auto' }}
         ref={quillRef}
