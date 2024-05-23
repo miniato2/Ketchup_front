@@ -8,7 +8,6 @@ import MailDeleteModal from "../../components/items/mails/MailDeleteModal";
 
 function Mail() {
     const navigate = useNavigate();
-
     const {part} = useParams();
     const [sendMailNos, setSendMailNos] = useState([]);
     const [receiveMailNos, setReceiveMailNos] = useState([])
@@ -53,7 +52,7 @@ function Mail() {
                         setSearchValue={setSearchValue}
                         onSearch={handleSearch} />
                 </div>
-                <div className="mt-3 d-flex justify-content-between align-middle">
+                <div className="my-3 d-flex justify-content-between">
                     <div className="mail-btn">
                         <button
                             className={`${part == "receive" ? 'focus-btn ps-0 me-4 fs-5' : 'non-focus-btn ps-0 me-4 fs-5'}`}

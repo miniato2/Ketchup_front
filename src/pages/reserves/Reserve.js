@@ -257,7 +257,7 @@ export default function Reserve() {
                     </Box>
                 )}
             </Box>
-            
+
             {/* 유효성 검사 알림창 */}
             <Snackbar
                 anchorOrigin={{ vertical, horizontal }}
@@ -272,24 +272,26 @@ export default function Reserve() {
             </Snackbar>
 
             {/* 등록 폼 */}
-            <Dialog open={insertReserveDialogOpen} onClose={onInsertCancelHandler}>
+            <Dialog open={insertReserveDialogOpen} onClose={onInsertCancelHandler} fullWidth maxWidth="md" PaperProps={{ sx: { borderRadius: "10px" } }}>
                 <InsertReserveForm
                     onInsertCancelHandler={onInsertCancelHandler}
                     selectedResource={selectedResource}
+                    existingReserves={reserveData.filter(reserve => reserve.extendedProps.resources.rscNo === selectedResource.rscNo)}
                 />
             </Dialog>
 
             {/* 상세조회 */}
-            <Dialog open={detailDialogOpen} onClose={closeDetailDialog}>
+            <Dialog open={detailDialogOpen} onClose={closeDetailDialog} fullWidth maxWidth="md" PaperProps={{ sx: { borderRadius: "10px" } }}>
                 <ReserveDetail
                     closeDetailDialog={closeDetailDialog}
                     selectedReserve={selectedReserve}
                     setOpenDeleteConfirm={setOpenDeleteConfirm}
+                    existingReserves={reserveData.filter(reserve => reserve.extendedProps.resources.rscNo === selectedResource.rscNo)}
                 />
             </Dialog>
 
             {/* 삭제 폼 */}
-            <Dialog open={openDeleteConfirm} onClose={onCloseDeleteConfirm}>
+            <Dialog open={openDeleteConfirm} onClose={onCloseDeleteConfirm} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: "10px" } }}>
                 <DeleteReserveForm
                     onCloseDeleteConfirm={onCloseDeleteConfirm}
                     selectedReserve={selectedReserve}
