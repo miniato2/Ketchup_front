@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Table } from "react-bootstrap";
 import RscModal from "../../items/resources/RscModal";
+import { Dialog } from "@mui/material";
 
 function ResourceList({ list, part, selectedItems, setSelectedItems }) {
     const [modal, setModal] = useState(false);
@@ -20,7 +21,7 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
         }
     };
 
-    if(list === undefined) {
+    if (list === undefined) {
         list = [];
     }
 
@@ -41,7 +42,7 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
                     <thead>
                         <tr style={{ textAlign: 'center' }}>
                             <th>
-                            <input
+                                <input
                                     type="checkbox"
                                     onChange={() => {
                                         const allChecked = list.length === selectedItems.length;
@@ -92,10 +93,16 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
                                 </td>
                             </tr>
                         ))
-                    }
+                        }
                     </tbody>
                 </Table>
             </div>
+
+            {/* {modal && <RscModal setModal={setModal} selectRscNo={selectRscNo} part={part} />} */}
+
+            <Dialog open={modal} onClose={() => setModal(false)}>
+                <RscModal setModal={setModal} selectRscNo={selectRscNo} part={part} />
+            </Dialog>
         </>
     );
 }

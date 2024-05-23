@@ -5,10 +5,11 @@ import SendMail from "../../components/lists/mails/SendMail";
 import { useNavigate, useParams } from "react-router-dom";
 import SearchBarValue from "../../components/contents/SearchBarValue";
 import MailDeleteModal from "../../components/items/mails/MailDeleteModal";
+import { Dialog } from "@mui/material";
 
 function Mail() {
     const navigate = useNavigate();
-    const {part} = useParams();
+    const { part } = useParams();
     const [sendMailNos, setSendMailNos] = useState([]);
     const [receiveMailNos, setReceiveMailNos] = useState([])
     const [deleteModal, setDeleteModal] = useState(false);
@@ -32,12 +33,16 @@ function Mail() {
         setDeleteModal(true);
     };
 
+    const onDialogCloseHandler = () => {
+        setDeleteModal(prevState => !prevState);
+    };
+
     const handleSearch = ({ condition, value }) => {
         setSearchCondition(condition);
         setSearchValue(value);
     };
 
-    const delMailList = part === 'receive' ? 
+    const delMailList = part === 'receive' ?
         Object.keys(receiveMailNos).filter(key => receiveMailNos[key]).map(Number)
         : Object.keys(sendMailNos).filter(key => sendMailNos[key]).map(Number);
 
@@ -90,12 +95,20 @@ function Mail() {
                 }
             </main>
 
-            {deleteModal ? 
+            {/* {deleteModal ? 
                 <MailDeleteModal 
                     setDeleteModal={setDeleteModal} 
                     part={part}
                     delMailList={delMailList}
-                    setDelMailList={setDelMailList} /> : null}
+                    setDelMailList={setDelMailList} /> : null} */}
+
+            <Dialog open={deleteModal} onClose={onDialogCloseHandler}>
+                    <MailDeleteModal
+                        setDeleteModal={setDeleteModal}
+                        part={part}
+                        delMailList={delMailList}
+                        setDelMailList={setDelMailList} />
+            </Dialog>
         </>
     );
 }

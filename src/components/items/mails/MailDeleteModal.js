@@ -3,6 +3,7 @@ import "../../../pages/mails/mail.css";
 import { callGetReceiveMailAPI, callGetSendMailAPI, callPutDeleteMailAPI } from "../../../apis/MailAPICalls";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Dialog } from "@mui/material";
 
 function MailDeleteModal({ setDeleteModal, part, delMailList, setDelMailList }) {
     const result = useSelector(state => state.mailReducer);
@@ -15,10 +16,10 @@ function MailDeleteModal({ setDeleteModal, part, delMailList, setDelMailList }) 
         if (label === "취소") {
             setDeleteModal(false);
             setDelMailList([]);
-        }else if (label === "삭제") {
+        } else if (label === "삭제") {
             await dispatch(callPutDeleteMailAPI(part, delMailList));
-        }else if(label === "확인") {
-            if(part === "receive") {
+        } else if (label === "확인") {
+            if (part === "receive") {
                 await dispatch(callGetReceiveMailAPI());
             }else if(part === "send") {
                 await dispatch(callGetSendMailAPI());
@@ -67,9 +68,13 @@ function MailDeleteModal({ setDeleteModal, part, delMailList, setDelMailList }) 
         );
 
     return (
-        <div className="modal-back">
-            {delModalContent}
-        </div>
+        // <div className="modal-back">
+        //     {delModalContent}
+        // </div>
+
+        <Dialog open={true}>
+           {delModalContent}
+        </Dialog>
     );
 }
 
