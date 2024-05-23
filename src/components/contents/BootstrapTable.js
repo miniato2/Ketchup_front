@@ -10,7 +10,7 @@ const BootstrapTable = ({ data, columns, onRowClick }) => {
         <thead>
             <tr style={{ textAlign: 'center' }}>
             {columns.map(([key, label], index) => (
-                <th scope='col' style={label === '제목' ? { width: '50%', padding: "10px"} : { padding: "10px" }} key={index}>{label}</th>
+                <th scope='col' style={label === '제목' ? { width: '60%', padding: "10px" } : { padding: "10px" }} key={index}>{label}</th>
             ))}
             </tr>
         </thead>
@@ -18,7 +18,7 @@ const BootstrapTable = ({ data, columns, onRowClick }) => {
         {Array.isArray(data) && data.map((item, index) => (
             <tr key={index} onClick={() => onRowClick(index)} style={{ cursor: 'pointer' }}>
             {columns.map(([key, label], columnIndex) => (
-              <td className={label === '제목' ? 'title-cell' : ''} style={{ padding: "15px" }} key={columnIndex}>{item[key]}</td>
+              <td className={label === '제목' ? 'title-cell' : ''}  style={{ textAlign: label === '제목' ? 'left' : 'center' , padding: label === '제목' ? '15px 80px' : '15px'}} key={columnIndex}>{item[key]}</td>
             ))}
           </tr>
             ))}
