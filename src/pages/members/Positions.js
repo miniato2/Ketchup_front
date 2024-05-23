@@ -1,4 +1,4 @@
-import { callPositionsAPI, callAddPositionAPI, callDeletePositionAPI } from "../../apis/MemberAPICalls"; // addPosition 추가
+import { callPositionsAPI, callAddPositionAPI, callDeletePositionAPI, callUpdatePositionStatusAPI,callAllPositionsAPI } from "../../apis/MemberAPICalls"; // addPosition 추가
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { Table, ToggleButtonGroup } from "react-bootstrap";
@@ -11,17 +11,19 @@ function Positions() {
 
 
     const dispatch = useDispatch();
-    const positionList = useSelector(state => state.positionReducer);
+    const { positionList, update } = useSelector(state => state.positionReducer);
+  
     const [positionDialogOpen, setPositionDialogOpen] = useState(false);
     const [selectedPosition, setSelectedPosition] = useState(null);
     const [selectedPositionNos, setSelectedPositionNos] = useState({});
     const [isEditMode, setIsEditMode] = useState(false);
     const [newPosition, setNewPosition] = useState({ positionName: "", positionLevel: "", authority: "", positionStatus: "Y" });
 
-
+    console.log(useSelector(state => state.positionReducer));
+    
     useEffect(() => {
-        dispatch(callPositionsAPI());
-    }, []);
+        dispatch(callAllPositionsAPI());
+    }, [update]);
 
 
     const onDialogClickHandler = () => {
@@ -74,6 +76,11 @@ function Positions() {
         await dispatch(callPositionsAPI());
     }
 
+    const changePositionStatus = (positionNo) =>{
+        dispatch(callUpdatePositionStatusAPI(positionNo))
+
+    }
+
 
 
     return (
@@ -104,15 +111,15 @@ function Positions() {
                                     <td>
                                         <Radio
                                             name={`positionStatus-${position?.positionNo}`}
-                                            checked={selectedPositionNos[position?.positionNo] === false}
-                                            onClick={() => handleRadioClick(position?.positionNo, false)} // 누르는 버튼에 따라 false 전달
+                                            checked={position.positionStatus === 'N'}
+                                            onClick={() => dispatch(callUpdatePositionStatusAPI(position.positionNo))} // 누르는 버튼에 따라 false 전달
                                         />
                                     </td>
                                     <td>
                                         <Radio
                                             name={`positionStatus-${position?.positionNo}`}
-                                            checked={selectedPositionNos[position?.positionNo] === true}
-                                            onClick={() => handleRadioClick(position?.positionNo, true)} // 누르는 버튼에 따라 true 전달
+                                            checked={position.positionStatus === 'Y'}
+                                            onClick={() => dispatch(callUpdatePositionStatusAPI(position.positionNo))} // 누르는 버튼에 따라 true 전달
                                         />
                                     </td>
                                     <td>{position && position.positionName}</td>

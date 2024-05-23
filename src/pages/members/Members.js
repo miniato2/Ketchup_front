@@ -12,7 +12,7 @@ import SearchBar from "../../components/contents/SearchBar";
 
 function Members() {
     const dispatch = useDispatch();
-    const members = useSelector(state => state.memberReducer);
+    const members =  useSelector(state => state.memberReducer);
     const memberList = members?.data;
     console.log(memberList);
     const token = decodeJwt(window.localStorage.getItem('accessToken'));

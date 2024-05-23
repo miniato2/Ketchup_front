@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { callUpdatePositionAPI } from '../../apis/MemberAPICalls';
+import { callPositionsAPI, callUpdatePositionAPI } from '../../apis/MemberAPICalls';
 import { useDispatch } from 'react-redux';
 
 
@@ -30,11 +30,17 @@ export default function PositionForm({ position }) {
         });
     }
 
-    const onClickHandler = () => {
+    const onClickHandler =async () => {
        
 
-        dispatch(callUpdatePositionAPI(position.positionNo,form));
+        // dispatch(callUpdatePositionAPI(position.positionNo,form)).then(() => {
+        //     dispatch(callPositionsAPI());
+        // });
+
+       await dispatch(callUpdatePositionAPI(position.positionNo,form));
+      
         alert("수정이 완료되었습니다.");
+       
      
        
     }
