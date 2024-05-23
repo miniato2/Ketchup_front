@@ -40,7 +40,7 @@ const positionReducer = handleActions(
         },
         [DELETE_POSITIONS]: (state, { payload }) => {
 
-            return payload;
+            return state;
         },
 
 

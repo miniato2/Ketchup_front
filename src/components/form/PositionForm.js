@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { callPositionsAPI, callUpdatePositionAPI } from '../../apis/MemberAPICalls';
+import { callAllPositionsAPI, callUpdatePositionAPI } from '../../apis/MemberAPICalls';
 import { useDispatch } from 'react-redux';
 
 
 
-export default function PositionForm({ position }) {
+export default function PositionForm({ position, onDialogClickHandler }) {
 
     const dispatch = useDispatch();
-    console.log('넘어오는 데이터값? : ', position);
     const [form, setForm] = useState([]);
     console.log(form);
 
@@ -31,20 +30,16 @@ export default function PositionForm({ position }) {
     }
 
     const onClickHandler =async () => {
-       
-
-        // dispatch(callUpdatePositionAPI(position.positionNo,form)).then(() => {
-        //     dispatch(callPositionsAPI());
-        // });
-
        await dispatch(callUpdatePositionAPI(position.positionNo,form));
       
         alert("수정이 완료되었습니다.");
-       
-     
-       
+
+       await dispatch(callAllPositionsAPI());
+
+       onDialogClickHandler();
     }
 
+    
 
 
 
@@ -91,7 +86,7 @@ export default function PositionForm({ position }) {
                 </select></label>
 
             <br></br>
-            <button style={{ marginLeft: 330, marginBottom: 20 }}>취소</button>
+            <button style={{ marginLeft: 330, marginBottom: 20}} onClick={()=>{onDialogClickHandler()}}>취소</button>
             <button style={{ marginLeft: 5 }} onClick={onClickHandler}>저장</button>
 
 

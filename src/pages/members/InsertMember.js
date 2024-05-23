@@ -68,7 +68,7 @@ function InsertMember() {
        
         generateMemberNo();
         dispatch(callDepartmentsAPI());
-        dispatch(callAllPositionsAPI());
+        dispatch(callPositionsAPI());
 
     }, []);
 

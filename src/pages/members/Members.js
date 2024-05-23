@@ -63,13 +63,14 @@ function Members() {
         <>
 
             <main id="main">
-                <div >
+              
 
                     <br></br><br></br>
+                    <div style={{ display: "flex", margin: -15}}>
                     <h2>사원목록</h2>
-                    <div className="search" style={{ width: 100, marginLeft: 1350 }}>
-                        <SearchBar onSearch={handleSearch} value={searchKeyword} name={'이름으로 검색'} />
+                    <SearchBar onSearch={handleSearch} value={searchKeyword} name={'이름으로 검색'} />
                     </div>
+                    
                     <Link to="/members/insert">
                         <ButtonGroup buttons={buttons} />
                     </Link>
@@ -108,7 +109,7 @@ function Members() {
                         currentPage={currentPage}
                         onPageChange={(pageNumber) => setCurrentPage(pageNumber)} // 페이지 변경 핸들러 전달
                     />
-                </div>
+              
 
             </main>
 

@@ -73,15 +73,15 @@ function Positions() {
     }
 
     const deletePosition = async (positionNo) => {
-        await dispatch(callDeletePositionAPI(positionNo));
-        await dispatch(callPositionsAPI());
+        const confirmed = window.confirm('해당직급 사원이 없을경우에만 삭제 가능합니다.\n정말 삭제하시겠습니까? '); // 사용자에게 확인 다이얼로그 표시
+    
+        if (confirmed) { // 사용자가 확인을 눌렀을 때만 삭제 진행
+            await dispatch(callDeletePositionAPI(positionNo));
+            await dispatch(callAllPositionsAPI());
+        }
     }
 
-    const changePositionStatus = async(positionNo) =>{
-       await dispatch(callUpdatePositionStatusAPI(positionNo))
-        await dispatch(callAllPositionsAPI());
-
-    }
+    
 
 
 
@@ -94,7 +94,6 @@ function Positions() {
                     <ButtonGroup buttons={[{ label: '등록', styleClass: 'move', onClick: handleEditModeToggle }]} />
                     <br />
                     <br />
-
                     <Table>
                         <thead>
                             <tr>
@@ -114,14 +113,20 @@ function Positions() {
                                         <Radio
                                             name={`positionStatus-${position?.positionNo}`}
                                             checked={position.positionStatus === 'N'}
-                                            onClick={() => dispatch(callUpdatePositionStatusAPI(position.positionNo))} // 누르는 버튼에 따라 false 전달
+                                            onClick={
+                                                () => dispatch(callUpdatePositionStatusAPI(position.positionNo))
+                                                .then(() => {dispatch(callAllPositionsAPI())})
+                                            } // 누르는 버튼에 따라 false 전달
                                         />
                                     </td>
                                     <td>
                                         <Radio
                                             name={`positionStatus-${position?.positionNo}`}
                                             checked={position.positionStatus === 'Y'}
-                                            onClick={() => dispatch(callUpdatePositionStatusAPI(position.positionNo))} // 누르는 버튼에 따라 true 전달
+                                            onClick={
+                                                () => dispatch(callUpdatePositionStatusAPI(position.positionNo))
+                                                .then(() => {dispatch(callAllPositionsAPI())})
+                                            } // 누르는 버튼에 따라 true 전달
                                         />
                                     </td>
                                     <td>{position && position.positionName}</td>
@@ -136,7 +141,7 @@ function Positions() {
                     </Table>
                     <Dialog open={positionDialogOpen} onClose={onDialogClickHandler}>
                         <DialogTitle>직급 수정</DialogTitle>
-                        <PositionForm position={selectedPosition} />
+                        <PositionForm position={selectedPosition} onDialogClickHandler={onDialogClickHandler} />
                     </Dialog>
                     {isEditMode &&
                         <div>
