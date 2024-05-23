@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Table } from "react-bootstrap";
 import RscModal from "../../items/resources/RscModal";
+import { Dialog } from "@mui/material";
 
 function ResourceList({ list, part, selectedItems, setSelectedItems }) {
     const [modal, setModal] = useState(false);
@@ -20,9 +21,13 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
         }
     };
 
+    if (list === undefined) {
+        list = [];
+    }
+
     return (
         <>
-            {modal && <RscModal setModal={setModal} selectRscNo={selectRscNo} />}
+            {modal && <RscModal setModal={setModal} selectRscNo={selectRscNo} part={part} />}
             <div class="card-body">
                 <Table>
                     <colgroup>
@@ -37,7 +42,7 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
                     <thead>
                         <tr style={{ textAlign: 'center' }}>
                             <th>
-                            <input
+                                <input
                                     type="checkbox"
                                     onChange={() => {
                                         const allChecked = list.length === selectedItems.length;
@@ -66,7 +71,11 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {list.length > 0 ? (list.map((rsc, index) =>
+                        {list.length === 0 ? (
+                            <tr>
+                                <td colspan="7">등록된 {part === 'conferences' ? "회의실" : "차량"}이 없습니다.</td>
+                            </tr>
+                        ) : (list.map((rsc, index) =>
                             <tr key={index} className="rsc-tr">
                                 <td>
                                     <input
@@ -83,15 +92,17 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
                                     <button className="back-btn" onClick={() => openRscDetail(index)}>상세</button>
                                 </td>
                             </tr>
-                        )) : (
-                            <tr>
-                                <td colspan="7">등록된 {part === 'conferences' ? "회의실" : "차량"}이 없습니다.</td>
-                            </tr>
-                        )
-                    }
+                        ))
+                        }
                     </tbody>
                 </Table>
             </div>
+
+            {/* {modal && <RscModal setModal={setModal} selectRscNo={selectRscNo} part={part} />} */}
+
+            <Dialog open={modal} onClose={() => setModal(false)}>
+                <RscModal setModal={setModal} selectRscNo={selectRscNo} part={part} />
+            </Dialog>
         </>
     );
 }

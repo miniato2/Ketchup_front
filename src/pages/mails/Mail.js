@@ -15,6 +15,9 @@ function Mail() {
     const [deleteModal, setDeleteModal] = useState(false);
     const [searchCondition, setSearchCondition] = useState('');
     const [searchValue, setSearchValue] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    console.log(receiveMailNos);
 
     const receiveHandler = () => {
         navigate('/mails/receive');
@@ -77,13 +80,18 @@ function Mail() {
                             checkedItems={receiveMailNos}
                             setCheckedItems={setReceiveMailNos}
                             searchCondition={searchCondition}
-                            searchValue={searchValue} />
+                            searchValue={searchValue}
+                            handleSearch={handleSearch}
+                            isLoading={isLoading}
+                            setIsLoading={setIsLoading} />
                         :
                         <SendMail
                             checkedItems={sendMailNos}
                             setCheckedItems={setSendMailNos}
                             searchCondition={searchCondition}
-                            searchValue={searchValue} />
+                            searchValue={searchValue}
+                            isLoading={isLoading}
+                            setIsLoading={setIsLoading}  />
                 }
             </main>
 

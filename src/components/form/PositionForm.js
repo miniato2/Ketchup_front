@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { callAllPositionsAPI, callUpdatePositionAPI } from '../../apis/MemberAPICalls';
 import { useDispatch } from 'react-redux';
+import ButtonGroup from '../contents/ButtonGroup';
 
 
 
@@ -29,17 +30,17 @@ export default function PositionForm({ position, onDialogClickHandler }) {
         });
     }
 
-    const onClickHandler =async () => {
-       await dispatch(callUpdatePositionAPI(position.positionNo,form));
-      
+    const onClickHandler = async () => {
+        await dispatch(callUpdatePositionAPI(position.positionNo, form));
+
         alert("수정이 완료되었습니다.");
 
-       await dispatch(callAllPositionsAPI());
+        await dispatch(callAllPositionsAPI());
 
-       onDialogClickHandler();
+        onDialogClickHandler();
     }
 
-    
+
 
 
 
@@ -86,12 +87,17 @@ export default function PositionForm({ position, onDialogClickHandler }) {
                 </select></label>
 
             <br></br>
-            <button style={{ marginLeft: 330, marginBottom: 20}} onClick={()=>{onDialogClickHandler()}}>취소</button>
-            <button style={{ marginLeft: 5 }} onClick={onClickHandler}>저장</button>
+            {/* <button style={{ marginLeft: 330, marginBottom: 20 }} onClick={() => { onDialogClickHandler() }}>취소</button> */}
+            {/* <button style={{ marginLeft: 5 }} onClick={onClickHandler}>저장</button> */}
 
-
-
-
+            <div style={{ marginRight: "20px"}}>
+                <ButtonGroup
+                    buttons={[
+                        { label: '취소', styleClass: 'back', onClick: () => { onDialogClickHandler() } },
+                        { label: '저장', styleClass: 'move', onClick: onClickHandler }
+                    ]}
+                />
+            </div>
 
         </div>
 
