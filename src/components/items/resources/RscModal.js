@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import "../../../pages/resources/resource.css";
 import RscDetailContent from "./RscDetailContent";
 import UpdateResourceForm from "../../form/UpdateResourceForm";
-import { callGetResourceDetailAPI } from "../../../apis/ResourceAPICalls";
+import { callGetResourceDetailAPI, callGetResourcesAPI } from "../../../apis/ResourceAPICalls";
 import { useDispatch, useSelector } from "react-redux";
 
-function RscModal({setModal, selectRscNo}) {
+function RscModal({setModal, selectRscNo, part}) {
     const result = useSelector(state => state.resourceReducer);
     const resourceDetail = result.resourcedetail || [];
     const dispatch = useDispatch();
@@ -13,6 +13,7 @@ function RscModal({setModal, selectRscNo}) {
 
     useEffect(
         () => {
+            // dispatch(callGetResourcesAPI(part));
             dispatch(callGetResourceDetailAPI(selectRscNo));
         }, [dispatch, selectRscNo]
     );

@@ -20,7 +20,7 @@ function MailDeleteModal({ setDeleteModal, part, delMailList, setDelMailList }) 
         }else if(label === "확인") {
             if(part === "receive") {
                 await dispatch(callGetReceiveMailAPI());
-            }else {
+            }else if(part === "send") {
                 await dispatch(callGetSendMailAPI());
             }
             setDeleteModal(false);

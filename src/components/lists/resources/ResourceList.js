@@ -20,9 +20,13 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
         }
     };
 
+    if(list === undefined) {
+        list = [];
+    }
+
     return (
         <>
-            {modal && <RscModal setModal={setModal} selectRscNo={selectRscNo} />}
+            {modal && <RscModal setModal={setModal} selectRscNo={selectRscNo} part={part} />}
             <div class="card-body">
                 <Table>
                     <colgroup>
@@ -66,7 +70,11 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {list.length > 0 ? (list.map((rsc, index) =>
+                        {list.length === 0 ? (
+                            <tr>
+                                <td colspan="7">등록된 {part === 'conferences' ? "회의실" : "차량"}이 없습니다.</td>
+                            </tr>
+                        ) : (list.map((rsc, index) =>
                             <tr key={index} className="rsc-tr">
                                 <td>
                                     <input
@@ -83,11 +91,7 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
                                     <button className="back-btn" onClick={() => openRscDetail(index)}>상세</button>
                                 </td>
                             </tr>
-                        )) : (
-                            <tr>
-                                <td colspan="7">등록된 {part === 'conferences' ? "회의실" : "차량"}이 없습니다.</td>
-                            </tr>
-                        )
+                        ))
                     }
                     </tbody>
                 </Table>

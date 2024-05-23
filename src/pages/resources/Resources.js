@@ -36,7 +36,7 @@ function Resources() {
         }
     };
 
-    const rscDelete = () => {
+    const rscDelete = async () => {
         dispatch(callDeleteResourceAPI(selectedItems));
         console.log("선택된 항목을 삭제합니다:", selectedItems);
         setSelectedItems([]);
@@ -49,7 +49,7 @@ function Resources() {
                 <div className="title">
                     {part === 'conferences' ? <h2>회의실</h2> : <h2>차량</h2>}
                 </div>
-                {!resourceList && resourceList === 0 ? (
+                {!Array.isArray(resourceList) && resourceList === 0 ? (
                     <div>
                         <h5 className="text-center my-5">자원 관리 권한이 없습니다.</h5>
                     </div>
