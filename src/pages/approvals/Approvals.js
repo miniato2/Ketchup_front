@@ -1,5 +1,5 @@
 import AppCategory from "../../components/approvals/AppCategory";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { callAppListAPI } from "../../apis/ApprovalAPICalls";
@@ -10,8 +10,9 @@ import PaginationButtons from '../../components/contents/PaginationButtons';
 
 function Approvals() {
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
+    const location = useLocation();
 
-    const [category, setCategory] = useState(1); //카테고리를 state로 관리 초기값 1
+    const [category, setCategory] = useState(location.state === null ? 1 : location.state); //카테고리를 state로 관리 초기값 1
     const [status, setStatus] = useState('전체'); //문서 상태 관리 초기값 전체 
     const [currentPage, setCurrentPage] = useState(1); //페이지
     const [search, setSearch] = useState('');
@@ -20,6 +21,7 @@ function Approvals() {
 
     const apps = useSelector(state => state.approvalReducer);
     const appList = apps.data?.content;
+
     console.log('apps', apps);
     console.log('appList', appList);
     console.log('currentPage',currentPage);
@@ -34,6 +36,13 @@ function Approvals() {
     };
 
     useEffect(() => {
+        setCurrentPage(1);
+        setStatus('전체');
+        setSearch('');
+    }, [category])
+
+    useEffect(() => {
+        console.log("api 호출");
         dispatch(
             callAppListAPI({
                 memberNo: loginToken.memberNo,
@@ -69,9 +78,9 @@ function Approvals() {
 
     return (
         <main id="main" className={'main'}>
-            <AppCategory category={category} setCategory={setCategory} setCurrentPage={setCurrentPage} setStatus={setStatus} setSearch={setSearch} appList={appList}/>
+            <AppCategory category={category} setCategory={setCategory} appList={appList}/>
             <div style={{ display: "flex", height: "60px", backgroundColor: "#f5f5f5", alignItems: "center", borderBottom: 'solid 0.5px black'}}>
-                <select className={ApprovalCss.selectStatus} onChange={statusChangeHandler}>
+                <select className={ApprovalCss.selectStatus} onChange={statusChangeHandler} value={status}>
                     <option>전체</option>
                     {statusList.map((item) => (
                         <option>{item}</option>
