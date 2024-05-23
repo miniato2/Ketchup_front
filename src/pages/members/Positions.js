@@ -12,15 +12,16 @@ function Positions() {
 
     const dispatch = useDispatch();
     const positionList = useSelector(state => state.positionReducer);
-  
     const [positionDialogOpen, setPositionDialogOpen] = useState(false);
     const [selectedPosition, setSelectedPosition] = useState(null);
     const [selectedPositionNos, setSelectedPositionNos] = useState({});
     const [isEditMode, setIsEditMode] = useState(false);
     const [newPosition, setNewPosition] = useState({ positionName: "", positionLevel: "", authority: "", positionStatus: "Y" });
 
+
     console.log(useSelector(state => state.positionReducer));
     
+
     useEffect(() => {
         dispatch(callAllPositionsAPI());
     }, []);
@@ -35,13 +36,13 @@ function Positions() {
         setSelectedPosition(position);
         onDialogClickHandler(); // 다이얼로그 열기
     }
+
+
     const handleRadioClick = (positionNo, status) => {
         setSelectedPositionNos(prevState => ({
             ...prevState,
             [positionNo]: status
         }));
-
-
     };
 
 
@@ -69,16 +70,15 @@ function Positions() {
         setIsEditMode(false);
         setNewPosition({ positionName: "", positionLevel: "", authority: "" });
      dispatch(callAllPositionsAPI());
-       
     }
 
     const deletePosition = async (positionNo) => {
         const confirmed = window.confirm('해당직급 사원이 없을경우에만 삭제 가능합니다.\n정말 삭제하시겠습니까? '); // 사용자에게 확인 다이얼로그 표시
-    
         if (confirmed) { // 사용자가 확인을 눌렀을 때만 삭제 진행
             await dispatch(callDeletePositionAPI(positionNo));
             await dispatch(callAllPositionsAPI());
         }
+
     }
 
     
@@ -90,7 +90,7 @@ function Positions() {
             <main id="main">
                 <div>
                     <br />
-                    <h2>직급 목록</h2>
+                    <h2>직급관리</h2>
                     <ButtonGroup buttons={[{ label: '등록', styleClass: 'move', onClick: handleEditModeToggle }]} />
                     <br />
                     <br />
@@ -111,7 +111,7 @@ function Positions() {
                                 <tr key={position?.positionNo}>
                                     <td>
                                         <Radio
-                                            name={`positionStatus-${position?.positionNo}`}
+                                          
                                             checked={position.positionStatus === 'N'}
                                             onClick={
                                                 () => dispatch(callUpdatePositionStatusAPI(position.positionNo))
@@ -121,7 +121,7 @@ function Positions() {
                                     </td>
                                     <td>
                                         <Radio
-                                            name={`positionStatus-${position?.positionNo}`}
+                                          
                                             checked={position.positionStatus === 'Y'}
                                             onClick={
                                                 () => dispatch(callUpdatePositionStatusAPI(position.positionNo))
