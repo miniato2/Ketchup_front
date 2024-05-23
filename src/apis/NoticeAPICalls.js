@@ -20,6 +20,10 @@ export function callGetNoticeListAPI({currentPage, title, setTotalItems}) {
             const normalNotices = result?.data?.data?.normalNotices?.content || [];
             const totalItems = result?.data?.data?.normalNotices?.totalElements || {};
 
+            console.log(fixedNotices);
+            console.log(normalNotices);
+            console.log(totalItems);
+
             console.log("callGetNoticeListAPI [ totalItems : ", totalItems);
             setTotalItems(totalItems); // totalItems를 setTotalItems 함수를 통해 전달
 

@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import AppLine from "../../components/approvals/AppLine";
 import RefLine from "../../components/approvals/RefLine";
 import Style from "./Approvals.module.css"
-import ReactQuill from "react-quill";
 import { useNavigate, useParams } from "react-router-dom";
 import { callAppAPI, callUpdateApprovalAPI } from "../../apis/ApprovalAPICalls";
 import { decodeJwt } from "../../utils/tokenUtils";
+import { Editor } from '@tinymce/tinymce-react';
 
 function ApprovalDetail() {
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
@@ -16,10 +16,9 @@ function ApprovalDetail() {
     const navigate = useNavigate();
     const [appAction, setAppAction] = useState('');
     const [refusal, setRefusal] = useState('');
+    const editorRef = useRef(null);
 
-    console.log('상세', approval)
-
-    const quillRef = useRef(null);
+    console.log('상세', approval);
 
     useEffect(() => {
         dispatch(callAppAPI({ approvalNo: param.approvalNo }));
@@ -38,8 +37,7 @@ function ApprovalDetail() {
             action: '회수'
         }
         dispatch(callUpdateApprovalAPI(appUpdate, approval.approvalNo))
-        .then(() => navigate(`/approvals`, { replace: false }));
-        //돌아가면 카테고리별 문서 수 다시 안불러옴 수정 필요
+            .then(() => navigate(`/approvals`, { replace: false }));
     }
 
     const onClickSubmitHandler = () => {
@@ -53,8 +51,8 @@ function ApprovalDetail() {
             alert('반려 사유를 입력해주세요');
         } else {
             try {
-                dispatch(callUpdateApprovalAPI(appUpdate, approval.approvalNo));
-                navigate(`/approvals`, { replace: false });
+                dispatch(callUpdateApprovalAPI(appUpdate, approval.approvalNo))
+                    .then(() => navigate(`/approvals`, { replace: false }));
             } catch {
                 alert('에러');
             }
@@ -83,7 +81,13 @@ function ApprovalDetail() {
                             <tr>
                                 <th >첨부파일</th>
                                 <td >
-                                {Array.isArray(approval.appFileList) && approval.appFileList.map((item, index) => (<span><a href={`img/approvals/${item.fileUrl}`} download>{item.fileUrl}</a><br /></span>))}
+                                    {Array.isArray(approval.appFileList) &&
+                                        approval.appFileList.map((item, index) => (
+                                            <span>
+                                                <a href={`/img/approvals/${item.fileUrl}`} download>{item.fileUrl}</a><br />
+                                            </span>
+                                        ))
+                                    }
                                 </td>
                                 <th >기안자</th>
                                 <td>{approval.member.memberName}</td>
@@ -97,43 +101,82 @@ function ApprovalDetail() {
                         </tbody>
                     </table>
                     <h5>내용</h5>
-                    <ReactQuill
-                        style={{ height: "500px", margin1: "4px", overflowY: 'auto' }}
-                        ref={quillRef}
-                        readOnly
-                        theme="snow"
-                        modules={{toolbar:false}}
-                        value={approval.appContents}
-                        placeholder="내용을 입력하세요." />
-                    <br />
 
-                    {approval?.appLineList.find(item => item.alMember.memberNo === loginToken.memberNo) ?
+                    <Editor
+                        apiKey='gpny7ynxol7wh1ohidmu4i9q5rb68uahrrop6uo0m4ixs78c'
+                        initialValue={approval.appContents}
+                        init={{
+                            statusbar: false,
+                            resize: false,
+                            height: 700,
+                            menubar: false,
+                            plugins: [
+                                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount', 'table'
+                            ],
+                            toolbar: 'undo redo | blocks | ' +
+                                'bold italic forecolor | alignleft aligncenter ' +
+                                'alignright alignjustify | bullist numlist outdent indent | ' +
+                                'removeformat | help | ' +
+                                'table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol',
+                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                        }}
+                        disabled={true}
+                    />
+
+                    {approval?.appLineList.find(item => item.alMember.memberNo === loginToken.memberNo) || approval.appStatus === "반려" ?
                         <div>
                             <h5>처리</h5>
                             <table className={Style.appTable}>
                                 <tbody>
-                                    <tr>
-                                        <th width={'15%'}>구분</th>
-                                        <td width={'15%'} style={{ textAlign: 'center' }}>
-                                            <input type="radio" name="appRadio" id="appRadio1" onChange={() => setAppAction("결재")} />
-                                            <label for="appRadio1">승인</label>
-                                        </td>
-                                        <td width={'15%'} style={{ textAlign: 'center' }}>
-                                            <input type="radio" name="appRadio" id="appRadio2" onChange={() => setAppAction("반려")} />
-                                            <label for="appRadio2">반려</label>
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                    {appAction === "반려" &&
+                                    {approval?.appLineList.find(item => item.alMember.memberNo === loginToken.memberNo) ?
+                                        <tr>
+                                            <th width={'15%'}>구분</th>
+                                            <td width={'15%'} style={{ textAlign: 'center' }}>
+                                                <input
+                                                    type="radio" name="appRadio" id="appRadio1"
+                                                    onChange={() => setAppAction("결재")}
+                                                />
+                                                <label for="appRadio1">승인</label>
+                                            </td>
+                                            <td width={'15%'} style={{ textAlign: 'center' }}>
+                                                <input
+                                                    type="radio" name="appRadio" id="appRadio2"
+                                                    disabled={
+                                                        (approval?.appLineList.find((item) => item.alMember.memberNo === loginToken.memberNo)?.alType !== "전결")
+                                                    }
+                                                    onChange={() => setAppAction("전결")}
+                                                />
+                                                <label for="appRadio2">전결</label>
+                                            </td>
+                                            <td width={'15%'} style={{ textAlign: 'center' }}>
+                                                <input
+                                                    type="radio" name="appRadio" id="appRadio3"
+                                                    onChange={() => setAppAction("반려")}
+                                                />
+                                                <label for="appRadio3">반려</label>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        : null}
+                                    {appAction === "반려" || approval.appStatus === "반려" ?
                                         <tr>
                                             <th width={'15%'}>반려사유</th>
-                                            <td colSpan={3} style={{ padding: '5px 5px 5px 5px' }}>
-                                                <textarea style={{ resize: 'none', width: '100%', border: 'none' }} value={refusal} onChange={onChangeRefusalHandler}></textarea>
+                                            <td colSpan={4} style={{ padding: '5px 5px 5px 5px' }}>
+                                                <textarea
+                                                    style={{ resize: 'none', width: '100%', border: 'none' }}
+                                                    value={approval.appStatus === "반려" ? approval.refusal : refusal}
+                                                    readOnly={approval.appStatus === "반려"}
+                                                    onChange={onChangeRefusalHandler}
+                                                >
+                                                </textarea>
                                             </td>
-                                        </tr>}
+                                        </tr> : null}
                                 </tbody>
                             </table>
                         </div> : null}
+
                     <div className={Style.appBtn}>
                         <button className="back-btn" onClick={onClickListHandler}>목록</button>
 

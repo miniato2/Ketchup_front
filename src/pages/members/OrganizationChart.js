@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { callMembersAPI, callDepartmentsAPI, callPositionsAPI } from "../../apis/MemberAPICalls";
+import { callMembersAPI, callDepartmentsAPI, callPositionsAPI,callAllPositionsAPI } from "../../apis/MemberAPICalls";
 import { Table,Card,ListGroup } from "react-bootstrap";
 
 function OrganizationChart() {
@@ -12,7 +12,7 @@ function OrganizationChart() {
     useEffect(() => {
         dispatch(callMembersAPI());
         dispatch(callDepartmentsAPI());
-        dispatch(callPositionsAPI());
+        dispatch(callAllPositionsAPI());
     }, []);
 
     return (
