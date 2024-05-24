@@ -1,22 +1,26 @@
 import { Box, Dialog, DialogTitle, Typography } from "@mui/material";
 import ButtonGroup from "../../contents/ButtonGroup";
+import { callGetResourcesAPI } from "../../../apis/ResourceAPICalls";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-function DeleteModal({ onClose, onDelete }) {
+function DeleteModal({ onClose, onDelete, selectedItems, part }) {
 
     const handleCancel = () => {
-        onClose(); // 모달 닫기 함수 호출
+        onClose();
     };
 
-    const handleDelete = () => {
-        onDelete(); // 삭제 처리 함수 호출
-        onClose(); // 모달 닫기 함수 호출
+    const handleDelete = async () => {
+        onDelete();
+        onClose();
     };
 
     return (
 
         <Dialog open={true}>
             <Box p={6} justifyContent="flex-end" padding="40px" paddingBottom="20px">
-                <Typography variant="body1">한 번 삭제하면 다시 복구할 수 없습니다.</Typography>
+                <Typography variant="body1">{selectedItems.length}개의 {part === 'conferences' ? "회의실" : "차량"}이 선택되었습니다.</Typography>
+                <Typography variant="body1">예약 일정이 존재하는 {part === 'conferences' ? "회의실" : "차량"}이 있을 경우 모든 예약 일정이 삭제되며, 예약자에게 알람 메일이 전송됩니다.</Typography>
                 <Typography variant="body1">정말 삭제하시겠습니까?</Typography>
                 <br />
 

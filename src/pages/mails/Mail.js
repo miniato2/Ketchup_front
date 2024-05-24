@@ -81,7 +81,6 @@ function Mail() {
                             setCheckedItems={setReceiveMailNos}
                             searchCondition={searchCondition}
                             searchValue={searchValue}
-                            handleSearch={handleSearch}
                             isLoading={isLoading}
                             setIsLoading={setIsLoading} />
                         :

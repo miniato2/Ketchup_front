@@ -16,6 +16,9 @@ function MailContent({ content, part, mailNo }) {
     const [delMailList, setDelMailList] = useState([]);
     const contentFile = content.mailFiles || [];
 
+    console.log("💜💜💜💜💜💜");
+    console.log(content);
+
     useEffect(
         () => {
             if (delMailList.length != 0) {
@@ -55,6 +58,9 @@ function MailContent({ content, part, mailNo }) {
         <>
             {sendCancelModal && <SendCancelModal setSendCancelModal={setSendCancelModal} part={part} />}
             {deleteModal ? <MailDeleteModal setDeleteModal={setDeleteModal} part={part} delMailList={delMailList} setDelMailList={setDelMailList} /> : null}
+            {content.length === 0 ? (
+                <div></div>
+            ) : (
             <div>
                 <div>
                 {
@@ -100,7 +106,7 @@ function MailContent({ content, part, mailNo }) {
                 </div>
                 <hr />
                 <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content.mailContent) }} />
-            </div>
+            </div>)}
             {/* 답장 이전 메일 보여 주기 */}
             {/* {
                 content.replyMailNo != 0 ? <ReplyMailContent replyMailNo={content.replyMailNo} /> : null

@@ -1,11 +1,18 @@
+import { useDispatch } from "react-redux";
 import ButtonGroup from "../../contents/ButtonGroup";
+import { callGetResourcesAPI } from "../../../apis/ResourceAPICalls";
+import { useParams } from "react-router-dom";
 
 function RscDetailContent({setModal, setUpdateClick, resourceDetail}) {
-    const buttonClick = (label) => {
+    const {part} = useParams();
+    const dispatch = useDispatch();
+
+    const buttonClick = async (label) => {
         if(label == "수정") {
             setUpdateClick(true);
         }else if(label == "취소") {
             setModal(false);
+            await dispatch(callGetResourcesAPI(part));
         }
     };
 
