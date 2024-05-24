@@ -105,8 +105,8 @@ function Main() {
     const noticeList = result?.noticelist?.noticesWithMemberNames || [];
 
     const formattedNoticeList = noticeList
-        .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
-        .slice(0, 3)
+            .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
+            .slice(0, 3)
         .map(item => ({
             ...item,
             noticeTitle: (
@@ -213,7 +213,9 @@ function Main() {
                                 customButtons={{
                                     moreButton: {
                                         text: '더보기',
-                                        click: function () { alert("더보기 버튼이 정상적으로 클릭되었습니다. '일정' 페이지로 이동시킬 예정입니다."); }
+                                        click: function () {
+                                            navigate('/calendar');
+                                        }
                                     }
                                 }}
                                 themeSystem='bootstrap'
