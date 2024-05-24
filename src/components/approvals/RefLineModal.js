@@ -5,8 +5,9 @@ import { useEffect, useState } from 'react';
 import { callMembersAPI } from '../../apis/MemberAPICalls';
 import { decodeJwt } from "../../utils/tokenUtils";
 
-function RefLineModal({ setModalControl, refLine,setRefLine }) {
+function RefLineModal({ setModalControl, refLine, setRefLine }) {
     const column = ['번호', '부서', '이름', '직급'];
+    const [search, setSearch] = useState('');
 
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const dispatch = useDispatch();
@@ -23,8 +24,7 @@ function RefLineModal({ setModalControl, refLine,setRefLine }) {
 
     useEffect(() => {
         dispatch(callMembersAPI());
-        console.log('refLine', refLine[0].refMember.memberNo)
-        if(refLine[0].refMember.memberNo !== ''){
+        if (refLine[0]?.refMember.memberNo !== '') {
             setSelectedRefList(refLine);
         }
     }, [])
@@ -40,6 +40,23 @@ function RefLineModal({ setModalControl, refLine,setRefLine }) {
         return groupedMembers;
     }; //부서별로그룹
 
+    const filteredGroupByDepartment = () => {
+        const groupedMembers = groupByDepartment();
+        const filteredGroups = {};
+
+        Object.entries(groupedMembers).forEach(([department, members]) => {
+            const filteredMembers = members.filter(member =>
+                member.memberName.toLowerCase().includes(search.toLowerCase())
+            );
+
+            if (filteredMembers.length > 0) {
+                filteredGroups[department] = filteredMembers;
+            }
+        });
+
+        return filteredGroups;
+    }; //부서별 그룹 + 검색
+
     const onClickList = (member) => {
         setSelectedMember({
             refMember: member
@@ -47,7 +64,7 @@ function RefLineModal({ setModalControl, refLine,setRefLine }) {
     }
 
     const onDoubleClickList = (member) => {
-        if(!selectedRefList.find(item => item.refMember.memberNo === member.memberNo) && member.memberNo !== loginToken.memberNo){
+        if (!selectedRefList.find(item => item.refMember.memberNo === member.memberNo) && member.memberNo !== loginToken.memberNo) {
             setSelectedRefList([
                 ...selectedRefList,
                 {
@@ -63,7 +80,7 @@ function RefLineModal({ setModalControl, refLine,setRefLine }) {
     }
 
     const onClickAddButton = () => {
-        if ( selectedMember.refMember.memberNo !== loginToken.memberNo &&
+        if (selectedMember.refMember.memberNo !== loginToken.memberNo &&
             selectedMember.refMember.memberNo !== '' &&
             !selectedRefList.find(item => item.refMember.memberNo === selectedMember.refMember.memberNo)) {
             setSelectedRefList([
@@ -93,6 +110,10 @@ function RefLineModal({ setModalControl, refLine,setRefLine }) {
         setModalControl({ appLineModal: false, refLineModal: false });
     }
 
+    const onClickRemoveSearch = () => {
+        setSearch('');
+    }
+
     return (
         <div className={AppModalCss.appModal}>
             <div className={AppModalCss.appModalBox}>
@@ -101,16 +122,20 @@ function RefLineModal({ setModalControl, refLine,setRefLine }) {
                     <div >
                         <h5>조직도</h5>
                         <div className={AppModalCss.members}>
+                            <div class="search-form d-flex align-items-center" style={{ marginBottom: '0px', position: 'sticky', top: '0px' }}>
+                                <input type="text" name="search" placeholder="이름을 입력하세요" value={search} onChange={(e) => setSearch(e.target.value)} />
+                                <button type="button" title="SearchBtn" onClick={onClickRemoveSearch}><i class='bi bi-x'></i></button>
+                            </div>
                             <ul>
-                                {Object.entries(groupByDepartment()).map(([department, members]) => (
+                                {Object.entries(filteredGroupByDepartment()).map(([department, members]) => (
                                     <li key={department}>
-                                        <h5 style={{marginTop: '5px',marginBottom: '0px'}}>{department}</h5>
+                                        <h5 style={{ marginTop: '5px', marginBottom: '0px' }}>{department}</h5>
                                         <ul>
                                             {members.map((member, index) => (
                                                 <li key={member.memberNo}
                                                     onClick={() => onClickList(member)}
                                                     onDoubleClick={() => onDoubleClickList(member)}
-                                                    className={selectedMember.refMember.memberNo === member.memberNo ? AppModalCss.selectedLi : ''}
+                                                    className={selectedMember && selectedMember.refMember.memberNo === member.memberNo ? AppModalCss.selectedLi : ''}
                                                 >
                                                     {member.memberName}
                                                     &nbsp;

@@ -9,7 +9,8 @@ import RefLineModal from "../../components/approvals/RefLineModal";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Editor } from '@tinymce/tinymce-react';
-// import AppAlert from "../../components/approvals/AppAlert";
+import AppAlert from "../../components/approvals/AppAlert";
+import { Dialog } from "@mui/material";
 
 
 function InsertApproval() {
@@ -124,28 +125,32 @@ function InsertApproval() {
         //   });
 
         if (appLine[0].alMember.memberNo === '') {
-            alert('결재선을 지정해 주세요');
+            // alert('결재선을 지정해 주세요');
             setAlertModal({message: <>결재선을 지정하지 않았습니다. <br />결재선을 지정해 주세요.</>, isOn: true});
             btnref.current.focus();
             //결재선
         } else if (formNo === 0) {
-            alert('양식을 선택해 주세요');
+            // alert('양식을 선택해 주세요');
+            setAlertModal({message: <>양식을 선택하지 않았습니다. <br />양식을 선택해 주세요.</>, isOn: true});
             formref.current.focus();
             //양식
         } else if (appTitle.trim() === '') {
-            alert('제목을 입력해 주세요');
+            // alert('제목을 입력해 주세요');
+            setAlertModal({message: <>제목을 입력하지 않았습니다. <br />제목을 입력해 주세요.</>, isOn: true});
             titleref.current.focus();
             //제목
         } else if (appContents.trim() === '') {
-            alert('내용을 입력해 주세요');
-            conref.current.focus();
+            // alert('내용을 입력해');
+            setAlertModal({message: <>내용을 입력하지 않았습니다. <br />내용을 입력해 주세요.</>, isOn: true});
+            conref.current.focus(); // 포커스가 안잡힘
             //내용
         } else {
             try {
                 dispatch(callInsertAppAPI({ form: formData }))
                     .then(() => navigate(`/approvals`, { replace: false }));
             } catch {
-                alert('에러');
+                // alert('에러');
+                setAlertModal({message: <>등록에 실패하였습니다.</>, isOn: true});
             }
             //예외처리는 다시하자
         };
@@ -197,12 +202,12 @@ function InsertApproval() {
                     </tr>
                 </tbody>
             </table>
-            <h5>내용</h5>
 
+            <h5>내용</h5>
             <Editor
                 apiKey='gpny7ynxol7wh1ohidmu4i9q5rb68uahrrop6uo0m4ixs78c'
                 initialValue={formValue}
-                onInit={(editor) => conref.current = editor}
+                onInit={(evt, editor) => conref.current = editor}
                 init={{
                     statusbar: false,
                     resize: false,
@@ -211,7 +216,7 @@ function InsertApproval() {
                     plugins: [
                         'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                         'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount', 'table'
+                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
                     ],
                     toolbar: 'undo redo | blocks | ' +
                         'bold italic forecolor | alignleft aligncenter ' +
@@ -228,7 +233,9 @@ function InsertApproval() {
                 <button className="move-btn" onClick={onClickInsertApprovalHandler}>등록</button>
             </div>
 
-            {/* {alertModal.isOn? <AppAlert alertModal={alertModal} setAlertModal={setAlertModal}/>: null} */}
+            <Dialog open={alertModal.isOn} onClose={() => setAlertModal({isOn: false})}>
+                <AppAlert alertModal={alertModal} setAlertModal={setAlertModal}/>   
+            </Dialog>
 
         </main>
     )

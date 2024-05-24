@@ -10,11 +10,13 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
     const dispatch = useDispatch();
     const memberList = useSelector(state => state.memberReducer); //전체 사원
 
+    const [search, setSearch] = useState('');
+
     const [selectedMember, setSelectedMember] = useState({
-        alMember : {
+        alMember: {
             memberNo: '', memberName: '',
-            position: {positionName: ''},
-            department: {depName: ''}
+            position: { positionName: '' },
+            department: { depName: '' }
         },
         alType: '',
         alSequence: ''
@@ -31,17 +33,31 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
         return groupedMembers;
     }; //부서별로그룹
 
+    const filteredGroupByDepartment = () => {
+        const groupedMembers = groupByDepartment();
+        const filteredGroups = {};
+
+        Object.entries(groupedMembers).forEach(([department, members]) => {
+            const filteredMembers = members.filter(member =>
+                member.memberName.toLowerCase().includes(search.toLowerCase())
+            );
+
+            if (filteredMembers.length > 0) {
+                filteredGroups[department] = filteredMembers;
+            }
+        });
+
+        return filteredGroups;
+    }; //부서별 그룹 + 검색
+
     const [selectedAppList, setSelectedAppList] = useState([]); //결재선
     const [count, setCount] = useState(1); //결재순서
 
     const column = ['순번', '부서', '이름', '직급', '구분'];
 
-    console.log('========================',selectedAppList);
-
-
     useEffect(() => {
         dispatch(callMembersAPI());
-        if(appLine[0].sequence !== ''){
+        if (appLine[0].sequence !== '') {
             setSelectedAppList(appLine);
             setCount(appLine.length + 1);
         }
@@ -56,8 +72,7 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
     }
 
     const onDoubleClickList = (member) => {
-        console.log('member ================',member)
-        if(!selectedAppList.find(item => item.alMember.memberNo === member.memberNo) && member.memberNo !== loginToken.memberNo){
+        if (!selectedAppList.find(item => item.alMember.memberNo === member.memberNo) && member.memberNo !== loginToken.memberNo) {
             setSelectedAppList([
                 ...selectedAppList,
                 {
@@ -80,8 +95,8 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
     }
 
     const onClickAddButton = () => {
-        if ( selectedMember.alMember.memberNo !== loginToken.memberNo && 
-            selectedMember.alMember.memberNo !== '' && 
+        if (selectedMember.alMember.memberNo !== loginToken.memberNo &&
+            selectedMember.alMember.memberNo !== '' &&
             !selectedAppList.find(item => item.alMember.memberNo === selectedMember.alMember.memberNo)) {
             setSelectedAppList([
                 ...selectedAppList,
@@ -125,14 +140,17 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
     }
 
     const onClickSubmit = () => { //저장 버튼
-        if(selectedAppList.length < 2){
+        if (selectedAppList.length < 2) {
             alert("최소 두명 이상 지정해 주세요");
-        }else{
+        } else {
             setAppLine(selectedAppList);
             setModalControl({ appLineModal: false, refLineModal: false });
         }
     }
 
+    const onClickRemoveSearch = () => {
+        setSearch('');
+    }
     return (
         <div className={AppModalCss.appModal}>
             <div className={AppModalCss.appModalBox}>
@@ -141,16 +159,21 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
                     <div>
                         <h5>조직도</h5>
                         <div className={AppModalCss.members}>
+                            <div class="search-form d-flex align-items-center" style={{ marginBottom: '0px', position:'sticky', top:'0px'}}>
+                                    <input type="text" name="search" placeholder="이름을 입력하세요" value={search} onChange={(e) => setSearch(e.target.value)} />
+                                    <button type="button" title="SearchBtn" onClick={onClickRemoveSearch}><i class='bi bi-x'></i></button>
+                            </div>
+
                             <ul>
-                                {Object.entries(groupByDepartment()).map(([department, members]) => (
+                                {Object.entries(filteredGroupByDepartment()).map(([department, members]) => (
                                     <li key={department}>
-                                        <h5 style={{marginTop: '5px',marginBottom: '0px'}}>{department}</h5>
+                                        <h5 style={{ marginTop: '5px', marginBottom: '0px' }}>{department}</h5>
                                         <ul>
                                             {members.map((member, index) => (
                                                 <li key={member.memberNo}
                                                     onClick={() => onClickList(member)}
                                                     onDoubleClick={() => onDoubleClickList(member)}
-                                                    className={selectedMember.alMember.memberNo === member.memberNo ? AppModalCss.selectedLi : ''}
+                                                    className={selectedMember && selectedMember.alMember.memberNo === member.memberNo ? AppModalCss.selectedLi : ''}
                                                 >
                                                     {member.memberName}
                                                     &nbsp;
@@ -161,6 +184,7 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
                                     </li>
                                 ))}
                             </ul>
+
                         </div>
                     </div>
                     <div className={AppModalCss.btnDiv}>
@@ -171,31 +195,31 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
                     <div >
                         <h5>결재자</h5>
                         <div className={AppModalCss.appMem}>
-                        <table className={Style.appTable}>
-                            <thead>
-                                <tr>
-                                    {column.map((item) => (
-                                        <th scope='col' key={item} style={{width: '20%'}}>{item}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {!!selectedAppList && selectedAppList.map((item) => (
+                            <table className={Style.appTable}>
+                                <thead>
                                     <tr>
-                                        <td>{item.sequence}</td>
-                                        <td>{item.alMember.department.depName}</td>
-                                        <td>{item.alMember.memberName}</td>
-                                        <td>{item.alMember.position.positionName}</td>
-                                        <td>
-                                            <select onChange={(e) => onChangeType(item, e)}>
-                                                <option value={'일반'}>일반</option>
-                                                <option value={'전결'}>전결</option>
-                                            </select>
-                                        </td>
+                                        {column.map((item) => (
+                                            <th scope='col' key={item} style={{ width: '20%' }}>{item}</th>
+                                        ))}
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {!!selectedAppList && selectedAppList.map((item) => (
+                                        <tr>
+                                            <td>{item.sequence}</td>
+                                            <td>{item.alMember.department.depName}</td>
+                                            <td>{item.alMember.memberName}</td>
+                                            <td>{item.alMember.position.positionName}</td>
+                                            <td>
+                                                <select onChange={(e) => onChangeType(item, e)} style={{ border: 'none' }}>
+                                                    <option value={'일반'}>일반</option>
+                                                    <option value={'전결'}>전결</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
