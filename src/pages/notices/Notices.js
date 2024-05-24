@@ -66,6 +66,7 @@ const Notices = () => {
 
   const handleRowClick = (index) => {
     const noticeNo = mergedNoticeList[index].noticeNo;
+    console.log("noticeNo : ", noticeNo);
     navigate(`/notices/${noticeNo}`);
   };
 

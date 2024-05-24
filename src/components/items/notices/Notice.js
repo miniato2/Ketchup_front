@@ -8,12 +8,14 @@ import DOMPurify from "isomorphic-dompurify"
 import { decodeJwt } from "../../../utils/tokenUtils";
 import { BsMegaphone } from "react-icons/bs";
 import DeleteModal from "../boards/DeleteModal";
-import { Dialog, DialogTitle } from "@mui/material";
+import { Dialog } from "@mui/material";
 
 function Notice({ noticeNo }) {
+    console.log("Notice [ noticeNo ] : ", noticeNo);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const notice = useSelector(state => state.noticeReducer.notice);
+    console.log("Notice [ notice ] : ", notice);
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const [deleteModal, setDeleteModal] = useState(false);
 
@@ -74,21 +76,9 @@ function Notice({ noticeNo }) {
         }
     }
 
-    const noticeTitle = (
-        <span>
-            {notice.notice.noticeFix === 'Y' && (
-                <>
-                    [ 필독  <BsMegaphone style={{ color: '#EC0B0B' }} /> ]
-                </>
-            )}
-            {notice.notice.noticeTitle}
-        </span>
-    );
-
     if (!notice) {
         return <div>로딩 중...</div>;
     }
-
 
     return (
         <>
@@ -108,7 +98,16 @@ function Notice({ noticeNo }) {
                 </div>
                 <div className="row">
                     <div className="col-lg-12" style={{ borderBottom: '0.5px solid lightgray' }}>
-                        <h2 style={loginToken && loginToken.memberNo !== notice.memberInfo.memberNo ? { marginTop: '30px' } : {}}>{noticeTitle}</h2>
+                        <h2 style={loginToken && loginToken.memberNo !== notice.memberInfo.memberNo ? { marginTop: '30px' } : {}}>
+                            <span>
+                                {notice.notice.noticeFix === 'Y' && (
+                                    <>
+                                        [ 필독  <BsMegaphone style={{ color: '#EC0B0B' }} /> ]&nbsp;
+                                    </>
+                                )}
+                                {notice.notice.noticeTitle}
+                            </span>
+                        </h2>
                         <div style={{ marginBottom: '30px' }}>
                             <img src={`/img/${notice.memberInfo.imgUrl}`} width="30" height="30" alt="profile" />&nbsp;
                             <span className="">{notice.memberInfo.memberName}</span>&nbsp;
