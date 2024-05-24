@@ -9,10 +9,9 @@ import resourceReducer from "./ResourceModule";
 import departmentReducer from "./DepartmentModule";
 import positionReducer from "./PositionModule";
 import boardReducer from "./BoardModule";
+import commentReducer from "./CommentModule";
 
 const rootReducer = combineReducers({
-    // userReducer,
-    // menuReducer
     noticeReducer,
     memberReducer,
     scheduleReducer,
@@ -22,7 +21,8 @@ const rootReducer = combineReducers({
     resourceReducer,
     departmentReducer,
     positionReducer,
-    boardReducer
+    boardReducer,
+    commentReducer
 });
 
 export default rootReducer;

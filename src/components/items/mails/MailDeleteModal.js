@@ -9,6 +9,10 @@ function MailDeleteModal({ setDeleteModal, part, delMailList, setDelMailList }) 
     const result = useSelector(state => state.mailReducer);
     const deleteMail = result.deletemail || [];
     const dispatch = useDispatch();
+    console.log("🎄🎄🎄🎄🎄🎄🎄");
+    console.log(delMailList);
+    console.log("🎨🎨🎨🎨🎨🎨");
+    console.log(deleteMail);
 
     const navigate = useNavigate();
 
@@ -21,13 +25,13 @@ function MailDeleteModal({ setDeleteModal, part, delMailList, setDelMailList }) 
         } else if (label === "확인") {
             if (part === "receive") {
                 await dispatch(callGetReceiveMailAPI());
-            }else if(part === "send") {
+            } else if (part === "send") {
                 await dispatch(callGetSendMailAPI());
             }
             setDeleteModal(false);
-            setDelMailList([]);
             navigate(`/mails/${part}`);
         }
+        setDelMailList([]);
     };
 
     const deleteButtons = [
@@ -39,7 +43,7 @@ function MailDeleteModal({ setDeleteModal, part, delMailList, setDelMailList }) 
         { label: "확인", styleClass: "move", onClick: () => buttonClick("확인") }
     ];
 
-    const delModalContent = delMailList.length != 0 ?
+    const delModalContent = delMailList.length > 0 ?
         (
             deleteMail > 0 ?
                 (
@@ -68,12 +72,8 @@ function MailDeleteModal({ setDeleteModal, part, delMailList, setDelMailList }) 
         );
 
     return (
-        // <div className="modal-back">
-        //     {delModalContent}
-        // </div>
-
         <Dialog open={true}>
-           {delModalContent}
+            {delModalContent}
         </Dialog>
     );
 }

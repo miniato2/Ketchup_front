@@ -160,7 +160,7 @@ function Boards() {
 
     const result = useSelector(state => state.boardReducer);
     const boardList = result.boardlist || [];
-    const departments = useSelector(state => state.departmentReducer);
+    const departments = useSelector(state => state.departmentReducer) || [];
 
     const [totalItems, setTotalItems] = useState(0);
     const [selectedDepartment, setSelectedDepartment] = useState(null);
@@ -240,9 +240,9 @@ function Boards() {
                 <h2>자료실</h2>
                 {userRole === 'LV3' && (
                     <div>
-                        <select onChange={handleDepartmentChange} value={selectedDepartment}>
-                            <option value={null}>부서 선택</option>
-                            {departments.map(department => (
+                        <select style={{ border: "none", padding: 10}} onChange={handleDepartmentChange} value={selectedDepartment}>
+                            <option value="">부서 선택</option>
+                            {departments.length > 0 && departments.map(department => (
                                 <option key={department.depNo} value={department.depNo}>{department.depName}</option>
                             ))}
                         </select>
@@ -267,7 +267,7 @@ function Boards() {
                     {formattedBoardList.length === 0 && (
                         <>
                             <BootstrapTable data={formattedBoardList} columns={columns} onRowClick={handleRowClick} />
-                            <p style={{ textAlign: 'center' }}>'{searchKeyword}' 제목 게시물이 없습니다.</p>
+                            <p style={{ textAlign: 'center' }}>{searchKeyword} 게시물이 없습니다.</p>
                         </>
                     )}
 
