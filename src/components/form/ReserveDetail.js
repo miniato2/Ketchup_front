@@ -13,11 +13,13 @@ const reserverName = token?.memberName;
 
 export default function ReserveDetail({ selectedReserve, closeDetailDialog, setOpenDeleteConfirm, existingReserves }) {
     // 선생님께 질문
+    console.log("selectedReserve???", selectedReserve);
     const [multiline, setMultiline] = useState(false);
     const [updateChecked, setUpdateChecked] = useState(false);
     const [updatedReserveData, setUpdatedReserveData] = useState({
         rsvNo: selectedReserve.rsvNo,
-        reserver: selectedReserve.extendedProps.reserver,
+        reserverId: selectedReserve.extendedProps.reserverId,
+        reserverName: selectedReserve.extendedProps.reserverName,
         rsvDescr: selectedReserve.rsvDescr,
         rsvStartDttm: moment(selectedReserve.start).format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
         rsvEndDttm: moment(selectedReserve.end).format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
@@ -65,13 +67,13 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog, setO
     };
 
     const isReserver = () => {
-        return reserverId === selectedReserve.extendedProps.reserver;
+        return reserverId === selectedReserve.extendedProps.reserverId;
     };
 
     useEffect(() => {
         setUpdatedReserveData({
             rsvNo: selectedReserve.rsvNo,
-            reserver: selectedReserve.extendedProps.reserver,
+            reserverId: selectedReserve.extendedProps.reserver,
             rsvDescr: selectedReserve.title,
             rsvStartDttm: moment(selectedReserve.start).format("YYYY-MM-DDTHH:mm"),
             rsvEndDttm: moment(selectedReserve.end).format("YYYY-MM-DDTHH:mm"),
@@ -168,7 +170,7 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog, setO
                                         <PersonOutlinedIcon fontSize="medium" />
                                         <Typography variant="body1" sx={{ ml: 1 }}>예약자:</Typography>
                                     </Box>
-                                    <Typography variant="body1" sx={{ ml: 3.7 }}>{reserverName}</Typography>
+                                    <Typography variant="body1" sx={{ ml: 3.7 }}>{selectedReserve.extendedProps.reserverName}</Typography>
                                 </Box>
                             </Grid>
                             <Grid item xs={12}>
@@ -216,7 +218,7 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog, setO
                                         <PersonOutlinedIcon fontSize="medium" />
                                         <Typography variant="body1" sx={{ ml: 1 }}>예약자:</Typography>
                                     </Box>
-                                    <Typography variant="body1" sx={{ ml: 3.7 }}>{reserverName}</Typography>
+                                    <Typography variant="body1" sx={{ ml: 3.7 }}>{selectedReserve.extendedProps.reserverName}</Typography>
                                 </Box>
                             </Grid>
                             <Grid item xs={12} mt={5}>

@@ -13,7 +13,8 @@ const reserverName = token?.memberName;
 
 export default function InsertReserveForm({ onInsertCancelHandler, selectedResource, existingReserves }) {
     const [newReserveData, setNewReserveData] = useState({
-        reserver: reserverId,
+        reserverId: reserverId,
+        reserverName: reserverName,
         rsvDescr: "",
         rsvStartDttm: "",
         rsvEndDttm: "",
@@ -54,6 +55,7 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
             ...newReserveData,
             [name]: value
         });
+        console.log("newReserveData???????????", newReserveData);
 
         setTouched({
             ...touched,
@@ -114,6 +116,7 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
         }
 
         try {
+            console.log("등록하기 직전의 newReserveData!!!!!!!!", newReserveData);
             insertReserveAPI(newReserveData);
             alert("예약이 정상적으로 등록되었습니다.");
         } catch (error) {

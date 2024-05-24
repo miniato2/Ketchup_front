@@ -88,7 +88,8 @@ export default function Reserve() {
                     id: reserve.rsvNo,
                     extendedProps: {
                         rsvDescr: reserve.rsvDescr,
-                        reserver: reserve.reserver,
+                        reserverId: reserve.reserverId,
+                        reserverName: reserve.reserverName,
                         resources: {
                             rscNo: rscNo,
                             rscCategory: rscCategory,
