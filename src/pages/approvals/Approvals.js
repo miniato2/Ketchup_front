@@ -31,7 +31,7 @@ function Approvals() {
         case 1: statusList = ['대기', '진행']; break;
         case 2: statusList = ['완료', '반려', '회수']; break;
         case 3: statusList = ['대기', '진행']; break;
-        case 4: break;
+        case 4: statusList = ['대기', '진행', '완료', '반려']; break;
         default : break;
     };
 
