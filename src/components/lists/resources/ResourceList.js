@@ -2,17 +2,21 @@ import { useState } from "react";
 import { Table } from "react-bootstrap";
 import RscModal from "../../items/resources/RscModal";
 import { Dialog } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { callGetResourcesAPI } from "../../../apis/ResourceAPICalls";
 
 function ResourceList({ list, part, selectedItems, setSelectedItems }) {
     const [modal, setModal] = useState(false);
     const [selectRscNo, setSelectRscNo] = useState(null);
+    const dispatch = useDispatch();
 
     const openRscDetail = async (index) => {
+        await dispatch(callGetResourcesAPI(part))
         setSelectRscNo(list[index].rscNo);
         setModal(true);
     };
 
-    const handleCheckboxChange = (index) => {
+    const handleCheckChange = (index) => {
         const selectedItem = list[index].rscNo;
         if (selectedItems.includes(selectedItem)) {
             setSelectedItems(selectedItems.filter(item => item !== selectedItem));
@@ -27,7 +31,6 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
 
     return (
         <>
-            {modal && <RscModal setModal={setModal} selectRscNo={selectRscNo} part={part} />}
             <div class="card-body">
                 <Table>
                     <colgroup>
@@ -80,16 +83,16 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
                                 <td>
                                     <input
                                         type="checkbox"
-                                        onChange={() => handleCheckboxChange(index)}
+                                        onChange={() => handleCheckChange(index)}
                                         checked={selectedItems.includes(rsc.rscNo)} />
                                 </td>
-                                <td>{rsc.rscNo}</td>
+                                <td>{index + 1}</td>
                                 <td>{rsc.rscName}</td>
                                 <td>{rsc.rscInfo}</td>
                                 <td>{rsc.rscCap}명</td>
                                 <td>{rsc.rscIsAvailable ? "사용 가능" : "사용 불가능"}</td>
                                 <td>
-                                    <button className="back-btn" onClick={() => openRscDetail(index)}>상세</button>
+                                    <button className="back-btn m-auto" onClick={() => openRscDetail(index)}>상세</button>
                                 </td>
                             </tr>
                         ))
@@ -97,9 +100,6 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
                     </tbody>
                 </Table>
             </div>
-
-            {/* {modal && <RscModal setModal={setModal} selectRscNo={selectRscNo} part={part} />} */}
-
             <Dialog open={modal} onClose={() => setModal(false)}>
                 <RscModal setModal={setModal} selectRscNo={selectRscNo} part={part} />
             </Dialog>

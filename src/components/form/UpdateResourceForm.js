@@ -1,8 +1,8 @@
 import { useDispatch } from "react-redux";
-import { callGetResourcesAPI, callPutResourceAPI } from "../../apis/ResourceAPICalls";
+import { callGetResourceDetailAPI, callPutResourceAPI } from "../../apis/ResourceAPICalls";
 import ButtonGroup from "../contents/ButtonGroup";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function UpdateResourceForm({ setUpdateClick, resourceDetail, selectRscNo }) {
     const dispatch = useDispatch();
@@ -12,9 +12,10 @@ function UpdateResourceForm({ setUpdateClick, resourceDetail, selectRscNo }) {
         rscDescr: resourceDetail.rscDescr
     });
 
-    const buttonClick = (label) => {
+    const buttonClick = async (label) => {
         if (label == "저장") {
             submitRscUpdate();
+            await dispatch(callGetResourceDetailAPI(selectRscNo));
             setUpdateClick(false);
         } else if (label == "취소") {
             setUpdateClick(false);
@@ -72,7 +73,7 @@ function UpdateResourceForm({ setUpdateClick, resourceDetail, selectRscNo }) {
                             <label htmlFor="vehicleNum">차량 번호</label>
                             <input
                                 type="text"
-                                placeholder={resourceDetail.vehicleNum}
+                                placeholder={resourceDetail.rscInfo}
                                 readOnly /> <br />
                         </>
                     )}
