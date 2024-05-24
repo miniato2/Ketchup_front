@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import AppLine from "../../components/approvals/AppLine";
 import RefLine from "../../components/approvals/RefLine";
 import Style from "./Approvals.module.css"
@@ -16,7 +16,6 @@ function ApprovalDetail() {
     const navigate = useNavigate();
     const [appAction, setAppAction] = useState('');
     const [refusal, setRefusal] = useState('');
-    const editorRef = useRef(null);
 
     console.log('상세', approval);
 
@@ -115,11 +114,7 @@ function ApprovalDetail() {
                                 'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
                                 'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount', 'table'
                             ],
-                            toolbar: 'undo redo | blocks | ' +
-                                'bold italic forecolor | alignleft aligncenter ' +
-                                'alignright alignjustify | bullist numlist outdent indent | ' +
-                                'removeformat | help | ' +
-                                'table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol',
+                            toolbar: false,
                             content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                         }}
                         disabled={true}

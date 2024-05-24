@@ -17,26 +17,6 @@ export default function ScheduleForm({ newScheduleData, onInsertCancelHandler, h
                         '& .MuiTextField-root': { m: 1, width: '20ch' }
                     }}>
                         <ListItem sx={{ px: 0, flex: 1 }}>
-                            <ListItemText sx={{ maxWidth: 100 }}>일정 번호</ListItemText>
-                            <TextField
-                                label="일정 번호"
-                                variant="outlined"
-                                name="skdNo"
-                                value={newScheduleData.skdNo}
-                                onChange={handleInputChange}
-                            />
-                        </ListItem>
-                        <ListItem sx={{ px: 0, flex: 1 }}>
-                            <ListItemText sx={{ maxWidth: 100 }}>부서 번호</ListItemText>
-                            <TextField
-                                label="부서 번호"
-                                variant="outlined"
-                                name="dptNo"
-                                value={newScheduleData.dptNo}
-                                onChange={handleInputChange}
-                            />
-                        </ListItem>
-                        <ListItem sx={{ px: 0, flex: 1 }}>
                             <ListItemText sx={{ maxWidth: 100 }}>일정 이름</ListItemText>
                             <Box sx={{
                                 '& .MuiTextField-root': { m: 1, width: '20ch' }
