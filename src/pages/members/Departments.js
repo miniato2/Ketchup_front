@@ -1,4 +1,4 @@
-import { callDepartmentsAPI, callAllDepartmentsAPI, callMembersAPI } from "../../apis/MemberAPICalls";
+import { callDepartmentsAPI, callAllDepartmentsAPI, callMembersAPI, callAddDepartmentAPI } from "../../apis/MemberAPICalls";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { Table, ToggleButtonGroup } from "react-bootstrap";
@@ -11,8 +11,9 @@ import ButtonGroup from "../../components/contents/ButtonGroup";
 function Departments() {
     const dispatch = useDispatch();
     const departmentsList = useSelector(state => state.departmentReducer);
-    const memberList = useSelector(state => state.memberReducer);
-    console.log('맴버리스트',memberList);
+
+  
+
     console.log('부서리스트',departmentsList);
 
     const [isEditMode, setIsEditMode] = useState(false);
@@ -50,7 +51,7 @@ function Departments() {
     }
 
     const addDepartment = async () => {
-        // await dispatch(callAddDepartment(newDepartment));
+        await dispatch(callAddDepartmentAPI(newDepartment));
         setIsEditMode(false);
         await dispatch(callAllDepartmentsAPI());
     }
@@ -103,8 +104,7 @@ function Departments() {
                     </Table>
                     {isEditMode &&
                                 <div>
-                                    <input style={{ marginLeft: 400 }} type="text" name="depName" placeholder="부서명을 입력해주세요" onChange={handleInputChange} />
-                                    <input style={{ marginLeft: 200 }} type="text" name="leader" placeholder="팀장을 입력해주세요" onChange={handleInputChange} />
+                                    <input style={{ marginLeft: 650 }} type="text" name="depName" placeholder="부서명을 입력해주세요" onChange={handleInputChange} />
                                     <button style={{ marginLeft: 55 }} onClick={cancelEdit}>취소</button>
                                     <button style={{ marginLeft: 55 }} onClick={addDepartment}>추가</button>
                                 </div>

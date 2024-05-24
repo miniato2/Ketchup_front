@@ -1,5 +1,5 @@
 import { GET_MEMBER, GET_MEMBERS, POST_LOGIN, POST_REGISTER, PUT_MEMBERS} from '../modules/MemberModule';
-import { GET_DEPARTMENTS } from '../modules/DepartmentModule';
+import { GET_DEPARTMENTS, POST_DEPARTMENTS } from '../modules/DepartmentModule';
 import { GET_POSITIONS ,POST_POSITIONS, DELETE_POSITIONS, PUT_POSITIONS} from '../modules/PositionModule';
 import { request,multipartRequest } from './Api';
 import { useNavigate } from 'react-router-dom';
@@ -319,3 +319,16 @@ export function callUpdatePositionStatusAPI(positionNo) {
     };
 }
 
+export function callAddDepartmentAPI (form) {
+    
+    console.log('=========API 진행중=========', form);
+
+    return async (dispatch,getState) => {
+        const result = await request('POST','/signupDep',form);
+       
+
+        dispatch({type: POST_DEPARTMENTS, payload: result.data})
+
+    };
+
+}
