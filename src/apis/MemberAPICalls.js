@@ -1,5 +1,5 @@
 import { GET_MEMBER, GET_MEMBERS, POST_LOGIN, POST_REGISTER, PUT_MEMBERS} from '../modules/MemberModule';
-import { GET_DEPARTMENTS } from '../modules/DepartmentModule';
+import { GET_DEPARTMENTS, POST_DEPARTMENTS } from '../modules/DepartmentModule';
 import { GET_POSITIONS ,POST_POSITIONS, DELETE_POSITIONS, PUT_POSITIONS} from '../modules/PositionModule';
 import { request,multipartRequest } from './Api';
 import { useNavigate } from 'react-router-dom';
@@ -151,12 +151,12 @@ export function callResignMemberAPI(memberNo,statusData) {
 
 
 export function callDepartmentsAPI() {
-    console.log("=============전체 부서 호출=============");
+    console.log("=============사용중 부서 호출=============");
 
     return async (dispatch, getState) => {
       
         const result = await request('GET', '/noPageDeps');
-        console.log("전체 부서 호출 API 결과:   ", result.data);
+        console.log("사용중 부서 호출 API 결과:   ", result.data);
 
         dispatch({ type: GET_DEPARTMENTS, payload: result.data});
     };
@@ -167,7 +167,7 @@ export function callPositionsAPI() {
 
     return async (dispatch,getState) => {
         const result = await request('GET','/noPagePositions');
-        console.log("전체 직급 호출 API 결과:  ", result.data);
+        console.log("사용중 직급 호출 API 결과:  ", result.data);
 
         dispatch({type: GET_POSITIONS, payload: result.data})
 
@@ -183,6 +183,19 @@ export function callAllPositionsAPI() {
         console.log("전체 직급 호출 API 결과:  ", result.data);
 
         dispatch({type: GET_POSITIONS, payload: result.data})
+
+    };
+
+}
+
+export function callAllDepartmentsAPI() {
+    console.log("============전체 부서 호출==============");
+
+    return async (dispatch,getState) => {
+        const result = await request('GET','/Deps');
+        console.log("전체 직급 호출 API 결과:  ", result.data);
+
+        dispatch({type: GET_DEPARTMENTS, payload: result.data})
 
     };
 
@@ -306,3 +319,16 @@ export function callUpdatePositionStatusAPI(positionNo) {
     };
 }
 
+export function callAddDepartmentAPI (form) {
+    
+    console.log('=========API 진행중=========', form);
+
+    return async (dispatch,getState) => {
+        const result = await request('POST','/signupDep',form);
+       
+
+        dispatch({type: POST_DEPARTMENTS, payload: result.data})
+
+    };
+
+}
