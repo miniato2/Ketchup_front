@@ -1,11 +1,11 @@
 import { deleteResource, getResourcedetail, getResources, postResources, putResource } from "../modules/ResourceModule";
 import { request } from "./Api";
 
-export function callGetResourcesAPI(part) {
+export function callGetResourcesAPI(part, currentPage) {
     console.log("getResources api call...");
 
     return async (dispatch, getState) => {
-        const result = await request('GET', `/resources?part=${part}`);
+        const result = await request('GET', `/resources?part=${part}&offset=${currentPage}`);
         console.log(result.data);
 
         dispatch(getResources(result.data));

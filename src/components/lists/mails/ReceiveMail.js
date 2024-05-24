@@ -5,10 +5,11 @@ import MailTable from "../../items/mails/MailTable";
 import { useNavigate, useParams } from "react-router-dom";
 import FormatDateTime from "../../contents/FormatDateTime";
 
-function ReceiveMail({ checkedItems, setCheckedItems, searchCondition, searchValue, handleSearch, isLoading, setIsLoading }) {
+function ReceiveMail({ checkedItems, setCheckedItems, searchCondition, searchValue, isLoading, setIsLoading }) {
     const { part } = useParams();
     const [sortedMail, setSortedMail] = useState([]);
     const result = useSelector(state => state.mailReducer);
+    console.log(result);
     const receiveMail = result && result.receivemail && result.receivemail.length > 0 ? result.receivemail : null;
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -41,6 +42,8 @@ function ReceiveMail({ checkedItems, setCheckedItems, searchCondition, searchVal
 
     const handleRowClick = (index) => async () => {
         const mailNo = receiveMail[index]?.mailNo;
+        console.log("🎐🎐🎐🎐🎐🎐🎐🎐");
+        console.log(mailNo);
 
         navigate(`/mails/detail/${mailNo}`, { state: { part } });
     };

@@ -35,7 +35,8 @@ function SendMail({ checkedItems, setCheckedItems, searchCondition, searchValue,
     const columns = [
         ['mailTitle', '제목'],
         ['receiverName', '수신자'],
-        ['sendMailTime', '발신일시']
+        ['sendMailTime', '발송 일시'],
+        ['sendCancelStatus', '발송 취소']
     ];
 
     const handleRowClick = (index) => () => {
