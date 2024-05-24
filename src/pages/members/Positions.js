@@ -19,6 +19,7 @@ function Positions() {
     const [isEditMode, setIsEditMode] = useState(false);
     const [newPosition, setNewPosition] = useState({ positionName: "", positionLevel: "", authority: "", positionStatus: "Y" });
 
+
     console.log(useSelector(state => state.positionReducer));
 
     useEffect(() => {
@@ -79,6 +80,7 @@ function Positions() {
             await dispatch(callDeletePositionAPI(positionNo));
             await dispatch(callAllPositionsAPI());
         }
+
     }
 
 
@@ -87,7 +89,7 @@ function Positions() {
             <main id="main">
                 <div>
                     <br />
-                    <h2>직급 목록</h2>
+                    <h2>직급관리</h2>
                     <ButtonGroup buttons={[{ label: '등록', styleClass: 'move', onClick: handleEditModeToggle }]} />
                     <br />
                     <br />
@@ -108,7 +110,7 @@ function Positions() {
                                 <tr key={position?.positionNo}>
                                     <td>
                                         <Radio
-                                            name={`positionStatus-${position?.positionNo}`}
+                                          
                                             checked={position.positionStatus === 'N'}
                                             onClick={
                                                 () => dispatch(callUpdatePositionStatusAPI(position.positionNo))
@@ -118,7 +120,7 @@ function Positions() {
                                     </td>
                                     <td>
                                         <Radio
-                                            name={`positionStatus-${position?.positionNo}`}
+                                          
                                             checked={position.positionStatus === 'Y'}
                                             onClick={
                                                 () => dispatch(callUpdatePositionStatusAPI(position.positionNo))
