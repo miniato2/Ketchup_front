@@ -5,18 +5,21 @@ import MailTable from "../../items/mails/MailTable";
 import { useNavigate, useParams } from "react-router-dom";
 import FormatDateTime from "../../contents/FormatDateTime";
 
-function ReceiveMail({ checkedItems, setCheckedItems, searchCondition, searchValue }) {
+function ReceiveMail({ checkedItems, setCheckedItems, searchCondition, searchValue, isLoading, setIsLoading }) {
     const { part } = useParams();
     const [sortedMail, setSortedMail] = useState([]);
     const result = useSelector(state => state.mailReducer);
+    console.log(result);
     const receiveMail = result && result.receivemail && result.receivemail.length > 0 ? result.receivemail : null;
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     useEffect(
         () => {
-            dispatch(callGetReceiveMailAPI(searchCondition, searchValue));
-        }, [dispatch, searchCondition, searchValue]
+            setIsLoading(true);
+            dispatch(callGetReceiveMailAPI(searchCondition, searchValue))
+                .finally(() => setIsLoading(false));
+        }, [dispatch]
     );
 
     useEffect(() => {
@@ -39,6 +42,8 @@ function ReceiveMail({ checkedItems, setCheckedItems, searchCondition, searchVal
 
     const handleRowClick = (index) => async () => {
         const mailNo = receiveMail[index]?.mailNo;
+        console.log("🎐🎐🎐🎐🎐🎐🎐🎐");
+        console.log(mailNo);
 
         navigate(`/mails/detail/${mailNo}`, { state: { part } });
     };
@@ -51,7 +56,9 @@ function ReceiveMail({ checkedItems, setCheckedItems, searchCondition, searchVal
                 onRowClick={handleRowClick}
                 part={part}
                 checkedItems={checkedItems}
-                setCheckedItems={setCheckedItems} />
+                setCheckedItems={setCheckedItems}
+                isLoading={isLoading}
+                setIsLoading={setIsLoading} />
         </div>
     );
 }

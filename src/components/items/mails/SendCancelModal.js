@@ -4,6 +4,8 @@ import ButtonGroup from "../../contents/ButtonGroup";
 import { useDispatch, useSelector } from "react-redux";
 import { callGetMailDetailAPI, callPutSendMailCancel } from "../../../apis/MailAPICalls";
 import { useNavigate, useParams } from "react-router-dom";
+import { Dialog } from "@mui/material";
+import { Box } from "@mui/system";
 
 function SendCancelModal({ setSendCancelModal, part }) {
     const { mailNo } = useParams();
@@ -24,7 +26,7 @@ function SendCancelModal({ setSendCancelModal, part }) {
             }
         } else if (label === "확인") {
             setSendCancelModal(false);
-            navigate(`/mails/detail/${mailNo}`, {state: {part}});
+            navigate(`/mails/detail/${mailNo}`, { state: { part } });
             await dispatch(callGetMailDetailAPI(mailNo, part));
         }
     };
@@ -58,16 +60,24 @@ function SendCancelModal({ setSendCancelModal, part }) {
     );
 
     return (
-        <div className="modal-back">
-            <div className="modal-box">
-                <div className="modal-content">
-                    {modalContent}
-                </div>
-                <>
-                    {modalButton}
-                </>
-            </div>
-        </div>
+
+        <Dialog open={true}>
+            <Box p={6} justifyContent="flex-end" padding="40px" paddingBottom="20px">
+                {modalContent}
+                <br />
+                {modalButton}
+            </Box >
+        </Dialog>
+        // <div className="modal-back">
+        //     <div className="modal-box">
+        //         <div className="modal-content">
+        //             {modalContent}
+        //         </div>
+        //         <>
+        //             {modalButton}
+        //         </>
+        //     </div>
+        // </div>
     );
 }
 

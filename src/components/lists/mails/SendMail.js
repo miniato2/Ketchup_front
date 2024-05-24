@@ -5,7 +5,7 @@ import MailTable from "../../items/mails/MailTable";
 import { useNavigate, useParams } from "react-router-dom";
 import FormatDateTime from "../../contents/FormatDateTime";
 
-function SendMail({ checkedItems, setCheckedItems, searchCondition, searchValue }) {
+function SendMail({ checkedItems, setCheckedItems, searchCondition, searchValue, isLoading, setIsLoading }) {
     const { part } = useParams();
     const [sortedMail, setSortedMail] = useState([]);
     const result = useSelector(state => state.mailReducer);
@@ -15,7 +15,9 @@ function SendMail({ checkedItems, setCheckedItems, searchCondition, searchValue 
 
     useEffect(
         () => {
-            dispatch(callGetSendMailAPI(searchCondition, searchValue));
+            setIsLoading(true);
+            dispatch(callGetSendMailAPI(searchCondition, searchValue))
+                .finally(() => setIsLoading(false));
         }, [dispatch, searchCondition, searchValue]
     );
 
@@ -33,7 +35,8 @@ function SendMail({ checkedItems, setCheckedItems, searchCondition, searchValue 
     const columns = [
         ['mailTitle', '제목'],
         ['receiverName', '수신자'],
-        ['sendMailTime', '발신일시']
+        ['sendMailTime', '발송 일시'],
+        ['sendCancelStatus', '발송 취소']
     ];
 
     const handleRowClick = (index) => () => {
@@ -50,7 +53,9 @@ function SendMail({ checkedItems, setCheckedItems, searchCondition, searchValue 
                 onRowClick={handleRowClick}
                 part={part}
                 checkedItems={checkedItems}
-                setCheckedItems={setCheckedItems} />
+                setCheckedItems={setCheckedItems}
+                isLoading={isLoading}
+                setIsLoading={setIsLoading} />
         </div>
     );
 }

@@ -1,17 +1,22 @@
 import { useState } from "react";
 import { Table } from "react-bootstrap";
 import RscModal from "../../items/resources/RscModal";
+import { Dialog } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { callGetResourcesAPI } from "../../../apis/ResourceAPICalls";
 
 function ResourceList({ list, part, selectedItems, setSelectedItems }) {
     const [modal, setModal] = useState(false);
     const [selectRscNo, setSelectRscNo] = useState(null);
+    const dispatch = useDispatch();
 
     const openRscDetail = async (index) => {
+        await dispatch(callGetResourcesAPI(part))
         setSelectRscNo(list[index].rscNo);
         setModal(true);
     };
 
-    const handleCheckboxChange = (index) => {
+    const handleCheckChange = (index) => {
         const selectedItem = list[index].rscNo;
         if (selectedItems.includes(selectedItem)) {
             setSelectedItems(selectedItems.filter(item => item !== selectedItem));
@@ -20,9 +25,12 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
         }
     };
 
+    if (list === undefined) {
+        list = [];
+    }
+
     return (
         <>
-            {modal && <RscModal setModal={setModal} selectRscNo={selectRscNo} />}
             <div class="card-body">
                 <Table>
                     <colgroup>
@@ -37,7 +45,7 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
                     <thead>
                         <tr style={{ textAlign: 'center' }}>
                             <th>
-                            <input
+                                <input
                                     type="checkbox"
                                     onChange={() => {
                                         const allChecked = list.length === selectedItems.length;
@@ -66,32 +74,35 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {list.length > 0 ? (list.map((rsc, index) =>
+                        {list.length === 0 ? (
+                            <tr>
+                                <td colspan="7">등록된 {part === 'conferences' ? "회의실" : "차량"}이 없습니다.</td>
+                            </tr>
+                        ) : (list.map((rsc, index) =>
                             <tr key={index} className="rsc-tr">
                                 <td>
                                     <input
                                         type="checkbox"
-                                        onChange={() => handleCheckboxChange(index)}
+                                        onChange={() => handleCheckChange(index)}
                                         checked={selectedItems.includes(rsc.rscNo)} />
                                 </td>
-                                <td>{rsc.rscNo}</td>
+                                <td>{index + 1}</td>
                                 <td>{rsc.rscName}</td>
                                 <td>{rsc.rscInfo}</td>
                                 <td>{rsc.rscCap}명</td>
                                 <td>{rsc.rscIsAvailable ? "사용 가능" : "사용 불가능"}</td>
                                 <td>
-                                    <button className="back-btn" onClick={() => openRscDetail(index)}>상세</button>
+                                    <button className="back-btn m-auto" onClick={() => openRscDetail(index)}>상세</button>
                                 </td>
                             </tr>
-                        )) : (
-                            <tr>
-                                <td colspan="7">등록된 {part === 'conferences' ? "회의실" : "차량"}이 없습니다.</td>
-                            </tr>
-                        )
-                    }
+                        ))
+                        }
                     </tbody>
                 </Table>
             </div>
+            <Dialog open={modal} onClose={() => setModal(false)}>
+                <RscModal setModal={setModal} selectRscNo={selectRscNo} part={part} />
+            </Dialog>
         </>
     );
 }

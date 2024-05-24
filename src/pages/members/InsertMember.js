@@ -1,25 +1,25 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { callRegisterAPI, callDepartmentsAPI, callPositionsAPI } from "../../apis/MemberAPICalls";
+import { callRegisterAPI, callDepartmentsAPI, callPositionsAPI, callAllPositionsAPI } from "../../apis/MemberAPICalls";
 import { useEffect } from "react";
 import DaumPostcodeEmbed from "react-daum-postcode";
 
 
 
 function InsertMember() {
-   
+
     const departments = useSelector(state => state.departmentReducer);
     const positions = useSelector(state => state.positionReducer);
-   
 
-   
+
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [selectedBank, setSelectedBank] = useState('국민');
 
-    
+
     const [validationMessage, setValidationMessage] = useState({
         privateEmail: '',
         memberName: '',
@@ -31,7 +31,7 @@ function InsertMember() {
 
 
     });
-    
+
 
     const [isOpen, setIsOpen] = useState(false);
     const [form, setForm] = useState({
@@ -65,7 +65,7 @@ function InsertMember() {
 
 
     useEffect(() => {
-       
+
         generateMemberNo();
         dispatch(callDepartmentsAPI());
         dispatch(callPositionsAPI());
@@ -177,8 +177,8 @@ function InsertMember() {
 
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
-        const final = selectedBank+"  "+ value;
-       
+        const final = selectedBank + "  " + value;
+
 
 
 
@@ -295,25 +295,25 @@ function InsertMember() {
             }
         }
 
-       
+
 
 
         setForm({
             ...form,
-                [e.target.name]: (e.target.name === 'account') ? final : e.target.value
+            [e.target.name]: (e.target.name === 'account') ? final : e.target.value
         });
 
-        
+
 
     };
 
 
-    const bankHandler = async(e) => {
+    const bankHandler = async (e) => {
         setSelectedBank(e.target.value);
-       
+
     };
 
-    
+
 
     return (
 
@@ -521,6 +521,9 @@ function InsertMember() {
                         >
                             등록
                         </button>
+                        {Object.values(validationMessage).some(msg => msg !== 'ok!') && (
+                            <p style={{ color: 'red', marginLeft: 700, fontSize: 13 }}>입력값을 확인하세요.</p>
+                        )}
 
 
                     </span>

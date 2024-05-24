@@ -14,11 +14,15 @@ const SearchBarValue = ({ searchCondition, setSearchCondition, searchValue, setS
         e.preventDefault();
         onSearch({ condition: searchCondition, value: searchValue });
     };
-
+    
     return (
-        <div className="search-bar">
+        <div className="search-bar mail-search">
             <form className="search-form d-flex align-items-center" onSubmit={handleSubmit}>
-                <select className="form-select" name="searchCondition" value={searchCondition} onChange={handleChange}>
+                <select 
+                    className="form-select search-condition" 
+                    name="searchCondition" 
+                    value={searchCondition} 
+                    onChange={handleChange}>
                     <option value="">검색 조건</option>
                     <option value="mailTitle">제목</option>
                 </select>

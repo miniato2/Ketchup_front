@@ -6,7 +6,7 @@ function Sidebar() {
 
     const location = useLocation();
 
-    const isOrganizationActive = location.pathname === '/organizationChart' || location.pathname.startsWith('/departments') || location.pathname.startsWith('/positions');
+    const isOrganizationActive = location.pathname.startsWith('/deparpments') || location.pathname.startsWith('/positions');
     const isResourceManagementNav = location.pathname.startsWith('/resources/conferences') ||  location.pathname.startsWith('/resources/vehicles');
 
     return (
@@ -53,7 +53,7 @@ function Sidebar() {
                     </NavLink>
                 </li>
                 <li class="nav-item">
-                <a className={isOrganizationActive ? "nav-link active-link" : "nav-link collapsed"} data-bs-toggle="collapse" data-bs-target="#organization-nav">
+                    <a className={isOrganizationActive ? "nav-link active-link" : "nav-link collapsed"} data-bs-toggle="collapse" data-bs-target="#organization-nav">
                         <i className="bi bi-diagram-3"></i><span>조직</span><i className="bi bi-chevron-down ms-auto"></i>
                     </a>
                     <ul id="organization-nav" className="nav-content collapse" data-bs-parent="#organization-parent">

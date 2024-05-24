@@ -142,19 +142,19 @@ function MyPage(){
                
 </label>
 
-
+                <br></br>
                 <span>
                 <button
-                  style={{ border: 'none', margin: 0, fontSize: '10px', height: '30px', padding: '5px', cursor: 'pointer',marginLeft:'700px'}}
+                   style={{ marginLeft: '600px', borderRadius: 5, width: 120, borderWidth: 0, height: 40  }}
                     onClick = { onClickBackHandler }
                 >
                     돌아가기
                 </button>
                 <button
-                  style={{backgroundColor: 'red', color: 'white', border: 'none',  fontSize: '10px', height: '30px', padding: '5px', cursor: 'pointer',marginLeft:'10px'}}
+                 style={{ marginLeft: '10px', borderRadius: 5, width: 120, borderWidth: 0, height: 40,backgroundColor: 'red',color: 'white'  }}
                     onClick = { onClickBackHandler }
                 >
-                    비밀번호 수정
+                    비밀번호수정
                 </button>
                 </span>
             </div>

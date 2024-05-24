@@ -61,7 +61,7 @@ function Main() {
     useEffect(() => {
         const currentPage = 1; // 현재 페이지를 1로 설정하거나, 다른 값으로 설정 가능
         const title = ''; // 검색할 제목이 없으면 빈 문자열로 설정
-        const setTotalItems = () => {}; // 빈 함수 설정
+        const setTotalItems = () => { }; // 빈 함수 설정
         dispatch(callGetNoticeListAPI({ currentPage, title, setTotalItems }));
 
         const fetchSchedules = () => {
@@ -105,8 +105,8 @@ function Main() {
     const noticeList = result?.noticelist?.noticesWithMemberNames || [];
 
     const formattedNoticeList = noticeList
-    .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
-    .slice(0, 3)
+            .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
+            .slice(0, 3)
         .map(item => ({
             ...item,
             noticeTitle: (
@@ -156,9 +156,12 @@ function Main() {
                     {/* 메인 환영 */}
                     <div className="pagetitle col-lg-12">
                         <div id="mainbox" className="p-4 p-md-5 mb-4 rounded text-body-emphasis" style={{ backgroundColor: "rgb(236, 11, 11, 0.17)" }}>
-                            <div className="col-lg-6 px-0">
-                                <h1 className="display-1" style={{ fontSize: "45px" }}>안녕하세요, {loginToken.memberName} 사원님!</h1>
-                                <h2 className="lead my-3" style={{ fontSize: "30px" }}>오늘 하루도 화이팅하세요🤩</h2>
+                            <div style={{ display: "flex", margin: -15}}>
+                                <div className="col-lg-6 px-0">
+                                    <h1 className="display-1" style={{ fontSize: "45px" }}>안녕하세요, {loginToken.memberName} 사원님!</h1>
+                                    <h2 className="lead my-3" style={{ fontSize: "30px" }}>오늘 하루도 화이팅하세요🤩</h2>
+                                </div>
+                                    <img src="images/mainImage.png" style={{marginLeft: 80,width:"500px" ,height: "200px"}}></img>
                             </div>
                         </div>
                     </div>
@@ -210,7 +213,9 @@ function Main() {
                                 customButtons={{
                                     moreButton: {
                                         text: '더보기',
-                                        click: function () { alert("더보기 버튼이 정상적으로 클릭되었습니다. '일정' 페이지로 이동시킬 예정입니다."); }
+                                        click: function () {
+                                            navigate('/calendar');
+                                        }
                                     }
                                 }}
                                 themeSystem='bootstrap'

@@ -4,6 +4,8 @@ import { request } from "./Api";
 // 받은 메일
 export function callGetReceiveMailAPI(searchCondition, searchValue) {
     console.log("getReceivemail api call...");
+    console.log("➰➰➰➰➰➰➰➰➰");
+    console.log(searchCondition + "/" + searchValue);
 
     return async (dispatch, getState) => {
         let url = '/mails?part=receive';
@@ -43,13 +45,20 @@ export function callGetSendMailAPI(searchCondition, searchValue) {
         console.log(result.data);
 
         const receiveMailName = await Promise.all(result.data.map(async (mail) => {
-            const memberNames = await Promise.all(mail.receivers.map(async (receiver) => {
+            const memberInfos = await Promise.all(mail.receivers.map(async (receiver) => {
                 const memberInfoResult = await request('GET', `/members/${receiver.receiverMem}`);
 
-                return memberInfoResult.data.memberName;
+                let readString = '';
+                if(receiver.readTime != null) {
+                    readString = "읽음";
+                }else {
+                    readString = "안읽음";
+                }
+                
+                return { name: memberInfoResult.data.memberName, readTime: readString, dep: memberInfoResult.data.position.positionName };
             }));
-            const formattedMemberNames = memberNames.join(', ');
-            return { ...mail, receiverName: formattedMemberNames };
+            
+            return { ...mail, receiverName: memberInfos };
         }));
 
         dispatch(getSendmail(receiveMailName));
@@ -62,7 +71,7 @@ export function callGetMailDetailAPI(mailNo, part) {
 
     return async (dispatch, getState) => {
         const result = await request('GET', `/mails/${mailNo}`);
-        console.log(result.data);
+        console.log(result);
 
         if (part === 'receive') {
             const memberInfoResult = await request('GET', `/members/${result.data.senderMem}`);

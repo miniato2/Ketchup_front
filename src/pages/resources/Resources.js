@@ -5,70 +5,86 @@ import { callDeleteResourceAPI, callGetResourcesAPI } from "../../apis/ResourceA
 import ResourceList from "../../components/lists/resources/ResourceList";
 import ButtonGroup from "../../components/contents/ButtonGroup";
 import RscRegistModal from "../../components/items/resources/RscRegistModal";
+import DeleteModal from "../../components/items/boards/DeleteModal";
+import { Dialog } from "@mui/material";
+import PaginationButtons from "../../components/contents/PaginationButtons";
 
 function Resources() {
     const { part } = useParams();
     const result = useSelector(state => state.resourceReducer);
-    const resourceList = result.resourcelist;
+    const resourceList = result.resourcelist?.data;
     const dispatch = useDispatch();
     const [registModal, setRegistModal] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
 
     console.log("💙💙💙💙💙💙💙");
-    console.log(resourceList);
+    console.log(resourceList?.totalElements);
 
     useEffect(
         () => {
-            dispatch(callGetResourcesAPI(part));
-        }, [dispatch, part]
+            dispatch(callGetResourcesAPI(part, currentPage));
+        }, [dispatch, part, currentPage]
     );
 
     const buttons = [
-        { label: "삭제", styleClass: "back", onClick: () => buttonClick("삭제") },
-        { label: "등록", styleClass: "move", onClick: () => buttonClick("등록") }
+        { label: "삭제", styleClass: "back", onClick: () => setDeleteModal(true) },
+        { label: "등록", styleClass: "move", onClick: () => setRegistModal(true) }
     ];
 
-    const buttonClick = (label) => {
-        if (label == "등록") {
-            setRegistModal(true);
-        } else if (label == "삭제") {
-            rscDelete();
-        }
-    };
-
-    const rscDelete = () => {
-        dispatch(callDeleteResourceAPI(selectedItems));
-        console.log("선택된 항목을 삭제합니다:", selectedItems);
+    const rscDelete = async () => {
+        await dispatch(callDeleteResourceAPI(selectedItems));
         setSelectedItems([]);
+        await dispatch(callGetResourcesAPI(part, currentPage));
     };
 
     return (
         <>
-            {registModal && <RscRegistModal setRegistModal={setRegistModal} part={part} />}
             <main id="main" className="main">
                 <div className="title">
                     {part === 'conferences' ? <h2>회의실</h2> : <h2>차량</h2>}
                 </div>
-                {!resourceList && resourceList === 0 ? (
+                {!Array.isArray(resourceList) && resourceList === 0 ? (
                     <div>
                         <h5 className="text-center my-5">자원 관리 권한이 없습니다.</h5>
                     </div>
                 ) : (
-                        <>
-                            <div>
-                                <ButtonGroup buttons={buttons} />
-                            </div>
-                            <div>
-                                <ResourceList
-                                    list={resourceList}
-                                    part={part}
-                                    selectedItems={selectedItems}
-                                    setSelectedItems={setSelectedItems} />
-                            </div>
-                        </>
-                    )
-                }
+                    <>
+                        <div>
+                            <ButtonGroup buttons={buttons} />
+                        </div>
+                        <div>
+                            <ResourceList
+                                list={resourceList?.content}
+                                part={part}
+                                selectedItems={selectedItems}
+                                setSelectedItems={setSelectedItems} />
+                            <PaginationButtons
+                                totalItems={resourceList?.totalElements}
+                                itemsPerPage={10}
+                                currentPage={currentPage}
+                                onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
+                        </div>
 
+                        <Dialog open={registModal} onClose={() => setRegistModal(false)}>
+                            <RscRegistModal
+                                setRegistModal={setRegistModal}
+                                part={part}
+                            />
+                        </Dialog>
+
+                        <Dialog open={deleteModal} onClose={() => setDeleteModal(false)}>
+                            <DeleteModal
+                                onClose={setDeleteModal}
+                                onDelete={rscDelete}
+                                selectedItems={selectedItems}
+                                part={part}
+                            />
+                        </Dialog>
+                    </>
+                )
+                }
             </main>
         </>
     );
