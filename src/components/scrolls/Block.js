@@ -8,7 +8,7 @@ const Block = ({ itemId, children }) => {
       style={{
         display: "inline-block",
         whiteSpace: "normal",
-        width: "300px",
+        width: "400px",
         margin: "0 10px",
         verticalAlign: "top",
       }}

@@ -190,7 +190,7 @@ export default function Reserve() {
                     }
 
                     return (
-                        <Box key={rscNo} height="480px" width="100%">
+                        <Box key={rscNo}  >
                             <Typography textAlign="center" variant="h4">{resource.rscName}</Typography>
                             <Table>
                                 <TableRow>
@@ -232,7 +232,7 @@ export default function Reserve() {
     return (
         <main id="main" className="main">
             <Box p={2}>
-                <Grid container spacing={3} alignItems="center" mt={2} mb={4} sx={{ backgroundColor: "rgb(236, 11, 11, 0.17)", borderRadius: "10px", height: "230px" }}>
+                <Grid container spacing={3} alignItems="center" mt={1} mb={4} sx={{ backgroundColor: "rgb(236, 11, 11, 0.17)", borderRadius: "10px", height: "230px" }}>
                     <Grid item xs={12}>
                         <h1 style={{ marginTop: 15 }}>자원예약</h1>
                     </Grid>
@@ -258,6 +258,7 @@ export default function Reserve() {
                 )}
             </Box>
 
+            {/* 유효성 검사 알림창 */}
             <Snackbar
                 anchorOrigin={{ vertical, horizontal }}
                 style={{ marginTop: '45px' }}
@@ -271,24 +272,26 @@ export default function Reserve() {
             </Snackbar>
 
             {/* 등록 폼 */}
-            <Dialog open={insertReserveDialogOpen} onClose={onInsertCancelHandler}>
+            <Dialog open={insertReserveDialogOpen} onClose={onInsertCancelHandler} fullWidth maxWidth="md" PaperProps={{ sx: { borderRadius: "10px" } }}>
                 <InsertReserveForm
                     onInsertCancelHandler={onInsertCancelHandler}
                     selectedResource={selectedResource}
+                    existingReserves={reserveData.filter(reserve => reserve.extendedProps.resources.rscNo === selectedResource.rscNo)}
                 />
             </Dialog>
 
             {/* 상세조회 */}
-            <Dialog open={detailDialogOpen} onClose={closeDetailDialog}>
+            <Dialog open={detailDialogOpen} onClose={closeDetailDialog} fullWidth maxWidth="md" PaperProps={{ sx: { borderRadius: "10px" } }}>
                 <ReserveDetail
                     closeDetailDialog={closeDetailDialog}
                     selectedReserve={selectedReserve}
                     setOpenDeleteConfirm={setOpenDeleteConfirm}
+                    existingReserves={reserveData.filter(reserve => reserve.extendedProps.resources.rscNo === selectedResource.rscNo)}
                 />
             </Dialog>
 
             {/* 삭제 폼 */}
-            <Dialog open={openDeleteConfirm} onClose={onCloseDeleteConfirm}>
+            <Dialog open={openDeleteConfirm} onClose={onCloseDeleteConfirm} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: "10px" } }}>
                 <DeleteReserveForm
                     onCloseDeleteConfirm={onCloseDeleteConfirm}
                     selectedReserve={selectedReserve}
