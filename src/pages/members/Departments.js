@@ -1,4 +1,4 @@
-import { callDepartmentsAPI, callAllDepartmentsAPI } from "../../apis/MemberAPICalls";
+import { callDepartmentsAPI, callAllDepartmentsAPI, callMembersAPI } from "../../apis/MemberAPICalls";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { Table, ToggleButtonGroup } from "react-bootstrap";
@@ -11,11 +11,14 @@ import ButtonGroup from "../../components/contents/ButtonGroup";
 function Departments() {
     const dispatch = useDispatch();
     const departmentsList = useSelector(state => state.departmentReducer);
+    const memberList = useSelector(state => state.memberReducer);
+    console.log('맴버리스트',memberList);
+    console.log('부서리스트',departmentsList);
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [newDepartment, setNewDepartment] = useState({
 
-        number: '15',
+      
         status: 'Y'
 
     });
@@ -24,6 +27,7 @@ function Departments() {
     useEffect(
         () => {
             dispatch(callAllDepartmentsAPI());
+            dispatch(callMembersAPI());
         }, []
 
     );
@@ -67,7 +71,7 @@ function Departments() {
                                 <th>사용</th>
                                 <th>부서번호</th>
                                 <th>부서명</th>
-                                <th>팀장</th>
+                                <th>인원수</th>
                                 <th>부서수정</th>
                                 <th>부서삭제</th>
 
@@ -88,7 +92,7 @@ function Departments() {
                                     </td>
                                     <td>{department.depNo}</td>
                                     <td>{department.depName}</td>
-                                    <td>{department.leader}</td>
+                                    <td>{department.memberCount}</td>
                                     <td><button>수정</button></td>
                                     <td><button>삭제</button></td>
                                 </tr>
