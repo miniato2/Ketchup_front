@@ -15,7 +15,7 @@ function Notice({ noticeNo }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const notice = useSelector(state => state.noticeReducer.notice);
-    console.log("Notice [ notice ] : ", notice);
+
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const [deleteModal, setDeleteModal] = useState(false);
 
