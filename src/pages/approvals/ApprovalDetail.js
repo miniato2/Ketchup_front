@@ -7,6 +7,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { callAppAPI, callUpdateApprovalAPI } from "../../apis/ApprovalAPICalls";
 import { decodeJwt } from "../../utils/tokenUtils";
 import { Editor } from '@tinymce/tinymce-react';
+import { Dialog } from "@mui/material";
+import AppAlert from "../../components/approvals/AppAlert";
 
 function ApprovalDetail() {
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
@@ -16,6 +18,11 @@ function ApprovalDetail() {
     const navigate = useNavigate();
     const [appAction, setAppAction] = useState('');
     const [refusal, setRefusal] = useState('');
+
+    const [alertModal, setAlertModal] = useState({
+        message: '',
+        isOn: false,
+    }); //alert modal
 
     console.log('상세', approval);
 
@@ -45,15 +52,18 @@ function ApprovalDetail() {
             refusal: refusal
         }
         if (appAction === '') {
-            alert('승인 또는 반려를 선택해주세요');
+            // alert('승인 또는 반려를 선택해주세요');
+            setAlertModal({message: <>승인 또는 반려를 선택해주세요</>, isOn: true});
         } else if (appAction === "반려" && refusal.trim() === '') {
-            alert('반려 사유를 입력해주세요');
+            // alert('반려 사유를 입력해주세요');
+            setAlertModal({message: <>반려 사유를 입력해주세요.</>, isOn: true});
         } else {
             try {
                 dispatch(callUpdateApprovalAPI(appUpdate, approval.approvalNo))
                     .then(() => navigate(`/approvals`, { replace: false }));
             } catch {
-                alert('에러');
+                // alert('에러');
+                setAlertModal({message: <>등록에 실패하였습니다.</>, isOn: true});
             }
         }
     }
@@ -121,7 +131,7 @@ function ApprovalDetail() {
                     />
 
                     {approval?.appLineList.find(item => item.alMember.memberNo === loginToken.memberNo) || approval.appStatus === "반려" ?
-                        <div>
+                        <div style={{marginTop: '20px'}}>
                             <h5>처리</h5>
                             <table className={Style.appTable}>
                                 <tbody>
@@ -183,6 +193,9 @@ function ApprovalDetail() {
                     </div>
                 </div>
             }
+            <Dialog open={alertModal.isOn} onClose={() => setAlertModal({ isOn: false })}>
+                <AppAlert alertModal={alertModal} setAlertModal={setAlertModal} />
+            </Dialog>
         </main>
     )
 }
