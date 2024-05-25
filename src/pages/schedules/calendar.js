@@ -27,6 +27,13 @@ const Calendar = () => {
     const dispatch = useDispatch();
     const token = decodeJwt(window.localStorage.getItem("accessToken"));
     const dptNo = token?.depNo;
+    const [dateError, setDateError] = useState("");
+    const [skdNameError, setSkdNameError] = useState("");
+    const [touched, setTouched] = useState({
+        skdName: false,
+        skdStartDttm: false,
+        skdEndDttm: false
+    });
 
     useEffect(() => {
         const fetchSchedules = () => {
@@ -46,8 +53,67 @@ const Calendar = () => {
     });
 
     useEffect(() => {
-        console.log("New Schedule Data", newScheduleData);
-    }, [newScheduleData]);
+        if (touched.skdName || touched.skdStartDttm || touched.skdEndDttm) {
+            validateInsert();
+        }
+    }, [newScheduleData, touched]);
+
+    const validateInsert = () => {
+        const start = moment(newScheduleData.skdStartDttm);
+        const end = moment(newScheduleData.skdEndDttm);
+
+        // length를 읽을 수 없다고 함.
+        // if (newScheduleData.skdName.length < 5) {
+        //     setSkdNameError("일정 제목은 공란일 수 없고 공백 포함 최소 5글자 이상이어야 합니다.");
+        //     return;
+        // }
+
+        // if (newScheduleData.skdName.length > 200) {
+        //     setSkdNameError("일정 제목은 공백 포함 최대 200자까지 입력할 수 있습니다.");
+        //     return;
+        // }
+
+        if (!newScheduleData.skdStartDttm || !newScheduleData.skdEndDttm) {
+            setDateError("일정 시작 일시와 종료 일시를 모두 입력해주세요.");
+            return;
+        }
+
+        if (start.isSameOrAfter(end)) {
+            setDateError("일정 시작일시는 종료일시보다 이전이어야 합니다.");
+            return;
+        }
+
+        setSkdNameError("");
+        setDateError("");
+    };
+
+    // const validateUpdate = (updatedScheduleData) => {
+    //     const start = moment(updatedScheduleData.skdStartDttm);
+    //     const end = moment(updatedScheduleData.skdEndDttm);
+
+    //     if (updatedScheduleData.skdName.length < 5) {
+    //         setSkdNameError("일정 제목은 공란일 수 없고 공백 포함 최소 5글자 이상이어야 합니다.");
+    //         return;
+    //     }
+
+    //     if (updatedScheduleData.skdName.length > 200) {
+    //         setSkdNameError("일정 제목은 공백 포함 최대 200자까지 입력할 수 있습니다.");
+    //         return;
+    //     }
+
+    //     if (!updatedScheduleData.skdStartDttm || !updatedScheduleData.skdEndDttm) {
+    //         setDateError("일정 시작 일시와 종료 일시를 모두 입력해주세요.");
+    //         return;
+    //     }
+
+    //     if (start.isSameOrAfter(end)) {
+    //         setDateError("일정 시작일시는 종료일시보다 이전이어야 합니다.");
+    //         return;
+    //     }
+
+    //     setSkdNameError("");
+    //     setDateError("");
+    // };
 
     useEffect(() => {
         if (schedules.results && schedules.results.schedule) {
@@ -91,33 +157,32 @@ const Calendar = () => {
         if (event) {
             try {
                 deleteScheduleAPI(event.id);
-
-                const token = decodeJwt(window.localStorage.getItem("accessToken"));
-                const dptNo = token.depNo;
-
-                if (dptNo) {
-                    dispatch(getScheduleAPI(dptNo));
-                }
-
+                dispatch(getScheduleAPI(dptNo));
+                closeDetailDialog();
             } catch (error) {
                 console.error("일정 삭제 중 에러 발생 handleDelete: ", error);
                 alert("일정 삭제에 실패했습니다.");
             }
-            closeDetailDialog();
         }
     };
 
     const handleUpdateEvent = (selectedEvent, updatedScheduleData) => {
+        // validateUpdate(updatedScheduleData);
+        // if (skdNameError || dateError) {
+        //     console.log("skdNameError true이면 얘가 문제", skdNameError);
+        //     console.log("dateError true이면 얘가 문제", dateError);
+        //     console.log("updatedScheduleData", updatedScheduleData);
+        //     console.log("유효성 검사를 통과하지 못했기때문에 handleUpdateEvent를 실행하지 않습니다.");
+        //     return;
+        // }
+
+        // console.log("updateScheduleAPI 호출 이전의 selectedEvent:", selectedEvent);
+        // console.log("updateScheduleAPI 호출 이전의 updatedScheduleData:", updatedScheduleData);
+
         try {
             updateScheduleAPI(selectedEvent.id, updatedScheduleData);
             alert("일정을 정상적으로 수정하였습니다.");
-
-            const token = decodeJwt(window.localStorage.getItem("accessToken"));
-            const dptNo = token.depNo;
-
-            if (dptNo) {
-                dispatch(getScheduleAPI(dptNo));
-            }
+            dispatch(getScheduleAPI(dptNo));
         } catch (error) {
             console.error("일정 수정 중 에러 발생 handleUpdate: ", error);
             alert("일정 수정에 실패했습니다.");
@@ -139,27 +204,45 @@ const Calendar = () => {
         }
     }, [selectedEvent, schedules]);
 
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+
+        setNewScheduleData({
+            ...newScheduleData,
+            [name]: value
+        });
+
+        if (name === "skdName" && value.length < 5) {
+            setSkdNameError("일정 이름은 공란일 수 없고 공백 포함 최소 5글자 이상이어야 합니다.");
+            return;
+        }
+
+        setTouched({
+            ...touched,
+            [name]: value
+        });
+    };
+
+
     const handleSubmit = (newScheduleData) => {
-        console.log("newScheduleData 전달", newScheduleData);
+        validateInsert();
+        if (skdNameError || dateError) {
+            return;
+        }
+
         try {
+            console.log("insertAPI 호출 직전의 newScheduleData", newScheduleData);
             insertScheduleAPI(newScheduleData);
             alert("일정이 정상적으로 등록되었습니다.");
             setNewScheduleAdded(!newScheduleAdded);
-            setNewScheduleData("");
         } catch (error) {
             console.error("일정 정보 등록하면서 오류가 발생했습니다 :", error);
             alert("일정 등록에 실패하였습니다.");
         }
         onInsertCancelHandler();
+        setNewScheduleData("");
     };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewScheduleData({
-            ...newScheduleData,
-            [name]: value
-        });
-    };
 
     const fetchEvents = () => {
         try {
@@ -217,25 +300,34 @@ const Calendar = () => {
                 </Box>
             )}
 
-            <Dialog open={insertScheduleDialogOpen} onClose={onInsertCancelHandler}>
-                <DialogTitle>일정 등록</DialogTitle>
+            <Dialog open={insertScheduleDialogOpen} onClose={onInsertCancelHandler} fullWidth maxWidth="md" PaperProps={{ sx: { borderRadius: "10px" } }}>
+                <DialogTitle variant="h4" ml={3} mt={3}>일정 등록</DialogTitle>
                 <ScheduleForm
                     newScheduleData={newScheduleData}
                     onInsertCancelHandler={onInsertCancelHandler}
                     handleSubmit={handleSubmit}
                     handleInputChange={handleInputChange}
+                    skdNameError={skdNameError}
+                    dateError={dateError}
+                    setTouched={setTouched}
+                    touched={touched}
                 />
             </Dialog>
 
-            <Dialog open={detailDialogOpen} onClose={closeDetailDialog}>
-                <DialogTitle>상세 정보</DialogTitle>
+            <Dialog open={detailDialogOpen} onClose={closeDetailDialog} fullWidth maxWidth="md" PaperProps={{ sx: { borderRadius: "10px" } }}>
                 <ScheduleDetail
+                    open={detailDialogOpen}
                     inputChangeHandler={handleInputChange}
                     scheduleDetail={scheduleDetail}
                     handleDelete={handleDelete}
                     handleUpdate={handleUpdateEvent}
                     closeDetailDialog={closeDetailDialog}
                     onCloseConfirmDelete={onCloseConfirmDelete}
+                    skdNameError={skdNameError}
+                    dateError={dateError}
+                    setTouched={setTouched}
+                    touched={touched}
+                    // validateUpdate={validateUpdate}
                 />
             </Dialog>
         </main>
