@@ -23,12 +23,14 @@ function AppList({ data }) {
                 </thead>
                 <tbody>
                     {Array.isArray(data) && data.map((item) => (
-                        <tr style={item.key === '제목' ? { padding: "10px", width: '50%'} : { padding: "10px", width: '10%'}} key={item.index}
+                        <tr key={item.index}
                         onClick={() => onClickHandler(item.approvalNo)}>
                             <td>{item.appStatus}</td>
                             <td>{item.form.formName}</td>
-                            <td style={{ textAlign: 'left'}}>
-                                {item.appTitle}<br />
+                            <td style={{ textAlign: 'left' }}>
+                                <span style={{overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 1, whiteSpace: 'normal'}}>
+                                    {item.appTitle}
+                                </span>
                                 {item.member.memberName}-
                                 {Array.isArray(item.appLineList) && item.appLineList.map((appLine, index) => (
                                     <span key={index} style={appLine.alSequence === item.sequence? {color: 'red'} : {}}>

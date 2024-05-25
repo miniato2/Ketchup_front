@@ -285,8 +285,8 @@ function Member({ selectMemberNo }) {
             }
 
 
-            {isEditMode ? <button onClick={handleSaveToggle} style={{ marginLeft: '1000px', borderRadius: 5 }}>저장</button>
-                : <button onClick={handleEditModeToggle} style={{ marginLeft: '1000px', borderRadius: 5 }}>수정</button>}
+            {isEditMode ? <button onClick={handleSaveToggle} style={{ marginLeft: '1000px', borderRadius: 5, backgroundColor: 'red', color: 'white', width: 80, borderWidth: 0, height: 40 }}>저장</button>
+                : <button onClick={handleEditModeToggle} style={{ marginLeft: '1000px', borderRadius: 5, width: 80, borderWidth: 0, height: 40  }}>수정</button>}
 
 
 

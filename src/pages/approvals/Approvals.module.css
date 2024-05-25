@@ -36,6 +36,7 @@
 }
 .appBtn {
     width: fit-content;
+    margin-top: 20px;
     margin-left: auto;
 }
 
@@ -47,8 +48,10 @@
     width: 40px;
     height: 20px;
     border-radius: 3px;   /* 버튼 둥글기*/
-    /* background-color: white; */
-    border: solid 1px black;
+    background-color: #EC0B0B;
+    color: white;
+    /* border: solid 1px black; */
+    border: none;
 }
 
 .formSelect{

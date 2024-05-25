@@ -10,9 +10,10 @@ import ButtonGroup from "../../components/contents/ButtonGroup";
 import SearchBar from "../../components/contents/SearchBar";
 
 
+
 function Members() {
     const dispatch = useDispatch();
-    const members =  useSelector(state => state.memberReducer);
+    const members = useSelector(state => state.memberReducer);
     const memberList = members?.data;
     console.log(memberList);
     const token = decodeJwt(window.localStorage.getItem('accessToken'));
@@ -63,53 +64,62 @@ function Members() {
         <>
 
             <main id="main">
-              
 
-                    <br></br><br></br>
-                    <div style={{ display: "flex", margin: -15}}>
+
+                <br></br><br></br>
+                <div style={{ display: "flex", margin: -15 }}>
                     <h2>사원목록</h2>
                     <SearchBar onSearch={handleSearch} value={searchKeyword} name={'이름으로 검색'} />
-                    </div>
-                    
-                    <Link to="/members/insert">
-                        <ButtonGroup buttons={buttons} />
-                    </Link>
+                </div>
 
-                    <Table>
+                <Link to="/members/insert">
+                    <ButtonGroup buttons={buttons} />
+                </Link>
 
-                        <thead>
-                            <tr>
-                                <th>사진</th>
-                                <th>부서</th>
-                                <th>직급</th>
-                                <th>이름</th>
-                                <th>연락처</th>
-                                <th>이메일</th>
+                <Table>
+                    <thead>
+                        <tr>
+                            <th>사진</th>
+                            <th>부서</th>
+                            <th>직급</th>
+                            <th>이름</th>
+                            <th>연락처</th>
+                            <th>이메일</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Array.isArray(memberList?.content) && memberList?.content?.map((member) => (
+                            <tr key={member.memberNo} onClick={() => handleRowClick(member.memberNo)}>
+                                <td>
+                                    <img src={`/img/${member.imgUrl}`} width="30" height="30" alt="member" />
+                                </td>
+                                <td>{member.department.depName}</td>
+                                <td>{member.position.positionName}</td>
+                                <td>{member.memberName}</td>
+                                <td>{member.phone}</td>
+                                <td>{member.privateEmail}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {Array.isArray(memberList?.content) && memberList?.content?.map((member) => (
-                                <tr key={member.memberNo} onClick={() => handleRowClick(member.memberNo)}>
-                                    <td>
-                                        <img src={`/img/${member.imgUrl}`} width="30" height="30" alt="member" />
-                                    </td>
-                                    <td>{member.department.depName}</td>
-                                    <td>{member.position.positionName}</td>
-                                    <td>{member.memberName}</td>
-                                    <td>{member.phone}</td>
-                                    <td>{member.privateEmail}</td>
-                                </tr>
-                            ))}
+                        ))}
+                        {Array.isArray(memberList?.content) && memberList.content.length === 0 &&
 
-                        </tbody>
-                    </Table>
-                    <PaginationButtons
-                        totalItems={members?.data?.totalElements}
-                        itemsPerPage={itemsPerPage}
-                        currentPage={currentPage}
-                        onPageChange={(pageNumber) => setCurrentPage(pageNumber)} // 페이지 변경 핸들러 전달
-                    />
-              
+                           
+                                <td colSpan={6}>
+                                    <h2>검색결과가 없습니다.</h2>
+                                    <img src="/img/searchConditionRequired.png" alt="searchConditionRequired" style={{ display: "block", margin: "0 auto", maxWidth: "100%", height: "auto" }} />
+                                </td>
+                            
+                        }
+
+                    </tbody>
+
+                </Table>
+                <PaginationButtons
+                    totalItems={members?.data?.totalElements}
+                    itemsPerPage={itemsPerPage}
+                    currentPage={currentPage}
+                    onPageChange={(pageNumber) => setCurrentPage(pageNumber)} // 페이지 변경 핸들러 전달
+                />
+
 
             </main>
 

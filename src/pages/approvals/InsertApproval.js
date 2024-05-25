@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Style from "./Approvals.module.css"
 import { decodeJwt } from "../../utils/tokenUtils";
 import AppLine from "../../components/approvals/AppLine";
@@ -9,6 +9,8 @@ import RefLineModal from "../../components/approvals/RefLineModal";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Editor } from '@tinymce/tinymce-react';
+import AppAlert from "../../components/approvals/AppAlert";
+import { Dialog } from "@mui/material";
 
 
 function InsertApproval() {
@@ -16,6 +18,7 @@ function InsertApproval() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const [btnref, formref, titleref, conref] = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
     const [modalControl, setModalControl] = useState({
         appLineModal: false,
@@ -38,6 +41,11 @@ function InsertApproval() {
     const [appContents, setAppContents] = useState('');
     const [formValue, setFormValue] = useState('');
 
+    const [alertModal, setAlertModal] = useState({
+        message: '',
+        isOn: false,
+    }); //alert modal
+
     console.log(appContents);
 
     const [appLine, setAppLine] = useState([{
@@ -48,29 +56,29 @@ function InsertApproval() {
         },
         alType: '',
         sequence: ''
-    }])
+    }]);
 
     const [refLine, setRefLine] = useState([{
         refMember: {
             memberNo: ''
         }
-    }])
+    }]);
     //
 
     const onChangeAppTitle = (e) => {
         setAppTitle(e.target.value);
 
-    } //제목
+    }; //제목
 
     const onChangeAppContents = (content) => { // 에디터 내용이 변경될 때 호출되는 함수
         setAppContents(content); // appContents state 업데이트
-      };//내용
+    };//내용
 
     const onChangeFileUpload = (e) => {
         const filesArray = Array.from(e.target.files);
         const filesList = [...filesArray];
         setFile(filesList);
-    }
+    }; //파일 업로드
 
     const onChangeForm = async (e) => {
         const result = await callGetFormAPI(e.target.value);
@@ -81,11 +89,11 @@ function InsertApproval() {
         } else {
             console.log('실패');
         }
-    } //양식 변경
+    }; //양식 변경
 
     const onClickCancelHandler = () => {
         navigate(`/approvals`, { replace: false })
-    } //취소
+    }; //취소
 
     const onClickInsertApprovalHandler = () => {
         const formData = new FormData();
@@ -110,42 +118,52 @@ function InsertApproval() {
             file.forEach((fileItem) => {
                 formData.append(`multipartFileList`, fileItem);
             });
-        }
+        };
 
         // formData.forEach((value, key) => {
         //     console.log(key + ': ' + value);
         //   });
 
         if (appLine[0].alMember.memberNo === '') {
-            alert('결재선을 지정해 주세요');
+            // alert('결재선을 지정해 주세요');
+            setAlertModal({message: <>결재선을 지정하지 않았습니다. <br />결재선을 지정해 주세요.</>, isOn: true});
+            btnref.current.focus();
             //결재선
         } else if (formNo === 0) {
-            alert('양식을 선택해 주세요');
+            // alert('양식을 선택해 주세요');
+            setAlertModal({message: <>양식을 선택하지 않았습니다. <br />양식을 선택해 주세요.</>, isOn: true});
+            formref.current.focus();
             //양식
         } else if (appTitle.trim() === '') {
-            alert('제목을 입력해 주세요');
+            // alert('제목을 입력해 주세요');
+            setAlertModal({message: <>제목을 입력하지 않았습니다. <br />제목을 입력해 주세요.</>, isOn: true});
+            titleref.current.focus();
             //제목
         } else if (appContents.trim() === '') {
-            alert('내용을 입력해 주세요');
+            // alert('내용을 입력해');
+            setAlertModal({message: <>내용을 입력하지 않았습니다. <br />내용을 입력해 주세요.</>, isOn: true});
+            conref.current.focus(); // 포커스가 안잡힘
             //내용
         } else {
             try {
                 dispatch(callInsertAppAPI({ form: formData }))
                     .then(() => navigate(`/approvals`, { replace: false }));
             } catch {
-                alert('에러');
+                // alert('에러');
+                setAlertModal({message: <>등록에 실패하였습니다.</>, isOn: true});
             }
             //예외처리는 다시하자
-        }
+        };
     } //등록
 
     return (
         <main className="main" id="main">
+            
             {modalControl.appLineModal ? <AppLineModal setModalControl={setModalControl} appLine={appLine} setAppLine={setAppLine} /> : null}
             {modalControl.refLineModal ? <RefLineModal setModalControl={setModalControl} refLine={refLine} setRefLine={setRefLine} /> : null}
             <h3>기안등록</h3>
 
-            <label><h5>결재선</h5></label><button className={Style.lineBtn} name='appLineModal' onClick={onClickModalControl}>추가</button>
+            <label><h5>결재선</h5></label><button className={Style.lineBtn} name='appLineModal' onClick={onClickModalControl} ref={btnref}>추가</button>
             <AppLine appline={appLine} />
 
             <label><h5>참조선</h5></label><button className={Style.lineBtn} name='refLineModal' onClick={onClickModalControl}>추가</button>
@@ -157,13 +175,13 @@ function InsertApproval() {
                     <tr>
                         <th width={'12%'}>양식</th>
                         <td width={'38%'}>
-                            <select onChange={onChangeForm} className={Style.formSelect}>
+                            <select onChange={onChangeForm} className={Style.formSelect} ref={formref}>
                                 <option value={0}>양식선택</option>
-                                <option value={1}>업무제안</option>
-                                <option value={2}>출장신청</option>
-                                <option value={3}>휴가신청</option>
-                                <option value={4}>지출품의</option>
-                                <option value={5}>개인정보수정</option>
+                                <option value={1}>업무 제안서</option>
+                                <option value={2}>출장 신청서</option>
+                                <option value={3}>휴가 신청서</option>
+                                <option value={4}>지출 품의서</option>
+                                <option value={5}>개인정보수정 신청서</option>
                                 <option value={6}>기타</option>
                             </select>
                         </td>
@@ -178,17 +196,18 @@ function InsertApproval() {
                     </tr>
                     <tr>
                         <th >제목</th>
-                        <td><input type="text" name="appTitle" className={Style.appTitle} onChange={onChangeAppTitle}></input></td>
+                        <td><input type="text" name="appTitle" className={Style.appTitle} onChange={onChangeAppTitle} ref={titleref}></input></td>
                         <th >기안일자</th>
                         <td>{today}</td>
                     </tr>
                 </tbody>
             </table>
-            <h5>내용</h5>
 
+            <h5>내용</h5>
             <Editor
                 apiKey='gpny7ynxol7wh1ohidmu4i9q5rb68uahrrop6uo0m4ixs78c'
                 initialValue={formValue}
+                onInit={(evt, editor) => conref.current = editor}
                 init={{
                     statusbar: false,
                     resize: false,
@@ -197,7 +216,7 @@ function InsertApproval() {
                     plugins: [
                         'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                         'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount', 'table'
+                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
                     ],
                     toolbar: 'undo redo | blocks | ' +
                         'bold italic forecolor | alignleft aligncenter ' +
@@ -213,6 +232,10 @@ function InsertApproval() {
                 <button className="back-btn" onClick={onClickCancelHandler}>취소</button>
                 <button className="move-btn" onClick={onClickInsertApprovalHandler}>등록</button>
             </div>
+
+            <Dialog open={alertModal.isOn} onClose={() => setAlertModal({isOn: false})}>
+                <AppAlert alertModal={alertModal} setAlertModal={setAlertModal}/>   
+            </Dialog>
 
         </main>
     )
