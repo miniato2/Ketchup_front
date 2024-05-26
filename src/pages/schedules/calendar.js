@@ -62,7 +62,6 @@ const Calendar = () => {
         const start = moment(newScheduleData.skdStartDttm);
         const end = moment(newScheduleData.skdEndDttm);
 
-        // length를 읽을 수 없다고 함.
         // if (newScheduleData.skdName.length < 5) {
         //     setSkdNameError("일정 제목은 공란일 수 없고 공백 포함 최소 5글자 이상이어야 합니다.");
         //     return;
@@ -86,34 +85,6 @@ const Calendar = () => {
         setSkdNameError("");
         setDateError("");
     };
-
-    // const validateUpdate = (updatedScheduleData) => {
-    //     const start = moment(updatedScheduleData.skdStartDttm);
-    //     const end = moment(updatedScheduleData.skdEndDttm);
-
-    //     if (updatedScheduleData.skdName.length < 5) {
-    //         setSkdNameError("일정 제목은 공란일 수 없고 공백 포함 최소 5글자 이상이어야 합니다.");
-    //         return;
-    //     }
-
-    //     if (updatedScheduleData.skdName.length > 200) {
-    //         setSkdNameError("일정 제목은 공백 포함 최대 200자까지 입력할 수 있습니다.");
-    //         return;
-    //     }
-
-    //     if (!updatedScheduleData.skdStartDttm || !updatedScheduleData.skdEndDttm) {
-    //         setDateError("일정 시작 일시와 종료 일시를 모두 입력해주세요.");
-    //         return;
-    //     }
-
-    //     if (start.isSameOrAfter(end)) {
-    //         setDateError("일정 시작일시는 종료일시보다 이전이어야 합니다.");
-    //         return;
-    //     }
-
-    //     setSkdNameError("");
-    //     setDateError("");
-    // };
 
     useEffect(() => {
         if (schedules.results && schedules.results.schedule) {
@@ -167,18 +138,6 @@ const Calendar = () => {
     };
 
     const handleUpdateEvent = (selectedEvent, updatedScheduleData) => {
-        // validateUpdate(updatedScheduleData);
-        // if (skdNameError || dateError) {
-        //     console.log("skdNameError true이면 얘가 문제", skdNameError);
-        //     console.log("dateError true이면 얘가 문제", dateError);
-        //     console.log("updatedScheduleData", updatedScheduleData);
-        //     console.log("유효성 검사를 통과하지 못했기때문에 handleUpdateEvent를 실행하지 않습니다.");
-        //     return;
-        // }
-
-        // console.log("updateScheduleAPI 호출 이전의 selectedEvent:", selectedEvent);
-        // console.log("updateScheduleAPI 호출 이전의 updatedScheduleData:", updatedScheduleData);
-
         try {
             updateScheduleAPI(selectedEvent.id, updatedScheduleData);
             alert("일정을 정상적으로 수정하였습니다.");
@@ -223,7 +182,6 @@ const Calendar = () => {
         });
     };
 
-
     const handleSubmit = (newScheduleData) => {
         validateInsert();
         if (skdNameError || dateError) {
@@ -242,7 +200,6 @@ const Calendar = () => {
         onInsertCancelHandler();
         setNewScheduleData("");
     };
-
 
     const fetchEvents = () => {
         try {
@@ -270,6 +227,7 @@ const Calendar = () => {
                     <FullCalendar
                         locale="ko"
                         height="100vh"
+                        eventColor='red'
                         plugins={[
                             dayGridPlugin,
                             timeGridPlugin,
@@ -277,7 +235,7 @@ const Calendar = () => {
                             listPlugin
                         ]}
                         headerToolbar={{
-                            left: "prev,next today",
+                            left: "prev next today",
                             center: "title",
                             right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth"
                         }}
@@ -295,7 +253,6 @@ const Calendar = () => {
                             day: '일',
                             list: '목록'
                         }}
-                        themeSystem='United'
                     />
                 </Box>
             )}
@@ -323,11 +280,6 @@ const Calendar = () => {
                     handleUpdate={handleUpdateEvent}
                     closeDetailDialog={closeDetailDialog}
                     onCloseConfirmDelete={onCloseConfirmDelete}
-                    skdNameError={skdNameError}
-                    dateError={dateError}
-                    setTouched={setTouched}
-                    touched={touched}
-                    // validateUpdate={validateUpdate}
                 />
             </Dialog>
         </main>
