@@ -55,7 +55,6 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
             ...newReserveData,
             [name]: value
         });
-        console.log("newReserveData???????????", newReserveData);
 
         setTouched({
             ...touched,
@@ -64,7 +63,6 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
     };
 
     const validate = () => {
-        // 예약일시 유효성 검사
         const now = moment();
         const start = moment(newReserveData.rsvStartDttm);
         const end = moment(newReserveData.rsvEndDttm);
@@ -116,7 +114,6 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
         }
 
         try {
-            console.log("등록하기 직전의 newReserveData!!!!!!!!", newReserveData);
             insertReserveAPI(newReserveData);
             alert("예약이 정상적으로 등록되었습니다.");
         } catch (error) {
@@ -130,7 +127,6 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
         <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
             <DialogContent style={{ height: '56vh', alignContent: "center" }}>
                 <Box p={3}>
-                    {/* <Grid container spacing={2} justifyContent="left" > */}
                     <Grid container spacing={2}>
                         <Grid item xs={12} mb={4}>
                             <Typography variant='h5'>{newReserveData.resources.rscName} 예약 등록</Typography>

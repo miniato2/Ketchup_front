@@ -233,19 +233,13 @@ export default function Reserve() {
     return (
         <main id="main" className="main">
             <Box p={2}>
-                <Grid container spacing={3} alignItems="center" mt={1} mb={4} sx={{ backgroundColor: "rgb(236, 11, 11, 0.17)", borderRadius: "10px", height: "230px" }}>
-                    <Grid item xs={12}>
-                        <h1 style={{ marginTop: 15 }}>자원예약</h1>
-                    </Grid>
-                    <Grid item xs={12} md={5}>
+                <h2>자원예약</h2>
+                <Grid container spacing={3} alignItems="center" mt={1} mb={4} sx={{ backgroundColor: "rgb(236, 11, 11, 0.17)", borderRadius: "10px", height: "130px" }}>
+                    <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" margin={'auto'}>
                         <ResourceCategorySelect value={searchConditions.rscCategory} onChange={(value) => setSearchConditions({ ...searchConditions, rscCategory: value })} />
-                    </Grid>
-                    <Grid item md={5} xs={10}>
                         <ReserveDateSelect value={searchConditions.rsvDate} onChange={(e) => setSearchConditions({ ...searchConditions, rsvDate: e.target.value })} />
-                    </Grid>
-                    <Grid item md="auto" xs="auto" >
-                        <Button onClick={onClickSearch}>조회</Button>
-                    </Grid>
+                        <button onClick={onClickSearch} className="move-btn" style={{ marginLeft: '20px' }}>조회</button>
+                    </Box>
                 </Grid>
                 {searchClicked ? (
                     <Grid container spacing={2}>
@@ -292,7 +286,7 @@ export default function Reserve() {
             </Dialog>
 
             {/* 삭제 폼 */}
-            <Dialog open={openDeleteConfirm} onClose={onCloseDeleteConfirm} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: "10px" } }}>
+            <Dialog open={openDeleteConfirm} onClose={onCloseDeleteConfirm} fullWidth scroll="paper" sx={{ "& .MuiDialog-container": { alignItems: "flex-start" } }} PaperProps={{ sx: { mt: 0, borderRadius: "10px" } }}>
                 <DeleteReserveForm
                     onCloseDeleteConfirm={onCloseDeleteConfirm}
                     selectedReserve={selectedReserve}
