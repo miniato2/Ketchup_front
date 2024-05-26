@@ -7,8 +7,9 @@ import DOMPurify from "isomorphic-dompurify";
 import ButtonGroup from "../../contents/ButtonGroup";
 import FormatDate from "../../contents/FormatDate";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import DeleteModal from "./DeleteModal";
+import DeleteModal from "../../contents/DeleteModal";
 import { Dialog } from "@mui/material";
+import Comment from "../comment/Comment";
 
 function Board({ boardNo }) {
     console.log('Board [ boardNo ] : ', boardNo);
@@ -29,7 +30,7 @@ function Board({ boardNo }) {
         }
     }, [dispatch, boardNo]);
 
-   
+
     const updateHandler = () => {
         // 작성자인 경우에만 수정 페이지로 이동
         if (!(loginToken && (loginToken.memberNo === board.memberInfo.memberNo))) {
@@ -125,7 +126,7 @@ function Board({ boardNo }) {
                         </div>
                     </div>
 
-                    <div style={{ marginTop: "20px" }} >
+                    <div style={{ marginTop: "20px"}} >
                         {/* 다음 글 */}
                         {board.nextBoard && (
                             <div onClick={() => navigate(`/boards/${board.nextBoard.boardNo}`)} style={{ cursor: 'pointer' }}>
@@ -155,6 +156,11 @@ function Board({ boardNo }) {
                             </div>
                         )}
                     </div>
+
+                    <div style={{ marginTop: "20px", borderTop: '0.5px solid lightgray' }}>
+                       <Comment boardNo={boardNo} />
+                    </div>
+
                 </div>
             </div >
 

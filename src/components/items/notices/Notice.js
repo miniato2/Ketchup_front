@@ -7,7 +7,7 @@ import FormatDate from "../../contents/FormatDate";
 import DOMPurify from "isomorphic-dompurify"
 import { decodeJwt } from "../../../utils/tokenUtils";
 import { BsMegaphone } from "react-icons/bs";
-import DeleteModal from "../boards/DeleteModal";
+import DeleteModal from "../../contents/DeleteModal";
 import { Dialog } from "@mui/material";
 
 function Notice({ noticeNo }) {
