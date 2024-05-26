@@ -369,8 +369,6 @@ export function callUpdateDepartmentAPI(depNo, newName) {
 
 export function callUpdateDepartmentStatusAPI(depNo) {
 
-    
-
     return async (dispatch, getState) => {
         const result = await request('PUT', `/deps/${depNo}`,"status");
         console.log('수정결과 ', result);
@@ -378,3 +376,32 @@ export function callUpdateDepartmentStatusAPI(depNo) {
         dispatch({ type: PUT_DEPARTMENTS, payload: result });
     };
 }
+
+export function callSendEmailAPI(myNo){
+    return async (dispatch,getState) => {
+        const result = await request('GET',`/Email/${myNo}`)
+        console.log('수정결과 ', result);
+        
+        dispatch({type: PUT_MEMBERS, payload: result});
+
+    };
+
+}
+
+
+
+
+
+export function callUpdateMyPWAPI(myNo,newPW){
+
+    return async (dispatch,getState) => {
+        const result = await request('PUT',`/members/${myNo}`,newPW)
+        console.log('수정결과 ', result);
+        dispatch({type: PUT_MEMBERS, payload: result});
+
+    };
+
+}
+
+
+

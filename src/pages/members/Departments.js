@@ -187,7 +187,7 @@ function Departments() {
 
                     <Dialog open={departmentDialogOpen} onClose={onDialogClickHandler}>
                         <DialogTitle>부서명 수정</DialogTitle>
-                        <DepartmentForm department={selectedDepartment} onDialogClickHandler={onDialogClickHandler} />
+                        <DepartmentForm memberNo={selectedDepartment} onDialogClickHandler={onDialogClickHandler} />
                     </Dialog>
 
                 </div>
