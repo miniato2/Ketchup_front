@@ -40,7 +40,7 @@ const memberReducer = handleActions(
         },
         [PUT_MEMBERS]: (state, { payload }) => {
             
-            return payload;
+            return {...state, payload}
         }
        
 

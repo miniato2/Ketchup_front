@@ -1,104 +1,70 @@
 import React from 'react';
-import { Grid, TextField, Box, ButtonGroup, Button, ListItem, ListItemText } from "@mui/material";
-import { Textbox } from 'react-inputs-validation';
+import { Grid, TextField, Box, Button, ListItem, ListItemText, Typography, DialogContent } from "@mui/material";
+import CampaignIconOutlined from '@mui/icons-material/CampaignOutlined';
+import CalendarMonthOutlined from '@mui/icons-material/CalendarMonthOutlined';
+import LocationOnOutlined from '@mui/icons-material/LocationOnOutlined';
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
+import ButtonGroup from '../contents/ButtonGroup';
 
-export default function ScheduleForm({ newScheduleData, onInsertCancelHandler, handleSubmit, handleInputChange }) {
-    // 날짜와 시간을 ISO 8601 형식으로 변환하는 함수
-    const convertToISO8601 = (datetimeString) => {
-        const date = new Date(datetimeString);
-        return date.toISOString();
-    };
+export default function ScheduleForm({ newScheduleData, onInsertCancelHandler, handleSubmit, handleInputChange, skdNameError, setTouched, dateError, touched }) {
+    const buttons = [
+        { label: '취소', onClick: onInsertCancelHandler, styleClass: 'back' },
+        { label: '등록', onClick: () => handleSubmit(newScheduleData), styleClass: 'move' }
+    ];
 
     return (
-        <form onSubmit={(e) => { e.preventDefault(); handleSubmit(newScheduleData); }}>
-            <Grid container spacing={4} justifyContent="left" ml={10}>
-                <Grid item xs={6} md={8}>
-                    <Box sx={{
-                        '& .MuiTextField-root': { m: 1, width: '20ch' }
-                    }}>
-                        <ListItem sx={{ px: 0, flex: 1 }}>
-                            <ListItemText sx={{ maxWidth: 100 }}>일정 이름</ListItemText>
-                            <Box sx={{
-                                '& .MuiTextField-root': { m: 1, width: '20ch' }
-                            }}>
-                                <TextField
-                                    label="일정 이름"
-                                    variant="outlined"
-                                    name="skdName"
-                                    value={newScheduleData.skdName}
-                                    onChange={handleInputChange}
-                                />
+        <DialogContent style={{ height: '58vh', alignContent: "center" }}>
+            <Box p={3}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <Box display={"flex"} alignItems={"center"} justifyContent={'flex-start'}>
+                            <Box display={"flex"} alignItems={"center"}>
+                                <CampaignIconOutlined fontSize='medium' />
+                                <Typography variant='body1' sx={{ ml: 1 }} flexShrink={0}>일정 제목: </Typography>
                             </Box>
-                        </ListItem>
-                        <ListItem sx={{ px: 0, flex: 1 }}>
-                            <ListItemText sx={{ maxWidth: 100 }}>시작 일시</ListItemText>
-                            <Box sx={{
-                                '& .MuiTextField-root': { m: 1, width: '20ch' }
-                            }}>
-                                <TextField
-                                    type="datetime-local"
-                                    label="시작 일시"
-                                    variant="outlined"
-                                    name="skdStartDttm"
-                                    // value에는 변환된 ISO 8601 형식으로 입력
-                                    value={newScheduleData.skdStartDttm ? newScheduleData.skdStartDttm.replace(" ", "T") : ""}
-                                    onChange={handleInputChange}
-                                />
+                            <TextField sx={{ ml: 1.7, width: "50vw" }} variant='outlined' name='skdName' onChange={handleInputChange} value={newScheduleData.skdName} onBlur={() => setTouched({ ...touched, skdName: true })} />
+                        </Box>
+                        {skdNameError && <Typography sx={{ color: "red", ml: 15, mt: 1 }}>{skdNameError}</Typography>}
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Box display="flex" alignItems={"center"} justifyContent={"flex-start"}>
+                            <Box display={"flex"} alignItems={"center"}>
+                                <CalendarMonthOutlined fontSize="medium" />
+                                <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>일정: </Typography>
+                                <TextField sx={{ ml: 5.5, width: "23vw" }} type="datetime-local" variant="outlined" name="skdStartDttm" onChange={handleInputChange} value={newScheduleData.skdStartDttm} onBlur={() => setTouched({ ...touched, skdStartDttm: true })} />
+                                <span style={{ margin: '0 20px' }}>~</span>
+                                <TextField sx={{ width: "23vw" }} type="datetime-local" variant="outlined" name="skdEndDttm" onChange={handleInputChange} value={newScheduleData.skdEndDttm} onBlur={() => setTouched({ ...touched, skdEndDttm: true })} />
                             </Box>
-                        </ListItem>
-                        <ListItem sx={{ px: 0, flex: 1 }}>
-                            <ListItemText sx={{ maxWidth: 100 }}>종료 일시</ListItemText>
-                            <Box sx={{
-                                '& .MuiTextField-root': { m: 1, width: '20ch' }
-                            }}>
-                                <TextField
-                                    type="datetime-local"
-                                    label="종료 일시"
-                                    variant="outlined"
-                                    name="skdEndDttm"
-                                    // value에는 변환된 ISO 8601 형식으로 입력
-                                    value={newScheduleData.skdEndDttm ? newScheduleData.skdEndDttm.replace(" ", "T") : ""}
-                                    onChange={handleInputChange}
-                                />
+                        </Box>
+                        {dateError && <Typography sx={{ color: "red", ml: 15, mt: 1 }}>{dateError}</Typography>}
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Box display="flex" alignItems={'center'} justifyContent="flex-start">
+                            <Box display="flex" alignItems="center">
+                                <LocationOnOutlined fontSize="medium" />
+                                <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>장소:</Typography>
                             </Box>
-                        </ListItem>
-                        <ListItem sx={{ px: 0, flex: 1 }}>
-                            <ListItemText sx={{ maxWidth: 100 }}>장소</ListItemText>
-                            <Box sx={{
-                                '& .MuiTextField-root': { m: 1, width: '20ch' }
-                            }}>
-                                <TextField
-                                    label="장소"
-                                    variant="outlined"
-                                    name="skdLocation"
-                                    value={newScheduleData.skdLocation}
-                                    onChange={handleInputChange}
-                                />
+                            <TextField sx={{ ml: 5.5, width: '50vw' }} variant="outlined" name="skdLocation" onChange={handleInputChange} value={newScheduleData.skdLocation} />
+                        </Box>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Box display="flex" alignItems={'center'} justifyContent="flex-start">
+                            <Box display="flex" alignItems="center">
+                                <ArticleOutlinedIcon fontSize="medium" />
+                                <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>메모:</Typography>
                             </Box>
-                        </ListItem>
-                        <ListItem sx={{ px: 0, flex: 1 }}>
-                            <ListItemText sx={{ maxWidth: 100 }}>메모</ListItemText>
-                            <Box sx={{
-                                '& .MuiTextField-root': { m: 1, width: '20ch' }
-                            }}>
-                                <TextField
-                                    label="메모"
-                                    variant="outlined"
-                                    name="skdMemo"
-                                    value={newScheduleData.skdMemo}
-                                    onChange={handleInputChange}
-                                />
+                            <TextField sx={{ ml: 5.5, width: '50vw' }} multiline variant="outlined" name="skdMemo" onChange={handleInputChange} value={newScheduleData.skdMemo} />
+                        </Box>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Box justifyContent={'flex-end'}>
+                            <Box>
+                                <ButtonGroup buttons={buttons} />
                             </Box>
-                        </ListItem>
-                    </Box>
+                        </Box>
+                    </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                    <Button color="error" onClick={onInsertCancelHandler}>취소</Button>
-                    <Button type="submit">등록</Button>
-                </Grid>
-            </Grid>
-        </form>
-
-
+            </Box>
+        </DialogContent>
     );
 }

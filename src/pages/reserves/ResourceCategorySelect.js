@@ -23,7 +23,7 @@ export default function ResourceCategorySelect({ value, onChange }) {
 
   return (
     <div>
-      <FormControl sx={{ m: 1, width: '610px', background: "white" }} xs={6} >
+      <FormControl sx={{ m: 1, width: '30vw', background: "white" }} xs={6} >
         <Select
           displayEmpty
           value={value}

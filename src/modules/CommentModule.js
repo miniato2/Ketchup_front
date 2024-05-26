@@ -1,6 +1,7 @@
 import { createActions, handleActions } from "redux-actions";
 
 const initialState =  {
+    commentList: [], 
     commentNo: 0,                  //댓글 번호
     boardNo: 0,                    //게시물번호
     memberNo: '',                //사번 (댓글 작성자)

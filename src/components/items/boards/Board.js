@@ -126,10 +126,16 @@ function Board({ boardNo }) {
                         </div>
                     </div>
 
-                    <div style={{ marginTop: "20px"}} >
+                    <div style={{ marginTop: "20px", marginBottom: "20px"}}>
+                        <div style={{ border: "1px solid lightgray", height: "100%" }}>
+                            <Comment boardNo={boardNo} />
+                        </div>
+                    </div>
+
+                    <div style={{ borderTop: '0.5px solid lightgray' }} >
                         {/* 다음 글 */}
                         {board.nextBoard && (
-                            <div onClick={() => navigate(`/boards/${board.nextBoard.boardNo}`)} style={{ cursor: 'pointer' }}>
+                            <div onClick={() => navigate(`/boards/${board.nextBoard.boardNo}`)} style={{ marginTop: "20px", cursor: 'pointer' }}>
                                 <i className="bi bi-caret-up" />&nbsp;
                                 <span>다음글 |  {board.nextBoard.boardTitle}</span>
                             </div>
@@ -157,12 +163,8 @@ function Board({ boardNo }) {
                         )}
                     </div>
 
-                    <div style={{ marginTop: "20px", borderTop: '0.5px solid lightgray' }}>
-                       <Comment boardNo={boardNo} />
-                    </div>
-
                 </div>
-            </div >
+            </div>
 
             <Dialog open={deleteModal} onClose={onDialogCloseHandler}>
                 <DeleteModal

@@ -860,6 +860,7 @@ h6 {
   height: 38px;         /* 버튼 높이*/
   border-radius: 5px;   /* 버튼 둥글기*/
   background-color: white;
+  border-width: .5px;
 }
 
 .move-btn {
@@ -869,6 +870,20 @@ h6 {
   border: none;
   background-color: #EC0B0B;
   color: white;
+}
+
+.grey-btn {
+  width: 90px;          /* 버튼 넓이*/
+  height: 38px;         /* 버튼 높이*/
+  border-radius: 5px;   /* 버튼 둥글기*/
+  border: none;
+  background-color: lightgrey;
+}
+
+.text-btn {
+  text-decoration: underLine;
+  border: none;
+  background-color: white;
 }
 
 /*--------------------------------------------------------------
