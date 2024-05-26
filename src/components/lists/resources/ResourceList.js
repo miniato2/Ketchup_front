@@ -5,7 +5,7 @@ import { Dialog } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { callGetResourcesAPI } from "../../../apis/ResourceAPICalls";
 
-function ResourceList({ list, part, selectedItems, setSelectedItems }) {
+function ResourceList({ list, part, selectedItems, setSelectedItems, currentPage }) {
     const [modal, setModal] = useState(false);
     const [selectRscNo, setSelectRscNo] = useState(null);
     const dispatch = useDispatch();
@@ -86,7 +86,7 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
                                         onChange={() => handleCheckChange(index)}
                                         checked={selectedItems.includes(rsc.rscNo)} />
                                 </td>
-                                <td>{index + 1}</td>
+                                <td>{list.length - index}</td>
                                 <td>{rsc.rscName}</td>
                                 <td>{rsc.rscInfo}</td>
                                 <td>{rsc.rscCap}명</td>
@@ -101,7 +101,7 @@ function ResourceList({ list, part, selectedItems, setSelectedItems }) {
                 </Table>
             </div>
             <Dialog open={modal} onClose={() => setModal(false)}>
-                <RscModal setModal={setModal} selectRscNo={selectRscNo} part={part} />
+                <RscModal setModal={setModal} selectRscNo={selectRscNo} part={part} currentPage={currentPage} />
             </Dialog>
         </>
     );

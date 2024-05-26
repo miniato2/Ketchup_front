@@ -16,8 +16,7 @@ function Mail() {
     const [searchCondition, setSearchCondition] = useState('');
     const [searchValue, setSearchValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-
-    console.log(receiveMailNos);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const receiveHandler = () => {
         navigate('/mails/receive');
@@ -82,7 +81,9 @@ function Mail() {
                             searchCondition={searchCondition}
                             searchValue={searchValue}
                             isLoading={isLoading}
-                            setIsLoading={setIsLoading} />
+                            setIsLoading={setIsLoading}
+                            currentPage={currentPage}
+                            setCurrentPage={setCurrentPage} />
                         :
                         <SendMail
                             checkedItems={sendMailNos}
@@ -90,23 +91,18 @@ function Mail() {
                             searchCondition={searchCondition}
                             searchValue={searchValue}
                             isLoading={isLoading}
-                            setIsLoading={setIsLoading}  />
+                            setIsLoading={setIsLoading}
+                            currentPage={currentPage}
+                            setCurrentPage={setCurrentPage} />
                 }
             </main>
-
-            {/* {deleteModal ? 
-                <MailDeleteModal 
-                    setDeleteModal={setDeleteModal} 
-                    part={part}
-                    delMailList={delMailList}
-                    setDelMailList={setDelMailList} /> : null} */}
-
             <Dialog open={deleteModal} onClose={onDialogCloseHandler}>
                     <MailDeleteModal
                         setDeleteModal={setDeleteModal}
                         part={part}
                         delMailList={delMailList}
-                        setDelMailList={setDelMailList} />
+                        setDelMailList={setDelMailList}
+                        currentPage={currentPage} />
             </Dialog>
         </>
     );

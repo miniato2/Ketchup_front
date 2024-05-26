@@ -3,7 +3,7 @@ import ButtonGroup from "../../contents/ButtonGroup";
 import { callGetResourcesAPI } from "../../../apis/ResourceAPICalls";
 import { useParams } from "react-router-dom";
 
-function RscDetailContent({setModal, setUpdateClick, resourceDetail}) {
+function RscDetailContent({setModal, setUpdateClick, resourceDetail, currentPage}) {
     const {part} = useParams();
     const dispatch = useDispatch();
 
@@ -12,7 +12,7 @@ function RscDetailContent({setModal, setUpdateClick, resourceDetail}) {
             setUpdateClick(true);
         }else if(label == "취소") {
             setModal(false);
-            await dispatch(callGetResourcesAPI(part));
+            await dispatch(callGetResourcesAPI(part, currentPage));
         }
     };
 

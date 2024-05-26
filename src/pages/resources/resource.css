@@ -20,13 +20,14 @@
     border-radius: 10px;
 }
 
-/* RscRegistModal.js */
+/* InsertResourceForm.js */
 .rsc-form {
     width:100%;
 }
 .rsc-form label {
-    width:30%;
+    width:35%;
     margin:10px 0;
+    font-weight:bold;
 }
 .rsc-form input {
     border:none;
@@ -38,16 +39,20 @@
 }
 .rsc-radio, .rsc-form textarea {
     display: inline-block;
-    width:70%;
+    width:65%;
 }
 .rsc-radio label {
-    margin:10px 10px;
+    margin:10px 0;
+    margin-left:25px;
+    font-weight:400;
 }
-
-/* InsertResourceForm.js */
+.rsc-radio input {
+    margin-left:1px;
+    margin-top:15px;
+}
 .rsc-location {
     display: inline-block;
-    width:70%;
+    width:65%;
 }
 .rsc-tr td:not(:last-child) {
     padding:15px;
@@ -57,10 +62,13 @@
 /* RscDetailContent.js */
 .detail-title {
     display: inline-block;
-    width:30%;
+    width:35%;
     margin:10px 0;
+    font-weight:bold;
 }
 .detail-content {
     display: inline-block;
-    width:70%;
+    width:65%;
+    font-weight:bold;
+    color:#555;
 }
