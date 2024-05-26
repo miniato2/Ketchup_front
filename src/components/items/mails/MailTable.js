@@ -41,7 +41,6 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
             </>
           )
           }
-          {/* <col style={{ width: "15%" }} /> */}
         </colgroup>
         <thead>
           <tr style={{ textAlign: 'center' }}>
@@ -72,7 +71,7 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
               </tr>
             ) : (
               Array.isArray(data) && data.map((item, index) => (
-                <tr key={index} className={`${part === 'receive' ? (item.readTime !== '읽음' ? 'unreadRow' : '') : ''} mail-tr`}>
+                <tr key={data} className={`${part === 'receive' ? (item.readTime !== '읽음' ? 'unreadRow' : '') : ''} mail-tr`}>
                   <td>
                     <input
                       type="checkbox"
@@ -85,6 +84,7 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
                       {key === 'mailTitle' ?
                         (<span
                           className="mail-cursor ellipsis mail-title"
+                          // onClick={onRowClick(data.length - index + 1)} >{item[key]}</span>)
                           onClick={onRowClick(data.length - index - 1)} >{item[key]}</span>)
                         : (
                           key === 'readTime' ? (

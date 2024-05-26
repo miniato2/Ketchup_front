@@ -45,19 +45,19 @@
     padding:15px;
     text-align:center;
 }
-.mail-title {
+/* .mail-title {
     width:600px;
-}
+} */
 .mail-receiver {
     display:inline-block;
     width:230px;
 }
-.ellipsis {
+/* .ellipsis {
     display: block;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-}
+} */
 
 /* SendCancelModal.js */
 .modal-back{

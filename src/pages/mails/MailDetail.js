@@ -7,11 +7,14 @@ import MailContent from "../../components/items/mails/MailContent";
 function MailDetail() {
     const { mailNo } = useParams();
     const result = useSelector(state => state.mailReducer);
-    const mailDetail = result.maildetail || [];
+    const mailDetail = result?.maildetail || [];
     const dispatch = useDispatch();
     const location = useLocation();
     const { part } = location.state;
     const navigate = useNavigate();
+
+    console.log("🍛🍛🍛🍛🍛🍛🍛");
+    console.log(mailDetail);
 
     const receiveHandler = () => {
         navigate('/mails/receive');
