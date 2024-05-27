@@ -123,7 +123,7 @@ function MailForm() {
                 <label htmlFor="title">제목</label>
                 <input
                     type="text"
-                    className="form-control"
+                    className="form-control p-2"
                     name="mailTitle"
                     value={mailForm.mailTitle}
                     id="title"
@@ -134,7 +134,7 @@ function MailForm() {
                 <label>받는 사람</label>
                 <div>
                     <select
-                        className="form-select w-100"
+                        className="form-select w-100 pl-2 py-1"
                         id="recipient"
                         onChange={addReceiver}
                         value={mailForm.receivers}>

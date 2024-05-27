@@ -12,8 +12,9 @@ const SearchBarValue = ({ searchCondition, setSearchCondition, searchValue, setS
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSearch({ condition: searchCondition, value: searchValue });
+        onSearch();
     };
+
     
     return (
         <div className="search-bar mail-search">

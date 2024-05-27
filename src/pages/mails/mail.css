@@ -31,9 +31,9 @@
     width:100%;
 }
 .disable-btn {
-    width: 90px;          /* 버튼 넓이*/
-    height: 38px;         /* 버튼 높이*/
-    border-radius: 5px;   /* 버튼 둥글기*/
+    width: 90px; 
+    height: 38px;
+    border-radius: 5px;
     border: none;
     background-color: #ddd;
     color: #000;
@@ -42,7 +42,7 @@
     cursor: pointer;
 }
 .mail-tr td {
-    padding:15px;
+    padding:15px !important;
     text-align:center;
 }
 /* .mail-title {
@@ -102,7 +102,7 @@
 
 /* SearchBarValue.js */
 .search-condition {
-    width:150px;
+    width:150px !important;
 }
 .mail-search {
     margin-right:15px;
@@ -120,4 +120,14 @@
 }
 .un-read-color {
     color: #888;
+}
+
+.icon-record {
+    color:#EC0B0B;
+    position: relative;
+    top: -7px; /* 원하는 만큼 조정 */
+}
+
+.search-value {
+    width:70%;
 }

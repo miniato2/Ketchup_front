@@ -1,4 +1,4 @@
-import { getReceivemail, getSendmail, getMaildetail, postInsertmail, putDeletemail, putReadtime, putMailcancel } from "../modules/MailModule";
+import { getReceivemail, getSendmail, getMaildetail, postInsertmail, putDeletemail, putReadtime, putMailcancel, getUnreadmail } from "../modules/MailModule";
 import { request } from "./Api";
 
 // 받은 메일
@@ -11,11 +11,9 @@ export function callGetReceiveMailAPI(currentPage, searchCondition, searchValue)
             url += `&search=${searchCondition}&searchvalue=${searchValue}`;
         }
         const result = await request('GET', url);
-        console.log("🍓🍓🍓🍓🍓");
-        console.log(result);
 
         const sendMailName = await Promise.all(result?.data?.data?.content.map(async (mail) => {
-            const memberInfoResult = await request('GET', `/members/${mail.senderMem}`);
+            const memberInfoResult = await request('GET', `/members/${mail?.senderMem}`);
 
             let timeString = "";
             if (mail.receivers[0]?.readTime == null) {
@@ -24,7 +22,7 @@ export function callGetReceiveMailAPI(currentPage, searchCondition, searchValue)
                 timeString = "읽음";
             }
 
-            return { ...mail, senderName: memberInfoResult.data.memberName, readTime: timeString };
+            return { ...mail, senderName: memberInfoResult?.data?.memberName, readTime: timeString };
         }));
 
         dispatch(getReceivemail({mails: sendMailName, pageTotal: result?.data?.data?.totalElements}));
@@ -41,8 +39,6 @@ export function callGetSendMailAPI(currentPage, searchCondition, searchValue) {
             url += `&search=${searchCondition}&searchvalue=${searchValue}`;
         }
         const result = await request('GET', url);
-        console.log("🍠🍠🍠🍠🍠");
-        console.log(result);
 
         const receiveMailName = await Promise.all(result?.data?.data?.content.map(async (mail) => {
             const memberInfos = await Promise.all(mail.receivers.map(async (receiver) => {
@@ -71,9 +67,6 @@ export function callGetMailDetailAPI(mailNo, part) {
 
     return async (dispatch, getState) => {
         const result = await request('GET', `/mails/${mailNo}`);
-        console.log("🍪🍪🍪🍪🍪🍪");
-        console.log(result);
-
         if (part === 'receive') {
             const memberInfoResult = await request('GET', `/members/${result?.data?.senderMem}`);
             const receiveMailDetail = { ...result?.data, memberName: memberInfoResult?.data?.memberName, memberDepName: memberInfoResult?.data?.position?.positionName, memberCompanyEmail: memberInfoResult?.data?.companyEmail };
@@ -161,5 +154,16 @@ export function callPutSendMailCancel(mailNo) {
         const result = await request('PUT', `/mails/${mailNo}`);
 
         dispatch(putMailcancel(result.data));
+    };
+}
+
+// 안읽은 메일
+export function callGetUnreadMailAPI() {
+    console.log("getUnreadmail api call...");
+
+    return async (dispatch, getState) => {
+        const result = await request('GET', '/mails/receive/unread');
+
+        dispatch(getUnreadmail(result.data));
     };
 }

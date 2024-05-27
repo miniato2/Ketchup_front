@@ -1,7 +1,6 @@
 import { useDispatch } from "react-redux";
 import { callGetResourceDetailAPI, callPutResourceAPI } from "../../apis/ResourceAPICalls";
 import ButtonGroup from "../contents/ButtonGroup";
-import { useParams } from "react-router-dom";
 import { useState } from "react";
 
 function UpdateResourceForm({ setUpdateClick, resourceDetail, selectRscNo }) {
@@ -11,10 +10,9 @@ function UpdateResourceForm({ setUpdateClick, resourceDetail, selectRscNo }) {
         rscDescr: resourceDetail.rscDescr
     });
 
-    const buttonClick = async (label) => {
+    const buttonClick = (label) => {
         if (label == "저장") {
             submitRscUpdate();
-            await dispatch(callGetResourceDetailAPI(selectRscNo));
             setUpdateClick(false);
         } else if (label == "취소") {
             setUpdateClick(false);
@@ -43,7 +41,7 @@ function UpdateResourceForm({ setUpdateClick, resourceDetail, selectRscNo }) {
         };
 
         try {
-            dispatch(callPutResourceAPI({ selectRscNo, updateRscDto }));
+            await dispatch(callPutResourceAPI({ selectRscNo, updateRscDto }));
             await dispatch(callGetResourceDetailAPI(selectRscNo));
         } catch (error) {
             console.error(error);
