@@ -880,6 +880,12 @@ h6 {
   background-color: lightgrey;
 }
 
+.text-btn {
+  text-decoration: underLine;
+  border: none;
+  background-color: white;
+}
+
 /*--------------------------------------------------------------
 # table(표 형식)
 --------------------------------------------------------------*/

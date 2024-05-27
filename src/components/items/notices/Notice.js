@@ -7,7 +7,7 @@ import FormatDate from "../../contents/FormatDate";
 import DOMPurify from "isomorphic-dompurify"
 import { decodeJwt } from "../../../utils/tokenUtils";
 import { BsMegaphone } from "react-icons/bs";
-import DeleteModal from "../boards/DeleteModal";
+import NormalDeleteModalForm from "../../form/NormalDeleteModalForm";
 import { Dialog } from "@mui/material";
 
 function Notice({ noticeNo }) {
@@ -15,7 +15,7 @@ function Notice({ noticeNo }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const notice = useSelector(state => state.noticeReducer.notice);
-    console.log("Notice [ notice ] : ", notice);
+
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const [deleteModal, setDeleteModal] = useState(false);
 
@@ -182,7 +182,7 @@ function Notice({ noticeNo }) {
             </div >
 
             <Dialog open={deleteModal} onClose={onDialogCloseHandler}>
-                <DeleteModal
+                <NormalDeleteModalForm
                     onClose={onDialogCloseHandler}
                     onDelete={deleteHandler}
                 />

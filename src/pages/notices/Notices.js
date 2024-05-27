@@ -10,6 +10,8 @@ import PaginationButtons from '../../components/contents/PaginationButtons';
 import { decodeJwt } from '../../utils/tokenUtils';
 import FormatDateTime from '../../components/contents/FormatDateTime';
 import { BsMegaphone } from 'react-icons/bs';
+import { Typography } from '@mui/material';
+import { Box } from '@mui/system';
 
 const Notices = () => {
   const dispatch = useDispatch();
@@ -21,6 +23,7 @@ const Notices = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [loading, setLoading] = useState('');
 
   useEffect(() => {
     dispatch(callGetNoticeListAPI({
@@ -75,6 +78,10 @@ const Notices = () => {
     setSearchKeyword(searchKeyword);
   };
 
+  if (!noticeList) {
+    return <div>로딩 중...</div>;
+  }
+
   return (
     <main id="main" className="main">
       <div className="title">
@@ -94,7 +101,11 @@ const Notices = () => {
           {normalNotices.length === 0 ? (
             <>
               <BootstrapTable data={mergedNoticeList} columns={columns} onRowClick={handleRowClick} />
-              <p style={{ textAlign: 'center' }}>'{searchKeyword}' 제목 공지가 없습니다.</p>
+              {/* <p style={{ textAlign: 'center' }}>'{searchKeyword}' 제목 공지가 없습니다.</p> */}
+              <Box height={'480px'} display="flex" flexDirection="column" justifyContent="center" alignItems="center" margin={'auto'}>
+                <Typography fontSize={24} textAlign={'center'}>{searchKeyword} 공지가 없습니다.</Typography>
+                <img src="/img/searchConditionRequired.png" alt="searchConditionRequired" style={{ display: "block", margin: "0 auto", maxWidth: "100%", height: "auto" }} />
+              </Box>
             </>
           ) : (
             <>

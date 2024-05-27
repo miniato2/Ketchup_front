@@ -15,37 +15,46 @@ const PaginationButtons = ({ totalItems, itemsPerPage, currentPage, onPageChange
 
     return (
         <div id="paging-btn">
-            <button 
-                onClick={() => handleClick(1)} 
-            >
-                &lt;&lt;
-            </button>
-            <button 
-                onClick={() => handleClick(currentPage > 1 ? currentPage - 1 : 1)} 
-            >
-                &lt;
-            </button>
+            {totalItems > 0 && (
+                <>
+                    <button
+                        onClick={() => handleClick(1)} disabled={currentPage === 1}
+                    >
+                        &lt;&lt;
+                    </button>
+                    <button
+                        onClick={() => handleClick(currentPage > 1 ? currentPage - 1 : 1)} disabled={currentPage === 1}
+                    >
+                        &lt;
+                    </button>
+                </>
+            )}
             <div>
                 {pageNumbers.map(number => (
-                    <button 
-                        key={number} 
-                        onClick={() => handleClick(number)} 
+                    <button
+                        key={number}
+                        onClick={() => handleClick(number)}
                         className={currentPage === number ? "selected" : ""}
                     >
                         {number}
                     </button>
                 ))}
             </div>
-            <button 
-                onClick={() => handleClick(currentPage < totalPages ? currentPage + 1 : totalPages)} 
-            >
-                &gt;
-            </button>
-            <button 
-                onClick={() => handleClick(totalPages)} 
-            >
-                &gt;&gt;
-            </button>
+            {totalItems > 0 && (
+                <>
+                    <button
+                        onClick={() => handleClick(currentPage < totalPages ? currentPage + 1 : totalPages)}
+                        disabled={currentPage === totalPages}
+                    >
+                        &gt;
+                    </button>
+                    <button
+                        onClick={() => handleClick(totalPages)} disabled={currentPage === totalPages}
+                    >
+                        &gt;&gt;
+                    </button>
+                </>
+            )}
         </div>
     );
 };

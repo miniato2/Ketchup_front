@@ -5,7 +5,7 @@ import { callDeleteResourceAPI, callGetResourcesAPI } from "../../apis/ResourceA
 import ResourceList from "../../components/lists/resources/ResourceList";
 import ButtonGroup from "../../components/contents/ButtonGroup";
 import RscRegistModal from "../../components/items/resources/RscRegistModal";
-import DeleteModal from "../../components/items/boards/DeleteModal";
+import DeleteModal from "../../components/contents/DeleteModal";
 import { Dialog } from "@mui/material";
 import PaginationButtons from "../../components/contents/PaginationButtons";
 

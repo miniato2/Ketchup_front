@@ -17,6 +17,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from '@fullcalendar/list';
 import moment from "moment";
 import { Box } from "@mui/material";
+import ButtonGroup from "../components/contents/ButtonGroup";
+import { Label } from "@mui/icons-material";
 
 function Main() {
     const dispatch = useDispatch();
@@ -183,9 +185,8 @@ function Main() {
                             <h2 className="card-title"
                                 style={{ fontWeight: 'bold', fontSize: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingLeft: '20px', paddingRight: '20px' }}>
                                 공지사항
-                                <Link to={`/notices`} style={{ fontSize: '18px', color: '#EC0B0B' }}>
-                                    더보기
-                                </Link>
+
+                                <button className="move-btn" style={{fontSize: '16px', width: '75px'}} onClick={() => navigate('/notices')}>더보기</button>
                             </h2>
                             <BootstrapTable data={formattedNoticeList} columns={columns} onRowClick={handleRowClick} />
                         </div>
