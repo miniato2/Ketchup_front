@@ -1,5 +1,5 @@
 
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -7,9 +7,10 @@ import {
 } from '../../apis/MemberAPICalls'
 
 
+
 function Login() {
     const navigate = useNavigate();
-
+    const token = window.localStorage.getItem('accessToken')
     // 리덕스를 이용하기 위한 디스패처, 셀렉터 선언
     const dispatch = useDispatch();
     const loginMember = useSelector(state => state.memberReducer);  // API 요청하여 가져온 loginMember 정보
@@ -32,7 +33,7 @@ function Login() {
         }
         }
     
-    ,[]);
+    ,[token]);
     
 
     
@@ -47,7 +48,7 @@ function Login() {
     // 로그인 버튼 클릭시 디스패처 실행 및 메인 페이지로 이동
     const onClickLoginHandler = async() => {
        await dispatch(callLoginAPI({ form: form }));
-       await navigate('/main');
+       
     
     };
 
@@ -79,7 +80,7 @@ function Login() {
                 >
                     로그인
                 </button>
-                <a style={{marginTop:"10px",marginLeft: 390}}>비밀번호 찾기</a>
+                <Link style={{ marginTop: "10px", marginLeft: 390 , color: "black" }} to="/findPW">비밀번호 찾기</Link>
               
             </div>
         </div>

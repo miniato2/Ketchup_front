@@ -31,6 +31,7 @@ import Departments from './pages/members/Departments';
 import Positions from './pages/members/Positions';
 import OrganizationChart from './pages/members/OrganizationChart';
 import TreePractice from './pages/members/TreePractice'
+import FindPW from './pages/members/FindPW';
 
 // import Error from './pages/Error';
 
@@ -62,7 +63,7 @@ function App() {
         {/* 로그인 여부에 따라 "/" 경로를 리다이렉션 */}
         <Route path="/" element={isLoggedIn ? <Navigate to="/main" /> : <Navigate to="/login" />} />
         <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
-        
+        <Route path="/findPW" element={<FindPW/>}/>
        
           <Route path="/" element={<Layout />}>
             <Route path='main' element={<Main />} />

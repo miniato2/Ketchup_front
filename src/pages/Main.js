@@ -100,6 +100,13 @@ function Main() {
         setIsLoading(false);
     }, [schedules]);
 
+    useEffect(() => {
+       if(loginToken==null){
+        navigate("/login");
+       }
+    }, []);
+
+
     // 공지사항 목록 Redux store에서 가져오기
     const result = useSelector(state => state.noticeReducer);
     const noticeList = result?.noticelist?.noticesWithMemberNames || [];

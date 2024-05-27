@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { callUpdateMyPWAPI } from '../../apis/MemberAPICalls';
+import { callSendEmailAPI, callUpdateMyPWAPI, send, sendCodeAPI } from '../../apis/MemberAPICalls';
 
 
 
@@ -8,10 +8,13 @@ export default function UpdatePWForm({ myNo, onDialogClickHandler }) {
 
 
     const dispatch = useDispatch();
+    const [verifyEmail, setVerifyemail] = useState(false);
+    const [verifyCode, setVerifyCode] = useState('');
     const [pass, setPass] = useState({
         firstPW: '',
         secondPW: '',
     });
+
 
 
     const [validationMessage, setValidationMessage] = useState({
@@ -19,7 +22,15 @@ export default function UpdatePWForm({ myNo, onDialogClickHandler }) {
         passwordMatch: '',
     });
 
-    console.log(validationMessage)
+    console.log(verifyEmail);
+    console.log(verifyCode);
+
+
+    useEffect(() => {
+
+        dispatch(callSendEmailAPI(myNo))
+
+    }, [])
 
 
     const onChangeHandler = async (e) => {
@@ -96,58 +107,101 @@ export default function UpdatePWForm({ myNo, onDialogClickHandler }) {
         onDialogClickHandler();
     }
 
+    const handleCode = async () => {
+        const verifyResult = await dispatch(sendCodeAPI(myNo, verifyCode))
+
+
+        if (verifyResult === true) {
+            await setVerifyemail(true);
+        } else {
+            await setVerifyemail(false);
+        }
+
+
+    }
+
+
+
+
+
+
 
 
     return (
-        <div style={{ marginLeft: 50, width: 500 }}>
-            <label>새 비밀번호 <input
-                type='password'
-                name="firstPW"
-                value={pass.firstPW}
-                onChange={onChangeHandler}
-                placeholder='비밀번호를입력해주세요'
-                style={{ textAlign: 'center', marginLeft: 70, borderWidth: '0px 0px 1px 0px' }}
-            /></label>
-            <p style={{ color: 'red', fontSize: 13 }}>{validationMessage.validPassword}</p>
 
-            <br />
+        <div>
 
-            <br />
+            {verifyEmail ? (
+                <div style={{ marginLeft: 50, width: 500 }}>
+                    <label>새 비밀번호 <input
+                        type='password'
+                        name="firstPW"
+                        value={pass.firstPW}
+                        onChange={onChangeHandler}
+                        placeholder='비밀번호를 입력해주세요'
+                        style={{ textAlign: 'center', marginLeft: 70, borderWidth: '0px 0px 1px 0px' }}
+                    /></label>
+                    <p style={{ color: 'red', fontSize: 13 }}>{validationMessage.validPassword}</p>
 
-            <label>새 비밀번호 확인
-                <input
-                    type='password'
-                    placeholder='한번더 입력해주세요'
-                    value={pass.secondPW}
-                    onChange={onChangeHandler}
-                    name="secondPW"
-                    style={{
-                        textAlign: 'center',
-                        marginLeft: 40,
-                        borderWidth: '0px 0px 1px 0px'
-                    }}
-                />
-            </label>
-            <p style={{ color: 'red', fontSize: 13 }}>{validationMessage.passwordMatch}</p>
+                    <br />
 
-            <div style={{ marginRight: "20px" }}>
+                    <br />
+
+                    <label>새 비밀번호 확인
+                        <input
+                            type='password'
+                            placeholder='한번 더 입력해주세요'
+                            value={pass.secondPW}
+                            onChange={onChangeHandler}
+                            name="secondPW"
+                            style={{
+                                textAlign: 'center',
+                                marginLeft: 40,
+                                borderWidth: '0px 0px 1px 0px'
+                            }}
+                        />
+                    </label>
+                    <p style={{ color: 'red', fontSize: 13 }}>{validationMessage.passwordMatch}</p>
+
+                    <div style={{ marginRight: "20px" }}>
 
 
-                <button
-                    onClick={onDialogClickHandler}
-                    style={{ backgroundColor: 'white', color: 'black', fontSize: '15px', width: 80, height: '35px', padding: '5px', cursor: 'pointer', marginLeft: '200px', borderRadius: 5 }}
-                >
-                    취소
-                </button>
-                <button
-                    id="registerButton"
-                    onClick={onClickHandler}
-                    disabled={Object.values(validationMessage).some(msg => msg !== 'ok!')}
-                    style={{ backgroundColor: 'red', color: 'white', border: 'none', fontSize: '15px', width: 80, height: '35px', padding: '5px', cursor: 'pointer', marginLeft: '10px', borderRadius: 5 }}
-                >
-                    등록
-                </button>
-            </div>
+                        <button
+                            onClick={onDialogClickHandler}
+                            style={{ backgroundColor: 'white', color: 'black', fontSize: '15px', width: 80, height: '35px', padding: '5px', cursor: 'pointer', marginLeft: '200px', borderRadius: 5 }}
+                        >
+                            취소
+                        </button>
+                        <button
+                            id="registerButton"
+                            onClick={onClickHandler}
+                            disabled={Object.values(validationMessage).some(msg => msg !== 'ok!')}
+                            style={{ backgroundColor: 'red', color: 'white', border: 'none', fontSize: '15px', width: 80, height: '35px', padding: '5px', cursor: 'pointer', marginLeft: '10px', borderRadius: 5 }}
+                        >
+                            등록
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                <div style={{ width: 500 }}>
+                    <a style={{marginLeft: 50}}>개인메일로 인증번호가 발송되었습니다.</a>
+                    <br></br>
+                    <br></br>
+                    <input
+                        type='text'
+                        placeholder='이메일 인증번호를 입력해주세요'
+                        onChange={(e) => { setVerifyCode(e.target.value) }}
+                        name="verifyCode"
+                        style={{ width: 300, textAlign: 'center', marginLeft: 70, borderWidth: '0px 0px 1px 0px' }}
+                    />
+                    <button
+                        onClick={handleCode}
+                        style={{ backgroundColor: 'red', color: 'white', border: 'none', fontSize: '15px', width: 80, height: '35px', padding: '5px', cursor: 'pointer', marginLeft: '10px', borderRadius: 5, marginBottom:10 }}
+                    >
+                        인증
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
