@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Table } from "react-bootstrap";
 import RscModal from "../../items/resources/RscModal";
 import { Dialog } from "@mui/material";
-import { useDispatch } from "react-redux";
 import { callGetResourcesAPI } from "../../../apis/ResourceAPICalls";
+import { useDispatch } from "react-redux";
 
 function ResourceList({ list, part, selectedItems, setSelectedItems, currentPage }) {
     const [modal, setModal] = useState(false);
@@ -11,7 +11,7 @@ function ResourceList({ list, part, selectedItems, setSelectedItems, currentPage
     const dispatch = useDispatch();
 
     const openRscDetail = async (index) => {
-        await dispatch(callGetResourcesAPI(part))
+        await dispatch(callGetResourcesAPI(part, currentPage));
         setSelectRscNo(list[index].rscNo);
         setModal(true);
     };

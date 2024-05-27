@@ -12,15 +12,12 @@ import PaginationButtons from "../../components/contents/PaginationButtons";
 function Resources() {
     const { part } = useParams();
     const result = useSelector(state => state.resourceReducer);
-    const resourceList = result.resourcelist;
+    const resourceList = result.resourcelist || [];
     const dispatch = useDispatch();
     const [registModal, setRegistModal] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
     const [deleteModal, setDeleteModal] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-
-    console.log("💙💙💙💙💙💙💙");
-    console.log(resourceList);
 
     useEffect(
         () => {
@@ -84,6 +81,9 @@ function Resources() {
                                 part={part}
                             />
                         </Dialog>
+                        {/* <Dialog open={modal} onClose={() => setModal(false)}>
+                            <RscModal setModal={setModal} selectRscNo={selectRscNo} part={part} currentPage={currentPage} />
+                        </Dialog> */}
                     </>
                 )
                 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./mail.css";
 import ReceiveMail from "../../components/lists/mails/ReceiveMail";
 import SendMail from "../../components/lists/mails/SendMail";
@@ -6,10 +6,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import SearchBarValue from "../../components/contents/SearchBarValue";
 import MailDeleteModal from "../../components/items/mails/MailDeleteModal";
 import { Dialog } from "@mui/material";
+import { callGetReceiveMailAPI, callGetSendMailAPI } from "../../apis/MailAPICalls";
+import { useDispatch, useSelector } from "react-redux";
 
 function Mail() {
-    const navigate = useNavigate();
     const { part } = useParams();
+
+    const result = useSelector(state => state.mailReducer);
+    const partMail = part === 'receive' ? 'receivemail' : 'sendmail';
+    const mails = result?.[partMail] || null;
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [sendMailNos, setSendMailNos] = useState([]);
     const [receiveMailNos, setReceiveMailNos] = useState([])
     const [deleteModal, setDeleteModal] = useState(false);
@@ -17,13 +24,16 @@ function Mail() {
     const [searchValue, setSearchValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchParams, setSearchParams] = useState({ condition: '', value: '' });
 
     const receiveHandler = () => {
         navigate('/mails/receive');
+        setSearchParams({ condition: '', value: '' });
     };
 
     const sendHandler = () => {
         navigate('/mails/send');
+        setSearchParams({ condition: '', value: '' });
     };
 
     const insertHandler = () => navigate('/mails/insert');
@@ -36,10 +46,37 @@ function Mail() {
         setDeleteModal(prevState => !prevState);
     };
 
-    const handleSearch = ({ condition, value }) => {
-        setSearchCondition(condition);
-        setSearchValue(value);
+    const handleSearch = () => {
+        if (searchCondition === '') {
+            alert("검색 조건을 선택하세요");
+            return;
+        } else if (searchValue === '') {
+            alert("검색어를 입력하세요");
+            return;
+        }
+
+        setSearchParams({ condition: searchCondition, value: searchValue });
+        setCurrentPage(1);
+        
+        setSearchCondition('');
+        setSearchValue('');
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (part === 'receive') {
+                    await dispatch(callGetReceiveMailAPI(currentPage, searchParams.condition, searchParams.value));
+                } else if (part === 'send') {
+                    await dispatch(callGetSendMailAPI(currentPage, searchParams.condition, searchParams.value));
+                }
+            } catch (error) {
+                console.error("메일 조회에 실패했습니다.", error);
+            }
+        };
+    
+        fetchData();
+    }, [dispatch, part, currentPage, searchParams]);
 
     const delMailList = part === 'receive' ?
         Object.keys(receiveMailNos).filter(key => receiveMailNos[key]).map(Number)
@@ -74,35 +111,38 @@ function Mail() {
                     </div>
                 </div>
                 {
-                    part == "receive" ?
+                    part === "receive" ?
                         <ReceiveMail
+                            receiveMail={mails}
                             checkedItems={receiveMailNos}
                             setCheckedItems={setReceiveMailNos}
-                            searchCondition={searchCondition}
-                            searchValue={searchValue}
+                            searchParams={searchParams}
                             isLoading={isLoading}
                             setIsLoading={setIsLoading}
                             currentPage={currentPage}
-                            setCurrentPage={setCurrentPage} />
+                            setCurrentPage={setCurrentPage}
+                        />
                         :
                         <SendMail
+                            sendMail={mails}
                             checkedItems={sendMailNos}
                             setCheckedItems={setSendMailNos}
-                            searchCondition={searchCondition}
-                            searchValue={searchValue}
+                            searchParams={searchParams}
                             isLoading={isLoading}
                             setIsLoading={setIsLoading}
                             currentPage={currentPage}
-                            setCurrentPage={setCurrentPage} />
+                            setCurrentPage={setCurrentPage}
+                        />
+                    
                 }
             </main>
             <Dialog open={deleteModal} onClose={onDialogCloseHandler}>
-                    <MailDeleteModal
-                        setDeleteModal={setDeleteModal}
-                        part={part}
-                        delMailList={delMailList}
-                        setDelMailList={setDelMailList}
-                        currentPage={currentPage} />
+                <MailDeleteModal
+                    setDeleteModal={setDeleteModal}
+                    part={part}
+                    delMailList={delMailList}
+                    setDelMailList={setDelMailList}
+                    currentPage={currentPage} />
             </Dialog>
         </>
     );
