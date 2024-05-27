@@ -1,5 +1,5 @@
 import { request } from "./Api";
-import { deleteComment, getCommentlist, insertComment, insertreply } from "../modules/CommentModule";
+import { deleteComment, getCommentlist, getReply, insertComment, insertreply } from "../modules/CommentModule";
 
 export function callGetCommentListAPI({ boardNo }) {
     console.log('callGetCommentListAPI...');
@@ -27,10 +27,8 @@ export function callGetCommentListAPI({ boardNo }) {
                 // 게시물 목록에 작성자 이름을 추가
                 return {
                     ...result
-                    , memberName: memberInfoResult.data.memberName
                     , positionName: memberInfoResult.data.position.positionName
                     , parentMemberName: parentMemberName // 부모 댓글의 작성자 이름 추가
-
                 };
             }));
 
@@ -103,3 +101,43 @@ export function callDeleteCommentAPI({ boardNo, commentNo }) {
         }
     }
 }
+
+// export function callGetReplyAPI({boardNo, commentNo}) {
+//     console.log('callGetReplyAPI...');
+//     console.log("callGetReplyAPI [ boardNo ] : ", boardNo);
+//     console.log("callGetReplyAPI [ commentNo ] : ", commentNo);
+
+//     return async (dispatch, getState) => {
+//         try {
+
+//             const results = await request('GET', `/boards/${boardNo}/comments/${commentNo}/replies`);
+            
+//             // 각 게시물의 작성자 이름을 가져오기 위해 댓글 목록을 순회
+//             const commentsWithMemberNames = await Promise.all(results.data.map(async (result) => {
+//                 // 각 게시물의 작성자 memberNo를 이용해 memberName을 조회
+//                 const memberInfoResult = await request('GET', `/members/${result.memberNo}`);
+
+//                 // 부모 댓글의 작성자 이름인 parentMemberName을 가져오기 위해 부모 댓글의 memberNo가 있는 경우에만 조회
+//                 let parentMemberName = null;
+//                 if (result.parentMemberNo) {
+//                     const parentMemberInfoResult = await request('GET', `/members/${result.parentMemberNo}`);
+//                     parentMemberName = parentMemberInfoResult.data.memberName;
+//                 }
+
+//                 // 게시물 목록에 작성자 이름을 추가
+//                 return {
+//                     ...result
+//                     , memberName: memberInfoResult.data.memberName
+//                     , positionName: memberInfoResult.data.position.positionName
+//                     , parentMemberName: parentMemberName // 부모 댓글의 작성자 이름 추가
+//                 };
+//             }));
+
+//             // 수정된 게시물 목록을 저장
+//             dispatch(getReply(commentsWithMemberNames));
+         
+//         } catch (error) {
+//             console.error('Error inserting notice:', error);
+//         }
+//     };
+// }

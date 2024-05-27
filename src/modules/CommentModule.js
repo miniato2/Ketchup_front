@@ -12,14 +12,16 @@ const initialState =  {
 
 const GET_COMMENTLIST = 'comment/GET_COMMENTLIST';
 const GET_COMMENT = 'comment/GET_COMMENT';
+const GET_REPLY = 'comment/GET_REPLY';
 const INSERT_COMMENT = 'comment/INSERT_COMMENT';
 const UPDATE_COMMENT = 'comment/UPDATE_COMMENT';
 const DELETE_COMMENT = 'comment/DELETE_COMMENT';
 const INSERT_REPLY = 'comment/INSERT_REPLY';
 
-export const { comment: { getCommentlist, getComment, insertComment, updateComment, deleteComment, insertreply } } = createActions({
+export const { comment: { getCommentlist, getComment, getReply, insertComment, updateComment, deleteComment, insertreply } } = createActions({
     [GET_COMMENTLIST]: (res) => ({ commentlist: res }),
     [GET_COMMENT]: (res) => ({ comment: res }),
+    [GET_REPLY]: (res) => ({ reply: res }),
     [INSERT_COMMENT]: (res) => ({ insert: res }),
     [UPDATE_COMMENT]: (res) => ({ update: res }),
     [DELETE_COMMENT]: (res) => ({ delete: res }),
@@ -32,6 +34,9 @@ const commentReducer = handleActions (
             return payload;
         },
         [GET_COMMENT]: (state, {payload}) => {
+            return payload;
+        },
+        [GET_REPLY]: (state, {payload}) => {
             return payload;
         },
         [INSERT_COMMENT]: (state, {payload}) => {

@@ -7,7 +7,7 @@ import DOMPurify from "isomorphic-dompurify";
 import ButtonGroup from "../../contents/ButtonGroup";
 import FormatDate from "../../contents/FormatDate";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import DeleteModal from "../../contents/DeleteModal";
+import NormalDeleteModalForm from "../../form/NormalDeleteModalForm";
 import { Dialog } from "@mui/material";
 import Comment from "../comment/Comment";
 
@@ -167,7 +167,7 @@ function Board({ boardNo }) {
             </div>
 
             <Dialog open={deleteModal} onClose={onDialogCloseHandler}>
-                <DeleteModal
+                <NormalDeleteModalForm
                     onClose={onDialogCloseHandler}
                     onDelete={deleteHandler}
                 />

@@ -2,24 +2,23 @@ import { getReceivemail, getSendmail, getMaildetail, postInsertmail, putDeletema
 import { request } from "./Api";
 
 // 받은 메일
-export function callGetReceiveMailAPI(searchCondition, searchValue) {
+export function callGetReceiveMailAPI(currentPage, searchCondition, searchValue) {
     console.log("getReceivemail api call...");
-    console.log("➰➰➰➰➰➰➰➰➰");
-    console.log(searchCondition + "/" + searchValue);
 
     return async (dispatch, getState) => {
-        let url = '/mails?part=receive';
-        if(searchCondition && searchValue) {
+        let url = `/mails?part=receive&page=${currentPage}`;
+        if (searchCondition && searchValue) {
             url += `&search=${searchCondition}&searchvalue=${searchValue}`;
         }
         const result = await request('GET', url);
-        console.log(result.data);
+        console.log("🍓🍓🍓🍓🍓");
+        console.log(result);
 
-        const sendMailName = await Promise.all(result.data.map(async (mail) => {
+        const sendMailName = await Promise.all(result?.data?.data?.content.map(async (mail) => {
             const memberInfoResult = await request('GET', `/members/${mail.senderMem}`);
 
             let timeString = "";
-            if (mail.receivers[0].readTime == null) {
+            if (mail.receivers[0]?.readTime == null) {
                 timeString = "안읽음";
             } else {
                 timeString = "읽음";
@@ -28,40 +27,41 @@ export function callGetReceiveMailAPI(searchCondition, searchValue) {
             return { ...mail, senderName: memberInfoResult.data.memberName, readTime: timeString };
         }));
 
-        dispatch(getReceivemail(sendMailName));
+        dispatch(getReceivemail({mails: sendMailName, pageTotal: result?.data?.data?.totalElements}));
     };
 }
 
 // 보낸 메일
-export function callGetSendMailAPI(searchCondition, searchValue) {
+export function callGetSendMailAPI(currentPage, searchCondition, searchValue) {
     console.log("getSendmail api call...");
 
     return async (dispatch, getState) => {
-        let url = '/mails?part=send';
-        if(searchCondition && searchValue) {
+        let url = `/mails?part=send&page=${currentPage}`;
+        if (searchCondition && searchValue) {
             url += `&search=${searchCondition}&searchvalue=${searchValue}`;
         }
         const result = await request('GET', url);
-        console.log(result.data);
+        console.log("🍠🍠🍠🍠🍠");
+        console.log(result);
 
-        const receiveMailName = await Promise.all(result.data.map(async (mail) => {
+        const receiveMailName = await Promise.all(result?.data?.data?.content.map(async (mail) => {
             const memberInfos = await Promise.all(mail.receivers.map(async (receiver) => {
                 const memberInfoResult = await request('GET', `/members/${receiver.receiverMem}`);
 
                 let readString = '';
-                if(receiver.readTime != null) {
+                if (receiver.readTime != null) {
                     readString = "읽음";
-                }else {
+                } else {
                     readString = "안읽음";
                 }
-                
+
                 return { name: memberInfoResult.data.memberName, readTime: readString, dep: memberInfoResult.data.position.positionName };
             }));
-            
+
             return { ...mail, receiverName: memberInfos };
         }));
 
-        dispatch(getSendmail(receiveMailName));
+        dispatch(getSendmail({mails: receiveMailName, pageTotal: result?.data?.data?.totalElements}));
     };
 }
 
@@ -71,12 +71,12 @@ export function callGetMailDetailAPI(mailNo, part) {
 
     return async (dispatch, getState) => {
         const result = await request('GET', `/mails/${mailNo}`);
+        console.log("🍪🍪🍪🍪🍪🍪");
         console.log(result);
 
         if (part === 'receive') {
-            const memberInfoResult = await request('GET', `/members/${result.data.senderMem}`);
-            console.log(memberInfoResult);
-            const receiveMailDetail = { ...result.data, memberName: memberInfoResult.data.memberName, memberDepName: memberInfoResult.data.position.positionName, memberCompanyEmail: memberInfoResult.data.companyEmail };
+            const memberInfoResult = await request('GET', `/members/${result?.data?.senderMem}`);
+            const receiveMailDetail = { ...result?.data, memberName: memberInfoResult?.data?.memberName, memberDepName: memberInfoResult?.data?.position?.positionName, memberCompanyEmail: memberInfoResult?.data?.companyEmail };
 
             dispatch(getMaildetail(receiveMailDetail));
         } else if (part === 'send') {
@@ -109,7 +109,6 @@ export const callPostInsertMailAPI = ({ formData }) => {
                 },
                 body: formData
             }).then((response) => response.json());
-            console.log(result.data);
 
             dispatch(postInsertmail(result.data));
         } catch (error) {
@@ -125,7 +124,6 @@ export const callPutDeleteMailAPI = (part, mailNos) => {
     return async (dispatch, getState) => {
         const mailnoParams = mailNos.map(mailNo => `mailno=${mailNo}`).join('&');
         const result = await request('PUT', `/mails?part=${part}&${mailnoParams}`);
-        console.log(result);
 
         dispatch(putDeletemail(result.data));
     };
@@ -161,8 +159,6 @@ export function callPutSendMailCancel(mailNo) {
 
     return async (dispatch, getState) => {
         const result = await request('PUT', `/mails/${mailNo}`);
-        console.log("🎭🎭🎭🎭🎭🎭🎭");
-        console.log(result.data);
 
         dispatch(putMailcancel(result.data));
     };

@@ -3,7 +3,7 @@ import { callGetResourcesAPI, callPostResourceAPI } from "../../apis/ResourceAPI
 import ButtonGroup from "../contents/ButtonGroup";
 import { useDispatch } from "react-redux";
 
-function InsertResourceForm({ part, setRegistModal }) {
+function InsertResourceForm({ part, setRegistModal, currentPage }) {
     const dispatch = useDispatch();
 
     const korPart = part === 'conferences' ? "회의실" : "차량";
@@ -24,7 +24,6 @@ function InsertResourceForm({ part, setRegistModal }) {
             setRegistModal(false);
         } else if (label == "등록") {
             await submitRscClick();
-            setRegistModal(false);
         }
     };
 
@@ -35,6 +34,11 @@ function InsertResourceForm({ part, setRegistModal }) {
 
     const onChangeHandler = (e) => {
         const { name, value } = e.target;
+
+        if (['conferenceFloor', 'conferenceRoom', 'rscCap'].includes(name) && isNaN(value)) {
+            alert("숫자만 입력할 수 있습니다.");
+            return;
+        }
 
         setRscForm({
             ...rscForm,
@@ -50,12 +54,20 @@ function InsertResourceForm({ part, setRegistModal }) {
     };
 
     const submitRscClick = async () => {
-
-        if (rscForm.conferenceFloor < 0 || rscForm.conferenceRoom < 0) {
-            alert("층과 호수는 음수 값을 입력할 수 없습니다. 다시 입력해주세요.");
+        if(!rscForm.rscName) {
+            alert(`${korPart === '회의실' ? "회의실 명" : "차종"}을 입력하세요`);
             return;
-        } else if (rscForm.rscCap < 0) {
-            alert("인원은 음수 값을 입력할 수 없습니다. 다시 입력해주세요.");
+        }else if(korPart === '회의실' && (!rscForm.conferenceFloor || rscForm.conferenceFloor <= 0 || !rscForm.conferenceRoom || rscForm.conferenceRoom <= 0)) {
+            alert("회의실 위치 정보를 0보다 큰 숫자로 입력하세요");
+            return;
+        }else if (korPart === '차량' && !rscForm.vehicleNum) {
+            alert("차량 번호를 입력하세요");
+            return;
+        }else if (!rscForm.rscCap || rscForm.rscCap <= 0) {
+            alert(`${korPart === '회의실' ? "수용 가능 인원" : "탑승 가능 인원"}을 0보다 큰 숫자로 입력하세요`);
+            return;
+        }else if (rscForm.rscIsAvailable === '') {
+            alert("상태를 선택하세요");
             return;
         }
 
@@ -78,7 +90,8 @@ function InsertResourceForm({ part, setRegistModal }) {
 
         try {
             await dispatch(callPostResourceAPI({ rscDto }));
-            dispatch(callGetResourcesAPI(part));
+            dispatch(callGetResourcesAPI(part, currentPage));
+            setRegistModal(false);  // 성공적으로 등록된 후 모달 닫기
         } catch (error) {
             console.error(error);
         }
@@ -122,13 +135,13 @@ function InsertResourceForm({ part, setRegistModal }) {
                     </>
                 ) : (
                     <>
-                        <label htmlFor="vehicleNum">차량 번호</label>
+                        <label>차량 번호</label>
                         <input
                             type="text"
                             name="vehicleNum"
                             value={rscForm.vehicleNum}
                             onChange={onChangeHandler}
-                            placeholder="차량 번호를 입력하세요" /> <br />
+                            placeholder="00가 0000" /> <br />
                     </>
                 )}
                 <label htmlFor="rscCap">{rscPart ? "수용 가능 인원" : "탑승 가능 인원"}</label>
@@ -144,7 +157,7 @@ function InsertResourceForm({ part, setRegistModal }) {
                 <div className="rsc-radio">
                     <input
                         type="radio"
-                        className="form-check-input border mt-3"
+                        className="form-check-input border"
                         name="checkStatus"
                         value="available"
                         id="available"
@@ -153,7 +166,7 @@ function InsertResourceForm({ part, setRegistModal }) {
                     <label htmlFor="available">사용 가능</label>
                     <input
                         type="radio"
-                        className="form-check-input border mt-3"
+                        className="form-check-input border"
                         name="checkStatus"
                         value="unavailable"
                         id="unavailable"
@@ -161,7 +174,7 @@ function InsertResourceForm({ part, setRegistModal }) {
                         onChange={onRadioChangeHandler} />
                     <label htmlFor="unavailable">사용 불가능</label>
                 </div>
-                <div>
+                <div className="d-flex">
                     <label htmlFor="rscDescr">비고</label>
                     <textarea
                         className="form-control"

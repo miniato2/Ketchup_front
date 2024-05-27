@@ -8,8 +8,10 @@ function Layout() {
         <>
             <Header />
             <Sidebar />
-            <Outlet />
-            <Footer />
+            <div className="d-flex justify-content-between" style={{height:"100vh", flexDirection:"column"}}>
+                <Outlet />
+                <Footer />
+            </div>
         </>
     );
 }

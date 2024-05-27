@@ -7,7 +7,7 @@ import FormatDate from "../../contents/FormatDate";
 import DOMPurify from "isomorphic-dompurify"
 import { decodeJwt } from "../../../utils/tokenUtils";
 import { BsMegaphone } from "react-icons/bs";
-import DeleteModal from "../../contents/DeleteModal";
+import NormalDeleteModalForm from "../../form/NormalDeleteModalForm";
 import { Dialog } from "@mui/material";
 
 function Notice({ noticeNo }) {
@@ -182,7 +182,7 @@ function Notice({ noticeNo }) {
             </div >
 
             <Dialog open={deleteModal} onClose={onDialogCloseHandler}>
-                <DeleteModal
+                <NormalDeleteModalForm
                     onClose={onDialogCloseHandler}
                     onDelete={deleteHandler}
                 />

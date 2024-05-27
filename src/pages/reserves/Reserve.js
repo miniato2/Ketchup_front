@@ -208,6 +208,7 @@ export default function Reserve() {
                                 events={reserveList}
                                 initialView="timeGridDay"
                                 initialDate={searchConditions.rsvDate}
+                                eventColor='red'
                                 plugins={[
                                     dayGridPlugin,
                                     timeGridPlugin,
@@ -216,7 +217,6 @@ export default function Reserve() {
                                 ]}
                                 height="50vh"
                                 headerToolbar={false}
-                                themeSystem='bootstrap'
                                 selectable={true}
                                 select={(selectInfo) => onDateClickHandler(selectInfo, resource)}
                                 eventClick={onEventClickHandler}
