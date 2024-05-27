@@ -6,20 +6,21 @@ import { callMembersAPI } from '../../apis/MemberAPICalls';
 import { decodeJwt } from "../../utils/tokenUtils";
 
 function RefLineModal({ setModalControl, refLine, setRefLine }) {
-    const column = ['번호', '부서', '이름', '직급'];
-    const [search, setSearch] = useState('');
-
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const dispatch = useDispatch();
     const memberList = useSelector(state => state.memberReducer);
-    const [selectedMember, setSelectedMember] = useState({
+    const column = ['번호', '부서', '이름', '직급'];
+    const [search, setSearch] = useState('');
+
+    const initMember = {
         refMember: {
             memberNo: '', memberName: '',
             position: { positionName: '' },
             department: { depName: '' }
         }
-    }) //선택된 사원 (추가 전)
+    }
 
+    const [selectedMember, setSelectedMember] = useState(initMember) //선택된 사원 (추가 전)
     const [selectedRefList, setSelectedRefList] = useState([]); //추가된 참조선
 
     useEffect(() => {
@@ -31,19 +32,14 @@ function RefLineModal({ setModalControl, refLine, setRefLine }) {
 
     const groupByDepartment = () => {
         const groupedMembers = {};
+        const filteredGroups = {};
+
         Array.isArray(memberList) && memberList.map(member => {
             if (!groupedMembers[member.department.depName]) {
                 groupedMembers[member.department.depName] = [];
             }
             groupedMembers[member.department.depName].push(member);
         });
-        return groupedMembers;
-    }; //부서별로그룹
-
-    const filteredGroupByDepartment = () => {
-        const groupedMembers = groupByDepartment();
-        const filteredGroups = {};
-
         Object.entries(groupedMembers).forEach(([department, members]) => {
             const filteredMembers = members.filter(member =>
                 member.memberName.toLowerCase().includes(search.toLowerCase())
@@ -53,14 +49,16 @@ function RefLineModal({ setModalControl, refLine, setRefLine }) {
                 filteredGroups[department] = filteredMembers;
             }
         });
-
         return filteredGroups;
-    }; //부서별 그룹 + 검색
+    }; //부서별로 그룹 + 검색
 
     const onClickList = (member) => {
         setSelectedMember({
             refMember: member
         });
+    }
+    const onClickTable = (item) => {
+        setSelectedMember(item);
     }
 
     const onDoubleClickList = (member) => {
@@ -97,10 +95,15 @@ function RefLineModal({ setModalControl, refLine, setRefLine }) {
         }
     }
     const onClickRmvButton = () => {
-        console.log('dddddd', selectedRefList.length)
         if (selectedRefList.length > 0) {
-            const removeList = [...selectedRefList];
-            removeList.pop();
+            let removeList = []
+            if (selectedMember.refMember.memberNo === '') {
+                removeList = [...selectedRefList];
+                removeList.pop();
+            }else{
+                removeList = selectedRefList.filter(ref => ref.refMember.memberNo !== selectedMember.refMember.memberNo);
+                setSelectedMember(initMember);
+            }
             setSelectedRefList(removeList);
         }
     }
@@ -108,10 +111,6 @@ function RefLineModal({ setModalControl, refLine, setRefLine }) {
     const onClickSubmit = () => {
         setRefLine(selectedRefList);
         setModalControl({ appLineModal: false, refLineModal: false });
-    }
-
-    const onClickRemoveSearch = () => {
-        setSearch('');
     }
 
     return (
@@ -124,10 +123,10 @@ function RefLineModal({ setModalControl, refLine, setRefLine }) {
                         <div className={AppModalCss.members}>
                             <div class="search-form d-flex align-items-center" style={{ marginBottom: '0px', position: 'sticky', top: '0px' }}>
                                 <input type="text" name="search" placeholder="이름을 입력하세요" value={search} onChange={(e) => setSearch(e.target.value)} />
-                                <button type="button" title="SearchBtn" onClick={onClickRemoveSearch}><i class='bi bi-x'></i></button>
+                                <button type="button" title="SearchBtn" onClick={() => setSearch('')}><i class='bi bi-x'></i></button>
                             </div>
                             <ul>
-                                {Object.entries(filteredGroupByDepartment()).map(([department, members]) => (
+                                {Object.entries(groupByDepartment()).map(([department, members]) => (
                                     <li key={department}>
                                         <h5 style={{ marginTop: '5px', marginBottom: '0px' }}>{department}</h5>
                                         <ul>
@@ -166,7 +165,7 @@ function RefLineModal({ setModalControl, refLine, setRefLine }) {
                                 </thead>
                                 <tbody>
                                     {!!selectedRefList && selectedRefList.map((item, index) => (
-                                        <tr>
+                                        <tr onClick={() => onClickTable(item)} className={selectedMember.refMember.memberNo === item.refMember.memberNo ? AppModalCss.modalTr : ''}>
                                             <td>{index + 1}</td>
                                             <td>{item.refMember.department.depName}</td>
                                             <td>{item.refMember.memberName}</td>

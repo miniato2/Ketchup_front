@@ -7,6 +7,7 @@
 .appTable td{
     border: solid 0.5px #999797;
     background-color: #fffcfc;
+    /* background-color: rgba(192, 192, 192, 0.372); */
 }
 .appTable th {
     border: solid 0.5px #999797;
