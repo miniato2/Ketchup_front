@@ -1,8 +1,9 @@
 import { GET_MEMBER, GET_MEMBERS, POST_LOGIN, POST_REGISTER, PUT_MEMBERS } from '../modules/MemberModule';
 import { DELETE_DEPARTMENTS, GET_DEPARTMENTS, POST_DEPARTMENTS, PUT_DEPARTMENTS } from '../modules/DepartmentModule';
 import { GET_POSITIONS, POST_POSITIONS, DELETE_POSITIONS, PUT_POSITIONS } from '../modules/PositionModule';
-import { request, multipartRequest } from './Api';
+import { request, multipartRequest, noTokenRequest } from './Api';
 import { useNavigate } from 'react-router-dom';
+
 
 
 export const callGetMemberAPI = ({ memberNo }) => {
@@ -27,6 +28,7 @@ export const callGetMemberAPI = ({ memberNo }) => {
 };
 
 export const callLoginAPI = ({ form }) => {
+  
     const requestURL = `http://localhost:8080/login`;
     console.log("========로그인 api 호출========");
 
@@ -51,7 +53,10 @@ export const callLoginAPI = ({ form }) => {
         if (result.status === 200) {
             window.localStorage.setItem('accessToken', result.token);
 
-            dispatch({ type: POST_LOGIN, payload: result });
+            await dispatch({ type: POST_LOGIN, payload: result });
+            
+           
+            
 
 
         }
@@ -370,38 +375,56 @@ export function callUpdateDepartmentAPI(depNo, newName) {
 export function callUpdateDepartmentStatusAPI(depNo) {
 
     return async (dispatch, getState) => {
-        const result = await request('PUT', `/deps/${depNo}`,"status");
+        const result = await request('PUT', `/deps/${depNo}`, "status");
         console.log('수정결과 ', result);
 
         dispatch({ type: PUT_DEPARTMENTS, payload: result });
     };
 }
 
-export function callSendEmailAPI(myNo){
-    return async (dispatch,getState) => {
-        const result = await request('GET',`/Email/${myNo}`)
+
+
+export function callUpdateMyPWAPI(myNo, newPW) {
+
+    console.log('비밀번호 수정',myNo,newPW);
+
+    return async (dispatch, getState) => {
+        const result = await request('PUT', `/PW/${myNo}`, newPW)
         console.log('수정결과 ', result);
         
-        dispatch({type: PUT_MEMBERS, payload: result});
 
     };
 
 }
 
 
-
-
-
-export function callUpdateMyPWAPI(myNo,newPW){
-
-    return async (dispatch,getState) => {
-        const result = await request('PUT',`/members/${myNo}`,newPW)
-        console.log('수정결과 ', result);
-        dispatch({type: PUT_MEMBERS, payload: result});
+export function callSendEmailAPI(myNo) {
+    return async () => {
+        const result = await request('GET', `/email/${myNo}`)
+        console.log('이메일발송결과 ', result);
+        return null;
 
     };
 
 }
+
+
+export function sendCodeAPI(myNo, receiveCode) {
+
+
+    return async (dispatch, getState) => {
+        const result = await request('POST', `/verifyEmail/${myNo}/${receiveCode}`)
+        console.log('인증결과 ', result.message);
+        if (result.message == '인증성공') {
+            
+            return true;
+        } else {
+            return false;
+        }
+
+    };
+}
+
 
 
 
