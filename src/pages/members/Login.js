@@ -97,7 +97,7 @@ function Login() {
 
                 <Dialog open={PWDialogOpen}  onClose={onDialogClickHandler} >
                     <DialogTitle>비밀번호 수정</DialogTitle>
-                    <UpdatePWForm myNo={token?.memberNo} onDialogClickHandler={onDialogClickHandler} />
+                    <UpdatePWForm myNo={token?.memberNo} onDialogClickHandler={onDialogClickHandler} verifyEmail={true} />
                 </Dialog>
 
 

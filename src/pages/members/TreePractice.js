@@ -30,17 +30,18 @@ function OrganizationChart() {
                     name: department.depName,
                     children: members
                         .filter((member) => member.department.depNo === department.depNo)
-                        .sort((a, b) => b.position.positionLevel - a.position.positionLevel)
-                        .filter((member) => !(member.position.positionName === '대표'))
-                        .map((member) => ({
-                           
-                            name: `${member.memberName}${member.position.positionName}`
-                           
+                        .filter((member) => member.position.positionName === '팀장')
+                        .map((teamLeader) => ({
+                            name: `${teamLeader.memberName}${teamLeader.position.positionName}`,
+                            children: members
+                                .filter((member) => member.department.depNo === department.depNo && member.position.positionName === '직원')
+                                .map((member) => ({
+                                    name: `${member.memberName}${member.position.positionName}`
+                                }))
                         }))
-                       
                 }))
             };
-
+    
             setTreeData([data]);
             console.log(data);
         }

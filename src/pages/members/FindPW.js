@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import {
-    callSendEmailAPI, callUpdateMyPWAPI,sendCodeAPI
+    callSendEmailAPI, callUpdateMyPWAPI, sendCodeAPI
 } from '../../apis/MemberAPICalls'
 
 
@@ -16,7 +16,7 @@ function FindPW() {
         verifyCode: ''
     });
 
-    console.log(form);
+  
 
 
 
@@ -38,13 +38,15 @@ function FindPW() {
 
 
         if (verifyResult === true) {
-           
-            await dispatch(callUpdateMyPWAPI(form.memberNo,'1111'));
-            await alert('초기화 완료');
-            await navigate("/login");
-            
+
+            await dispatch(callUpdateMyPWAPI(form.memberNo, '1111'));
+            await alert('초기화 완료, 초기 비밀번호는 1111 입니다.');
+            await navigate("/login")
+
+
+
         } else {
-          
+
         }
 
 
@@ -59,7 +61,15 @@ function FindPW() {
                 <img src="/img/loginLogo.png" class="loginLogo" alt="" style={{ marginTop: 200 }} />
 
                 {verifyEmail ? (
-                    <h1 style={{ marginTop: 20 }}>비밀번호 초기화 완료입니다.</h1>
+                    <div>
+                        <h1 style={{ marginTop: 20 }}>비밀번호 초기화 완료입니다 초기 비밀번호는 1111입니다.</h1>
+                        <button
+                            onClick={() => { navigate("/main") }}
+                            style={{ width: '500px', border: 'none', margin: 0, fontSize: '20px', height: '50px', color: 'white', backgroundColor: "#ED0B0D", marginTop: 40 }}
+                        >
+                            확인
+                        </button>
+                    </div>
                 ) : (
                     <div>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
