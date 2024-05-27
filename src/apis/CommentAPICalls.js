@@ -8,35 +8,29 @@ export function callGetCommentListAPI({ boardNo }) {
     return async (dispatch, getState) => {
         try {
 
-            // 게시물 목록 요청
             const results = await request('GET', `/boards/${boardNo}/comments`);
             console.log('API response for comments:', results);
 
-            // 각 게시물의 작성자 이름을 가져오기 위해 댓글 목록을 순회
             const commentsWithMemberNames = await Promise.all(results.data.map(async (result) => {
-                // 각 게시물의 작성자 memberNo를 이용해 memberName을 조회
                 const memberInfoResult = await request('GET', `/members/${result.memberNo}`);
 
-                // 부모 댓글의 작성자 이름인 parentMemberName을 가져오기 위해 부모 댓글의 memberNo가 있는 경우에만 조회
                 let parentMemberName = null;
                 if (result.parentMemberNo) {
                     const parentMemberInfoResult = await request('GET', `/members/${result.parentMemberNo}`);
                     parentMemberName = parentMemberInfoResult.data.memberName;
                 }
 
-                // 게시물 목록에 작성자 이름을 추가
                 return {
                     ...result
                     , positionName: memberInfoResult.data.position.positionName
-                    , parentMemberName: parentMemberName // 부모 댓글의 작성자 이름 추가
+                    , parentMemberName: parentMemberName 
                 };
             }));
 
-            // 수정된 게시물 목록을 저장
+            
             dispatch(getCommentlist(commentsWithMemberNames));
         } catch (error) {
             console.error('Error fetching board list:', error);
-            // 오류가 발생한 경우에 대한 처리를 추가할 수 있습니다.
         }
     };
 };
