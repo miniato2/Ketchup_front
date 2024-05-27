@@ -79,7 +79,6 @@ function Comment({ boardNo }) {
 
         const formattedComment = {
             ...comment,
-            positionName: comment.positionName,
             commentCreateDt: FormatDate(comment.commentCreateDt),
             parentMemberName: parentMemberName
         };
@@ -90,7 +89,7 @@ function Comment({ boardNo }) {
         return (
             <div key={comment.commentNo} className="comment-container"> {/* Comment.css에서 정의한 클래스 */}
                 <div className="comment-inner">
-                    <div className='float-left' style={{ }}>
+                    <div className='float-left' style={{ marginLeft: formattedComment.parentMemberName ? '10px' : 'none' }}>
                         <span>{formattedComment.memberName} {formattedComment.positionName}</span>&nbsp;&nbsp;
                         <span>{formattedComment.commentCreateDt}</span>
                     </div>
@@ -103,12 +102,12 @@ function Comment({ boardNo }) {
                     <br />
                     {isDeleted ? (
                         <div style={{ marginTop: "5px", marginBottom: '5px', color: 'red' }}>
-                            <span>삭제된 댓글입니다. 1일 후 완전 삭제됩니다.</span>
+                            <span>삭제된 댓글입니다.</span>
                         </div>
                     ) : (
                         <div style={{ marginTop: "5px", marginBottom: '5px' }}>
                             {formattedComment.parentMemberName ? (
-                                <span style={{marginLeft: '10px'}} className="parent-member">@{formattedComment.parentMemberName} </span>
+                                <span style={{ marginLeft: '10px' }} className="parent-member">@{formattedComment.parentMemberName} </span>
                             ) : null}
                             <span>{formattedComment.commentContent}</span>
                         </div>
@@ -117,9 +116,7 @@ function Comment({ boardNo }) {
                 {/* 대댓글이 있는 경우에만 렌더링 */}
                 {comment.replies && comment.replies.length > 0 && (
                     <div>
-                        <div>
-                            {comment.replies.map(reply => renderComment(reply))}
-                        </div>
+                        {comment.replies.map(reply => renderComment(reply))}
                     </div>
                 )}
             </div>
@@ -142,7 +139,7 @@ function Comment({ boardNo }) {
                     commentList.filter(comment => comment.parentCommentNo === null).map(comment => renderComment(comment)) // 부모 댓글만 필터링하여 렌더링
                 ) : (
                     <div style={{ marginTop: "5px", marginBottom: '5px' }}>
-                        댓글이 없습니다.
+                    &nbsp; 댓글이 없습니다.
                     </div>
                 )
             )}
@@ -151,7 +148,8 @@ function Comment({ boardNo }) {
 
             <Dialog open={deleteModal} onClose={closeDeleteModal}>
                 <Box p={6} justifyContent="flex-end" padding="40px" paddingBottom="20px">
-                    <Typography variant="body1">1일 후 완전히 삭제됩니다.</Typography>
+                    <Typography variant="body1">댓글은 삭제 후 복구할 수 없습니다.</Typography>
+                    <Typography variant="body1">정말 삭제하시겠습니까?</Typography>
                     <br />
                     <ButtonGroup
                         buttons={[

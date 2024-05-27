@@ -5,9 +5,9 @@ import UpdateResourceForm from "../../form/UpdateResourceForm";
 import { callGetResourceDetailAPI } from "../../../apis/ResourceAPICalls";
 import { useDispatch, useSelector } from "react-redux";
 
-function RscModal({setModal, selectRscNo, part, currentPage}) {
+function RscModal({setModal, selectRscNo, currentPage}) {
     const result = useSelector(state => state.resourceReducer);
-    const resourceDetail = result.resourcedetail || [];
+    const resourceDetail = result?.resourcedetail || [];
     const dispatch = useDispatch();
     const [updateClick, setUpdateClick] = useState(false);
 

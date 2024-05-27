@@ -216,7 +216,6 @@ function InsertCommentForm({ boardNo, onCommentSubmit, replyTo, replyName }) {
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const memberNo = loginToken.memberNo;
     const inputRef = useRef(null);
-    const overlayRef = useRef(null);
 
     useEffect(() => {
         if (replyName) {
@@ -234,19 +233,6 @@ function InsertCommentForm({ boardNo, onCommentSubmit, replyTo, replyName }) {
             setCommentContent(newContent);
         }
     };
-
-    useEffect(() => {
-        const overlay = overlayRef.current;
-        const input = inputRef.current;
-
-        if (overlay && input) {
-            const prefixLength = replyName ? `@${replyName} `.length : 0;
-            const textWithoutPrefix = commentContent.slice(prefixLength);
-            overlay.innerHTML = replyName 
-                ? `<span style="color: red;">@${replyName} </span>${textWithoutPrefix}`
-                : commentContent;
-        }
-    }, [commentContent, replyName]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -283,22 +269,7 @@ function InsertCommentForm({ boardNo, onCommentSubmit, replyTo, replyName }) {
         <div style={{ borderTop: '1px solid lightgray', marginBottom: "20px", position: "relative" }}>
             <form onSubmit={handleSubmit}>
                 <div style={{ marginTop: '20px', marginLeft: "10px", width: "100%", position: "relative" }}>
-                    <div 
-                        ref={overlayRef} 
-                        style={{ 
-                            position: "absolute", 
-                            top: "0", 
-                            left: "0", 
-                            width: "92%", 
-                            height: "35px", 
-                            padding: "5px", 
-                            pointerEvents: "none", 
-                            whiteSpace: "pre-wrap", 
-                            overflow: "hidden", 
-                            color: "transparent",
-                            zIndex: 1
-                        }}
-                    ></div>
+
                     <input
                         ref={inputRef}
                         style={{ 

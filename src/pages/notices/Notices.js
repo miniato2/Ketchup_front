@@ -23,7 +23,6 @@ const Notices = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [loading, setLoading] = useState('');
 
   useEffect(() => {
     dispatch(callGetNoticeListAPI({

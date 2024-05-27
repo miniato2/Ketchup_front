@@ -1,26 +1,13 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { callGetSendMailAPI } from "../../../apis/MailAPICalls";
 import MailTable from "../../items/mails/MailTable";
 import { useNavigate, useParams } from "react-router-dom";
 import FormatDateTime from "../../contents/FormatDateTime";
 import PaginationButtons from "../../contents/PaginationButtons";
 
-function SendMail({ checkedItems, setCheckedItems, searchCondition, searchValue, isLoading, setIsLoading, currentPage, setCurrentPage }) {
+function SendMail({ sendMail, checkedItems, setCheckedItems, searchParams, isLoading, setIsLoading, currentPage, setCurrentPage }) {
     const { part } = useParams();
     const [sortedMail, setSortedMail] = useState([]);
-    const result = useSelector(state => state.mailReducer);
-    const sendMail = result?.sendmail || null;
-    const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    useEffect(
-        () => {
-            setIsLoading(true);
-            dispatch(callGetSendMailAPI(currentPage, searchCondition, searchValue))
-                .finally(() => setIsLoading(false));
-        }, [dispatch, currentPage, searchCondition, searchValue]
-    );
 
     useEffect(() => {
         if (sendMail?.mails) {
@@ -32,10 +19,6 @@ function SendMail({ checkedItems, setCheckedItems, searchCondition, searchValue,
             setSortedMail(formattedSortedMail);
         }
     }, [sendMail]);
-
-    console.log("🍇🍇🍇🍇🍇");
-    console.log(sendMail);
-    console.log(sortedMail);
 
     const columns = [
         ['mailTitle', '제목'],
@@ -60,7 +43,8 @@ function SendMail({ checkedItems, setCheckedItems, searchCondition, searchValue,
                 checkedItems={checkedItems}
                 setCheckedItems={setCheckedItems}
                 isLoading={isLoading}
-                setIsLoading={setIsLoading} />
+                setIsLoading={setIsLoading}
+                searchParams={searchParams} />
             <PaginationButtons
                 totalItems={sendMail?.pageTotal} 
                 itemsPerPage={10} 

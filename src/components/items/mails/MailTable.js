@@ -2,7 +2,8 @@ import Table from 'react-bootstrap/Table';
 import '../../../style.css';
 import '../../../pages/mails/mail.css';
 
-const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedItems, isLoading }) => {
+const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedItems, isLoading, searchParams }) => {
+
   const toggleCheckbox = (mailNo) => {
     setCheckedItems(prevState => ({
       ...prevState,
@@ -11,9 +12,11 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
   };
 
   const toggleAllCheckboxes = () => {
+    const allChecked = data.length > 0 && data.every(item => checkedItems[item.mailNo]);
     const newCheckedItems = {};
+
     data.forEach((item) => {
-      newCheckedItems[item.mailNo] = !checkedItems[item.mailNo];
+      newCheckedItems[item.mailNo] = !allChecked;
     });
 
     setCheckedItems(newCheckedItems);
@@ -48,7 +51,7 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
               <input
                 type="checkbox"
                 onChange={toggleAllCheckboxes}
-              />
+                checked={data.length > 0 && data.every(item => checkedItems[item.mailNo])} />
             </th>
             <th>번호</th>
             {Array.isArray(columns) && columns.map(([key, label], index) => (
@@ -64,14 +67,20 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
             </tr>
           ) :
             (data.length === 0 ? (
+              searchParams.value ? (
+                <tr className="mail-tr">
+                  <td colSpan="7">'{searchParams.value}'에 해당하는 메일이 존재하지 않습니다.</td>
+                </tr>
+              ) : (
               <tr className="mail-tr">
                 <td colSpan="7">
                   {part === 'receive' ? "받은 메일이 없습니다." : "보낸 메일이 없습니다."}
                 </td>
               </tr>
+              )
             ) : (
               Array.isArray(data) && data.map((item, index) => (
-                <tr key={data} className={`${part === 'receive' ? (item.readTime !== '읽음' ? 'unreadRow' : '') : ''} mail-tr`}>
+                <tr key={item.mailNo} className={`${part === 'receive' ? (item.readTime !== '읽음' ? 'unreadRow' : '') : ''} mail-tr`}>
                   <td>
                     <input
                       type="checkbox"
@@ -84,8 +93,7 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
                       {key === 'mailTitle' ?
                         (<span
                           className="mail-cursor ellipsis mail-title"
-                          // onClick={onRowClick(data.length - index + 1)} >{item[key]}</span>)
-                          onClick={onRowClick(data.length - index - 1)} >{item[key]}</span>)
+                          onClick={onRowClick(index)} >{item[key]}</span>)
                         : (
                           key === 'readTime' ? (
                             item[key] === '읽음' ? (

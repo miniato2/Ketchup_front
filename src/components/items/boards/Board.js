@@ -18,6 +18,7 @@ function Board({ boardNo }) {
     const board = useSelector(state => state.boardReducer.board);
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const [deleteModal, setDeleteModal] = useState(false);
+    const [hasComments, setHasComments] = useState(false); // 댓글이 있는지 여부 상태 추가
 
     const onDialogCloseHandler = () => {
         setDeleteModal(prevState => !prevState);
@@ -30,6 +31,14 @@ function Board({ boardNo }) {
         }
     }, [dispatch, boardNo]);
 
+    useEffect(() => {
+        // 댓글이 있는지 확인
+        if (board && board.commentCount > 0) {
+            setHasComments(true);
+        } else {
+            setHasComments(false);
+        }
+    }, [board]);
 
     const updateHandler = () => {
         // 작성자인 경우에만 수정 페이지로 이동
@@ -41,6 +50,12 @@ function Board({ boardNo }) {
     };
 
     const deleteHandler = () => {
+        // 댓글이 있는 경우 삭제를 처리하지 않음
+        if (hasComments) {
+            alert('댓글이 있어 게시물을 삭제할 수 없습니다.');
+            return;
+        }
+
         dispatch(callDeleteBoardAPI(boardNo))
             .then(() => {
                 setDeleteModal(false);
