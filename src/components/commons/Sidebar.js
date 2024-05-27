@@ -1,9 +1,12 @@
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import '../../style.css';
+import '../../pages/mails/mail.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { callGetUnreadMailAPI } from '../../apis/MailAPICalls';
 
 function Sidebar() {
-
     const location = useLocation();
 
     const isOrganizationActive = location.pathname.startsWith('/deparpments') || location.pathname.startsWith('/positions');
@@ -29,7 +32,9 @@ function Sidebar() {
                 </li>
                 <li className="nav-item">
                     <NavLink className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link collapsed"} to="/mails/receive">
-                        <i className="bi bi-envelope"></i><span>메일</span>
+                        <i className="bi bi-envelope"></i>
+                        <span>메일</span>
+                        {/* <span className="unread-num">{unReadNum}</span> */}
                     </NavLink>
                 </li>
                 <li class="nav-item">

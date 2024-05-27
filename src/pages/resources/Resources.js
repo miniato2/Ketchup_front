@@ -5,22 +5,19 @@ import { callDeleteResourceAPI, callGetResourcesAPI } from "../../apis/ResourceA
 import ResourceList from "../../components/lists/resources/ResourceList";
 import ButtonGroup from "../../components/contents/ButtonGroup";
 import RscRegistModal from "../../components/items/resources/RscRegistModal";
-import DeleteModal from "../../components/items/boards/DeleteModal";
+import DeleteModal from "../../components/contents/DeleteModal";
 import { Dialog } from "@mui/material";
 import PaginationButtons from "../../components/contents/PaginationButtons";
 
 function Resources() {
     const { part } = useParams();
     const result = useSelector(state => state.resourceReducer);
-    const resourceList = result.resourcelist;
+    const resourceList = result.resourcelist || [];
     const dispatch = useDispatch();
     const [registModal, setRegistModal] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
     const [deleteModal, setDeleteModal] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-
-    console.log("💙💙💙💙💙💙💙");
-    console.log(resourceList);
 
     useEffect(
         () => {
@@ -84,6 +81,9 @@ function Resources() {
                                 part={part}
                             />
                         </Dialog>
+                        {/* <Dialog open={modal} onClose={() => setModal(false)}>
+                            <RscModal setModal={setModal} selectRscNo={selectRscNo} part={part} currentPage={currentPage} />
+                        </Dialog> */}
                     </>
                 )
                 }

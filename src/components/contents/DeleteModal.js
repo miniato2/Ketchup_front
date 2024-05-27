@@ -1,6 +1,6 @@
 import { Box, Dialog, DialogTitle, Typography } from "@mui/material";
-import ButtonGroup from "../../contents/ButtonGroup";
-import { callGetResourcesAPI } from "../../../apis/ResourceAPICalls";
+import ButtonGroup from "./ButtonGroup";
+import { callGetResourcesAPI } from "../../apis/ResourceAPICalls";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 

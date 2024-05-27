@@ -25,11 +25,11 @@ function MailDeleteModal({ setDeleteModal, part, delMailList, setDelMailList, cu
         } else if (label === "삭제") {
             await dispatch(callPutDeleteMailAPI(part, delMailList));
         } else if (label === "확인") {
-            if (part === "receive") {
-                await dispatch(callGetReceiveMailAPI(currentPage));
-            } else if (part === "send") {
-                await dispatch(callGetSendMailAPI(currentPage));
-            }
+            // if (part === "receive") {
+            //     await dispatch(callGetReceiveMailAPI(currentPage, searchCondition, searchValue));
+            // } else if (part === "send") {
+            //     await dispatch(callGetSendMailAPI(currentPage, searchCondition, searchValue));
+            // }
             setDelMailList([]);
             setDeleteModal(false);
             navigate(`/mails/${part}`);

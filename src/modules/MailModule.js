@@ -17,15 +17,17 @@ const POST_INSERTMAIL = 'mails/POST_INSERTMAIL';
 const PUT_DELETEMAIL = 'mails/PUT_DELETEMAIL';
 const PUT_READTIME = 'mails/PUT_READTIME';
 const PUT_MAILCANCEL = 'mails/PUT_MAILCANCEL';
+const GET_UNREADMAIL = 'mails/GET_UNREADMAIL';
 
-export const {mails: {getReceivemail, getSendmail, getMaildetail, postInsertmail, putDeletemail, putReadtime, putMailcancel}} = createActions({
+export const {mails: {getReceivemail, getSendmail, getMaildetail, postInsertmail, putDeletemail, putReadtime, putMailcancel, getUnreadmail}} = createActions({
     [GET_RECEIVEMAIL]: (res) => ({receivemail: res}),
     [GET_SENDMAIL]: (res) => ({sendmail: res}),
     [GET_MAILDETAIL]: (res) => ({maildetail: res}),
     [POST_INSERTMAIL]: (res) => ({insertmail: res}),
     [PUT_DELETEMAIL]: (res) => ({deletemail: res}),
     [PUT_READTIME]: (res) => ({updatetime: res}),
-    [PUT_MAILCANCEL]: (res) => ({mailcancel: res})
+    [PUT_MAILCANCEL]: (res) => ({mailcancel: res}),
+    [GET_UNREADMAIL]: (res) => ({unreadmail: res})
 });
 
 const mailReducer = handleActions(
@@ -49,6 +51,9 @@ const mailReducer = handleActions(
             return payload;
         },
         [PUT_MAILCANCEL]: (state, {payload}) => {
+            return payload;
+        },
+        [GET_UNREADMAIL]: (state, {payload}) => {
             return payload;
         }
     }, initialState

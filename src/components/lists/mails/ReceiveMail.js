@@ -1,26 +1,15 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { callGetReceiveMailAPI } from "../../../apis/MailAPICalls";
 import MailTable from "../../items/mails/MailTable";
 import { useNavigate, useParams } from "react-router-dom";
 import FormatDateTime from "../../contents/FormatDateTime";
 import PaginationButtons from "../../contents/PaginationButtons";
 
-function ReceiveMail({ checkedItems, setCheckedItems, searchCondition, searchValue, isLoading, setIsLoading, currentPage, setCurrentPage }) {
+function ReceiveMail({ receiveMail, checkedItems, setCheckedItems, searchParams, isLoading, setIsLoading, currentPage, setCurrentPage }) {
+    console.log("🎁🎁🎁🎁🎁");
+    console.log(searchParams);
     const { part } = useParams();
     const [sortedMail, setSortedMail] = useState([]);
-    const result = useSelector(state => state.mailReducer);
-    const receiveMail = result.receivemail || null;
-    const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    useEffect(
-        () => {
-            setIsLoading(true);
-            dispatch(callGetReceiveMailAPI(currentPage, searchCondition, searchValue))
-                .finally(() => setIsLoading(false));
-        }, [dispatch, currentPage]
-    );
 
     useEffect(() => {
         if (receiveMail?.mails) {
@@ -56,7 +45,8 @@ function ReceiveMail({ checkedItems, setCheckedItems, searchCondition, searchVal
                 checkedItems={checkedItems}
                 setCheckedItems={setCheckedItems}
                 isLoading={isLoading}
-                setIsLoading={setIsLoading} />
+                setIsLoading={setIsLoading}
+                searchParams={searchParams} />
             <PaginationButtons
                 totalItems={receiveMail?.pageTotal} 
                 itemsPerPage={10} 
