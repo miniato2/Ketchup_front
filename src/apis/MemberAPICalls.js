@@ -386,10 +386,12 @@ export function callUpdateDepartmentStatusAPI(depNo) {
 
 export function callUpdateMyPWAPI(myNo, newPW) {
 
+    console.log('비밀번호 수정',myNo,newPW);
+
     return async (dispatch, getState) => {
-        const result = await request('PUT', `/members/${myNo}`, newPW)
+        const result = await request('PUT', `/PW/${myNo}`, newPW)
         console.log('수정결과 ', result);
-        dispatch({ type: PUT_MEMBERS, payload: result });
+        
 
     };
 
@@ -414,6 +416,7 @@ export function sendCodeAPI(myNo, receiveCode) {
         const result = await request('POST', `/verifyEmail/${myNo}/${receiveCode}`)
         console.log('인증결과 ', result.message);
         if (result.message == '인증성공') {
+            
             return true;
         } else {
             return false;
