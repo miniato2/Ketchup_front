@@ -12,9 +12,6 @@ const reserverId = token?.memberNo;
 const reserverName = token?.memberName;
 
 export default function ReserveDetail({ selectedReserve, closeDetailDialog, setOpenDeleteConfirm, existingReserves }) {
-    // 선생님께 질문
-    console.log("selectedReserve???", selectedReserve);
-    const [multiline, setMultiline] = useState(false);
     const [updateChecked, setUpdateChecked] = useState(false);
     const [updatedReserveData, setUpdatedReserveData] = useState({
         rsvNo: selectedReserve.rsvNo,
@@ -47,7 +44,6 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog, setO
             ...touched,
             [name]: value
         });
-        setMultiline(value.includes('\n'));
     };
 
     const handleUpdateEvent = () => {
@@ -133,7 +129,7 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog, setO
     };
 
     return (
-        <DialogContent style={{ height: '46vh', alignContent: 'center' }}>
+        <DialogContent style={{ height: '56vh', alignContent: 'center' }}>
             <Box p={3}>
                 <Grid container spacing={2}>
                     {updateChecked ? (
@@ -155,7 +151,7 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog, setO
                                 {dateError && <Typography sx={{ color: 'red', ml: 15, mt: 1 }}>{dateError}</Typography>}
                             </Grid>
                             <Grid item xs={12}>
-                                <Box display="flex" alignItems={multiline ? 'flex-start' : 'center'} justifyContent="flex-start">
+                                <Box display="flex" alignItems='center' justifyContent="flex-start">
                                     <Box display="flex" alignItems="center">
                                         <ArticleOutlinedIcon fontSize="medium" />
                                         <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>사용목적:</Typography>
@@ -176,10 +172,10 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog, setO
                             <Grid item xs={12}>
                                 <Grid container justifyContent="flex-end" spacing={1}>
                                     <Grid item ml={'auto'}>
-                                        <Button onClick={closeDetailDialog} variant="contained">닫기</Button>
+                                        <button onClick={closeDetailDialog} className="back-btn">닫기</button>
                                     </Grid>
                                     <Grid item>
-                                        <Button onClick={handleUpdateEvent} onClose={() => setUpdateChecked(false)} variant="contained" color="primary">수정</Button>
+                                        <button onClick={handleUpdateEvent} onClose={() => setUpdateChecked(false)} className="move-btn">수정</button>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -226,15 +222,15 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog, setO
                                     {isReserver() ? (
                                         <>
                                             <Grid item>
-                                                <Button onClick={() => setUpdateChecked(true)} variant="contained" color="primary">수정</Button>
+                                                <button onClick={() => setUpdateChecked(true)} className="grey-btn">수정</button>
                                             </Grid>
                                             <Grid item>
-                                                <Button onClick={() => setOpenDeleteConfirm(true)} variant="contained" color="error">삭제</Button>
+                                                <button onClick={() => setOpenDeleteConfirm(true)} className="move-btn">삭제</button>
                                             </Grid>
                                         </>
                                     ) : null}
                                     <Grid item ml={'auto'}>
-                                        <Button onClick={closeDetailDialog} variant="contained">닫기</Button>
+                                        <button onClick={closeDetailDialog} className="back-btn">닫기</button>
                                     </Grid>
                                 </Grid>
                             </Grid>

@@ -112,8 +112,8 @@ function Main() {
     const noticeList = result?.noticelist?.noticesWithMemberNames || [];
 
     const formattedNoticeList = noticeList
-            .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
-            .slice(0, 3)
+        .sort((a, b) => new Date(b.noticeCreateDttm) - new Date(a.noticeCreateDttm)) // 등록일 기준으로 내림차순 정렬
+        .slice(0, 3)
         .map(item => ({
             ...item,
             noticeTitle: (
@@ -163,12 +163,12 @@ function Main() {
                     {/* 메인 환영 */}
                     <div className="pagetitle col-lg-12">
                         <div id="mainbox" className="p-4 p-md-5 mb-4 rounded text-body-emphasis" style={{ backgroundColor: "rgb(236, 11, 11, 0.17)" }}>
-                            <div style={{ display: "flex", margin: -15}}>
+                            <div style={{ display: "flex", margin: -15 }}>
                                 <div className="col-lg-6 px-0">
                                     <h1 className="display-1" style={{ fontSize: "45px" }}>안녕하세요, {loginToken.memberName} 사원님!</h1>
                                     <h2 className="lead my-3" style={{ fontSize: "30px" }}>오늘 하루도 화이팅하세요🤩</h2>
                                 </div>
-                                    <img src="images/mainImage.png" style={{marginLeft: 80,width:"500px" ,height: "200px"}}></img>
+                                <img src="images/mainImage.png" style={{ marginLeft: 80, width: "500px", height: "200px" }}></img>
                             </div>
                         </div>
                     </div>
@@ -176,8 +176,8 @@ function Main() {
                     {/* 전자결재 */}
                     <div className="col-lg-12">
                         <div className="row">
-                            {approvalData.map(({ title, count, categoryNo}) => (
-                                <Link to={`/approvals`} state={categoryNo} className="col-xxl-3 col-md-6" style={{textDecorationLine: 'none'}}>
+                            {approvalData.map(({ title, count, categoryNo }) => (
+                                <Link to={`/approvals`} state={categoryNo} className="col-xxl-3 col-md-6" style={{ textDecorationLine: 'none' }}>
                                     <ApprovalBox title={title} count={count} />
                                 </Link>
                             ))}
@@ -206,6 +206,7 @@ function Main() {
                                 events={events}
                                 height="50vh"
                                 initialView="dayGridWeek"
+                                eventColor='red'
                                 plugins={[
                                     dayGridPlugin,
                                     timeGridPlugin,
@@ -213,8 +214,8 @@ function Main() {
                                     listPlugin
                                 ]}
                                 headerToolbar={{
-                                    left: "prev title next today",
-                                    center: "",
+                                    left: "prev next today",
+                                    center: "title",
                                     right: "moreButton"
                                 }}
                                 customButtons={{
@@ -225,7 +226,6 @@ function Main() {
                                         }
                                     }
                                 }}
-                                themeSystem='bootstrap'
                             />
                         </Box>
                     </div>

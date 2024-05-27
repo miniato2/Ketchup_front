@@ -1,3 +1,10 @@
 .fc .fc-col-header {
     /* display: none; */
 }
+
+:root {
+--fc-button-bg-color: red;
+--fc-button-border-color: red;
+--fc-button-hover-bg-color: #FFC300;
+--fc-button-active-bg-color: #FF5733;
+}

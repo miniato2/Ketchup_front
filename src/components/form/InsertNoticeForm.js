@@ -92,7 +92,7 @@ function InsertNoticeForm() {
             </div>
             <input type="checkbox" id="fix" checked={fix} onChange={handleFixChange} /> &nbsp;
             <label htmlFor="fix">최상단에 공지로 등록</label>
-            <div>
+            <div style={{height: '380px'}}>
                 <Editor content={content} setContent={setContent} />
             </div>
             <div className="d-flex justify-content-end mt-4">

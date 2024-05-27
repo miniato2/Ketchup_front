@@ -2,9 +2,6 @@ import { Box, Typography, Button, DialogTitle } from "@mui/material";
 import { deleteReserveAPI } from "../../apis/ReserveAPICalls";
 
 export default function DeleteReserveForm({ onCloseDeleteConfirm, selectedReserve }) {
-    
-    console.log("selectedReserve.rsvNo???", selectedReserve.id);
-
     const handleDelete = () => {
         try {
             deleteReserveAPI(selectedReserve.id);
@@ -24,8 +21,8 @@ export default function DeleteReserveForm({ onCloseDeleteConfirm, selectedReserv
                 <Typography variant="body1">정말로 삭제하시겠습니까?</Typography>
             </Box>
             <Box p={2} display="flex" justifyContent="flex-end">
-                <Button onClick={() => onCloseDeleteConfirm(true)} variant="outlined" color="primary">닫기</Button>
-                <Button onClick={handleDelete} variant="outlined" color="error" ml={1}>삭제</Button>
+                <button onClick={() => onCloseDeleteConfirm(true)} className="back-btn">닫기</button>
+                <button onClick={handleDelete} className="move-btn" ml={1}>삭제</button>
             </Box>
         </>
     );

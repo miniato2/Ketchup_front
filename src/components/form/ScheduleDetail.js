@@ -7,7 +7,14 @@ import CalendarMonthOutlined from '@mui/icons-material/CalendarMonthOutlined';
 import LocationOnOutlined from '@mui/icons-material/LocationOnOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
 
-export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, closeDetailDialog, handleUpdate, handleDelete, skdNameError, dateError, touched, setTouched, validateUpdate }) {
+export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, closeDetailDialog, handleUpdate, handleDelete }) {
+    const [dateError, setDateError] = useState("");
+    const [skdNameError, setSkdNameError] = useState("");
+    const [touched, setTouched] = useState({
+        skdName: false,
+        skdStartDttm: false,
+        skdEndDttm: false
+    });
     const [updateChecked, setUpdateChecked] = useState(false);
     const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
     const [updatedScheduleData, setUpdatedScheduleData] = useState({
@@ -29,13 +36,36 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
             });
         }
 
-        // if (touched.skdName || touched.skdStartDttm || touched.skdEndDttm) {
-        //     validateUpdate();
-        // }
-    }, [
-        // updatedScheduleData,
-        scheduleDetail
-    ]);
+    }, [scheduleDetail]);
+
+    const validateUpdate = () => {
+        const start = moment(updatedScheduleData.skdStartDttm);
+        const end = moment(updatedScheduleData.skdEndDttm);
+
+        let valid = true;
+
+        if (updatedScheduleData.skdName.length < 5) {
+            setSkdNameError("일정 제목은 공란일 수 없고 공백 포함 최소 5글자 이상이어야 합니다.");
+            valid = false;
+        } else if (updatedScheduleData.skdName.length > 200) {
+            setSkdNameError("일정 제목은 공백 포함 최대 200자까지 입력할 수 있습니다.");
+            valid = false;
+        } else {
+            setSkdNameError("");
+        }
+
+        if (!updatedScheduleData.skdStartDttm || !updatedScheduleData.skdEndDttm) {
+            setDateError("일정 시작 일시와 종료 일시를 모두 입력해주세요.");
+            valid = false;
+        } else if (start.isSameOrAfter(end)) {
+            setDateError("일정 시작일시는 종료일시보다 이전이어야 합니다.");
+            valid = false;
+        } else {
+            setDateError("");
+        }
+
+        return valid;
+    };
 
     const handleConfirmDelete = () => {
         try {
@@ -62,6 +92,10 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
     };
 
     const handleAction = () => {
+        if (!validateUpdate()) {
+            return;
+        }
+
         try {
             handleUpdate(scheduleDetail, updatedScheduleData);
         } catch (error) {
@@ -74,6 +108,12 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
     const onCloseConfirmDelete = () => {
         setConfirmDeleteOpen(false);
     };
+
+    useEffect(() => {
+        if (touched.skdStartDttm || touched.skdEndDttm || touched.skdName) {
+            validateUpdate();
+        }
+    }, [updatedScheduleData, touched]);
 
     if (!scheduleDetail) {
         return (
@@ -97,21 +137,20 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
                                             <CampaignIconOutlined fontSize='medium' />
                                             <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>일정 제목: </Typography>
                                         </Box>
-                                        <TextField sx={{ ml: 2.5, width: "50vw" }} variant="outlined" name="skdName" onChange={handleInputChange} value={updatedScheduleData.skdName} />
+                                        <TextField sx={{ ml: 2.5, width: "50vw" }} variant="outlined" name="skdName" onChange={handleInputChange} value={updatedScheduleData.skdName} onBlur={() => setTouched({ ...touched, skdName: true })} error={!!skdNameError} helperText={skdNameError} FormHelperTextProps={{sx: {fontSize: '1rem', mt: 1}}}/>
                                     </Box>
-                                    {/* {skdNameError && <Typography sx={{ color: "red", ml: 15, mt: 1 }}>{skdNameError}</Typography>} */}
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Box display="flex" alignItems={"center"} justifyContent={"flex-start"}>
                                         <Box display={"flex"} alignItems={"center"}>
                                             <CalendarMonthOutlined fontSize="medium" />
                                             <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>일정: </Typography>
-                                            <TextField sx={{ ml: 6.1, width: "23vw" }} type="datetime-local" variant="outlined" name="skdStartDttm" onChange={handleInputChange} value={updatedScheduleData.skdStartDttm} />
+                                            <TextField sx={{ ml: 6.1, width: "23vw" }} type="datetime-local" variant="outlined" name="skdStartDttm" onChange={handleInputChange} value={updatedScheduleData.skdStartDttm} onBlur={() => { setTouched({ ...touched, skdStartDttm: true }) }} error={!!dateError} />
                                             <span style={{ margin: '0 15px' }}>~</span>
-                                            <TextField sx={{ width: "23vw" }} type="datetime-local" variant="outlined" name="skdEndDttm" onChange={handleInputChange} value={updatedScheduleData.skdEndDttm} />
+                                            <TextField sx={{ width: "23vw" }} type="datetime-local" variant="outlined" name="skdEndDttm" onChange={handleInputChange} value={updatedScheduleData.skdEndDttm} onBlur={() => { setTouched({ ...touched, skdEndDttm: true }) }} error={!!dateError} />
                                         </Box>
                                     </Box>
-                                    {/* {dateError && <Typography sx={{ color: "red", ml: 15, mt: 1 }}>{dateError}</Typography>} */}
+                                    {dateError && <Typography sx={{ color: "#D3302F", ml: 16, mt: 1 }}>{dateError}</Typography>}
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Box display="flex" alignItems={'center'} justifyContent="flex-start">
