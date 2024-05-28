@@ -15,11 +15,12 @@ function Members() {
     const dispatch = useDispatch();
     const members = useSelector(state => state.memberReducer);
     const memberList = members?.data;
-    console.log(memberList);
     const token = decodeJwt(window.localStorage.getItem('accessToken'));
     const itemsPerPage = 10; // 페이지당 아이템 수
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
     const [searchKeyword, setSearchKeyword] = useState(''); // 추가
+    const [loading, setLoading] = useState(true);
+
     const handleRowClick = (memberNo) => {
 
 
@@ -38,15 +39,17 @@ function Members() {
     ];
 
     const handleSearch = (searchKeyword) => {
+        setLoading(true);
         setSearchKeyword(searchKeyword);
-        dispatch(callPageMembersAPI(currentPage, searchKeyword));
+        dispatch(callPageMembersAPI(currentPage, searchKeyword)).finally(() => setLoading(false));
 
     }
 
     useEffect(
         () => {
             if (token !== null) {
-                dispatch(callPageMembersAPI(currentPage, searchKeyword));
+                setLoading(true);
+                dispatch(callPageMembersAPI(currentPage, searchKeyword)).finally(() => setLoading(false));
 
             }
 
@@ -55,7 +58,9 @@ function Members() {
     );
 
 
-
+    if (loading) {
+        return <div>로딩 중...</div>;
+      }
 
 
 
@@ -70,13 +75,14 @@ function Members() {
                 <div style={{ display: "flex", margin: -15 }}>
                     <h2>사원목록</h2>
                     <SearchBar onSearch={handleSearch} value={searchKeyword} name={'이름으로 검색'} />
+                    
                 </div>
-
-                <Link to="/members/insert">
-                    <ButtonGroup buttons={buttons} />
-                </Link>
-
-                <Table>
+                {token?.depName === "인사팀" &&
+                    <Link to="/members/insert">
+                        <ButtonGroup buttons={buttons} />
+                    </Link>
+                }
+                <Table style={{marginTop: 20}}>
                     <thead>
                         <tr>
                             <th>사진</th>
@@ -102,12 +108,12 @@ function Members() {
                         ))}
                         {Array.isArray(memberList?.content) && memberList.content.length === 0 &&
 
-                           
-                                <td colSpan={6}>
-                                    <h2>검색결과가 없습니다.</h2>
-                                    <img src="/img/searchConditionRequired.png" alt="searchConditionRequired" style={{ display: "block", margin: "0 auto", maxWidth: "100%", height: "auto" }} />
-                                </td>
-                            
+
+                            <td colSpan={6}>
+                                <h2>검색결과가 없습니다.</h2>
+                                <img src="/img/searchConditionRequired.png" alt="searchConditionRequired" style={{ display: "block", margin: "0 auto", maxWidth: "100%", height: "auto" }} />
+                            </td>
+
                         }
 
                     </tbody>

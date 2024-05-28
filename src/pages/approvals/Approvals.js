@@ -36,12 +36,6 @@ function Approvals() {
     };
 
     useEffect(() => {
-        setCurrentPage(1);
-        setStatus('전체');
-        setSearch('');
-    }, [category])
-
-    useEffect(() => {
         console.log("api 호출");
         dispatch(
             callAppListAPI({
@@ -52,7 +46,7 @@ function Approvals() {
                 currentPage: currentPage
             })
         )
-    }, [currentPage, category, status])
+    }, [currentPage, status, category]) //의존 배열에 search가 없어서 카테고리가 바뀔때 serarch가 그대로 가는듯?
 
     const onChangeHandler = (e) => {
         setSearch(e.target.value);
@@ -69,6 +63,7 @@ function Approvals() {
                 currentPage: 1
             })
         )
+        setSearch(''); // 검색 후 검색어 초기화 -- 이거 한줄 넣었는데 아닌거 같은면 빼기!!!! <- 현지
     } //검색버튼
 
     const statusChangeHandler = (e) => {
@@ -78,7 +73,7 @@ function Approvals() {
 
     return (
         <main id="main" className={'main'}>
-            <AppCategory category={category} setCategory={setCategory} appList={appList}/>
+            <AppCategory category={category} setCategory={setCategory} setCurrentPage={setCurrentPage} setStatus={setStatus} setSearch={setSearch} appList={appList}/>
             <div style={{ display: "flex", height: "60px", backgroundColor: "#f5f5f5", alignItems: "center", borderBottom: 'solid 0.5px black'}}>
                 <select className={ApprovalCss.selectStatus} onChange={statusChangeHandler} value={status}>
                     <option>전체</option>

@@ -1,29 +1,17 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { callGetSendMailAPI } from "../../../apis/MailAPICalls";
 import MailTable from "../../items/mails/MailTable";
 import { useNavigate, useParams } from "react-router-dom";
 import FormatDateTime from "../../contents/FormatDateTime";
+import PaginationButtons from "../../contents/PaginationButtons";
 
-function SendMail({ checkedItems, setCheckedItems, searchCondition, searchValue, isLoading, setIsLoading }) {
+function SendMail({ sendMail, checkedItems, setCheckedItems, searchParams, isLoading, setIsLoading, currentPage, setCurrentPage }) {
     const { part } = useParams();
     const [sortedMail, setSortedMail] = useState([]);
-    const result = useSelector(state => state.mailReducer);
-    const sendMail = result && result.sendmail && result.sendmail.length > 0 ? result.sendmail : null;
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    useEffect(
-        () => {
-            setIsLoading(true);
-            dispatch(callGetSendMailAPI(searchCondition, searchValue))
-                .finally(() => setIsLoading(false));
-        }, [dispatch, searchCondition, searchValue]
-    );
-
     useEffect(() => {
-        if (sendMail) {
-            const sorted = [...sendMail].sort((a, b) => new Date(b.sendMailTime) - new Date(a.sendMailTime));
+        if (sendMail?.mails) {
+            const sorted = [...sendMail?.mails].sort((a, b) => new Date(b.sendMailTime) - new Date(a.sendMailTime));
             const formattedSortedMail = sorted.map(mail => ({
                 ...mail,
                 sendMailTime: FormatDateTime(mail.sendMailTime)
@@ -40,7 +28,7 @@ function SendMail({ checkedItems, setCheckedItems, searchCondition, searchValue,
     ];
 
     const handleRowClick = (index) => () => {
-        const mailNo = sendMail[index]?.mailNo;
+        const mailNo = sendMail?.mails[index]?.mailNo;
 
         navigate(`/mails/detail/${mailNo}`, { state: { part } });
     };
@@ -55,7 +43,13 @@ function SendMail({ checkedItems, setCheckedItems, searchCondition, searchValue,
                 checkedItems={checkedItems}
                 setCheckedItems={setCheckedItems}
                 isLoading={isLoading}
-                setIsLoading={setIsLoading} />
+                setIsLoading={setIsLoading}
+                searchParams={searchParams} />
+            <PaginationButtons
+                totalItems={sendMail?.pageTotal} 
+                itemsPerPage={10} 
+                currentPage={currentPage} 
+                onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
         </div>
     );
 }

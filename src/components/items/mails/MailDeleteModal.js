@@ -5,13 +5,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Dialog } from "@mui/material";
 
-function MailDeleteModal({ setDeleteModal, part, delMailList, setDelMailList }) {
+function MailDeleteModal({ setDeleteModal, part, delMailList, setDelMailList, currentPage, listDel }) {
     const result = useSelector(state => state.mailReducer);
     const deleteMail = result.deletemail || [];
     const dispatch = useDispatch();
-    console.log("🎄🎄🎄🎄🎄🎄🎄");
+    const searchCondition = '';
+    const searchValue = '';
+
+    console.log("🎉🎉🎉🎉🎉🎉");
     console.log(delMailList);
-    console.log("🎨🎨🎨🎨🎨🎨");
     console.log(deleteMail);
 
     const navigate = useNavigate();
@@ -23,15 +25,17 @@ function MailDeleteModal({ setDeleteModal, part, delMailList, setDelMailList }) 
         } else if (label === "삭제") {
             await dispatch(callPutDeleteMailAPI(part, delMailList));
         } else if (label === "확인") {
-            if (part === "receive") {
-                await dispatch(callGetReceiveMailAPI());
-            } else if (part === "send") {
-                await dispatch(callGetSendMailAPI());
-            }
             setDeleteModal(false);
             navigate(`/mails/${part}`);
+
+            if (listDel) {
+                if (part === "receive") {
+                    await dispatch(callGetReceiveMailAPI(currentPage, searchCondition, searchValue));
+                } else if (part === "send") {
+                    await dispatch(callGetSendMailAPI(currentPage, searchCondition, searchValue));
+                }
+            }
         }
-        setDelMailList([]);
     };
 
     const deleteButtons = [
@@ -43,33 +47,32 @@ function MailDeleteModal({ setDeleteModal, part, delMailList, setDelMailList }) 
         { label: "확인", styleClass: "move", onClick: () => buttonClick("확인") }
     ];
 
-    const delModalContent = delMailList.length > 0 ?
-        (
-            deleteMail > 0 ?
-                (
-                    <div className="modal-box">
-                        <div>
-                            <p>{delMailList.length}개의 메일을 삭제했습니다.</p>
-                        </div>
-                        <ButtonGroup buttons={noDelButton} />
-                    </div>
-                ) : (
-                    <div className="modal-box">
-                        <div>
-                            <p>{delMailList.length}개의 메일이 선택되었습니다.</p>
-                            <p>정말 삭제하시겠습니까?</p>
-                        </div>
-                        <ButtonGroup buttons={deleteButtons} />
-                    </div>
-                )
-        ) : (
+    const delModalContent = (
+        deleteMail > 0 ? (
             <div className="modal-box">
                 <div>
-                    <p>선택한 메일이 없습니다.</p>
+                    <p>{deleteMail}개의 메일을 삭제했습니다.</p>
                 </div>
                 <ButtonGroup buttons={noDelButton} />
             </div>
-        );
+        ) : (delMailList.length === 0 ? (
+                <div className="modal-box">
+                    <div>
+                        <p>선택한 메일이 없습니다.</p>
+                    </div>
+                    <ButtonGroup buttons={noDelButton} />
+                </div>
+            ) : (
+                <div className="modal-box">
+                    <div>
+                        <p>{delMailList.length}개의 메일이 선택되었습니다.</p>
+                        <p>정말 삭제하시겠습니까?</p>
+                    </div>
+                    <ButtonGroup buttons={deleteButtons} />
+                </div>
+            )
+        )
+    );
 
     return (
         <Dialog open={true}>

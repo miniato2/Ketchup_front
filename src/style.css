@@ -273,6 +273,9 @@ h6 {
 .approval-box-link .card-title {
   text-decoration: none;
 }
+.appbox:hover{
+  border-color: rgb(249, 159, 159);
+}
 
 
 /* Alerts */
@@ -880,6 +883,12 @@ h6 {
   background-color: lightgrey;
 }
 
+.text-btn {
+  text-decoration: underLine;
+  border: none;
+  background-color: white;
+}
+
 /*--------------------------------------------------------------
 # table(표 형식)
 --------------------------------------------------------------*/
@@ -956,7 +965,7 @@ tbody th a {
   color:#000;
   display: inline-block;
   vertical-align: middle;
-  width: 100px;;
+  width: 100px;
 }
 
 .input-container input, .input-container div select {

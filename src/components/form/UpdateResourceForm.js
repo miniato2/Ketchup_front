@@ -1,21 +1,18 @@
 import { useDispatch } from "react-redux";
 import { callGetResourceDetailAPI, callPutResourceAPI } from "../../apis/ResourceAPICalls";
 import ButtonGroup from "../contents/ButtonGroup";
-import { useParams } from "react-router-dom";
 import { useState } from "react";
 
 function UpdateResourceForm({ setUpdateClick, resourceDetail, selectRscNo }) {
     const dispatch = useDispatch();
-    const { part } = useParams();
     const [formState, setFormState] = useState({
         rscIsAvailable: resourceDetail.rscIsAvailable,
         rscDescr: resourceDetail.rscDescr
     });
 
-    const buttonClick = async (label) => {
+    const buttonClick = (label) => {
         if (label == "저장") {
             submitRscUpdate();
-            await dispatch(callGetResourceDetailAPI(selectRscNo));
             setUpdateClick(false);
         } else if (label == "취소") {
             setUpdateClick(false);
@@ -26,16 +23,16 @@ function UpdateResourceForm({ setUpdateClick, resourceDetail, selectRscNo }) {
         { label: "취소", styleClass: "back", onClick: () => buttonClick("취소") },
         { label: "저장", styleClass: "move", onClick: () => buttonClick("저장") }
     ];
-    
+
     const onChangeHandler = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type } = e.target;
         setFormState({
             ...formState,
-            [name]: value
+            [name]: type === "radio" ? value === "true" : value
         });
     };
 
-    const rscPart = part === 'conferences';
+    const rscCate = resourceDetail.rscCategory;
 
     const submitRscUpdate = async () => {
         const updateRscDto = {
@@ -45,6 +42,7 @@ function UpdateResourceForm({ setUpdateClick, resourceDetail, selectRscNo }) {
 
         try {
             await dispatch(callPutResourceAPI({ selectRscNo, updateRscDto }));
+            await dispatch(callGetResourceDetailAPI(selectRscNo));
         } catch (error) {
             console.error(error);
         }
@@ -55,43 +53,15 @@ function UpdateResourceForm({ setUpdateClick, resourceDetail, selectRscNo }) {
             <div className="modal-content">
                 <h4>{resourceDetail.rscName} 수정</h4>
                 <div className="rsc-form">
-                    <label htmlFor="rscName">{rscPart ? "회의실 명" : "차종"}</label>
-                    <input
-                        type="text"
-                        placeholder={resourceDetail.rscName}
-                        readOnly /> <br />
-                    {rscPart ? (
-                        <>
-                            <label>위치</label>
-                            <input
-                                type="text"
-                                placeholder={resourceDetail.rscInfo}
-                                readOnly /> <br />
-                        </>
-                    ) : (
-                        <>
-                            <label htmlFor="vehicleNum">차량 번호</label>
-                            <input
-                                type="text"
-                                placeholder={resourceDetail.rscInfo}
-                                readOnly /> <br />
-                        </>
-                    )}
-                    <label htmlFor="rscCap">{rscPart ? "수용 가능 인원" : "탑승 가능 인원"}</label>
-                    <input
-                        type="text"
-                        className="input-number"
-                        placeholder={resourceDetail.rscCap}
-                        readOnly /><span>명</span> <br />
-
-
-
+                    <span className="detail-title">{rscCate === '회의실' ? "회의실 명" : "차종"}</span><span className="detail-content">{resourceDetail.rscName}</span>
+                    <span className="detail-title">{rscCate === '회의실' ? "위치" : "차량 번호"}</span><span className="detail-content">{resourceDetail.rscInfo}</span>
+                    <span className="detail-title">{rscCate === '회의실' ? "수용 가능 인원" : "탑승 가능 인원"}</span><span className="detail-content">{resourceDetail.rscCap}명</span>
 
                     <label htmlFor="rscIsAvailable">상태</label>
                     <div className="rsc-radio">
                         <input
                             type="radio"
-                            className="form-check-input border mt-3"
+                            className="form-check-input border"
                             name="rscIsAvailable"
                             value="true"
                             id="available"
@@ -101,7 +71,7 @@ function UpdateResourceForm({ setUpdateClick, resourceDetail, selectRscNo }) {
                         <label htmlFor="available">사용 가능</label>
                         <input
                             type="radio"
-                            className="form-check-input border mt-3"
+                            className="form-check-input border"
                             name="rscIsAvailable"
                             value="false"
                             id="unavailable"
@@ -111,10 +81,7 @@ function UpdateResourceForm({ setUpdateClick, resourceDetail, selectRscNo }) {
                         <label htmlFor="unavailable">사용 불가능</label>
                     </div>
 
-
-
-
-                    <div>
+                    <div className="d-flex">
                         <label htmlFor="rscDescr">비고</label>
                         <textarea
                             className="form-control"
@@ -122,7 +89,7 @@ function UpdateResourceForm({ setUpdateClick, resourceDetail, selectRscNo }) {
                             name="rscDescr"
                             value={formState.rscDescr}
                             onChange={onChangeHandler}
-                            placeholder={resourceDetail.rscDescr} /> <br />
+                            placeholder={resourceDetail.rscDescr ? `${resourceDetail.rscDescr}` : "-"} /> <br />
                     </div>
                 </div>
             </div>

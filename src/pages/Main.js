@@ -17,6 +17,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from '@fullcalendar/list';
 import moment from "moment";
 import { Box } from "@mui/material";
+import ButtonGroup from "../components/contents/ButtonGroup";
+import { Label } from "@mui/icons-material";
 
 function Main() {
     const dispatch = useDispatch();
@@ -25,7 +27,6 @@ function Main() {
     const schedules = useSelector(state => state.scheduleReducer);
     const navigate = useNavigate();
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
-    console.log('[ loginToken ] : ', loginToken);
     const [approvalCount, setApprovalCount] = useState({});
 
     // 결재 
@@ -100,6 +101,13 @@ function Main() {
         setIsLoading(false);
     }, [schedules]);
 
+    useEffect(() => {
+        if (loginToken == null) {
+            navigate("/login");
+        }
+    }, []);
+
+
     // 공지사항 목록 Redux store에서 가져오기
     const result = useSelector(state => state.noticeReducer);
     const noticeList = result?.noticelist?.noticesWithMemberNames || [];
@@ -136,16 +144,9 @@ function Main() {
     ];
 
     const handleRowClick = (index) => {
-        const noticeNo = formattedNoticeList[index]?.noticeNo; // 수정된 부분
+        const noticeNo = formattedNoticeList[index]?.noticeNo;
         navigate(`/notices/${noticeNo}`);
     };
-
-    //   const jwt = require('jsonwebtoken');
-    //   const decodedToken = jwt.decode(token);
-    //   const memberNo = decodedToken.memberNo;
-    //     console.log('memberNo: ', memberNo);
-    //     const memberName = decodedToken.memberName;
-    //     console.log('memberName: ', memberName);
 
     return (
         <main id="main" className="main">
@@ -155,13 +156,13 @@ function Main() {
                 <>
                     {/* 메인 환영 */}
                     <div className="pagetitle col-lg-12">
-                        <div id="mainbox" className="p-4 p-md-5 mb-4 rounded text-body-emphasis" style={{ backgroundColor: "rgb(236, 11, 11, 0.17)" }}>
+                        <div id="mainbox" className="p-4 p-md-5 mb-4 rounded text-body-emphasis" style={{ backgroundColor: "rgb(236, 11, 11, 0.17)", marginTop: '80px'}}>
                             <div style={{ display: "flex", margin: -15 }}>
                                 <div className="col-lg-6 px-0">
-                                    <h1 className="display-1" style={{ fontSize: "45px" }}>안녕하세요, {loginToken.memberName} 사원님!</h1>
+                                    <h1 className="display-1" style={{ fontSize: "45px" }}>안녕하세요, {loginToken.memberName} {loginToken.positionName}님!</h1>
                                     <h2 className="lead my-3" style={{ fontSize: "30px" }}>오늘 하루도 화이팅하세요🤩</h2>
                                 </div>
-                                <img src="images/mainImage.png" style={{ marginLeft: 80, width: "500px", height: "200px" }}></img>
+                                <img src="images/mainImage.png" style={{ width: "300px", height: "240px", position: 'absolute', right: 50, bottom: 0}}></img>
                             </div>
                         </div>
                     </div>
@@ -183,11 +184,19 @@ function Main() {
                             <h2 className="card-title"
                                 style={{ fontWeight: 'bold', fontSize: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingLeft: '20px', paddingRight: '20px' }}>
                                 공지사항
-                                <Link to={`/notices`} style={{ fontSize: '18px', color: '#EC0B0B' }}>
-                                    더보기
-                                </Link>
+
+                                <button className="move-btn" style={{ fontSize: '16px', width: '75px' }} onClick={() => navigate('/notices')}>더보기</button>
                             </h2>
-                            <BootstrapTable data={formattedNoticeList} columns={columns} onRowClick={handleRowClick} />
+                            {noticeList.length === 0 ? (
+                                <>
+                                    <BootstrapTable data={formattedNoticeList} columns={columns} onRowClick={handleRowClick} />
+                                    <span style={{ textAlign: 'center', marginBottom: '20px'}}> 공지가 없습니다.</span>
+                                </>
+                            ) : (
+                                <>
+                                    <BootstrapTable data={formattedNoticeList} columns={columns} onRowClick={handleRowClick} />
+                                </>
+                            )}
                         </div>
                     </div>
 

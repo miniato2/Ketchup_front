@@ -5,22 +5,19 @@ import { callDeleteResourceAPI, callGetResourcesAPI } from "../../apis/ResourceA
 import ResourceList from "../../components/lists/resources/ResourceList";
 import ButtonGroup from "../../components/contents/ButtonGroup";
 import RscRegistModal from "../../components/items/resources/RscRegistModal";
-import DeleteModal from "../../components/items/boards/DeleteModal";
+import DeleteModal from "../../components/contents/DeleteModal";
 import { Dialog } from "@mui/material";
 import PaginationButtons from "../../components/contents/PaginationButtons";
 
 function Resources() {
     const { part } = useParams();
     const result = useSelector(state => state.resourceReducer);
-    const resourceList = result.resourcelist?.data;
+    const resourceList = result?.resourcelist;
     const dispatch = useDispatch();
     const [registModal, setRegistModal] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
     const [deleteModal, setDeleteModal] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
-
-    console.log("💙💙💙💙💙💙💙");
-    console.log(resourceList?.totalElements);
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(
         () => {
@@ -45,7 +42,7 @@ function Resources() {
                 <div className="title">
                     {part === 'conferences' ? <h2>회의실</h2> : <h2>차량</h2>}
                 </div>
-                {!Array.isArray(resourceList) && resourceList === 0 ? (
+                {resourceList === 0 ? (
                     <div>
                         <h5 className="text-center my-5">자원 관리 권한이 없습니다.</h5>
                     </div>
@@ -56,12 +53,13 @@ function Resources() {
                         </div>
                         <div>
                             <ResourceList
-                                list={resourceList?.content}
+                                list={resourceList?.data?.content}
                                 part={part}
                                 selectedItems={selectedItems}
-                                setSelectedItems={setSelectedItems} />
+                                setSelectedItems={setSelectedItems}
+                                currentPage={currentPage} />
                             <PaginationButtons
-                                totalItems={resourceList?.totalElements}
+                                totalItems={resourceList?.data?.totalElements}
                                 itemsPerPage={10}
                                 currentPage={currentPage}
                                 onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
@@ -71,6 +69,7 @@ function Resources() {
                             <RscRegistModal
                                 setRegistModal={setRegistModal}
                                 part={part}
+                                currentPage={currentPage}
                             />
                         </Dialog>
 
@@ -82,6 +81,9 @@ function Resources() {
                                 part={part}
                             />
                         </Dialog>
+                        {/* <Dialog open={modal} onClose={() => setModal(false)}>
+                            <RscModal setModal={setModal} selectRscNo={selectRscNo} part={part} currentPage={currentPage} />
+                        </Dialog> */}
                     </>
                 )
                 }

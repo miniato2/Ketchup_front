@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { callAppAPI, callUpdateApprovalAPI } from "../../apis/ApprovalAPICalls";
 import { decodeJwt } from "../../utils/tokenUtils";
 import { Editor } from '@tinymce/tinymce-react';
-import { Dialog } from "@mui/material";
+import { Dialog, Grow } from "@mui/material";
 import AppAlert from "../../components/approvals/AppAlert";
 
 function ApprovalDetail() {
@@ -19,12 +19,12 @@ function ApprovalDetail() {
     const [appAction, setAppAction] = useState('');
     const [refusal, setRefusal] = useState('');
 
+    const [isOpen, setIsOpen] = useState(false);
+
     const [alertModal, setAlertModal] = useState({
         message: '',
         isOn: false,
     }); //alert modal
-
-    console.log('상세', approval);
 
     useEffect(() => {
         dispatch(callAppAPI({ approvalNo: param.approvalNo }));
@@ -53,17 +53,17 @@ function ApprovalDetail() {
         }
         if (appAction === '') {
             // alert('승인 또는 반려를 선택해주세요');
-            setAlertModal({message: <>승인 또는 반려를 선택해주세요</>, isOn: true});
+            setAlertModal({ message: <>승인 또는 반려를 선택해주세요</>, isOn: true });
         } else if (appAction === "반려" && refusal.trim() === '') {
             // alert('반려 사유를 입력해주세요');
-            setAlertModal({message: <>반려 사유를 입력해주세요.</>, isOn: true});
+            setAlertModal({ message: <>반려 사유를 입력해주세요.</>, isOn: true });
         } else {
             try {
                 dispatch(callUpdateApprovalAPI(appUpdate, approval.approvalNo))
                     .then(() => navigate(`/approvals`, { replace: false }));
             } catch {
                 // alert('에러');
-                setAlertModal({message: <>등록에 실패하였습니다.</>, isOn: true});
+                setAlertModal({ message: <>등록에 실패하였습니다.</>, isOn: true });
             }
         }
     }
@@ -71,8 +71,8 @@ function ApprovalDetail() {
     return (
         <main id="main" className="main">
             {approval?.approvalNo == param.approvalNo &&
-                <div>
-                    <h3>기안상세</h3>
+                <div style={{ marginTop: '20px' }}>
+                    <h2>기안상세</h2>
                     <br />
                     <h5>결재선</h5>
                     <AppLine appline={approval.appLineList} />
@@ -89,14 +89,24 @@ function ApprovalDetail() {
                             </tr>
                             <tr>
                                 <th >첨부파일</th>
-                                <td >
-                                    {Array.isArray(approval.appFileList) &&
-                                        approval.appFileList.map((item, index) => (
-                                            <span>
-                                                <a href={`/img/approvals/${item.fileUrl}`} download>{item.fileUrl}</a><br />
-                                            </span>
-                                        ))
-                                    }
+                                <td style={{ position: 'relative' }}>
+                                <div className={Style.appFile}>
+                                    <label for='btn'>파일</label>
+                                    <button id="btn" type="button" onClick={() => setIsOpen(!isOpen)}>
+                                        {isOpen ? <i class="bi bi-chevron-up"></i> : <i class="bi bi-chevron-down"></i>}
+                                    </button>
+                                </div>
+                                {isOpen && <div className={Style.appFileCell}>
+                                        <ul>
+                                            {Array.isArray(approval.appFileList) &&
+                                                approval.appFileList.map((item) => (
+                                                    <li >
+                                                        <a href={`/img/approvals/${item.fileUrl}`} download>{item.fileUrl}</a><br />
+                                                    </li>
+                                                ))
+                                            }
+                                        </ul>
+                                    </div>}
                                 </td>
                                 <th >기안자</th>
                                 <td>{approval.member.memberName}</td>
@@ -131,7 +141,7 @@ function ApprovalDetail() {
                     />
 
                     {approval?.appLineList.find(item => item.alMember.memberNo === loginToken.memberNo) || approval.appStatus === "반려" ?
-                        <div style={{marginTop: '20px'}}>
+                        <div style={{ marginTop: '20px' }}>
                             <h5>처리</h5>
                             <table className={Style.appTable}>
                                 <tbody>

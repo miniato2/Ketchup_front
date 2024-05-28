@@ -7,7 +7,6 @@ function InsertBoard() {
         <h2>자료실</h2>
       </div>
       <div className="col-lg-12">
-        <div className="row"></div>
         <div className="list">
           <InsertBoardForm />
         </div>

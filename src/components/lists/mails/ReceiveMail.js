@@ -1,30 +1,17 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { callGetReceiveMailAPI } from "../../../apis/MailAPICalls";
 import MailTable from "../../items/mails/MailTable";
 import { useNavigate, useParams } from "react-router-dom";
 import FormatDateTime from "../../contents/FormatDateTime";
+import PaginationButtons from "../../contents/PaginationButtons";
 
-function ReceiveMail({ checkedItems, setCheckedItems, searchCondition, searchValue, isLoading, setIsLoading }) {
+function ReceiveMail({ receiveMail, checkedItems, setCheckedItems, searchParams, isLoading, setIsLoading, currentPage, setCurrentPage }) {
     const { part } = useParams();
     const [sortedMail, setSortedMail] = useState([]);
-    const result = useSelector(state => state.mailReducer);
-    console.log(result);
-    const receiveMail = result && result.receivemail && result.receivemail.length > 0 ? result.receivemail : null;
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    useEffect(
-        () => {
-            setIsLoading(true);
-            dispatch(callGetReceiveMailAPI(searchCondition, searchValue))
-                .finally(() => setIsLoading(false));
-        }, [dispatch]
-    );
-
     useEffect(() => {
-        if (receiveMail) {
-            const sorted = [...receiveMail].sort((a, b) => new Date(b.sendMailTime) - new Date(a.sendMailTime));
+        if (receiveMail?.mails) {
+            const sorted = [...receiveMail?.mails].sort((a, b) => new Date(b.sendMailTime) - new Date(a.sendMailTime));
             const formattedSortedMail = sorted.map(mail => ({
                 ...mail,
                 sendMailTime: FormatDateTime(mail.sendMailTime)
@@ -41,9 +28,7 @@ function ReceiveMail({ checkedItems, setCheckedItems, searchCondition, searchVal
     ];
 
     const handleRowClick = (index) => async () => {
-        const mailNo = receiveMail[index]?.mailNo;
-        console.log("🎐🎐🎐🎐🎐🎐🎐🎐");
-        console.log(mailNo);
+        const mailNo = receiveMail?.mails[index]?.mailNo;
 
         navigate(`/mails/detail/${mailNo}`, { state: { part } });
     };
@@ -58,7 +43,13 @@ function ReceiveMail({ checkedItems, setCheckedItems, searchCondition, searchVal
                 checkedItems={checkedItems}
                 setCheckedItems={setCheckedItems}
                 isLoading={isLoading}
-                setIsLoading={setIsLoading} />
+                setIsLoading={setIsLoading}
+                searchParams={searchParams} />
+            <PaginationButtons
+                totalItems={receiveMail?.pageTotal} 
+                itemsPerPage={10} 
+                currentPage={currentPage} 
+                onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
         </div>
     );
 }

@@ -7,29 +7,38 @@ import DOMPurify from "isomorphic-dompurify";
 import ButtonGroup from "../../contents/ButtonGroup";
 import FormatDate from "../../contents/FormatDate";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import DeleteModal from "./DeleteModal";
+import NormalDeleteModalForm from "../../form/NormalDeleteModalForm";
 import { Dialog } from "@mui/material";
+import Comment from "../comment/Comment";
 
 function Board({ boardNo }) {
-    console.log('Board [ boardNo ] : ', boardNo);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    
     const board = useSelector(state => state.boardReducer.board);
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
+    
     const [deleteModal, setDeleteModal] = useState(false);
+    const [hasComments, setHasComments] = useState(false); 
 
     const onDialogCloseHandler = () => {
         setDeleteModal(prevState => !prevState);
     };
 
     useEffect(() => {
-        console.log('useEffect [ boardNo ] : ', boardNo);
         if (boardNo) {
             dispatch(callGetBoardAPI(boardNo));
         }
     }, [dispatch, boardNo]);
 
-   
+    useEffect(() => {
+        if (board && board.commentCount > 0) {
+            setHasComments(true);
+        } else {
+            setHasComments(false);
+        }
+    }, [board]);
+
     const updateHandler = () => {
         // 작성자인 경우에만 수정 페이지로 이동
         if (!(loginToken && (loginToken.memberNo === board.memberInfo.memberNo))) {
@@ -40,6 +49,11 @@ function Board({ boardNo }) {
     };
 
     const deleteHandler = () => {
+        if (hasComments) {
+            alert('댓글이 있어 게시물을 삭제할 수 없습니다.');
+            return;
+        }
+
         dispatch(callDeleteBoardAPI(boardNo))
             .then(() => {
                 setDeleteModal(false);
@@ -125,46 +139,53 @@ function Board({ boardNo }) {
                         </div>
                     </div>
 
-                    <div style={{ marginTop: "20px" }} >
+                    <div style={{ marginTop: "20px", marginBottom: "20px"}}>
+                        <div style={{ border: "1px solid lightgray", borderTopWidth: hasComments ? "0" : '0.1', height: "100%" }}>
+                            <Comment boardNo={boardNo} />
+                        </div>
+                    </div>
+
+                    <div style={{ borderTop: '0.5px solid lightgray', borderBottom: '0.5px solid lightgray' }} >
                         {/* 다음 글 */}
                         {board.nextBoard && (
-                            <div onClick={() => navigate(`/boards/${board.nextBoard.boardNo}`)} style={{ cursor: 'pointer' }}>
+                            <div onClick={() => navigate(`/boards/${board.nextBoard.boardNo}`)} style={{ marginTop: "20px", cursor: 'pointer' }}>
                                 <i className="bi bi-caret-up" />&nbsp;
                                 <span>다음글 |  {board.nextBoard.boardTitle}</span>
                             </div>
                         )}
 
                         {!board.nextBoard && (
-                            <div>
+                            <div style={{ marginTop: "20px"}}>
                                 <i className="bi bi-caret-up" />&nbsp;
                                 <span>다음글 |  <span>다음글이 없습니다.</span></span>
                             </div>
                         )}
                         <br />
+
                         {/* 이전 글 */}
                         {board.previousBoard && (
-                            <div onClick={() => navigate(`/boards/${board.previousBoard.boardNo}`)} style={{ cursor: 'pointer' }}>
+                            <div onClick={() => navigate(`/boards/${board.previousBoard.boardNo}`)} style={{  marginBottom: "20px", cursor: 'pointer' }}>
                                 <i className="bi bi-caret-down" />&nbsp;
                                 <span>이전글 |  {board.previousBoard.boardTitle}</span>
                             </div>
                         )}
                         {!board.previousBoard && (
-                            <div>
+                            <div style={{ marginBottom: "20px"}}>
                                 <i className="bi bi-caret-down" />&nbsp;
                                 <span>이전글 |  <span>이전글이 없습니다.</span></span>
                             </div>
                         )}
                     </div>
+
                 </div>
-            </div >
+            </div>
 
             <Dialog open={deleteModal} onClose={onDialogCloseHandler}>
-                <DeleteModal
+                <NormalDeleteModalForm
                     onClose={onDialogCloseHandler}
                     onDelete={deleteHandler}
                 />
             </Dialog>
-
         </>
     );
 }
