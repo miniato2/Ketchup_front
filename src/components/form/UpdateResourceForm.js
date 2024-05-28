@@ -25,10 +25,10 @@ function UpdateResourceForm({ setUpdateClick, resourceDetail, selectRscNo }) {
     ];
 
     const onChangeHandler = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type } = e.target;
         setFormState({
             ...formState,
-            [name]: value
+            [name]: type === "radio" ? value === "true" : value
         });
     };
 
