@@ -156,13 +156,13 @@ function Main() {
                 <>
                     {/* 메인 환영 */}
                     <div className="pagetitle col-lg-12">
-                        <div id="mainbox" className="p-4 p-md-5 mb-4 rounded text-body-emphasis" style={{ backgroundColor: "rgb(236, 11, 11, 0.17)" }}>
+                        <div id="mainbox" className="p-4 p-md-5 mb-4 rounded text-body-emphasis" style={{ backgroundColor: "rgb(236, 11, 11, 0.17)", marginTop: '80px'}}>
                             <div style={{ display: "flex", margin: -15 }}>
                                 <div className="col-lg-6 px-0">
-                                    <h1 className="display-1" style={{ fontSize: "45px" }}>안녕하세요, {loginToken.memberName} 사원님!</h1>
+                                    <h1 className="display-1" style={{ fontSize: "45px" }}>안녕하세요, {loginToken.memberName} {loginToken.positionName}님!</h1>
                                     <h2 className="lead my-3" style={{ fontSize: "30px" }}>오늘 하루도 화이팅하세요🤩</h2>
                                 </div>
-                                <img src="images/mainImage.png" style={{ marginLeft: 80, width: "500px", height: "200px" }}></img>
+                                <img src="images/mainImage.png" style={{ width: "300px", height: "240px", position: 'absolute', right: 50, bottom: 0}}></img>
                             </div>
                         </div>
                     </div>
