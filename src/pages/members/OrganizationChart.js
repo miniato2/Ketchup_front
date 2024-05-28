@@ -1,13 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { callMembersAPI, callDepartmentsAPI, callPositionsAPI,callAllPositionsAPI } from "../../apis/MemberAPICalls";
-import { Table,Card,ListGroup } from "react-bootstrap";
+import Tree from 'react-d3-tree';
+
 
 function OrganizationChart() {
     const dispatch = useDispatch();
     const members = useSelector(state => state.memberReducer);
     const departments = useSelector(state => state.departmentReducer);
     const positions = useSelector(state => state.positionReducer);
+    const [treeData, setTreeData] = useState([]);
 
     useEffect(() => {
         dispatch(callMembersAPI());
@@ -15,31 +17,75 @@ function OrganizationChart() {
         dispatch(callAllPositionsAPI());
     }, []);
 
+    useEffect(() => {
+      
+
+
+        if (members.length > 0 && departments.length > 0 && positions.length > 0) {
+            const CEO = members?.find(member =>  member.position.positionName === '대표');
+            const data = {
+                name:  `${CEO.memberName}${CEO.position.positionName}`,
+                image: `img/${CEO.imgUrl}`, 
+                children: departments.map((department) => ({
+                    name: department.depName,
+                    children: members
+                        .filter((member) => member.department.depNo === department.depNo)
+                        .filter((member) => member.position.positionName === '팀장')
+                        .map((teamLeader) => ({
+                            name: `${teamLeader.memberName}${teamLeader.position.positionName}`,
+                            image: `img/${teamLeader.imgUrl}`, // 추가: 팀장의 사진 URL
+                            children: members
+                                .filter((member) => member.department.depNo === department.depNo && member.position.positionName === '직원')
+                                .map((member) => ({
+                                    name: `${member.memberName}${member.position.positionName}`,
+                                    image: `img/${member.imgUrl}`,
+                                }))
+                        }))
+                }))
+            };
+    
+            setTreeData([data]);
+            console.log(data);
+        }
+    }, [members, departments, positions]);
+
+    const containerStyles = {
+        width: '100%',
+        height: '200vh',
+    };
+
+    const renderCustomNodeElement = ({ nodeDatum }) => (
+        <g>
+            <rect width="150" height="150" x="-75" y="-75" fill="white" stroke="black" strokeWidth="0.5" />
+            <text fill="black" x="0" y="-35" textAnchor="middle" alignmentBaseline="middle" >
+                {nodeDatum.name}
+            </text>
+            <image
+                x="-35"
+                y="-0"
+                href={nodeDatum.image} // 사진 표시
+                width="70"
+                height="70"
+            />
+        </g>
+    );
+
     return (
         <main id="main">
             <div className="container">
                 <h2>조직도</h2>
-                <h3>대표 남윤진</h3>
-                <div className="row">
-                    {departments.map((department) => (
-                        <div key={department.depNo} className="col-md-4 mb-4">
-                            <Card>
-                                <Card.Header>{department.depName}</Card.Header>
-                                <Card.Body>
-                                    <ListGroup variant="flush">
-                                        {Array.isArray(members) && members
-                                            .filter((member) => member.department.depNo === department.depNo)
-                                            .sort((a, b) => b.position.positionLevel - a.position.positionLevel)
-                                            .map((member) => (
-                                                <ListGroup.Item key={member.memberNo}>
-                                                    {member.memberName} - {member.position.positionName}
-                                                </ListGroup.Item>
-                                            ))}
-                                    </ListGroup>
-                                </Card.Body>
-                            </Card>
-                        </div>
-                    ))}
+                <div style={containerStyles}>
+                    {treeData.length > 0 && (
+                        <Tree
+                            data={treeData}
+                            orientation="vertical"
+                            translate={{ x: 600, y: 200 }}
+                            pathFunc="elbow"
+                            renderCustomNodeElement={renderCustomNodeElement}
+                            nodeSize={{ x: 200, y: 150 }}
+                            separation= {{ siblings: 1.2, nonSiblings: 1} }
+                        />
+                    )}
                 </div>
             </div>
         </main>

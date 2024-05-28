@@ -22,6 +22,7 @@ function Login() {
 
     const loginMember = useSelector(state => state.memberReducer);  // API 요청하여 가져온 loginMember 정보
 
+    
     // 폼 데이터 한번에 변경 및 State에 저장    
     const [form, setForm] = useState({
         memberNo: '',
@@ -29,7 +30,7 @@ function Login() {
     });
 
     useEffect(() => {
-
+        console.log(token);
 
         if (token?.isFirstLogin === 'Y') {
             setPWDialogOpen(true);
