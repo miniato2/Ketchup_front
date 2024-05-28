@@ -5,8 +5,6 @@ import FormatDateTime from "../../contents/FormatDateTime";
 import PaginationButtons from "../../contents/PaginationButtons";
 
 function ReceiveMail({ receiveMail, checkedItems, setCheckedItems, searchParams, isLoading, setIsLoading, currentPage, setCurrentPage }) {
-    console.log("🎁🎁🎁🎁🎁");
-    console.log(searchParams);
     const { part } = useParams();
     const [sortedMail, setSortedMail] = useState([]);
     const navigate = useNavigate();
