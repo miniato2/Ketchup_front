@@ -9,7 +9,6 @@ import { callInsertBoardAPI } from "../../apis/BoardAPICalls";
 import { decodeJwt } from "../../utils/tokenUtils";
 
 function InsertBoardForm() {
-
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -20,30 +19,22 @@ function InsertBoardForm() {
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const memberNo = loginToken.memberNo;
     const departmentNo = loginToken.depNo;
-    console.log("memberNo : ", memberNo);
-    console.log("departmentNo : ", departmentNo);
-
-
+  
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData();
         formData.append('boardDTO', new Blob([JSON.stringify({ memberNo: memberNo, departmentNo: departmentNo, boardTitle: title, boardContent: content })], { type: 'application/json' }));
-        files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
-
+        files.forEach(file => formData.append('files', file)); 
+    
         try {
-            console.log("handleSubmit [ result ] : ", formData);
             const boardNo = await dispatch(callInsertBoardAPI(formData));
-            console.log("dispatch 후 boardNo : ", boardNo);
+           
             if (boardNo) {
-                console.log('handleSubmit [ boardNo ] : ', boardNo);
-                // 등록 성공 시 공지 상세 페이지로 이동
                 navigate(`/boards/${boardNo}`);
             } else {
                 console.error("Invalid result:", "실패");
             }
-
-            console.log([...formData.entries()]);
 
         } catch (error) {
             console.error(error);
@@ -53,7 +44,8 @@ function InsertBoardForm() {
 
     const handleChangeFiles = (e) => {
         const selectedFiles = Array.from(e.target.files);
-        setFiles((prevFiles) => [...prevFiles, ...selectedFiles]); // 기존 파일 목록과 새로 선택된 파일을 합쳐서 업데이트
+        setFiles((prevFiles) => [...prevFiles, ...selectedFiles]); 
+        // 기존 파일 목록과 새로 선택된 파일을 합쳐서 업데이트
     };
 
     const handleDeleteFile = (index) => {
@@ -68,8 +60,6 @@ function InsertBoardForm() {
     ];
 
     return (
-
-
         <div className="card-title">
             <div className="input-container">
                 <label htmlFor="title">제목</label>

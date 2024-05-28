@@ -15,7 +15,7 @@ function UpdateNoticeForm() {
     const [files, setFiles] = useState([]);
     const [fix, setFix] = useState(false);
     const [content, setContent] = useState('');
-    const [noticeFileNo, setNoticeFileNo] = useState([]); // 삭제할 파일의 ID를 저장할 상태 추가
+    const [noticeFileNo, setNoticeFileNo] = useState([]); 
 
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
 
@@ -24,13 +24,11 @@ function UpdateNoticeForm() {
         setFix(isChecked);
     };
 
-    // 파일 삭제 함수
     const handleDeleteFile = (index, file) => {
         const updatedFiles = [...files];
         updatedFiles.splice(index, 1);
         setFiles(updatedFiles);
 
-        // 삭제된 파일의 ID를 삭제 목록에 추가
         if (file.noticeFileNo) {
             setNoticeFileNo((prevIds) => [...prevIds, file.noticeFileNo]);
         }
@@ -41,12 +39,10 @@ function UpdateNoticeForm() {
     
         const formData = new FormData();
         formData.append('noticeDTO', new Blob([JSON.stringify({ noticeTitle: title, memberNo: loginToken.memberNo, noticeFix: fix ? 'Y' : 'N', noticeContent: content })], { type: 'application/json' }));
-        files.forEach(file => formData.append('files', file)); // 모든 파일을 FormData에 추가
-    
-        console.log("handleSubmit [ noticeFileNo ] : ", noticeFileNo);
+        files.forEach(file => formData.append('files', file)); 
     
         try {
-            await dispatch(callUpdateNoticeAPI(formData, noticeNo, noticeFileNo)); // 수정된 부분
+            await dispatch(callUpdateNoticeAPI(formData, noticeNo, noticeFileNo)); 
             navigate(`/notices/${noticeNo}`);
         } catch (error) {
             console.error(error);
@@ -55,8 +51,8 @@ function UpdateNoticeForm() {
 
     const handleChangeFiles = (e) => {
         const selectedFiles = Array.from(e.target.files);
-        console.log('선택된 파일 목록:', selectedFiles);
-        setFiles((prevFiles) => [...prevFiles, ...selectedFiles]); // 기존 파일 목록과 새로 선택된 파일을 합쳐서 업데이트
+        setFiles((prevFiles) => [...prevFiles, ...selectedFiles]); 
+        // 기존 파일 목록과 새로 선택된 파일을 합쳐서 업데이트
     };
 
     const buttons = [
@@ -65,11 +61,9 @@ function UpdateNoticeForm() {
     ];
 
     useEffect(() => {
-        // 공지 정보 불러오기
         dispatch(callGetNoticeAPI(noticeNo));
     }, [dispatch, noticeNo]);
 
-    // useSelector를 사용하여 Redux 스토어에서 공지 정보 가져오기
     const notice = useSelector(state => state.noticeReducer.notice);
 
     useEffect(() => {
@@ -95,7 +89,6 @@ function UpdateNoticeForm() {
                         {files.map((file, index) => (
                             <li style={{ listStyle: 'none' }} key={index}>
                                 <span>{file.noticeFileOriName || file.name}</span> &nbsp;
-                                {/* 파일 삭제 버튼 */}
                                 <button onClick={() => handleDeleteFile(index, file)} style={{ border: 'none', background: 'none', cursor: 'pointer' }}>x</button>
                             </li>
                         ))}
