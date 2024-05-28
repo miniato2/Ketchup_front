@@ -23,8 +23,7 @@ export default function UpdatePWForm({ myNo, onDialogClickHandler }) {
         passwordMatch: '',
     });
 
-    console.log(verifyEmail);
-    console.log(verifyCode);
+    
 
 
     useEffect(() => {
@@ -142,9 +141,14 @@ export default function UpdatePWForm({ myNo, onDialogClickHandler }) {
                         value={pass.firstPW}
                         onChange={onChangeHandler}
                         placeholder='비밀번호를 입력해주세요'
-                        style={{ textAlign: 'center', marginLeft: 70, borderWidth: '0px 0px 1px 0px' }}
+                        style={{
+                            width: 300, 
+                            textAlign: 'center', 
+                            marginLeft: 70, 
+                            borderWidth: '0px 0px 1px 0px' }}
                     /></label>
-                    <p style={{ color: 'red', fontSize: 13 }}>{validationMessage.validPassword}</p>
+                    <br></br>
+                    <p style={{ color: 'red', fontSize: 13  }}>{validationMessage.validPassword}</p>
 
                     <br />
 
@@ -158,20 +162,21 @@ export default function UpdatePWForm({ myNo, onDialogClickHandler }) {
                             onChange={onChangeHandler}
                             name="secondPW"
                             style={{
+                                width: 300, 
                                 textAlign: 'center',
                                 marginLeft: 40,
                                 borderWidth: '0px 0px 1px 0px'
                             }}
                         />
                     </label>
-                    <p style={{ color: 'red', fontSize: 13 }}>{validationMessage.passwordMatch}</p>
+                    <p style={{ color: 'red', fontSize: 13}}>{validationMessage.passwordMatch}</p>
 
                     <div style={{ marginRight: "20px" }}>
 
 
                         <button
                             onClick={onDialogClickHandler}
-                            style={{ backgroundColor: 'white', color: 'black', fontSize: '15px', width: 80, height: '35px', padding: '5px', cursor: 'pointer', marginLeft: '200px', borderRadius: 5 }}
+                            style={{ backgroundColor: 'white', color: 'black', fontSize: '15px', width: 80, height: '35px', padding: '5px', cursor: 'pointer', marginLeft: '300px', borderRadius: 5 ,marginBottom: 10}}
                         >
                             취소
                         </button>
