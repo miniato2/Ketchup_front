@@ -63,6 +63,7 @@ function Approvals() {
                 currentPage: 1
             })
         )
+        setSearch(''); // 검색 후 검색어 초기화 -- 이거 한줄 넣었는데 아닌거 같은면 빼기!!!! <- 현지
     } //검색버튼
 
     const statusChangeHandler = (e) => {

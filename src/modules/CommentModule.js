@@ -4,10 +4,10 @@ const initialState =  {
     commentList: [], 
     commentNo: 0,                  //댓글 번호
     boardNo: 0,                    //게시물번호
-    memberNo: '',                //사번 (댓글 작성자)
-    commentContent: '',          //댓글 내용
-    parentCommentNo: 0,        // 부모 댓글 번호 (null이면 최상위 댓글)
-    parentMemberNo: ''          // 부모 댓글의 작성자 사번
+    memberNo: '',                  //사번 (댓글 작성자)
+    commentContent: '',            //댓글 내용
+    parentCommentNo: 0,            // 부모 댓글 번호 (null이면 최상위 댓글)
+    parentMemberNo: ''             // 부모 댓글의 작성자 사번
 };
 
 const GET_COMMENTLIST = 'comment/GET_COMMENTLIST';

@@ -2,14 +2,11 @@ import { request } from "./Api";
 import { deleteComment, getCommentlist, getReply, insertComment, insertreply } from "../modules/CommentModule";
 
 export function callGetCommentListAPI({ boardNo }) {
-    console.log('callGetCommentListAPI...');
-    console.log("callGetCommentListAPI [ boardNo ] : ", boardNo);
-
+    
     return async (dispatch, getState) => {
         try {
 
             const results = await request('GET', `/boards/${boardNo}/comments`);
-            console.log('API response for comments:', results);
 
             const commentsWithMemberNames = await Promise.all(results.data.map(async (result) => {
                 const memberInfoResult = await request('GET', `/members/${result.memberNo}`);
@@ -26,7 +23,6 @@ export function callGetCommentListAPI({ boardNo }) {
                     , parentMemberName: parentMemberName 
                 };
             }));
-
             
             dispatch(getCommentlist(commentsWithMemberNames));
         } catch (error) {
@@ -37,14 +33,11 @@ export function callGetCommentListAPI({ boardNo }) {
 
 
 export const callInsertCommentAPI = ({ boardNo, commentDTO }) => {
-    console.log('callInsertCommentAPI...');
-    console.log("callInsertCommentAPI [ boardNo ] : ", boardNo);
-    console.log("callInsertCommentAPI [ commentDTO ] : ", commentDTO);
+
     return async (dispatch, getState) => {
         try {
-
             const result = await request('POST', `/boards/${boardNo}/comments`, commentDTO);
-            console.log("result : ", result);
+
             if (result.status === 200) {
                 dispatch(insertComment(result));
             } else {
@@ -57,15 +50,11 @@ export const callInsertCommentAPI = ({ boardNo, commentDTO }) => {
 };
 
 export const callInsertReplyAPI = ({ boardNo, parentCommentNo, commentDTO }) => {
-    console.log('callInsertReplyAPI...');
-    console.log("callInsertReplyAPI [ boardNo ] : ", boardNo);
-    console.log("callInsertReplyAPI [ parentCommentNo ] : ", parentCommentNo);
-    console.log("callInsertReplyAPI [ commentDTO ] : ", commentDTO);
+
     return async (dispatch, getState) => {
         try {
-
             const result = await request('POST', `/boards/${boardNo}/comments/${parentCommentNo}/replies`, commentDTO);
-            console.log("result : ", result);
+            
             if (result.status === 200) {
                 dispatch(insertreply(result));
             } else {
@@ -79,19 +68,13 @@ export const callInsertReplyAPI = ({ boardNo, parentCommentNo, commentDTO }) => 
 
 
 export function callDeleteCommentAPI({ boardNo, commentNo }) {
-    console.log('callDeleteBoardAPI...');
-    console.log("callInsertCommentAPI [ boardNo ] : ", boardNo);
-    console.log("callInsertCommentAPI [ commentNo ] : ", commentNo);
 
     return async (dispatch, getState) => {
         try {
             const result = await request('DELETE', `/boards/${boardNo}/comments/${commentNo}`);
-            console.log('getComment result : ', result);
-
             dispatch(deleteComment(result.data));
         } catch (error) {
             console.error('Error deleteNotice :', error);
-            // 에러가 발생한 경우에 대한 처리를 추가할 수 있습니다.
         }
     }
 }

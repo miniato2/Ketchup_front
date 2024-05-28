@@ -27,7 +27,6 @@ function Main() {
     const schedules = useSelector(state => state.scheduleReducer);
     const navigate = useNavigate();
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
-    console.log('[ loginToken ] : ', loginToken);
     const [approvalCount, setApprovalCount] = useState({});
 
     // 결재 
@@ -103,9 +102,9 @@ function Main() {
     }, [schedules]);
 
     useEffect(() => {
-       if(loginToken==null){
-        navigate("/login");
-       }
+        if (loginToken == null) {
+            navigate("/login");
+        }
     }, []);
 
 
@@ -145,16 +144,9 @@ function Main() {
     ];
 
     const handleRowClick = (index) => {
-        const noticeNo = formattedNoticeList[index]?.noticeNo; // 수정된 부분
+        const noticeNo = formattedNoticeList[index]?.noticeNo;
         navigate(`/notices/${noticeNo}`);
     };
-
-    //   const jwt = require('jsonwebtoken');
-    //   const decodedToken = jwt.decode(token);
-    //   const memberNo = decodedToken.memberNo;
-    //     console.log('memberNo: ', memberNo);
-    //     const memberName = decodedToken.memberName;
-    //     console.log('memberName: ', memberName);
 
     return (
         <main id="main" className="main">
@@ -193,9 +185,18 @@ function Main() {
                                 style={{ fontWeight: 'bold', fontSize: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingLeft: '20px', paddingRight: '20px' }}>
                                 공지사항
 
-                                <button className="move-btn" style={{fontSize: '16px', width: '75px'}} onClick={() => navigate('/notices')}>더보기</button>
+                                <button className="move-btn" style={{ fontSize: '16px', width: '75px' }} onClick={() => navigate('/notices')}>더보기</button>
                             </h2>
-                            <BootstrapTable data={formattedNoticeList} columns={columns} onRowClick={handleRowClick} />
+                            {noticeList.length === 0 ? (
+                                <>
+                                    <BootstrapTable data={formattedNoticeList} columns={columns} onRowClick={handleRowClick} />
+                                    <span style={{ textAlign: 'center', marginBottom: '20px'}}> 공지가 없습니다.</span>
+                                </>
+                            ) : (
+                                <>
+                                    <BootstrapTable data={formattedNoticeList} columns={columns} onRowClick={handleRowClick} />
+                                </>
+                            )}
                         </div>
                     </div>
 

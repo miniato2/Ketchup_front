@@ -6,7 +6,6 @@ import '../../pages/mails/mail.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { callLogoutAPI } from '../../apis/MemberAPICalls';
 import { decodeJwt } from '../../utils/tokenUtils';
-import { useEffect } from 'react';
 
 function Header() {
     const dispatch = useDispatch();
@@ -21,13 +20,6 @@ function Header() {
         alert('로그아웃이 되어 로그인화면 으로 이동합니다.');
         navigate("login", { replace: true })
     };
-
-    // useEffect(()=>{
-    //     if(token===null)
-    //         {
-    //             navigate("/login")
-    //         }
-    // },[token])
 
     return (
         <header id="header" className="header fixed-top d-flex align-items-center">

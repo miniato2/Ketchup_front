@@ -16,6 +16,7 @@ import { Box } from '@mui/system';
 const Notices = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const result = useSelector(state => state.noticeReducer);
   const noticeList = result?.noticelist?.noticesWithMemberNames || [];
   const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
@@ -23,13 +24,15 @@ const Notices = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     dispatch(callGetNoticeListAPI({
       currentPage,
       title: searchKeyword.toLowerCase(),
       setTotalItems: setTotalItems
-    }));
+    })).finally(() => setLoading(false));
   }, [dispatch, currentPage, searchKeyword]);
 
   const pinnedNotices = noticeList
@@ -73,13 +76,17 @@ const Notices = () => {
   };
 
   const handleSearch = (searchKeyword) => {
+    console.log("handleSearch searchKeyword : ", searchKeyword);
     setCurrentPage(1);
     setSearchKeyword(searchKeyword);
   };
 
-  if (!noticeList) {
+  if (loading) {
     return <div>로딩 중...</div>;
   }
+  
+  const noNotices = mergedNoticeList.length === 0;
+  const noNormalNotices = normalNotices.length === 0;
 
   return (
     <main id="main" className="main">
@@ -96,19 +103,27 @@ const Notices = () => {
               <ButtonGroup buttons={[{ label: '등록', styleClass: 'move' }]} />
             </Link>
           )}
-
-          {normalNotices.length === 0 ? (
+          {noNormalNotices && searchKeyword ? (
             <>
               <BootstrapTable data={mergedNoticeList} columns={columns} onRowClick={handleRowClick} />
-              {/* <p style={{ textAlign: 'center' }}>'{searchKeyword}' 제목 공지가 없습니다.</p> */}
               <Box height={'480px'} display="flex" flexDirection="column" justifyContent="center" alignItems="center" margin={'auto'}>
                 <Typography fontSize={24} textAlign={'center'}>{searchKeyword} 공지가 없습니다.</Typography>
                 <img src="/img/searchConditionRequired.png" alt="searchConditionRequired" style={{ display: "block", margin: "0 auto", maxWidth: "100%", height: "auto" }} />
               </Box>
             </>
+
           ) : (
             <>
-              <BootstrapTable data={mergedNoticeList} columns={columns} onRowClick={handleRowClick} />
+              {noNotices ? (
+                <Box height={'480px'} display="flex" flexDirection="column" justifyContent="center" alignItems="center" margin={'auto'}>
+                  <Typography fontSize={24} textAlign={'center'}>공지가 없습니다.</Typography>
+                  <img src="/img/searchConditionRequired.png" alt="searchConditionRequired" style={{ display: "block", margin: "0 auto", maxWidth: "100%", height: "auto" }} />
+                </Box>
+              ) : (
+                <>
+                  <BootstrapTable data={mergedNoticeList} columns={columns} onRowClick={handleRowClick} />
+                </>
+              )}
             </>
           )}
           <PaginationButtons
@@ -118,7 +133,7 @@ const Notices = () => {
             onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
         </div>
       </div>
-    </main>
+    </main >
   );
 };
 

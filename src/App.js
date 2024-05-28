@@ -25,17 +25,13 @@ import InsertBoard from './pages/boards/InsertBoard';
 import Boards from './pages/boards/Boards';
 import BoardDetail from './pages/boards/BoardDetail';
 import UpdateBoard from './pages/boards/UpdateBoard';
-// 
 import Resources from './pages/resources/Resources';
 import Departments from './pages/members/Departments';
 import Positions from './pages/members/Positions';
 import OrganizationChart from './pages/members/OrganizationChart';
 import TreePractice from './pages/members/TreePractice'
 import FindPW from './pages/members/FindPW';
-
-// import Error from './pages/Error';
-
-
+import Error from './pages/Error';
 
 function App() {
  
@@ -54,8 +50,6 @@ function App() {
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
   };
-
-  
 
   return (
     <BrowserRouter>
@@ -114,12 +108,9 @@ function App() {
 
           </Route>
       
-        
         <Route index element={<Login/>} />
-        
-   
 
-        {/* <Route path="*" element={<Error />} /> */}
+        <Route path="*" element={<Error />} />
       </Routes>
     </BrowserRouter>
   );

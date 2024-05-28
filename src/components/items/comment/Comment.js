@@ -8,21 +8,19 @@ import FormatDate from '../../contents/FormatDate';
 import { Dialog, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import ButtonGroup from '../../contents/ButtonGroup';
-import './Comment.css'; // CSS 파일을 import
+import './Comment.css'; 
 
 function Comment({ boardNo }) {
-    console.log("Comment [ boardNo ] : ", boardNo);
     const dispatch = useDispatch();
     const result = useSelector(state => state.commentReducer);
     const commentList = result.commentlist || [];
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
+
     const [loading, setLoading] = useState(true);       // 목록 로딩 상태 관리
     const [replyTo, setReplyTo] = useState(null);       // 답글 memberNo
     const [replyName, setReplyName] = useState(null);   // 답글 memberName
     const [deleteModal, setDeleteModal] = useState(false);  // 삭제 모달 상태
     const [selectedCommentNo, setSelectedCommentNo] = useState(null); // 삭제할 댓글 번호
-
-    console.log("commentList : ", commentList);
 
     useEffect(() => {
         if (boardNo) {
@@ -51,7 +49,6 @@ function Comment({ boardNo }) {
         if (selectedCommentNo) {
             dispatch(callDeleteCommentAPI({ boardNo, commentNo: selectedCommentNo }))
                 .then(() => {
-                    // 댓글 삭제 후 바로 목록을 다시 불러옵니다.
                     dispatch(callGetCommentListAPI({ boardNo }))
                         .catch((error) => {
                             console.error('Error fetching comment list:', error);
@@ -66,7 +63,6 @@ function Comment({ boardNo }) {
     };
 
     const handleReplyClick = (comment) => {
-        // 답글 대상 설정
         if (comment.memberName) {
             setReplyName(comment.memberName);
             setReplyTo(comment.commentNo);
@@ -83,11 +79,10 @@ function Comment({ boardNo }) {
             parentMemberName: parentMemberName
         };
 
-        // 서버에서 받은 삭제 여부 상태를확인 
         const isDeleted = comment.deleteComment;
 
         return (
-            <div key={comment.commentNo} className="comment-container"> {/* Comment.css에서 정의한 클래스 */}
+            <div key={comment.commentNo} className="comment-container"> 
                 <div className="comment-inner">
                     <div className='float-left' style={{ marginLeft: formattedComment.parentMemberName ? '10px' : 'none',  borderTop: 'none' }}>
                         <span>{formattedComment.memberName} {formattedComment.positionName}</span>&nbsp;&nbsp;
@@ -132,8 +127,10 @@ function Comment({ boardNo }) {
 
     return (
         <>
-            {loading ? ( // 로딩 중이면 로딩 메시지를 표시합니다.
-                <div style={{ marginTop: "5px", marginBottom: '5px' }}>댓글을 불러오는 중입니다...</div>
+            {loading ? ( 
+                <div style={{ marginTop: "5px", marginBottom: '5px' }}>
+                    댓글을 불러오는 중입니다...
+                </div>
             ) : (
                 commentList && commentList.length > 0 ? (
                     commentList.filter(comment => comment.parentCommentNo === null).map(comment => renderComment(comment)) // 부모 댓글만 필터링하여 렌더링

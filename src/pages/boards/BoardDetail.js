@@ -3,10 +3,8 @@ import ButtonGroup from "../../components/contents/ButtonGroup";
 import Board from "../../components/items/boards/Board";
 
 function BoardDetail() {
-    
     const navigate = useNavigate();
     const { boardNo } = useParams();
-    
 
     return (
         <main id="main" className="main">
