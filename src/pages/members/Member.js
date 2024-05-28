@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { decodeJwt } from '../../utils/tokenUtils';
 import { callGetMemberAPI, callResignMemberAPI, callUpdateMembersAPI, callDepartmentsAPI, callPositionsAPI } from '../../apis/MemberAPICalls';
+import { useNavigate } from 'react-router-dom';
 
 
 function Member({ selectMemberNo }) {
@@ -11,14 +12,16 @@ function Member({ selectMemberNo }) {
     const memberDetail = member?.data;
     const departments = useSelector(state => state.departmentReducer);
     const positions = useSelector(state => state.positionReducer);
-   
+    const token = decodeJwt(window.localStorage.getItem('accessToken'));
+
     const [isEditMode, setIsEditMode] = useState(false); // 수정 모드 상태 추가
     const [imagePreview, setImagePreview] = useState('');
     const [form, setForm] = useState([]);
+    const navigate = useNavigate();
 
-    console.log(memberDetail);
-   
-    
+    console.log('선택한 사번:   ',selectMemberNo,'토큰에 들어있는 사번:  ',token.memberNo);
+
+
 
 
 
@@ -30,15 +33,16 @@ function Member({ selectMemberNo }) {
         await dispatch(callGetMemberAPI({ memberNo: selectMemberNo }));
 
     }
-  
+
 
     useEffect(() => {
+        if(selectMemberNo===token.memberNo)navigate("/mypage");
         dispatch(callGetMemberAPI({ memberNo: selectMemberNo }));
         dispatch(callDepartmentsAPI());
         dispatch(callPositionsAPI());
     }, []);
 
-   
+
 
     const handleEditModeToggle = () => {
         setForm({
@@ -51,7 +55,7 @@ function Member({ selectMemberNo }) {
             department: memberDetail.department?.depNo,
             position: memberDetail.position?.positionNo,
             account: memberDetail.account,
-            
+
         });
         setIsEditMode(prevState => !prevState);
     }
@@ -65,7 +69,7 @@ function Member({ selectMemberNo }) {
         alert("수정이 완료되었습니다.")
         setIsEditMode(prevState => !prevState);
         dispatch(callGetMemberAPI({ memberNo: selectMemberNo }));
-       
+
     }
 
 
@@ -118,7 +122,7 @@ function Member({ selectMemberNo }) {
             style={{ backgroundColor: 'white' }}
         >
 
-            {memberDetail && memberDetail?.department?.depName && 
+            {memberDetail && memberDetail?.department?.depName &&
 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -199,10 +203,10 @@ function Member({ selectMemberNo }) {
                         style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
                     />
                     </label>
-                   
+
                     <label style={{ color: '#878787' }}>부서
                         <select
-                          disabled={!isEditMode}
+                            disabled={!isEditMode}
                             type="text"
                             name="department"
                             onChange={onChangeHandler}
@@ -213,10 +217,10 @@ function Member({ selectMemberNo }) {
                             {departmentOptions()}
                         </select>
                     </label>
-                   
+
                     <label style={{ color: '#878787' }}>직급
                         <select
-                          disabled={!isEditMode}
+                            disabled={!isEditMode}
                             type="text"
                             name="position"
                             onChange={onChangeHandler}
@@ -274,7 +278,7 @@ function Member({ selectMemberNo }) {
                                 padding: '5px',
                                 width: '200px',
                                 height: '200px',
-                                objectFit: 'cover', 
+                                objectFit: 'cover',
                                 cursor: 'pointer'
                             }}
                         />
@@ -283,12 +287,12 @@ function Member({ selectMemberNo }) {
                 </div>
 
             }
-
-
-            {isEditMode ? <button onClick={handleSaveToggle} style={{ marginLeft: '1000px', borderRadius: 5, backgroundColor: 'red', color: 'white', width: 80, borderWidth: 0, height: 40 }}>저장</button>
-                : <button onClick={handleEditModeToggle} style={{ marginLeft: '1000px', borderRadius: 5, width: 80, borderWidth: 0, height: 40  }}>수정</button>}
-
-
+            {token.depName === "인사팀" &&
+                <div>
+                    {isEditMode ? <button onClick={handleSaveToggle} style={{ marginLeft: '1000px', borderRadius: 5, backgroundColor: 'red', color: 'white', width: 80, borderWidth: 0, height: 40 }}>저장</button>
+                        : <button onClick={handleEditModeToggle} style={{ marginLeft: '1000px', borderRadius: 5, width: 80, borderWidth: 0, height: 40 }}>수정</button>}
+                </div>
+            }
 
         </div>
 
