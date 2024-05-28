@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Editor } from '@tinymce/tinymce-react';
 import AppAlert from "../../components/approvals/AppAlert";
+import AppConfirm from "../../components/approvals/AppConfirm";
 import { Dialog } from "@mui/material";
 
 
@@ -45,6 +46,12 @@ function InsertApproval() {
         message: '',
         isOn: false,
     }); //alert modal
+
+    const [confirmModal, setConfirmModal] = useState({
+        message: '',
+        result: false,
+        isOn: false
+    }) //confirm modal
 
     console.log(appContents);
 
@@ -92,6 +99,15 @@ function InsertApproval() {
     }; //양식 변경
 
     const onClickCancelHandler = () => {
+        // if(appContents !== ''){
+        //     setConfirmModal({
+        //         message: <>입력한 내용이 존재합니다.<br />작성을 취소하시겠습니까?</>,
+        //         result: false,
+        //         isOn: true
+        //     })
+        //     console.log('result 확인',confirmModal.result);
+
+        // }
         navigate(`/approvals`, { replace: false })
     }; //취소
 
@@ -125,22 +141,18 @@ function InsertApproval() {
         //   });
 
         if (appLine[0].alMember.memberNo === '') {
-            // alert('결재선을 지정해 주세요');
             setAlertModal({message: <>결재선을 지정하지 않았습니다. <br />결재선을 지정해 주세요.</>, isOn: true});
             btnref.current.focus();
             //결재선
         } else if (formNo === 0) {
-            // alert('양식을 선택해 주세요');
             setAlertModal({message: <>양식을 선택하지 않았습니다. <br />양식을 선택해 주세요.</>, isOn: true});
             formref.current.focus();
             //양식
         } else if (appTitle.trim() === '') {
-            // alert('제목을 입력해 주세요');
             setAlertModal({message: <>제목을 입력하지 않았습니다. <br />제목을 입력해 주세요.</>, isOn: true});
             titleref.current.focus();
             //제목
         } else if (appContents.trim() === '') {
-            // alert('내용을 입력해');
             setAlertModal({message: <>내용을 입력하지 않았습니다. <br />내용을 입력해 주세요.</>, isOn: true});
             conref.current.focus(); // 포커스가 안잡힘
             //내용
@@ -149,10 +161,8 @@ function InsertApproval() {
                 dispatch(callInsertAppAPI({ form: formData }))
                     .then(() => navigate(`/approvals`, { replace: false }));
             } catch {
-                // alert('에러');
                 setAlertModal({message: <>등록에 실패하였습니다.</>, isOn: true});
             }
-            //예외처리는 다시하자
         };
     } //등록
 
@@ -236,6 +246,9 @@ function InsertApproval() {
             <Dialog open={alertModal.isOn} onClose={() => setAlertModal({isOn: false})}>
                 <AppAlert alertModal={alertModal} setAlertModal={setAlertModal}/>   
             </Dialog>
+            {/* <Dialog open={confirmModal.isOn} onClick={() => setConfirmModal({isOn: false})}>
+                <AppConfirm confirmModal={confirmModal} setConfirmModal={setConfirmModal} />
+            </Dialog> */}
 
         </main>
     )

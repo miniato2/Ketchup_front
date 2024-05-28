@@ -273,6 +273,9 @@ h6 {
 .approval-box-link .card-title {
   text-decoration: none;
 }
+.appbox:hover{
+  border-color: rgb(249, 159, 159);
+}
 
 
 /* Alerts */

@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { callAppAPI, callUpdateApprovalAPI } from "../../apis/ApprovalAPICalls";
 import { decodeJwt } from "../../utils/tokenUtils";
 import { Editor } from '@tinymce/tinymce-react';
-import { Dialog } from "@mui/material";
+import { Dialog, Grow } from "@mui/material";
 import AppAlert from "../../components/approvals/AppAlert";
 
 function ApprovalDetail() {
@@ -90,12 +90,12 @@ function ApprovalDetail() {
                             <tr>
                                 <th >첨부파일</th>
                                 <td style={{ position: 'relative' }}>
-                                <span style={{width: '100%'}}>
+                                <div className={Style.appFile}>
                                     <label for='btn'>파일</label>
-                                    <button id="btn" type="button" onClick={() => setIsOpen(!isOpen)} style={{border: 'none', background: 'none'}}>
-                                        <i class="bi bi-chevron-down"></i>
+                                    <button id="btn" type="button" onClick={() => setIsOpen(!isOpen)}>
+                                        {isOpen ? <i class="bi bi-chevron-up"></i> : <i class="bi bi-chevron-down"></i>}
                                     </button>
-                                </span>
+                                </div>
                                 {isOpen && <div className={Style.appFileCell}>
                                         <ul>
                                             {Array.isArray(approval.appFileList) &&
@@ -105,16 +105,8 @@ function ApprovalDetail() {
                                                     </li>
                                                 ))
                                             }
-
                                         </ul>
                                     </div>}
-                                    {/* {Array.isArray(approval.appFileList) &&
-                                        approval.appFileList.map((item, index) => (
-                                            <span style={{ position: 'absolute' }}>
-                                                <a href={`/img/approvals/${item.fileUrl}`} download>{item.fileUrl}</a><br />
-                                            </span>
-                                        ))
-                                    } */}
                                 </td>
                                 <th >기안자</th>
                                 <td>{approval.member.memberName}</td>
