@@ -161,8 +161,8 @@ function InsertApproval() {
             
             {modalControl.appLineModal ? <AppLineModal setModalControl={setModalControl} appLine={appLine} setAppLine={setAppLine} /> : null}
             {modalControl.refLineModal ? <RefLineModal setModalControl={setModalControl} refLine={refLine} setRefLine={setRefLine} /> : null}
-            <h3>기안등록</h3>
-
+            <h2 style={{marginTop: '20px'}}>기안등록</h2>
+            <br />
             <label><h5>결재선</h5></label><button className={Style.lineBtn} name='appLineModal' onClick={onClickModalControl} ref={btnref}>추가</button>
             <AppLine appline={appLine} />
 

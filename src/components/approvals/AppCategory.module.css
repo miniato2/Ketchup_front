@@ -15,6 +15,14 @@
     border: solid 1px black;
     border-radius: 10px;
 }
+.categoryBox:hover{
+    padding: 10px 15px 10px 15px;
+    margin-top: 20px;
+    width: 250px;
+    height: 75px;
+    border: solid 1px #EC0B0B;
+    border-radius: 10px;
+}
 .selectedCategoryBox{
     background-color: #FCD6D6;
     padding: 10px 15px 10px 15px;
@@ -23,7 +31,6 @@
     height: 75px;
     border: solid 1px #EC0B0B;
     border-radius: 10px;
-
 }
 
 .title {

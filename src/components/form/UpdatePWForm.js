@@ -30,6 +30,7 @@ export default function UpdatePWForm({ myNo, onDialogClickHandler }) {
     useEffect(() => {
 
         dispatch(callSendEmailAPI(myNo))
+        setVerifyemail(verifyEmail);
 
     }, [])
 

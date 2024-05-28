@@ -9,51 +9,23 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const dispatch = useDispatch();
     const memberList = useSelector(state => state.memberReducer); //전체 사원
+    const column = ['순번', '부서', '이름', '직급', '구분'];
 
     const [search, setSearch] = useState('');
 
-    const [selectedMember, setSelectedMember] = useState({
+    const initMember = {
         alMember: {
             memberNo: '', memberName: '',
             position: { positionName: '' },
             department: { depName: '' }
         },
         alType: '',
-        alSequence: ''
-    }) //선택된 사원 (추가 전)
+        sequence: ''
+    }
 
-    const groupByDepartment = () => {
-        const groupedMembers = {};
-        Array.isArray(memberList) && memberList.map(member => {
-            if (!groupedMembers[member.department.depName]) {
-                groupedMembers[member.department.depName] = [];
-            }
-            groupedMembers[member.department.depName].push(member);
-        });
-        return groupedMembers;
-    }; //부서별로그룹
-
-    const filteredGroupByDepartment = () => {
-        const groupedMembers = groupByDepartment();
-        const filteredGroups = {};
-
-        Object.entries(groupedMembers).forEach(([department, members]) => {
-            const filteredMembers = members.filter(member =>
-                member.memberName.toLowerCase().includes(search.toLowerCase())
-            );
-
-            if (filteredMembers.length > 0) {
-                filteredGroups[department] = filteredMembers;
-            }
-        });
-
-        return filteredGroups;
-    }; //부서별 그룹 + 검색
-
+    const [selectedMember, setSelectedMember] = useState(initMember) //선택된 사원 (추가 전)
     const [selectedAppList, setSelectedAppList] = useState([]); //결재선
     const [count, setCount] = useState(1); //결재순서
-
-    const column = ['순번', '부서', '이름', '직급', '구분'];
 
     useEffect(() => {
         dispatch(callMembersAPI());
@@ -63,12 +35,37 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
         }
     }, [])
 
+    const groupByDepartment = () => {
+        const groupedMembers = {};
+        const filteredGroups = {};
+
+        Array.isArray(memberList) && memberList.map(member => {
+            if (!groupedMembers[member.department.depName]) {
+                groupedMembers[member.department.depName] = [];
+            }
+            groupedMembers[member.department.depName].push(member);
+        });
+        Object.entries(groupedMembers).forEach(([department, members]) => {
+            const filteredMembers = members.filter(member =>
+                member.memberName.toLowerCase().includes(search.toLowerCase())
+            );
+
+            if (filteredMembers.length > 0) {
+                filteredGroups[department] = filteredMembers;
+            }
+        });
+        return filteredGroups;
+    }; //부서별로 그룹 + 검색
+
     const onClickList = (member) => {
         setSelectedMember({
             alMember: member,
             alType: '',
             sequence: ''
         });
+    }
+    const onClickTable = (item) => {
+        setSelectedMember(item);
     }
 
     const onDoubleClickList = (member) => {
@@ -90,6 +87,7 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
                     sequence: count
                 }
             ]);
+            setSelectedMember(initMember);
             setCount(count + 1);
         }
     }
@@ -115,6 +113,7 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
                     sequence: count
                 }
             ]);
+            setSelectedMember(initMember);
             setCount(count + 1);
         }
     }
@@ -132,8 +131,22 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
     }
 
     const onClickRmvButton = () => { //삭제 버튼
-        if (selectedAppList.length > 0) {
-            const removeList = selectedAppList.filter(app => app.sequence !== count - 1);
+        if(selectedAppList.length > 0){
+            let removeList = []
+            if(selectedMember.sequence === ''){
+                //일반삭제
+                removeList = selectedAppList.filter(app => app.sequence !== count - 1);
+            }else{
+                //선택삭제
+                removeList = selectedAppList.filter(app => app.alMember.memberNo !== selectedMember.alMember.memberNo);
+                removeList = removeList.map((item, index) => {
+                    return { 
+                        ...item, 
+                        sequence: index + 1 
+                    };
+                  });
+                  setSelectedMember(initMember); // selectedMember를 초기값으로 설정
+            }
             setSelectedAppList(removeList);
             setCount(count - 1);
         }
@@ -148,9 +161,6 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
         }
     }
 
-    const onClickRemoveSearch = () => {
-        setSearch('');
-    }
     return (
         <div className={AppModalCss.appModal}>
             <div className={AppModalCss.appModalBox}>
@@ -161,11 +171,11 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
                         <div className={AppModalCss.members}>
                             <div class="search-form d-flex align-items-center" style={{ marginBottom: '0px', position:'sticky', top:'0px'}}>
                                     <input type="text" name="search" placeholder="이름을 입력하세요" value={search} onChange={(e) => setSearch(e.target.value)} />
-                                    <button type="button" title="SearchBtn" onClick={onClickRemoveSearch}><i class='bi bi-x'></i></button>
+                                    <button type="button" title="SearchBtn" onClick={() => setSearch('')}><i class='bi bi-x'></i></button>
                             </div>
 
                             <ul>
-                                {Object.entries(filteredGroupByDepartment()).map(([department, members]) => (
+                                {Object.entries(groupByDepartment()).map(([department, members]) => (
                                     <li key={department}>
                                         <h5 style={{ marginTop: '5px', marginBottom: '0px' }}>{department}</h5>
                                         <ul>
@@ -205,7 +215,7 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
                                 </thead>
                                 <tbody>
                                     {!!selectedAppList && selectedAppList.map((item) => (
-                                        <tr>
+                                        <tr onClick={() => onClickTable(item)} className={selectedMember.sequence === item.sequence ? AppModalCss.modalTr : ''}>
                                             <td>{item.sequence}</td>
                                             <td>{item.alMember.department.depName}</td>
                                             <td>{item.alMember.memberName}</td>
