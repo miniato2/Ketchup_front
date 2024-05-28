@@ -5,7 +5,7 @@ import '../../style.css';
 const BootstrapTable = ({ data, columns, onRowClick }) => {
   
   return (
-    <div class="card-body">
+    <div className="card-body">
     <Table className="table">
         <thead>
             <tr style={{ textAlign: 'center' }}>

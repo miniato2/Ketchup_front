@@ -4,12 +4,12 @@ import ButtonGroup from "../contents/ButtonGroup";
 function NormalDeleteModalForm({ onClose, onDelete }) {
 
     const handleCancel = () => {
-        onClose(); // 모달 닫기 함수 호출
+        onClose(); 
     };
 
     const handleDelete = () => {
-        onDelete(); // 삭제 처리 함수 호출
-        onClose(); // 모달 닫기 함수 호출
+        onDelete(); 
+        onClose(); 
     };
 
     return (

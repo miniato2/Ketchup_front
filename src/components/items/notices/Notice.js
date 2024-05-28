@@ -11,7 +11,6 @@ import NormalDeleteModalForm from "../../form/NormalDeleteModalForm";
 import { Dialog } from "@mui/material";
 
 function Notice({ noticeNo }) {
-    console.log("Notice [ noticeNo ] : ", noticeNo);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const notice = useSelector(state => state.noticeReducer.notice);
@@ -23,13 +22,11 @@ function Notice({ noticeNo }) {
         setDeleteModal(prevState => !prevState);
     };
 
-
     useEffect(() => {
         if (noticeNo) {
             dispatch(callGetNoticeAPI(noticeNo));
         }
     }, [dispatch, noticeNo]);
-
 
     const updateHandler = () => {
         // 작성자인 경우에만 수정 페이지로 이동
@@ -158,6 +155,7 @@ function Notice({ noticeNo }) {
                             </div>
                         )}
                         <br />
+
                         {/* 이전 글 */}
                         {notice.previousNotice && (
                             <div onClick={() => navigate(`/notices/${notice.previousNotice.noticeNo}`)} style={{ cursor: 'pointer' }}>
@@ -171,6 +169,7 @@ function Notice({ noticeNo }) {
                                     {notice.previousNotice.noticeTitle}</span>
                             </div>
                         )}
+                        
                         {!notice.previousNotice && (
                             <div>
                                 <i className="bi bi-caret-down" />&nbsp;

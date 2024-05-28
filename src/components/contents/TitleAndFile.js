@@ -2,16 +2,15 @@
 import { useState } from "react";
 import '../../style.css';
 
-const TitleAndFile = ({ onTitleChange, onFileChange }) => { // props로 콜백 함수 받음
+const TitleAndFile = ({ onTitleChange, onFileChange }) => { 
 
     const [title, setTitle] = useState("");
+    const [files, setFiles] = useState([]);
 
     const handleTitleChange = (e) => { 
         setTitle(e.currentTarget.value); 
-        onTitleChange(e.currentTarget.value); // 부모 컴포넌트로 제목 값 전달
+        onTitleChange(e.currentTarget.value);
     };
-
-    const [files, setFiles] = useState([]);
 
     const handleFileChange = e => {
         const fileList = Array.from(e.target.files);
@@ -20,14 +19,14 @@ const TitleAndFile = ({ onTitleChange, onFileChange }) => { // props로 콜백 �
             return;
         }
         setFiles(fileList);
-        onFileChange(fileList); // 부모 컴포넌트로 파일 리스트 전달
+        onFileChange(fileList);
     };
 
     return (
         <>
             <div className="input-container">
                 <label htmlFor="title">제목</label>
-                <input type="text" id="title" placeholder=" 공지 제목을 입력하세요" onChange={handleTitleChange} />
+                <input type="text" id="title" placeholder="제목을 입력하세요" onChange={handleTitleChange} />
             </div>
             <div className="input-container">
                 <label htmlFor="file">첨부파일</label>

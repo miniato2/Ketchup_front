@@ -20,6 +20,8 @@ function Members() {
     const itemsPerPage = 10; // 페이지당 아이템 수
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 추가
     const [searchKeyword, setSearchKeyword] = useState(''); // 추가
+    const [loading, setLoading] = useState(true);
+
     const handleRowClick = (memberNo) => {
 
 
@@ -38,15 +40,17 @@ function Members() {
     ];
 
     const handleSearch = (searchKeyword) => {
+        setLoading(true);
         setSearchKeyword(searchKeyword);
-        dispatch(callPageMembersAPI(currentPage, searchKeyword));
+        dispatch(callPageMembersAPI(currentPage, searchKeyword)).finally(() => setLoading(false));
 
     }
 
     useEffect(
         () => {
             if (token !== null) {
-                dispatch(callPageMembersAPI(currentPage, searchKeyword));
+                setLoading(true);
+                dispatch(callPageMembersAPI(currentPage, searchKeyword)).finally(() => setLoading(false));
 
             }
 
@@ -55,7 +59,9 @@ function Members() {
     );
 
 
-
+    if (loading) {
+        return <div>로딩 중...</div>;
+      }
 
 
 

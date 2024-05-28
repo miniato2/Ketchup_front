@@ -9,16 +9,13 @@ function UpdateNotice() {
                     <h2>공지사항</h2>
                 </div>
                 <div className="col-lg-12">
-                    <div className="row"></div>
                     <div className="list">
                         <UpdateNoticeForm />
                     </div>
                 </div>
             </main>
-
         </>
     );
-
 }
 
 export default UpdateNotice;
