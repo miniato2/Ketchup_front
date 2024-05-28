@@ -14,7 +14,7 @@ function Mail() {
 
     const result = useSelector(state => state.mailReducer);
     const partMail = part === 'receive' ? 'receivemail' : 'sendmail';
-    const mails = result?.[partMail] || null;
+    const mails = result?.[partMail];
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [sendMailNos, setSendMailNos] = useState([]);
@@ -25,6 +25,7 @@ function Mail() {
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchParams, setSearchParams] = useState({ condition: '', value: '' });
+    const [listDel, setListDel] = useState(false);
 
     const receiveHandler = () => {
         navigate('/mails/receive');
@@ -40,6 +41,7 @@ function Mail() {
 
     const openDeleteModal = () => {
         setDeleteModal(true);
+        setListDel(true);
     };
 
     const onDialogCloseHandler = () => {
@@ -64,12 +66,16 @@ function Mail() {
 
     useEffect(() => {
         const fetchData = async () => {
+            setIsLoading(true);
+            console.log("🎍🎍🎍🎍🎍");
+            console.log(mails);
             try {
                 if (part === 'receive') {
                     await dispatch(callGetReceiveMailAPI(currentPage, searchParams.condition, searchParams.value));
                 } else if (part === 'send') {
                     await dispatch(callGetSendMailAPI(currentPage, searchParams.condition, searchParams.value));
                 }
+            setIsLoading(false);
             } catch (error) {
                 console.error("메일 조회에 실패했습니다.", error);
             }
@@ -142,7 +148,8 @@ function Mail() {
                     part={part}
                     delMailList={delMailList}
                     setDelMailList={setDelMailList}
-                    currentPage={currentPage} />
+                    currentPage={currentPage}
+                    listDel={listDel} />
             </Dialog>
         </>
     );

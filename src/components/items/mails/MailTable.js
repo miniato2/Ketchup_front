@@ -3,7 +3,6 @@ import '../../../style.css';
 import '../../../pages/mails/mail.css';
 
 const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedItems, isLoading, searchParams }) => {
-
   const toggleCheckbox = (mailNo) => {
     setCheckedItems(prevState => ({
       ...prevState,
@@ -21,7 +20,7 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
 
     setCheckedItems(newCheckedItems);
   };
-
+  
   return (
     <div class="card-body">
       <Table>
@@ -66,19 +65,7 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
               <td></td>
             </tr>
           ) :
-            (data.length === 0 ? (
-              searchParams.value ? (
-                <tr className="mail-tr">
-                  <td colSpan="7">'{searchParams.value}'에 해당하는 메일이 존재하지 않습니다.</td>
-                </tr>
-              ) : (
-              <tr className="mail-tr">
-                <td colSpan="7">
-                  {part === 'receive' ? "받은 메일이 없습니다." : "보낸 메일이 없습니다."}
-                </td>
-              </tr>
-              )
-            ) : (
+            (data.length != 0 ? (
               Array.isArray(data) && data.map((item, index) => (
                 <tr key={item.mailNo} className={`${part === 'receive' ? (item.readTime !== '읽음' ? 'unreadRow' : '') : ''} mail-tr`}>
                   <td>
@@ -123,7 +110,23 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
                     </td>
                   ))}
                 </tr>
-              ))))
+            ))) : (
+              searchParams.value ? (
+                <tr className="mail-tr">
+                  <td colSpan="7">
+                    <p>'{searchParams.value}'에 해당하는 메일이 존재하지 않습니다.</p>
+                    <img src="/img/searchConditionRequired.png" alt="검색 결과 없음" />
+                  </td>
+                </tr>
+              ) : (
+              <tr className="mail-tr">
+                <td colSpan="7">
+                  {part === 'receive' ? "받은 메일이 없습니다." : "보낸 메일이 없습니다."}
+                </td>
+              </tr>
+              )
+            )
+            )
           }
         </tbody>
       </Table>

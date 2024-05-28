@@ -119,7 +119,6 @@ function MailForm() {
     return (
         <>
             <div className="input-container">
-           
                 <label htmlFor="title">제목</label>
                 <input
                     type="text"
@@ -130,11 +129,11 @@ function MailForm() {
                     onChange={onChangeHandler}
                     placeholder="제목을 입력하세요" />
             </div>
-            <div className="input-container d-flex">
+            <div className="receiver-box">
                 <label>받는 사람</label>
-                <div>
+                <div> 
                     <select
-                        className="form-select w-100 pl-2 py-1"
+                        className="form-select"
                         id="recipient"
                         onChange={addReceiver}
                         value={mailForm.receivers}>
@@ -151,7 +150,7 @@ function MailForm() {
                     </select>
                     <div className="mt-3">
                         {receiverInfo.map((receiver, index) => (
-                            <div key={index} className="d-inline selected-recipient pl-3">
+                            <div key={index} className="d-inline-block selected-recipient pl-3">
                                 <span>{receiver.receiverMem}</span>
                                 <i className="bi bi-x mx-2" onClick={() => removeReceiver(index)}></i>
                             </div>
@@ -165,30 +164,30 @@ function MailForm() {
                     <input type="file" id="mailFile" multiple onChange={handleFileChange} />
                 </div>
             </div>
-            <div style={{height: '400px'}}>
-            <div>
-                <ReactQuill
-                    style={{ height: "400px", margin: "4px", overflowY: 'auto' }}
-                    ref={quillRef}
-                    theme="snow"
-                    value={mailForm.mailContent}
-                    onChange={(content) => setMailForm({ ...mailForm, mailContent: content })}
-                    modules={{
-                        toolbar: [
-                            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                            // [{ 'font': [] }],
-                            [{ 'align': [] }],
-                            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                            [{ 'color': [] }, { 'background': [] }],
-                            ['link'],
-                            ['image', 'video'],
-                            ['clean']
-                        ]
-                    }}
-                    placeholder="내용을 입력하세요."
-                />
-            </div>
+            <div style={{ height: '400px' }}>
+                <div>
+                    <ReactQuill
+                        style={{ height: "400px", margin: "4px", overflowY: 'auto' }}
+                        ref={quillRef}
+                        theme="snow"
+                        value={mailForm.mailContent}
+                        onChange={(content) => setMailForm({ ...mailForm, mailContent: content })}
+                        modules={{
+                            toolbar: [
+                                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                                // [{ 'font': [] }],
+                                [{ 'align': [] }],
+                                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                [{ 'color': [] }, { 'background': [] }],
+                                ['link'],
+                                ['image', 'video'],
+                                ['clean']
+                            ]
+                        }}
+                        placeholder="내용을 입력하세요."
+                    />
+                </div>
             </div>
             <div className="d-flex justify-content-end mt-4">
                 <button className="back-btn" onClick={goBackList}>취소</button>
@@ -196,7 +195,7 @@ function MailForm() {
             </div>
 
         </>
-               
+
     );
 }
 
