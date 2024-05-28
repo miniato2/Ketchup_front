@@ -4,6 +4,7 @@
     margin-left: 0;
     border-top: 1px solid lightgray;
     padding-left: 0; /* 수정된 부분 */
+    margin-bottom: 10px;
 }
 
 .comment-inner {

@@ -89,7 +89,7 @@ function Comment({ boardNo }) {
         return (
             <div key={comment.commentNo} className="comment-container"> {/* Comment.css에서 정의한 클래스 */}
                 <div className="comment-inner">
-                    <div className='float-left' style={{ marginLeft: formattedComment.parentMemberName ? '10px' : 'none' }}>
+                    <div className='float-left' style={{ marginLeft: formattedComment.parentMemberName ? '10px' : 'none',  borderTop: 'none' }}>
                         <span>{formattedComment.memberName} {formattedComment.positionName}</span>&nbsp;&nbsp;
                         <span>{formattedComment.commentCreateDt}</span>
                     </div>
@@ -107,7 +107,7 @@ function Comment({ boardNo }) {
                     ) : (
                         <div style={{ marginTop: "5px", marginBottom: '5px' }}>
                             {formattedComment.parentMemberName ? (
-                                <span style={{ marginLeft: '10px' }} className="parent-member">@{formattedComment.parentMemberName} </span>
+                                <span style={{ marginLeft: '10px'}} className="parent-member">@{formattedComment.parentMemberName} </span>
                             ) : null}
                             <span>{formattedComment.commentContent}</span>
                         </div>

@@ -266,9 +266,9 @@ function InsertCommentForm({ boardNo, onCommentSubmit, replyTo, replyName }) {
     };
 
     return (
-        <div style={{ borderTop: '1px solid lightgray', marginBottom: "20px", position: "relative" }}>
+        <div style={{ borderTop: '1px solid lightgray', marginBottom: "10px", position: "relative" }}>
             <form onSubmit={handleSubmit}>
-                <div style={{ marginTop: '20px', marginLeft: "10px", width: "100%", position: "relative" }}>
+                <div style={{ marginTop: '10px', marginLeft: "10px", width: "100%", position: "relative" }}>
 
                     <input
                         ref={inputRef}
