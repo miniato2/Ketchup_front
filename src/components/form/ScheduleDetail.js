@@ -1,4 +1,4 @@
-import { Box, Grid, Typography, Button, Dialog, TextField, DialogContent, DialogTitle } from "@mui/material";
+import { Box, Grid, Typography, Dialog, TextField, DialogContent, DialogTitle, FormControl, Select, MenuItem, Radio, RadioGroup, FormControlLabel } from "@mui/material";
 import moment from "moment";
 import CircularProgress from '@mui/material/CircularProgress';
 import { useEffect, useState } from "react";
@@ -6,8 +6,10 @@ import CampaignIconOutlined from '@mui/icons-material/CampaignOutlined';
 import CalendarMonthOutlined from '@mui/icons-material/CalendarMonthOutlined';
 import LocationOnOutlined from '@mui/icons-material/LocationOnOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 
-export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, closeDetailDialog, handleUpdate, handleDelete }) {
+export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, closeDetailDialog, handleUpdate, handleDelete, memberList, dptNo }) {
+    const filteredMemberList = memberList.filter(member => member.department.depNo === dptNo);
     const [dateError, setDateError] = useState("");
     const [skdNameError, setSkdNameError] = useState("");
     const [touched, setTouched] = useState({
@@ -19,11 +21,27 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
     const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
     const [updatedScheduleData, setUpdatedScheduleData] = useState({
         skdName: scheduleDetail?.title,
-        skdStartDttm: moment(scheduleDetail?.start).format("YYYY-MM-DD HH:mm"),
+        skdStartDttm: moment(scheduleDetail?.start).format("YYYY-MM-DD HH:mm"), // T 삭제할 수 있도록 slice 넣어야할 듯 // 등록 수정에 모두 적용 필요함
         skdEndDttm: moment(scheduleDetail?.end).format("YYYY-MM-DD HH:mm"),
         skdLocation: scheduleDetail?.extendedProps.skdLocation,
-        skdMemo: scheduleDetail?.extendedProps.skdMemo
+        skdMemo: scheduleDetail?.extendedProps.skdMemo,
+        authorId: scheduleDetail?.extendedProps.authorId,
+        authorName: scheduleDetail?.extendedProps.authorName,
+        participants: scheduleDetail?.extendedProps.participants || []
     });
+
+    const handleUpdatedParticipantsChange = (event) => {
+        const selectedValues = event.target.value;
+        const selectedParticipants = selectedValues.map(value => {
+            const member = memberList.find(member => member?.memberNo === value);
+            return { participantMemberNo: member?.memberNo, participantName: member?.memberName };
+        });
+
+        setUpdatedScheduleData({
+            ...updatedScheduleData,
+            participants: selectedParticipants
+        });
+    };
 
     useEffect(() => {
         if (scheduleDetail) {
@@ -32,7 +50,11 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
                 skdStartDttm: moment(scheduleDetail.start).format("YYYY-MM-DD HH:mm"),
                 skdEndDttm: moment(scheduleDetail.end).format("YYYY-MM-DD HH:mm"),
                 skdLocation: scheduleDetail.extendedProps.skdLocation,
-                skdMemo: scheduleDetail.extendedProps.skdMemo
+                skdMemo: scheduleDetail.extendedProps.skdMemo,
+                authorId: scheduleDetail?.extendedProps.authorId,
+                authorName: scheduleDetail?.extendedProps.authorName,
+                participants: scheduleDetail?.extendedProps.participants,
+                skdStatus: scheduleDetail?.extendedProps.skdStatus
             });
         }
 
@@ -137,7 +159,7 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
                                             <CampaignIconOutlined fontSize='medium' />
                                             <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>일정 제목: </Typography>
                                         </Box>
-                                        <TextField sx={{ ml: 2.5, width: "50vw" }} variant="outlined" name="skdName" onChange={handleInputChange} value={updatedScheduleData.skdName} onBlur={() => setTouched({ ...touched, skdName: true })} error={!!skdNameError} helperText={skdNameError} FormHelperTextProps={{sx: {fontSize: '1rem', mt: 1}}}/>
+                                        <TextField sx={{ ml: 2.5, width: "50vw" }} variant="outlined" name="skdName" onChange={handleInputChange} value={updatedScheduleData.skdName} onBlur={() => setTouched({ ...touched, skdName: true })} error={!!skdNameError} helperText={skdNameError} FormHelperTextProps={{ sx: { fontSize: '1rem', mt: 1 } }} />
                                     </Box>
                                 </Grid>
                                 <Grid item xs={12}>
@@ -168,6 +190,62 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
                                             <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>메모:</Typography>
                                         </Box>
                                         <TextField sx={{ ml: 6.3, width: '50vw' }} multiline variant="outlined" name="skdMemo" onChange={handleInputChange} value={updatedScheduleData.skdMemo} />
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Box display="flex" alignItems={'center'} justifyContent="flex-start">
+                                        <Box display="flex" alignItems="center">
+                                            <PersonOutlinedIcon fontSize="medium" />
+                                            <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>일정 등록자:</Typography>
+                                        </Box>
+                                        <Typography variant="body1" sx={{ ml: 6.3, width: '50vw' }}>{updatedScheduleData.authorName}</Typography>
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormControl>
+                                        <Box display="flex" alignItems={'center'} justifyContent="flex-start">
+                                            <Box display="flex" alignItems="center">
+                                                <PersonOutlinedIcon fontSize="medium" />
+                                                <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>참여 인원:</Typography>
+                                            </Box>
+                                            <Select
+                                                multiple
+                                                value={updatedScheduleData.participants?.map(participant => participant.participantMemberNo) || []}
+                                                onChange={handleUpdatedParticipantsChange}
+                                                renderValue={(selected) => {
+                                                    const selectedNames = selected.map(memberNo => {
+                                                        const member = filteredMemberList?.find(member => member.memberNo === memberNo);
+                                                        return member ? member.memberName : '';
+                                                    }).filter(name => name !== '');
+
+                                                    return selectedNames.join(', ');
+                                                }}
+                                                sx={{ width: '50vw', ml: 2.5 }}
+                                            >
+                                                {filteredMemberList.map((member) => (
+                                                    <MenuItem key={member.memberNo} value={member.memberNo}>
+                                                        {member.memberName}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </Box>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Box display="flex" alignItems={'center'} justifyContent="flex-start">
+                                        <Box display="flex" alignItems="center">
+                                            <ArticleOutlinedIcon fontSize="medium" />
+                                            <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>일정 상태:</Typography>
+                                        </Box>
+                                        <FormControl component="fieldset" sx={{ ml: 1.7 }}>
+                                            <RadioGroup row aria-label="status" name="skdStatus" value={updatedScheduleData.skdStatus} onChange={handleInputChange}>
+                                                <FormControlLabel value="예정" control={<Radio />} label="예정" />
+                                                <FormControlLabel value="진행 중" control={<Radio />} label="진행 중" />
+                                                <FormControlLabel value="완료" control={<Radio />} label="완료" />
+                                                <FormControlLabel value="보류" control={<Radio />} label="보류" />
+                                                <FormControlLabel value="막힘" control={<Radio />} label="막힘" />
+                                            </RadioGroup>
+                                        </FormControl>
                                     </Box>
                                 </Grid>
                                 <Grid item xs={12}>
@@ -227,6 +305,15 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
                                             <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>메모:</Typography>
                                             <Typography sx={{ ml: 6 }} variant="body1">{scheduleDetail.extendedProps.skdMemo}</Typography>
                                         </Box>
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Box display="flex" alignItems={'center'} justifyContent="flex-start">
+                                        <Box display="flex" alignItems="center">
+                                            <PersonOutlinedIcon fontSize="medium" />
+                                            <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>일정 등록자:</Typography>
+                                        </Box>
+                                        <Typography variant="body1" sx={{ ml: 6.3, width: '50vw' }}>{scheduleDetail.extendedProps.authorName}</Typography>
                                     </Box>
                                 </Grid>
                                 <Grid item xs={12}>
