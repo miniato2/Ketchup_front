@@ -16,12 +16,7 @@
     width: 50px;
     height: 50px;
 }
-.selected-recipient {
-    background-color: #efefef;
-    border-radius: 5px;
-    margin-right: 10px;
-    padding: 5px;
-}
+
 .unreadRow {
     font-weight: bold;
 }
@@ -130,4 +125,26 @@
 
 .search-value {
     width:70%;
+}
+
+/* MailForm.js */
+.receivers {
+    width:100px;
+}
+.receiver-box {
+    display: flex;
+}
+.receiver-box label {
+    width:100px;
+}
+.receiver-box>div {
+    width:calc(100% - 100px);
+    margin-bottom:15px;
+}
+.selected-recipient {
+    background-color: #efefef;
+    border-radius: 5px;
+    margin-right: 10px;
+    padding: 5px;
+    margin-bottom:10px;
 }

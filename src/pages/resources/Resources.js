@@ -12,7 +12,7 @@ import PaginationButtons from "../../components/contents/PaginationButtons";
 function Resources() {
     const { part } = useParams();
     const result = useSelector(state => state.resourceReducer);
-    const resourceList = result.resourcelist || [];
+    const resourceList = result?.resourcelist;
     const dispatch = useDispatch();
     const [registModal, setRegistModal] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
