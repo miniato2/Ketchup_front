@@ -44,7 +44,9 @@ function ReceiveMail({ receiveMail, checkedItems, setCheckedItems, searchParams,
                 setCheckedItems={setCheckedItems}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
-                searchParams={searchParams} />
+                searchParams={searchParams}
+                currentPage={currentPage}
+                pageTotal={receiveMail?.pageTotal} />
             <PaginationButtons
                 totalItems={receiveMail?.pageTotal} 
                 itemsPerPage={10} 

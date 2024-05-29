@@ -31,10 +31,8 @@ export const callAppAPI = ({ approvalNo }) => {
 
 export const callInsertAppAPI = ({ form }) => {
     let requestURL = `/approvals`;
-    console.log(`api 도착`, form);
     return async (dispatch, getState) => {
         const result = await request('POST', requestURL, form);
-        console.log('api result', result);
         if (result.status === 200 && result.data === '성공') {
             dispatch(postApproval(result));
         } else {
@@ -57,12 +55,9 @@ export const callGetApprovalCountAPI = async (memberNo) => {
 } // 문서 개수 조회
 
 export const callUpdateApprovalAPI = (appUpdate, approvalNo) => {
-    console.log('api 도착 appUpdate', appUpdate);
-    console.log('approvalNo', approvalNo)
     let requestURL = `/approvals/${approvalNo}`;
     return async (dispatch, getState) => {
         const result = await request('PUT', requestURL, appUpdate);
-        console.log('api 결과 ', result);
         if (result.status === 200 && result.data === '성공') {
             dispatch(putApproval(result));
         } else {

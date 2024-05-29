@@ -8,7 +8,7 @@ function Editor({content, setContent}) {
   return (
     <div>
       <ReactQuill
-        style={{ height: "350px", margin: "4px", overflowY: 'auto' }}
+        style={{ height: "350px", margin: "4px" }}
         ref={quillRef}
         theme="snow"
         value={content}

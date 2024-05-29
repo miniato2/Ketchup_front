@@ -7,7 +7,6 @@ import MailContent from "../../components/items/mails/MailContent";
 function MailDetail() {
     const { mailNo } = useParams();
     const result = useSelector(state => state.mailReducer);
-    console.log(result);
     const mailDetail = result?.maildetail || [];
     const dispatch = useDispatch();
     const location = useLocation();
@@ -56,7 +55,7 @@ function MailDetail() {
                 <button className="back-btn" onClick={backMailList}>목록</button>
             </div>
             <hr />
-            <MailContent content={mailDetail} part={part} mailNo={mailNo} />
+            <MailContent content={mailDetail} part={part} mailNo={mailNo}  />
         </main>
     );
 }

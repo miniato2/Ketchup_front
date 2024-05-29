@@ -1,5 +1,5 @@
 import { request } from "./Api";
-import { deleteComment, getCommentlist, getReply, insertComment, insertreply } from "../modules/CommentModule";
+import { deleteComment, getCommentlist, getReply, insertComment, insertreply, updateComment } from "../modules/CommentModule";
 
 export function callGetCommentListAPI({ boardNo }) {
     
@@ -26,7 +26,7 @@ export function callGetCommentListAPI({ boardNo }) {
             
             dispatch(getCommentlist(commentsWithMemberNames));
         } catch (error) {
-            console.error('Error fetching board list:', error);
+            console.error('Error comment list:', error);
         }
     };
 };
@@ -44,7 +44,7 @@ export const callInsertCommentAPI = ({ boardNo, commentDTO }) => {
                 throw new Error('에러');
             }
         } catch (error) {
-            console.error('Error inserting notice:', error);
+            console.error('Error inserting comment:', error);
         }
     };
 };
@@ -61,10 +61,28 @@ export const callInsertReplyAPI = ({ boardNo, parentCommentNo, commentDTO }) => 
                 throw new Error('에러');
             }
         } catch (error) {
-            console.error('Error inserting notice:', error);
+            console.error('Error inserting comment:', error);
         }
     };
 };
+
+export const callUpdateCommentAPI = ({ boardNo, commentNo, commentDTO}) => {
+
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('PUT', `/boards/${boardNo}/comments/${commentNo}`, commentDTO);
+
+            if(result.status === 200) {
+                dispatch(updateComment(result));
+            } else {
+                throw new Error('에러');
+            }
+        } catch (error) {
+            console.error('Error update comment:', error);
+        }
+    }
+
+}
 
 
 export function callDeleteCommentAPI({ boardNo, commentNo }) {
@@ -74,7 +92,7 @@ export function callDeleteCommentAPI({ boardNo, commentNo }) {
             const result = await request('DELETE', `/boards/${boardNo}/comments/${commentNo}`);
             dispatch(deleteComment(result.data));
         } catch (error) {
-            console.error('Error deleteNotice :', error);
+            console.error('Error delete comment:', error);
         }
     }
 }
