@@ -13,7 +13,7 @@ function Error() {
                 <img style={{ width: '200px', height: '80px' }} src="/img/logo.png" alt="Logo" />
                 <br />
                 <Typography fontSize={30} textAlign={'center'}>원하시는 페이지를 찾을 수 없습니다.</Typography>
-                <Typography fontSize={20} textAlign={'center'}>찾으려는 페이지의 줏가 잘못 입력되었거나,</Typography>
+                <Typography fontSize={20} textAlign={'center'}>찾으려는 페이지의 주소가 잘못 입력되었거나,</Typography>
                 <Typography fontSize={20} textAlign={'center'}>주소의 변경 혹은 삭제로 인해 사용하실 수 없습니다.</Typography>
                 <Typography fontSize={20} textAlign={'center'}>입력하신 페이지의 주소가 정확한지 다시 한번 확인해 주세요.</Typography>
                 <div style={{ marginTop: '30px'}}>

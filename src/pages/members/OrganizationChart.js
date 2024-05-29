@@ -25,21 +25,25 @@ function OrganizationChart() {
             const CEO = members?.find(member =>  member.position.positionName === '대표');
             const data = {
                 name:  `${CEO.memberName}${CEO.position.positionName}`,
-                image: `img/${CEO.imgUrl}`, 
+                // image: `img/${CEO.imgUrl}`, 
                 children: departments.map((department) => ({
                     name: department.depName,
                     children: members
                         .filter((member) => member.department.depNo === department.depNo)
-                        .filter((member) => member.position.positionName === '팀장')
+                        .filter((member) => member.department.leader === member.memberName)
                         .map((teamLeader) => ({
-                            name: `${teamLeader.memberName}${teamLeader.position.positionName}`,
-                            image: `img/${teamLeader.imgUrl}`, // 추가: 팀장의 사진 URL
+                            name: `팀장 ${teamLeader.memberName}${teamLeader.position.positionName}`,
+                            // image: `img/${teamLeader.imgUrl}`, 
                             children: members
-                                .filter((member) => member.department.depNo === department.depNo && member.position.positionName === '직원')
+                                .filter((member) => member.department.depNo === department.depNo && member.position.positionName !='대표')
+                                .sort((a, b) => {
+                                    return b.position.positionLevel - a.position.positionLevel;
+                                })
                                 .map((member) => ({
                                     name: `${member.memberName}${member.position.positionName}`,
-                                    image: `img/${member.imgUrl}`,
+                                    // image: `img/${member.imgUrl}`,
                                 }))
+                               
                         }))
                 }))
             };
@@ -56,17 +60,17 @@ function OrganizationChart() {
 
     const renderCustomNodeElement = ({ nodeDatum }) => (
         <g>
-            <rect width="150" height="150" x="-75" y="-75" fill="white" stroke="black" strokeWidth="0.5" />
-            <text fill="black" x="0" y="-35" textAnchor="middle" alignmentBaseline="middle" >
+            <rect width="150" height="60" x="-75" y="-45" fill="white" stroke="black" strokeWidth="0.5" />
+            <text fill="black" x="0" y="-15" textAnchor="middle" alignmentBaseline="middle" >
                 {nodeDatum.name}
             </text>
-            <image
+            {/* <image
                 x="-35"
                 y="-0"
                 href={nodeDatum.image} // 사진 표시
                 width="70"
                 height="70"
-            />
+            /> */}
         </g>
     );
 
@@ -83,7 +87,7 @@ function OrganizationChart() {
                             pathFunc="elbow"
                             renderCustomNodeElement={renderCustomNodeElement}
                             nodeSize={{ x: 200, y: 150 }}
-                            separation= {{ siblings: 1.2, nonSiblings: 1} }
+                            separation= {{ siblings: 1, nonSiblings: 1} }
                         />
                     )}
                 </div>

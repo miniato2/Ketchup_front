@@ -358,12 +358,12 @@ export function callDeleteDepartmentAPI(depNo) {
 
 
 
-export function callUpdateDepartmentAPI(depNo, newName) {
+export function callUpdateDepartmentAPI(depNo, form) {
     console.log("=============부서 수정 진행=============");
 
 
     return async (dispatch, getState) => {
-        const result = await request('PUT', `/deps/${depNo}`, newName);
+        const result = await request('PUT', `/deps/${depNo}`, form);
         console.log('수정결과 ', result);
 
         dispatch({ type: PUT_DEPARTMENTS, payload: result });
@@ -374,8 +374,12 @@ export function callUpdateDepartmentAPI(depNo, newName) {
 
 export function callUpdateDepartmentStatusAPI(depNo) {
 
+    const fakeDTO = {
+        depNo: depNo,
+        depName: "status"
+    };
     return async (dispatch, getState) => {
-        const result = await request('PUT', `/deps/${depNo}`, "status");
+        const result = await request('PUT', `/deps/${depNo}`, fakeDTO);
         console.log('수정결과 ', result);
 
         dispatch({ type: PUT_DEPARTMENTS, payload: result });

@@ -107,7 +107,7 @@ function InsertMember() {
             gender: '',
             address: '',
             privateEmail: '',
-            companyEmail: '',
+            companyEmail: `${generatedMemberNo}@ketchup.com`,
             department: '',
             position: '',
             account: '',
@@ -362,6 +362,7 @@ function InsertMember() {
                             type="date"
                             placeholder="생년월일"
                             name="birthDate"
+                            max="2005-01-01"
                             onChange={onChangeHandler}
                             style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
                         />
@@ -424,7 +425,8 @@ function InsertMember() {
                             type="text"
                             placeholder="사내메일"
                             name="companyEmail"
-                            onChange={onChangeHandler}
+                           
+                            value= {form.companyEmail}
                             style={{ borderWidth: '0px 0px 1px 0px', marginBottom: '20px', padding: '5px', width: '400px', textAlign: 'center' }}
                         />
                     </label>
