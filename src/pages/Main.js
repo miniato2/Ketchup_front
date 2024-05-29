@@ -175,7 +175,7 @@ function Main() {
                     <div className="col-lg-12">
                         <div className="row">
                             {approvalData.map(({ title, count, categoryNo }) => (
-                                <Link to={`/approvals`} state={categoryNo} className="col-xxl-3 col-md-6" style={{ textDecorationLine: 'none' }} onClick={() => onClickApp(categoryNo)}>
+                                <Link to={`/approvals`} className="col-xxl-3 col-md-6" style={{ textDecorationLine: 'none' }} onClick={() => onClickApp(categoryNo)}>
                                     <ApprovalBox title={title} count={count} />
                                 </Link>
                             ))}
