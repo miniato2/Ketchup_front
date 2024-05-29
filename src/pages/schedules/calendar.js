@@ -296,7 +296,6 @@ const Calendar = () => {
     const filteredScheduleList = schedules.results?.schedule?.filter(schedule => 
         subscribedMembers.includes(schedule.authorId)
     ) || [];
-    console.log("filteredScheduleList", filteredScheduleList);
 
     const transformedEvents = transformScheduleList(filteredScheduleList);
 

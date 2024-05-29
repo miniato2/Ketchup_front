@@ -13,11 +13,15 @@ const SubscriptionList = ({ subscribedMembers, setSubscribedMembers }) => {
     const dispatch = useDispatch();
     const token = decodeJwt(window.localStorage.getItem("accessToken"));
     const dptNo = token?.depNo;
+    console.log("dptNo??", dptNo);
     const schedules = useSelector(state => state.scheduleReducer);
     const scheduleList = schedules?.results?.schedule || [];
+    console.log("scheduleList가 왜 비어있음?", scheduleList);
     const members = useSelector(state => state.memberReducer);
     const memberList = members?.data?.content || [];
+    console.log("memberList", memberList);
     const filteredMemberList = memberList.filter(member => member.department.depNo === dptNo);
+    console.log("filteredMemberList SubscriptionList에서", filteredMemberList);
     const itemsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
     const [searchKeyword, setSearchKeyword] = useState('');
@@ -108,13 +112,13 @@ const SubscriptionList = ({ subscribedMembers, setSubscribedMembers }) => {
                                     <td>{member.memberName}</td>
                                 </tr>
                             ))}
-                            {filteredMemberList.length === 0 && (
+                            {/* {filteredMemberList.length === 0 && (
                                 <tr>
                                     <td colSpan={6}>
                                         <h6>검색 결과가 없습니다.</h6>
                                     </td>
                                 </tr>
-                            )}
+                            )} */}
                         </tbody>
                     </Table>
                     <PaginationButtons
