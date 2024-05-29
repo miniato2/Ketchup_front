@@ -19,7 +19,7 @@ function Member({ selectMemberNo }) {
     const [form, setForm] = useState([]);
     const navigate = useNavigate();
 
-    console.log('선택한 사번:   ',selectMemberNo,'토큰에 들어있는 사번:  ',token.memberNo);
+
 
 
 
@@ -36,7 +36,7 @@ function Member({ selectMemberNo }) {
 
 
     useEffect(() => {
-        if(selectMemberNo===token.memberNo)navigate("/mypage");
+        if (selectMemberNo === token.memberNo) navigate("/mypage");
         dispatch(callGetMemberAPI({ memberNo: selectMemberNo }));
         dispatch(callDepartmentsAPI());
         dispatch(callPositionsAPI());
@@ -287,14 +287,15 @@ function Member({ selectMemberNo }) {
                         : <button onClick={handleEditModeToggle} style={{ marginLeft: '1000px', borderRadius: 5, width: 80, borderWidth: 0, height: 40 }}>수정</button>}
 
                 </div>
-                
+
             }
-            {token.depName !== "인사팀" &&              
-           <div style={{marginLeft: 450,marginTop:30}}>
-                <h2>페이지 접근 권한이 없습니다.</h2>
-
-
-           </div>
+            {token?.depNo !== 2 &&
+                <div>
+                    <h2 style={{ marginLeft: 600, marginTop: 60 }}>접근권한이 없습니다.</h2>
+                    <img src="../images/noAuth.gif"
+                        style={{ marginLeft: 450 }}
+                        ></img>
+                </div>
             }
 
         </div>
