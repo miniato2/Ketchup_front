@@ -45,6 +45,8 @@ function Resources() {
                 {resourceList === 0 ? (
                     <div>
                         <h5 className="text-center my-5">자원 관리 권한이 없습니다.</h5>
+                        <img src="images/noAuth.gif"
+                        style={{marginLeft: 450}} />
                     </div>
                 ) : (
                     <>
