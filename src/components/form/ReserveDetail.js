@@ -7,11 +7,9 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 
-const token = decodeJwt(window.localStorage.getItem("accessToken"));
-const reserverId = token?.memberNo;
-const reserverName = token?.memberName;
-
-export default function ReserveDetail({ selectedReserve, closeDetailDialog, setOpenDeleteConfirm, existingReserves }) {
+export default function ReserveDetail({ selectedReserve, closeDetailDialog, setOpenDeleteConfirm, existingReserves, newReserveAdded, setNewReserveAdded }) {
+    const token = decodeJwt(window.localStorage.getItem("accessToken"));
+    const reserverId = token?.memberNo;
     const [updateChecked, setUpdateChecked] = useState(false);
     const [updatedReserveData, setUpdatedReserveData] = useState({
         rsvNo: selectedReserve.rsvNo,
@@ -55,6 +53,7 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog, setO
         try {
             updateReserveAPI(reserveNo, updatedReserveData);
             alert("예약이 성공적으로 수정되었습니다.");
+            setNewReserveAdded(!newReserveAdded);
         } catch (error) {
             console.error("예약 수정 실패: ", error);
             alert("예약 수정에 실패했습니다. 관리자에게 문의바랍니다.");

@@ -95,6 +95,7 @@ const SubscriptionList = ({ subscribedMembers, setSubscribedMembers, selectedSta
     );
 
     const scheduleStatuses = ["예정", "진행 중", "완료", "보류", "막힘"];
+    const scheduleStatusColors = ["#F5BF3C", "#3CB479", "#1B9CE3", 'grey', "#F2522D"];
 
     const filterTablebyStatus = () => (
         <Table>
@@ -102,10 +103,11 @@ const SubscriptionList = ({ subscribedMembers, setSubscribedMembers, selectedSta
                 <tr>
                     <th>선택</th>
                     <th>일정 상태</th>
+                    <th>구분색</th>
                 </tr>
             </thead>
             <tbody>
-                {scheduleStatuses.map(status => (
+                {scheduleStatuses.map((status, index) => (
                     <tr key={status}>
                         <td>
                             <Checkbox
@@ -115,6 +117,18 @@ const SubscriptionList = ({ subscribedMembers, setSubscribedMembers, selectedSta
                             />
                         </td>
                         <td>{status}</td>
+                        <td style={{ textAlign: 'center' }}>
+                        <Box
+                            component="span"
+                            sx={{
+                                display: 'inline-block',
+                                width: 20,
+                                height: 20,
+                                borderRadius: '50%',
+                                backgroundColor: scheduleStatusColors[index],
+                            }}
+                        />
+                    </td>
                     </tr>
                 ))}
             </tbody>

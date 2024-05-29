@@ -6,6 +6,10 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from '@fullcalendar/list';
 import { Box, Dialog, DialogTitle, Grid, Typography } from "@mui/material";
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Tooltip from '@mui/material/Tooltip';
+import EditCalendarIcon from '@mui/icons-material/EditCalendar';
+import EventNoteIcon from '@mui/icons-material/EventNote';
 import ScheduleForm from "../../components/form/ScheduleForm";
 import { getScheduleAPI, insertScheduleAPI, deleteScheduleAPI, updateScheduleAPI } from "../../apis/ScheduleAPICalls";
 import moment from "moment";
@@ -36,7 +40,11 @@ const Calendar = () => {
     const [touched, setTouched] = useState({
         skdName: false,
         skdStartDttm: false,
-        skdEndDttm: false
+        skdEndDttm: false,
+        skdLocation: false,
+        skdMemo: false,
+        participants: false,
+        skdStatus: false
     });
     const [subscribedMembers, setSubscribedMembers] = useState([]);
     const [selectedStatus, setSelectedStatus] = useState(scheduleStatuses);
@@ -74,6 +82,7 @@ const Calendar = () => {
         participants: [],
         skdStatus: "예정"
     });
+
     const [updatedScheduleData, setUpdatedScheduleData] = useState({
         participants: []
     });
@@ -88,28 +97,26 @@ const Calendar = () => {
         const start = moment(newScheduleData.skdStartDttm);
         const end = moment(newScheduleData.skdEndDttm);
 
-        // if (newScheduleData.skdName.length < 5) {
-        //     setSkdNameError("일정 제목은 공란일 수 없고 공백 포함 최소 5글자 이상이어야 합니다.");
-        //     return;
-        // }
+        let valid = true;
 
-        // if (newScheduleData.skdName.length > 200) {
-        //     setSkdNameError("일정 제목은 공백 포함 최대 200자까지 입력할 수 있습니다.");
-        //     return;
-        // }
+        if (!newScheduleData.skdName || newScheduleData.skdName.length < 5) {
+            setSkdNameError("일정 이름은 공란일 수 없고 공백 포함 최소 5글자 이상이어야 합니다.");
+            valid = false;
+        } else {
+            setSkdNameError("");
+        }
 
         if (!newScheduleData.skdStartDttm || !newScheduleData.skdEndDttm) {
             setDateError("일정 시작 일시와 종료 일시를 모두 입력해주세요.");
-            return;
-        }
-
-        if (start.isSameOrAfter(end)) {
+            valid = false;
+        } else if (start.isSameOrAfter(end)) {
             setDateError("일정 시작일시는 종료일시보다 이전이어야 합니다.");
-            return;
+            valid = false;
+        } else {
+            setDateError("");
         }
 
-        setSkdNameError("");
-        setDateError("");
+        return valid;
     };
 
     useEffect(() => {
@@ -133,7 +140,30 @@ const Calendar = () => {
         });
         setInsertScheduleDialogOpen(true);
     };
-    const onInsertCancelHandler = () => { setInsertScheduleDialogOpen(false); };
+    const onInsertCancelHandler = () => { setInsertScheduleDialogOpen(false); resetForm(); };
+    const resetForm = () => {
+        setNewScheduleData({
+            dptNo: dptNo,
+            skdName: "",
+            skdStartDttm: "",
+            skdEndDttm: "",
+            skdLocation: "",
+            skdMemo: "",
+            authorId: authorId,
+            authorName: authorName,
+            participants: [],
+            skdStatus: "예정"
+        });
+        setTouched({
+            skdName: false,
+            skdStartDttm: false,
+            skdEndDttm: false,
+            skdLocation: false,
+            skdMemo: false
+        });
+        setSkdNameError("");
+        setDateError("");
+    };
     const openDetailDialog = () => { setDetailDialogOpen(true); };
     const closeDetailDialog = () => { setDetailDialogOpen(false); };
 
@@ -158,12 +188,13 @@ const Calendar = () => {
         if (event) {
             try {
                 deleteScheduleAPI(event.id);
-                dispatch(getScheduleAPI(dptNo));
-                closeDetailDialog();
+                setNewScheduleAdded(!newScheduleAdded);
             } catch (error) {
                 console.error("일정 삭제 중 에러 발생 handleDelete: ", error);
                 alert("일정 삭제에 실패했습니다.");
             }
+            closeDetailDialog();
+            setSelectedEvent(null);
         }
     };
 
@@ -185,8 +216,6 @@ const Calendar = () => {
             const detail = fetchEvents().find(event => event.id == skdNo);
             if (detail) {
                 setScheduleDetail(detail);
-            } else {
-                console.log("일치하는 일정 정보를 찾을 수 없습니다.");
             }
         } else {
             setScheduleDetail(null);
@@ -200,79 +229,79 @@ const Calendar = () => {
             [name]: value
         });
 
-        if (name === "skdName" && value.length < 5) {
-            setSkdNameError("일정 이름은 공란일 수 없고 공백 포함 최소 5글자 이상이어야 합니다.");
-            return;
-        }
-
         setTouched({
             ...touched,
             [name]: true
         });
+
+        validateInsert();
     };
 
     const handleSubmit = (newScheduleData) => {
-        // 시도해보기
-        // event.preventDefault();
-        // setTouched({
-        //     skdName: true,
-        //     skdStartDttm: true,
-        //     skdEndDttm: true
-        // });
-        validateInsert();
-        if (skdNameError || dateError) {
+        if (!touched.skdName || !touched.skdStartDttm || !touched.skdEndDttm) {
+            setTouched({
+                ...touched,
+                skdName: true,
+                skdStartDttm: true,
+                skdEndDttm: true
+            });
+            validateInsert();
             return;
         }
 
-        try {
-            insertScheduleAPI(newScheduleData);
-            alert("일정이 정상적으로 등록되었습니다.");
-            setNewScheduleAdded(!newScheduleAdded);
-        } catch (error) {
-            console.error("일정 정보 등록하면서 오류가 발생했습니다 :", error);
-            alert("일정 등록에 실패하였습니다.");
+        if (validateInsert()) {
+            try {
+                insertScheduleAPI(newScheduleData);
+                alert("일정이 정상적으로 등록되었습니다.");
+                setNewScheduleAdded(!newScheduleAdded);
+            } catch (error) {
+                console.error("일정 정보 등록하면서 오류가 발생했습니다 :", error);
+                alert("일정 등록에 실패하였습니다.");
+            }
+            onInsertCancelHandler();
         }
-        onInsertCancelHandler();
-        setNewScheduleData("");
     };
 
     const getEventColor = (skdStatus) => {
         switch (skdStatus) {
-            case '예정': return 'yellow';
-            case '진행 중': return 'blue';
-            case '완료': return 'green';
-            case '보류': return 'yellow';
-            case '막힘': return 'red';
+            case '예정': return '#F5BF3C';
+            case '진행 중': return '#3CB479';
+            case '완료': return '#1B9CE3';
+            case '보류': return 'grey';
+            case '막힘': return '#F2522D';
             default: return '#95A5A6';
         }
     };
 
     const fetchEvents = () => {
         try {
-            const events = schedules.results.schedule.map(schedule => ({
-                title: schedule.skdName,
-                start: moment(schedule.skdStartDttm, "YYYY-MM-DD A h:mm").toISOString(),
-                end: moment(schedule.skdEndDttm, "YYYY-MM-DD A h:mm").toISOString(),
-                id: schedule.skdNo,
-                extendedProps: {
-                    skdLocation: schedule.skdLocation,
-                    skdMemo: schedule.skdMemo,
-                    authorId: schedule.authorId,
-                    authorName: schedule.authorName,
-                    skdStatus: schedule.skdStatus,
-                    participants: [
-                        {
-                            participantMemberNo: schedule.participants.participantMemberNo,
-                            participantName: schedule.participants.participantName,
-                            participantNo: schedule.participants.participantNo
-                        }
-                    ]
-                },
-                backgroundColor: getEventColor(schedule.skdStatus),
-                borderColor: getEventColor(schedule.skdStatus)
-            }));
+            const events = schedules.results.schedule.map(schedule => {
+                return {
+                    title: schedule.skdName,
+                    start: moment(schedule.skdStartDttm, "YYYY-MM-DD A h:mm").toISOString(),
+                    end: moment(schedule.skdEndDttm, "YYYY-MM-DD A h:mm").toISOString(),
+                    id: schedule.skdNo,
+                    extendedProps: {
+                        skdLocation: schedule.skdLocation,
+                        skdMemo: schedule.skdMemo,
+                        authorId: schedule.authorId,
+                        authorName: schedule.authorName,
+                        skdStatus: schedule.skdStatus,
+                        participants: schedule.participants.map(participant => {
+                            return {
+                                participantMemberNo: participant.participantMemberNo,
+                                participantName: participant.participantName,
+                                participantNo: participant.participantNo
+                            };
+                        })
+                    },
+                    backgroundColor: getEventColor(schedule.skdStatus),
+                    borderColor: getEventColor(schedule.skdStatus)
+                };
+            });
             return events;
         } catch (error) {
+            console.error('Error fetching events:', error);  // 에러 로그 출력
             return [];
         }
     };
@@ -302,7 +331,7 @@ const Calendar = () => {
 
     const filteredScheduleList = schedules.results?.schedule?.filter(schedule =>
         (subscribedMembers.includes(schedule.authorId) ||
-         schedule.participants.some(participant => subscribedMembers.includes(participant.participantMemberNo))) &&
+            schedule.participants.some(participant => subscribedMembers.includes(participant.participantMemberNo))) &&
         (selectedStatus.length === 0 || selectedStatus.includes(schedule.skdStatus))
     ) || [];
 
@@ -312,6 +341,44 @@ const Calendar = () => {
         <main id="main" className="main">
             <div className="title">
                 <h2>부서별 일정</h2>
+                <Tooltip
+                    placement="bottom"
+                    variant="solid"
+                    arrow
+                    color="neutral"
+                    title={
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                maxWidth: 320,
+                                justifyContent: 'center',
+                                p: 1,
+                                backgroundColor: 'rgba(255, 255, 255, 0.95)', // 툴팁 박스 배경색 조정
+                                borderRadius: '4px'
+                            }}
+                        >
+                            <Box sx={{ display: 'flex', gap: 1, width: '100%', mt: 1 }}>
+                                <EventNoteIcon color="action" />
+                                <div>
+                                    <Typography fontWeight="lg" fontSize="sm" color="textPrimary">
+                                        새로운 일정을 등록하시려면 날짜를 선택하세요.
+                                    </Typography>
+                                </div>
+                            </Box>
+                            <Box sx={{ display: 'flex', gap: 1, width: '100%', mt: 1 }}>
+                                <EditCalendarIcon color="action" />
+                                <div>
+                                    <Typography textColor="text.secondary" fontSize="sm" color="textPrimary" sx={{ mb: 1 }}>
+                                        일정 수정, 삭제 또는 상세 조회를 원하시면, 해당 일정을 선택하세요.
+                                    </Typography>
+                                </div>
+                            </Box>
+                        </Box>
+                    }
+                >
+                    <HelpOutlineIcon />
+                </Tooltip>
             </div>
             {calendarReady && (
                 <Box flex="1 1 100%" ml="15px" mt="15px" >
