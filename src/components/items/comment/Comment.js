@@ -8,7 +8,8 @@ import FormatDate from '../../contents/FormatDate';
 import { Dialog, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import ButtonGroup from '../../contents/ButtonGroup';
-import './Comment.css'; 
+import './Comment.css';
+import UpdateCommentForm from '../../form/UpdateCommentForm';
 
 function Comment({ boardNo }) {
     const dispatch = useDispatch();
@@ -21,6 +22,8 @@ function Comment({ boardNo }) {
     const [replyName, setReplyName] = useState(null);   // 답글 memberName
     const [deleteModal, setDeleteModal] = useState(false);  // 삭제 모달 상태
     const [selectedCommentNo, setSelectedCommentNo] = useState(null); // 삭제할 댓글 번호
+    const [editCommentNo, setEditCommentNo] = useState(null); // 수정할 댓글 번호
+    const [editingCommentNo, setEditingCommentNo] = useState(null);
 
     useEffect(() => {
         if (boardNo) {
@@ -69,6 +72,22 @@ function Comment({ boardNo }) {
         }
     };
 
+    const handleEditClick = (commentNo) => {
+        setEditCommentNo(commentNo);
+    };
+
+    const handleEditCancel = () => {
+        setEditCommentNo(null);
+    };
+
+    const handleEditSubmit = () => {
+        setEditCommentNo(null);
+        dispatch(callGetCommentListAPI({ boardNo }))
+            .catch(error => {
+                console.error('Error fetching comment list:', error);
+            });
+    };
+
     const renderComment = (comment) => {
         const parentComment = commentList.find(parent => parent.commentNo === comment.parentCommentNo);
         const parentMemberName = parentComment ? parentComment.memberName : null;
@@ -82,16 +101,22 @@ function Comment({ boardNo }) {
         const isDeleted = comment.deleteComment;
 
         return (
-            <div key={comment.commentNo} className="comment-container"> 
+            <div key={comment.commentNo} className="comment-container">
                 <div className="comment-inner">
-                    <div className='float-left' style={{ marginLeft: formattedComment.parentMemberName ? '10px' : 'none',  borderTop: 'none' }}>
+                    <div className='float-left' style={{ marginLeft: formattedComment.parentMemberName ? '10px' : 'none', borderTop: 'none' }}>
                         <span>{formattedComment.memberName} {formattedComment.positionName}</span>&nbsp;&nbsp;
                         <span>{formattedComment.commentCreateDt}</span>
+                        {formattedComment.commentUpdateDt && (
+                                <span> | 수정일: {FormatDate(formattedComment.commentUpdateDt)}</span>
+                            )}
                     </div>
                     <div className='float-right'>
                         <button className='text-btn' onClick={() => handleReplyClick(comment)}>답글</button>
                         {loginToken.memberNo === comment.memberNo && (
-                            <button className='text-btn' onClick={() => openDeleteModal(comment.commentNo)}>삭제</button>
+                            <>
+                                <button className='text-btn' onClick={() => handleEditClick(comment.commentNo)}>수정</button>
+                                <button className='text-btn' onClick={() => openDeleteModal(comment.commentNo)}>삭제</button>
+                            </>
                         )}
                     </div>
                     <br />
@@ -99,14 +124,21 @@ function Comment({ boardNo }) {
                         <div style={{ marginTop: "5px", marginBottom: '5px', color: 'red' }}>
                             <span>삭제된 댓글입니다.</span>
                         </div>
-                    ) : (
-                        <div style={{ marginTop: "5px", marginBottom: '5px' }}>
-                            {formattedComment.parentMemberName ? (
-                                <span style={{ marginLeft: '10px'}} className="parent-member">@{formattedComment.parentMemberName} </span>
-                            ) : null}
-                            <span>{formattedComment.commentContent}</span>
-                        </div>
-                    )}
+                    ) : editCommentNo === comment.commentNo ? (
+                            <UpdateCommentForm
+                                boardNo={boardNo}
+                                comment={comment}
+                                handleEditCancel={handleEditCancel}
+                                onCommentUpdated={handleEditSubmit}
+                            />
+                        ) : (
+                            <div style={{ marginTop: "5px", marginBottom: '5px' }}>
+                                {formattedComment.parentMemberName ? (
+                                    <span style={{ marginLeft: '10px' }} className="parent-member">@{formattedComment.parentMemberName} </span>
+                                ) : null}
+                                <span>{formattedComment.commentContent}</span>
+                            </div>
+                        )}
                 </div>
                 {/* 대댓글이 있는 경우에만 렌더링 */}
                 {comment.replies && comment.replies.length > 0 && (
@@ -127,7 +159,7 @@ function Comment({ boardNo }) {
 
     return (
         <>
-            {loading ? ( 
+            {loading ? (
                 <div style={{ marginTop: "5px", marginBottom: '5px' }}>
                     댓글을 불러오는 중입니다...
                 </div>
@@ -136,7 +168,7 @@ function Comment({ boardNo }) {
                     commentList.filter(comment => comment.parentCommentNo === null).map(comment => renderComment(comment)) // 부모 댓글만 필터링하여 렌더링
                 ) : (
                     <div style={{ marginTop: "5px", marginBottom: '5px' }}>
-                    &nbsp; 댓글이 없습니다.
+                        &nbsp; 댓글이 없습니다.
                     </div>
                 )
             )}

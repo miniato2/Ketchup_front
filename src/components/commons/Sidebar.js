@@ -9,6 +9,10 @@ function Sidebar() {
     const isOrganizationActive = location.pathname.startsWith('/deparpments') || location.pathname.startsWith('/positions');
     const isResourceManagementNav = location.pathname.startsWith('/resources/conferences') ||  location.pathname.startsWith('/resources/vehicles');
 
+    const onClickApp = () => {
+        window.localStorage.setItem('category', 1);
+    }
+
     return (
         <aside id="sidebar" className="sidebar">
             <ul className="sidebar-nav" id="sidebar-nav">
@@ -18,7 +22,7 @@ function Sidebar() {
                     </NavLink >
                 </li>
                 <li class="nav-item">
-                    <NavLink className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link collapsed"} to="/approvals">
+                    <NavLink className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link collapsed"} to="/approvals" onClick={() => onClickApp()}>
                         <i className="bi bi-pencil-square"></i><span>전자결재</span>
                     </NavLink>
                 </li>
@@ -55,17 +59,17 @@ function Sidebar() {
                 </li>
                 <li className="nav-item">
                     <a className={isOrganizationActive ? "nav-link active-link" : "nav-link collapsed"} data-bs-toggle="collapse" data-bs-target="#organization-nav">
-                        <i className="bi bi-diagram-3"></i><span>조직</span><i className="bi bi-chevron-down ms-auto"></i>
+                        <i className="bi bi-diagram-3"></i><span>조직관리</span><i className="bi bi-chevron-down ms-auto"></i>
                     </a>
                     <ul id="organization-nav" className="nav-content collapse" data-bs-parent="#organization-parent">
                         <li className="nav-item">
                             <NavLink to="/deparpments" className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link"} style={{ color: "black", textDecorationLine: "none"}}>
-                                <i></i><span> - 부서관리</span>
+                                <i></i><span> - 부서</span>
                             </NavLink>
                         </li>
                         <li className="nav-item">
                             <NavLink  to="/positions" className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link"} style={{ color: "black", textDecorationLine: "none"}}>
-                                <i></i><span> - 직급관리</span>
+                                <i></i><span> - 직급</span>
                             </NavLink>
                         </li>
                     </ul>

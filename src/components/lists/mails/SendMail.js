@@ -44,7 +44,9 @@ function SendMail({ sendMail, checkedItems, setCheckedItems, searchParams, isLoa
                 setCheckedItems={setCheckedItems}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
-                searchParams={searchParams} />
+                searchParams={searchParams}
+                currentPage={currentPage}
+                pageTotal={sendMail?.pageTotal} />
             <PaginationButtons
                 totalItems={sendMail?.pageTotal} 
                 itemsPerPage={10} 

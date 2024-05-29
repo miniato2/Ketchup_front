@@ -4,9 +4,6 @@ import FormatDate from "../../contents/FormatDate";
 import { useEffect, useState } from "react";
 import SendCancelModal from "./SendCancelModal";
 import MailDeleteModal from "./MailDeleteModal";
-import ReplyMailContent from "./ReplyMailContent";
-import { callGetMailDetailAPI } from "../../../apis/MailAPICalls";
-import { useDispatch, useSelector } from "react-redux";
 import DOMPurify from "isomorphic-dompurify"
 
 function MailContent({ content, part, mailNo }) {
@@ -15,9 +12,6 @@ function MailContent({ content, part, mailNo }) {
     const [deleteModal, setDeleteModal] = useState(false);
     const [delMailList, setDelMailList] = useState([]);
     const contentFile = content.mailFiles || [];
-
-    console.log("💜💜💜💜💜💜");
-    console.log(content);
 
     useEffect(
         () => {
@@ -109,7 +103,7 @@ function MailContent({ content, part, mailNo }) {
             </div>)}
             {/* 답장 이전 메일 보여 주기 */}
             {/* {
-                content.replyMailNo != 0 ? <ReplyMailContent replyMailNo={content.replyMailNo} /> : null
+                content.replyMailNo != 0 ? <ReplyMailContent replyMailNo={content?.replyMailNo} part={part} /> : null
             } */}
         </>
     );

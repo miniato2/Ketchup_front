@@ -10,9 +10,8 @@ import PaginationButtons from '../../components/contents/PaginationButtons';
 
 function Approvals() {
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
-    const location = useLocation();
 
-    const [category, setCategory] = useState(location.state === null ? 1 : location.state); //카테고리를 state로 관리 초기값 1
+    const [category, setCategory] = useState(window.localStorage.getItem('category')? window.localStorage.getItem('category'): 1);
     const [status, setStatus] = useState('전체'); //문서 상태 관리 초기값 전체 
     const [currentPage, setCurrentPage] = useState(1); //페이지
     const [search, setSearch] = useState('');
@@ -21,10 +20,6 @@ function Approvals() {
 
     const apps = useSelector(state => state.approvalReducer);
     const appList = apps.data?.content;
-
-    console.log('apps', apps);
-    console.log('appList', appList);
-    console.log('currentPage',currentPage);
 
     let statusList = [];
     switch(category){
@@ -36,7 +31,7 @@ function Approvals() {
     };
 
     useEffect(() => {
-        console.log("api 호출");
+        window.localStorage.setItem('category', category);
         dispatch(
             callAppListAPI({
                 memberNo: loginToken.memberNo,
@@ -46,7 +41,7 @@ function Approvals() {
                 currentPage: currentPage
             })
         )
-    }, [currentPage, status, category]) //의존 배열에 search가 없어서 카테고리가 바뀔때 serarch가 그대로 가는듯?
+    },[currentPage, status, category])
 
     const onChangeHandler = (e) => {
         setSearch(e.target.value);
@@ -87,11 +82,11 @@ function Approvals() {
                         <button type="submit" title="SearchBtn" onClick={onClickSearchHandler}><i class="bi bi-search"></i></button>
                     </form>
                 </div>
-                <Link to={'/approvals/insert'} className={ApprovalCss.movebtn}>
+                <Link to={'/approvals/insert'} className={ApprovalCss.movebtn} state={category}>
                     <button className="move-btn" style={{ marginRight: '20px' }}>기안등록</button>
                 </Link>
             </div>
-            <AppList data={appList}/>
+            <AppList data={appList} />
             <PaginationButtons totalItems={apps.pageInfo?.total} itemsPerPage={10} currentPage={currentPage} onPageChange={(pageNumber) => setCurrentPage(pageNumber)} />
         </main>
     )

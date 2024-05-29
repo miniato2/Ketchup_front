@@ -37,6 +37,10 @@ function Main() {
         { title: "수신 참조 문서", count: approvalCount?.refApp, categoryNo: 4 }
     ];
 
+    const onClickApp = (categoryNo) => {
+        window.localStorage.setItem('category', categoryNo);
+    }
+
     const convertToCalendarProps = (schedules) => {
         try {
             if (schedules && schedules.results && schedules.results.schedule) {
@@ -162,6 +166,7 @@ function Main() {
                                     <h1 className="display-1" style={{ fontSize: "45px" }}>안녕하세요, {loginToken.memberName} {loginToken.positionName}님!</h1>
                                     <h2 className="lead my-3" style={{ fontSize: "30px" }}>오늘 하루도 화이팅하세요🤩</h2>
                                 </div>
+                                {/* <img src="images/ketchupAni.gif" style={{ width: "300px", height: "240px", position: 'absolute', right: 50, bottom: 0 , marginRight: 580 }}></img> */}
                                 <img src="images/mainImage.png" style={{ width: "300px", height: "240px", position: 'absolute', right: 50, bottom: 0}}></img>
                             </div>
                         </div>
@@ -171,7 +176,7 @@ function Main() {
                     <div className="col-lg-12">
                         <div className="row">
                             {approvalData.map(({ title, count, categoryNo }) => (
-                                <Link to={`/approvals`} state={categoryNo} className="col-xxl-3 col-md-6" style={{ textDecorationLine: 'none' }}>
+                                <Link to={`/approvals`} className="col-xxl-3 col-md-6" style={{ textDecorationLine: 'none' }} onClick={() => onClickApp(categoryNo)}>
                                     <ApprovalBox title={title} count={count} />
                                 </Link>
                             ))}

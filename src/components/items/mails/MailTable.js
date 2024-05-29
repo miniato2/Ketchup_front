@@ -2,7 +2,7 @@ import Table from 'react-bootstrap/Table';
 import '../../../style.css';
 import '../../../pages/mails/mail.css';
 
-const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedItems, isLoading, searchParams }) => {
+const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedItems, isLoading, searchParams, currentPage, pageTotal }) => {
   const toggleCheckbox = (mailNo) => {
     setCheckedItems(prevState => ({
       ...prevState,
@@ -20,7 +20,13 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
 
     setCheckedItems(newCheckedItems);
   };
-  
+
+  const getItemNumber = (index) => {
+    const itemsPerPage = 10; // 한 페이지에 보여줄 아이템 수
+    const startNumber = pageTotal - (currentPage - 1) * itemsPerPage;
+    return startNumber - index;
+  };
+
   return (
     <div class="card-body">
       <Table>
@@ -36,10 +42,10 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
             </>
           ) : (
             <>
-              <col style={{ width: "39%" }} />
-              <col style={{ width: "15%" }} />
-              <col style={{ width: "15%" }} />
-              <col style={{ width: "15%" }} />
+              <col style={{ width: "44%" }} />
+              <col style={{ width: "18%" }} />
+              <col style={{ width: "12%" }} />
+              <col style={{ width: "10%" }} />
             </>
           )
           }
@@ -74,7 +80,8 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
                       checked={checkedItems[item.mailNo] || false}
                       onChange={() => toggleCheckbox(item.mailNo)} />
                   </td>
-                  <td>{data.length - index}</td>
+                  {/* <td>{data.length - index}</td> */}
+                  <td>{getItemNumber(index)}</td>
                   {columns.map(([key], columnIndex) => (
                     <td key={columnIndex}>
                       {key === 'mailTitle' ?

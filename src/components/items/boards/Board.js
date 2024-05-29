@@ -75,6 +75,7 @@ function Board({ boardNo }) {
             case 'gif':
                 return 'bi-file-earmark-image';
             case 'txt':
+            case '.hwp':
                 return 'bi-file-earmark-text';
             case 'zip':
                 return 'bi-file-earmark-zip';

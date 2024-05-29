@@ -21,7 +21,7 @@ export const callGetMemberAPI = ({ memberNo }) => {
             },
         }).then((response) => response.json());
 
-        console.log('[MemberAPICalls] callGetMemberAPI RESULT : ', result);
+      
 
         dispatch({ type: GET_MEMBER, payload: result });
     };
@@ -30,7 +30,7 @@ export const callGetMemberAPI = ({ memberNo }) => {
 export const callLoginAPI = ({ form }) => {
   
     const requestURL = `http://localhost:8080/login`;
-    console.log("========로그인 api 호출========");
+   
 
     return async (dispatch, getState) => {
         // 클라이언트 fetch mode : no-cors 사용시 application/json 방식으로 요청이 불가능
@@ -49,7 +49,7 @@ export const callLoginAPI = ({ form }) => {
             }),
         }).then((response) => response.json());
 
-        console.log('[MemberAPICalls] callLoginAPI RESULT : ', result);
+      
         if (result.status === 200) {
             window.localStorage.setItem('accessToken', result.token);
 
@@ -68,7 +68,7 @@ export const callLogoutAPI = () => {
     return async (dispatch, getState) => {
 
         dispatch({ type: POST_LOGIN, payload: '' });
-        console.log('[MemberAPICalls] callLogoutAPI RESULT : SUCCESS');
+      
 
 
     };
@@ -76,7 +76,7 @@ export const callLogoutAPI = () => {
 
 export const callRegisterAPI = ({ form }) => {
 
-    console.log('여기가 api 시작', form);
+   
     const formData = new FormData();
 
     // 멤버 정보를 JSON 형식으로 변환하여 FormData에 추가
@@ -101,7 +101,7 @@ export const callRegisterAPI = ({ form }) => {
     // 이미지 파일을 Blob으로 추가
 
     formData.append('memberImage', form.memberImage);
-    console.log('----------------여기가 API 실행중', form.memberImage);
+   
 
 
     return async (dispatch) => {
@@ -380,7 +380,6 @@ export function callUpdateDepartmentStatusAPI(depNo) {
     };
     return async (dispatch, getState) => {
         const result = await request('PUT', `/deps/${depNo}`, fakeDTO);
-        console.log('수정결과 ', result);
 
         dispatch({ type: PUT_DEPARTMENTS, payload: result });
     };
@@ -390,11 +389,11 @@ export function callUpdateDepartmentStatusAPI(depNo) {
 
 export function callUpdateMyPWAPI(myNo, newPW) {
 
-    console.log('비밀번호 수정',myNo,newPW);
+  
 
     return async (dispatch, getState) => {
         const result = await request('PUT', `/PW/${myNo}`, newPW)
-        console.log('수정결과 ', result);
+      
         
 
     };
@@ -405,7 +404,7 @@ export function callUpdateMyPWAPI(myNo, newPW) {
 export function callSendEmailAPI(myNo) {
     return async () => {
         const result = await request('GET', `/email/${myNo}`)
-        console.log('이메일발송결과 ', result);
+      
         return null;
 
     };
@@ -418,7 +417,7 @@ export function sendCodeAPI(myNo, receiveCode) {
 
     return async (dispatch, getState) => {
         const result = await request('POST', `/verifyEmail/${myNo}/${receiveCode}`)
-        console.log('인증결과 ', result.message);
+      
         if (result.message == '인증성공') {
             
             return true;
