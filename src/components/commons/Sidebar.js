@@ -55,17 +55,17 @@ function Sidebar() {
                 </li>
                 <li className="nav-item">
                     <a className={isOrganizationActive ? "nav-link active-link" : "nav-link collapsed"} data-bs-toggle="collapse" data-bs-target="#organization-nav">
-                        <i className="bi bi-diagram-3"></i><span>조직</span><i className="bi bi-chevron-down ms-auto"></i>
+                        <i className="bi bi-diagram-3"></i><span>조직관리</span><i className="bi bi-chevron-down ms-auto"></i>
                     </a>
                     <ul id="organization-nav" className="nav-content collapse" data-bs-parent="#organization-parent">
                         <li className="nav-item">
                             <NavLink to="/deparpments" className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link"} style={{ color: "black", textDecorationLine: "none"}}>
-                                <i></i><span> - 부서관리</span>
+                                <i></i><span> - 부서</span>
                             </NavLink>
                         </li>
                         <li className="nav-item">
                             <NavLink  to="/positions" className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link"} style={{ color: "black", textDecorationLine: "none"}}>
-                                <i></i><span> - 직급관리</span>
+                                <i></i><span> - 직급</span>
                             </NavLink>
                         </li>
                     </ul>
