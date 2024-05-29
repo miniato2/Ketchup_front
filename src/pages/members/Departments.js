@@ -16,7 +16,7 @@ function Departments() {
     const [departmentDialogOpen, setDepartmentDialogOpen] = useState(false);
 
 
-    console.log('부서리스트', departmentsList);
+   
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [newDepartment, setNewDepartment] = useState({
@@ -96,6 +96,7 @@ function Departments() {
                                 <th>사용</th>
                                 
                                 <th>부서명</th>
+                                <th>팀장</th>
                                 <th>인원수</th>
                                 <th>부서수정</th>
                                 <th>부서삭제</th>
@@ -125,6 +126,7 @@ function Departments() {
                                     </td>
                                   
                                     <td>{department.depName}</td>
+                                    <td>{department.leader}</td>
                                     <td>{department.memberCount}</td>
                                     <td><button className="back-btn"
                                         style={{
@@ -158,7 +160,7 @@ function Departments() {
                                     <td></td>
                                     <td></td>
                                     <td><input style={{ border: "none", borderBottom: "1px solid black", textAlign: "center" }} type="text" name="depName" placeholder="부서명을 입력해주세요" onChange={handleInputChange} /></td>
-                                    <td></td>
+                                    <td><input style={{ border: "none", borderBottom: "1px solid black", textAlign: "center" }} type="text" name="leader" placeholder="팀장을 입력해주세요" onChange={handleInputChange} /></td>
                                     <td><button className="back-btn"
                                         style={{
                                             paddingTop: 2,
@@ -187,7 +189,7 @@ function Departments() {
 
                     <Dialog open={departmentDialogOpen} onClose={onDialogClickHandler}>
                         <DialogTitle>부서명 수정</DialogTitle>
-                        <DepartmentForm memberNo={selectedDepartment} onDialogClickHandler={onDialogClickHandler} />
+                        <DepartmentForm department={selectedDepartment} onDialogClickHandler={onDialogClickHandler} />
                     </Dialog>
 
                 </div>

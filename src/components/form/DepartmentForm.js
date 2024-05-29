@@ -7,18 +7,25 @@ import ButtonGroup from '../contents/ButtonGroup';
 
 export default function DepartmentForm({ department, onDialogClickHandler }) {
 
-    console.log('다이얼로그 시작 수정할 부서', department);
+ 
     const dispatch = useDispatch();
-    const [form, setForm] = useState('');
+    const [form, setForm] = useState({
+        depName: department.depName,
+        status: department.status,
+        leader: department.leader
+        
+
+    });
 
 
    
 
 
     const onChangeHandler = (e) => {
-        setForm(
-           e.target.value,
-        );
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value
+        });
     }
 
     const onClickHandler = async () => {
@@ -41,7 +48,7 @@ export default function DepartmentForm({ department, onDialogClickHandler }) {
 
 
         <div style={{ marginLeft: 50, width: 500}}>
-            <label>현재 부서명 <input value={department.depName} style={{ textAlign: 'center', marginLeft: 50, borderWidth: '0px 0px 1px 0px' }}></input></label>
+            <label>현재 부서명 <input value={department?.depName} style={{ textAlign: 'center', marginLeft: 50, borderWidth: '0px 0px 1px 0px' }}></input></label>
             <br></br>
 
 
@@ -50,7 +57,7 @@ export default function DepartmentForm({ department, onDialogClickHandler }) {
 
             <label>수정후 부서명
                 <input
-                    defaultValue={department.depName}
+                    defaultValue={department?.depName}
                     onChange={onChangeHandler}
                     name="depName"
                     style={{
@@ -60,6 +67,19 @@ export default function DepartmentForm({ department, onDialogClickHandler }) {
                     }}>
                 </input>
             </label>
+            <label>수정후 팀장
+                <input
+                    defaultValue={department?.leader}
+                    onChange={onChangeHandler}
+                    name="leader"
+                    style={{
+                        textAlign: 'center',
+                        marginLeft: 55,
+                        borderWidth: '0px 0px 1px 0px'
+                    }}>
+                </input>
+            </label>
+
 
 
 

@@ -21,7 +21,7 @@ function MyPage() {
 
     const onClickBackHandler = () => {
         // 돌아가기 클릭시 메인 페이지로 이동
-        navigate("/");
+        navigate("/main");
     }
 
 
@@ -32,8 +32,7 @@ function MyPage() {
 
     useEffect(
         () => {
-            console.log('마이페이지token', token);
-
+           
             if (token) {
                 dispatch(callGetMemberAPI({ memberNo: token.memberNo }));
             }

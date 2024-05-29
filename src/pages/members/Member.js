@@ -122,7 +122,7 @@ function Member({ selectMemberNo }) {
             style={{ backgroundColor: 'white' }}
         >
 
-            {memberDetail && memberDetail?.department?.depName &&
+            {memberDetail && memberDetail?.department?.depName && token.depName === "인사팀" &&
 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
@@ -283,15 +283,18 @@ function Member({ selectMemberNo }) {
                             }}
                         />
                     </label>
-
-                </div>
-
-            }
-            {token.depName === "인사팀" &&
-                <div>
                     {isEditMode ? <button onClick={handleSaveToggle} style={{ marginLeft: '1000px', borderRadius: 5, backgroundColor: 'red', color: 'white', width: 80, borderWidth: 0, height: 40 }}>저장</button>
                         : <button onClick={handleEditModeToggle} style={{ marginLeft: '1000px', borderRadius: 5, width: 80, borderWidth: 0, height: 40 }}>수정</button>}
+
                 </div>
+                
+            }
+            {token.depName !== "인사팀" &&              
+           <div style={{marginLeft: 450,marginTop:30}}>
+                <h2>페이지 접근 권한이 없습니다.</h2>
+
+
+           </div>
             }
 
         </div>
