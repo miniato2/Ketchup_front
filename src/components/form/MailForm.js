@@ -167,7 +167,7 @@ function MailForm() {
             <div style={{ height: '400px' }}>
                 <div>
                     <ReactQuill
-                        style={{ height: "400px", margin: "4px", overflowY: 'auto' }}
+                        style={{ height: "350px", margin: "4px" }}
                         ref={quillRef}
                         theme="snow"
                         value={mailForm.mailContent}

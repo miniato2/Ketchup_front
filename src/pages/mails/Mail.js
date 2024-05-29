@@ -67,8 +67,6 @@ function Mail() {
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
-            console.log("🎍🎍🎍🎍🎍");
-            console.log(mails);
             try {
                 if (part === 'receive') {
                     await dispatch(callGetReceiveMailAPI(currentPage, searchParams.condition, searchParams.value));
