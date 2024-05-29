@@ -12,11 +12,12 @@ import DepartmentForm from "../../components/form/DepartmentForm";
 function Departments() {
     const dispatch = useDispatch();
     const departmentsList = useSelector(state => state.departmentReducer);
+    const memberList = useSelector(state => state.memberReducer);
     const [selectedDepartment, setSelectedDepartment] = useState(null);
     const [departmentDialogOpen, setDepartmentDialogOpen] = useState(false);
 
 
-   
+   console.log(memberList);
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [newDepartment, setNewDepartment] = useState({

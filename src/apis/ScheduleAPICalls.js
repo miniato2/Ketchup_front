@@ -17,6 +17,8 @@ export const getScheduleAPI = (dptNo) => {
 };
 
 export const insertScheduleAPI = async (newScheduleData) => {
+
+  console.log('API속 ',newScheduleData);
   try {
     const response = await request('post', '/schedules/schedules', newScheduleData);
     return response;
