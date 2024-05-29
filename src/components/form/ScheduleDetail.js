@@ -8,8 +8,8 @@ import LocationOnOutlined from '@mui/icons-material/LocationOnOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 
-export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, closeDetailDialog, handleUpdate, handleDelete, memberList, dptNo }) {
-    const filteredMemberList = memberList.filter(member => member.department.depNo === dptNo);
+export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, closeDetailDialog, handleUpdate, handleDelete, members, dptNo }) {
+    const filteredMemberList = Array.isArray(members) ? members.filter(member => member?.department?.depNo === dptNo) : [];
     const [dateError, setDateError] = useState("");
     const [skdNameError, setSkdNameError] = useState("");
     const [touched, setTouched] = useState({
@@ -33,7 +33,7 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
     const handleUpdatedParticipantsChange = (event) => {
         const selectedValues = event.target.value;
         const selectedParticipants = selectedValues.map(value => {
-            const member = memberList.find(member => member?.memberNo === value);
+            const member = members.find(member => member?.memberNo === value);
             return { participantMemberNo: member?.memberNo, participantName: member?.memberName };
         });
 
@@ -214,7 +214,7 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
                                                 onChange={handleUpdatedParticipantsChange}
                                                 renderValue={(selected) => {
                                                     const selectedNames = selected.map(memberNo => {
-                                                        const member = filteredMemberList?.find(member => member.memberNo === memberNo);
+                                                        const member = filteredMemberList?.find(member => member?.memberNo === memberNo);
                                                         return member ? member.memberName : '';
                                                     }).filter(name => name !== '');
 
