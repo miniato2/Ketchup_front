@@ -1,12 +1,13 @@
 import { Box, Typography, DialogTitle } from "@mui/material";
 import { deleteReserveAPI } from "../../apis/ReserveAPICalls";
 
-export default function DeleteReserveForm({ onCloseDeleteConfirm, selectedReserve }) {
+export default function DeleteReserveForm({ onCloseDeleteConfirm, selectedReserve, newReserveAdded, setNewReserveAdded }) {
     const handleDelete = () => {
         try {
             deleteReserveAPI(selectedReserve.id);
             alert("예약이 정상적으로 삭제되었습니다.");
             onCloseDeleteConfirm();
+            setNewReserveAdded(!newReserveAdded);
         } catch (error) {
             console.error("예약 삭제 중 에러 발생 handleDelete", error);
             alert("예약 삭제에 실패했습니다.");
