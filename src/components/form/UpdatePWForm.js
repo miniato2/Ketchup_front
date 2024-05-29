@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { callSendEmailAPI, callUpdateMyPWAPI, send, sendCodeAPI } from '../../apis/MemberAPICalls';
+import { callSendEmailAPI, callUpdateMyPWAPI, send, sendCodeAPI ,callLogoutAPI} from '../../apis/MemberAPICalls';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -104,9 +104,13 @@ export default function UpdatePWForm({ myNo, onDialogClickHandler }) {
     const onClickHandler = async () => {
 
         await dispatch(callUpdateMyPWAPI(myNo, pass.firstPW));
-        alert("수정이 완료되었습니다.");
+        alert("비밀번호수정이 완료되었습니다. 다시 로그인 해주세요");
         onDialogClickHandler();
-        await navigate("/main");
+       await window.localStorage.removeItem('accessToken');
+        //로그아웃
+       await dispatch(callLogoutAPI());   
+       await navigate("/login", { replace: true });
+       
     }
 
     const handleCode = async () => {

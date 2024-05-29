@@ -5,18 +5,21 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from '@fullcalendar/list';
-import { Box, Dialog, DialogTitle, Typography } from "@mui/material";
+import { Box, Dialog, DialogTitle, Grid, Typography } from "@mui/material";
 import ScheduleForm from "../../components/form/ScheduleForm";
 import { getScheduleAPI, insertScheduleAPI, deleteScheduleAPI, updateScheduleAPI } from "../../apis/ScheduleAPICalls";
 import moment from "moment";
 import { decodeJwt } from "../../utils/tokenUtils";
 import ScheduleDetail from "../../components/form/ScheduleDetail";
-
 import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-icons/font/bootstrap-icons.css'; // webpack uses file-loader to handle font files
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import SubscriptionList from "../../components/lists/subscriptions/SubscriptionList";
 
 const Calendar = () => {
+    const dispatch = useDispatch();
     const schedules = useSelector(state => state.scheduleReducer);
+    const members = useSelector(state => state.memberReducer);
+    const memberList = members?.data?.content || [];
     const [calendarReady, setCalendarReady] = useState(false);
     const [newScheduleAdded, setNewScheduleAdded] = useState(false);
     const [insertScheduleDialogOpen, setInsertScheduleDialogOpen] = useState(false);
@@ -24,9 +27,10 @@ const Calendar = () => {
     const [detailDialogOpen, setDetailDialogOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [scheduleDetail, setScheduleDetail] = useState(null);
-    const dispatch = useDispatch();
     const token = decodeJwt(window.localStorage.getItem("accessToken"));
     const dptNo = token?.depNo;
+    const authorName = token?.memberName;
+    const authorId = token?.memberNo;
     const [dateError, setDateError] = useState("");
     const [skdNameError, setSkdNameError] = useState("");
     const [touched, setTouched] = useState({
@@ -34,6 +38,7 @@ const Calendar = () => {
         skdStartDttm: false,
         skdEndDttm: false
     });
+    const [subscribedMembers, setSubscribedMembers] = useState([]);
 
     useEffect(() => {
         const fetchSchedules = () => {
@@ -43,13 +48,33 @@ const Calendar = () => {
         fetchSchedules();
     }, [dispatch, newScheduleAdded]);
 
+    const handleParticipantsChange = (event) => {
+        const selectedValues = event.target.value;
+        const selectedParticipants = selectedValues.map(value => {
+            const member = memberList.find(member => member.memberNo === value);
+            return { participantMemberNo: member?.memberNo, participantName: member?.memberName };
+        });
+
+        setNewScheduleData({
+            ...newScheduleData,
+            participants: selectedParticipants
+        });
+    };
+
     const [newScheduleData, setNewScheduleData] = useState({
         dptNo: dptNo,
         skdName: "",
         skdStartDttm: "",
         skdEndDttm: "",
         skdLocation: "",
-        skdMemo: ""
+        skdMemo: "",
+        authorId: authorId,
+        authorName: authorName,
+        participants: [],
+        skdStatus: "예정"
+    });
+    const [updatedScheduleData, setUpdatedScheduleData] = useState({
+        participants: []
     });
 
     useEffect(() => {
@@ -99,7 +124,11 @@ const Calendar = () => {
             skdStartDttm: "",
             skdEndDttm: "",
             skdLocation: "",
-            skdMemo: ""
+            skdMemo: "",
+            authorId: authorId,
+            authorName: authorName,
+            participants: [],
+            skdStatus: "예정"
         });
         setInsertScheduleDialogOpen(true);
     };
@@ -165,7 +194,6 @@ const Calendar = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-
         setNewScheduleData({
             ...newScheduleData,
             [name]: value
@@ -178,7 +206,7 @@ const Calendar = () => {
 
         setTouched({
             ...touched,
-            [name]: value
+            [name]: true
         });
     };
 
@@ -189,9 +217,9 @@ const Calendar = () => {
         }
 
         try {
-            console.log("insertAPI 호출 직전의 newScheduleData", newScheduleData);
             insertScheduleAPI(newScheduleData);
             alert("일정이 정상적으로 등록되었습니다.");
+            console.log("API로 등록할때의 newScheduleData", newScheduleData);
             setNewScheduleAdded(!newScheduleAdded);
         } catch (error) {
             console.error("일정 정보 등록하면서 오류가 발생했습니다 :", error);
@@ -199,6 +227,17 @@ const Calendar = () => {
         }
         onInsertCancelHandler();
         setNewScheduleData("");
+    };
+
+    const getEventColor = (skdStatus) => {
+        switch (skdStatus) {
+            case '예정': return 'yellow';
+            case '진행 중': return 'blue';
+            case '완료': return 'green';
+            case '보류': return 'yellow';
+            case '막힘': return 'red';
+            default: return '#95A5A6';
+        }
     };
 
     const fetchEvents = () => {
@@ -210,8 +249,20 @@ const Calendar = () => {
                 id: schedule.skdNo,
                 extendedProps: {
                     skdLocation: schedule.skdLocation,
-                    skdMemo: schedule.skdMemo
-                }
+                    skdMemo: schedule.skdMemo,
+                    authorId: schedule.authorId,
+                    authorName: schedule.authorName,
+                    skdStatus: schedule.skdStatus,
+                    participants: [
+                        {
+                            participantMemberNo: schedule.participants.participantMemberNo,
+                            participantName: schedule.participants.participantName,
+                            participantNo: schedule.participants.participantNo
+                        }
+                    ]
+                },
+                backgroundColor: getEventColor(schedule.skdStatus),
+                borderColor: getEventColor(schedule.skdStatus)
             }));
             return events;
         } catch (error) {
@@ -219,41 +270,86 @@ const Calendar = () => {
         }
     };
 
+    const transformScheduleList = (scheduleList) => {
+        return scheduleList.map(schedule => ({
+            title: schedule.skdName,
+            start: moment(schedule.skdStartDttm).toISOString(),
+            end: moment(schedule.skdEndDttm).toISOString(),
+            id: schedule.skdNo,
+            extendedProps: {
+                skdLocation: schedule.skdLocation,
+                skdMemo: schedule.skdMemo,
+                authorId: schedule.authorId,
+                authorName: schedule.authorName,
+                skdStatus: schedule.skdStatus,
+                participants: schedule.participants.map(participant => ({
+                    participantMemberNo: participant.participantMemberNo,
+                    participantName: participant.participantName,
+                    participantNo: participant.participantNo
+                }))
+            },
+            backgroundColor: getEventColor(schedule.skdStatus),
+            borderColor: getEventColor(schedule.skdStatus)
+        }));
+    };
+
+    const filteredScheduleList = schedules.results?.schedule?.filter(schedule => 
+        subscribedMembers.includes(schedule.authorId)
+    ) || [];
+    console.log("filteredScheduleList", filteredScheduleList);
+
+    const transformedEvents = transformScheduleList(filteredScheduleList);
+
     return (
         <main id="main" className="main">
+            <div className="title">
+                <h2>부서별 일정</h2>
+            </div>
             {calendarReady && (
                 <Box flex="1 1 100%" ml="15px" mt="15px" >
-                    <h2>부서별 일정</h2>
-                    <FullCalendar
-                        locale="ko"
-                        height="100vh"
-                        eventColor='red'
-                        plugins={[
-                            dayGridPlugin,
-                            timeGridPlugin,
-                            interactionPlugin,
-                            listPlugin
-                        ]}
-                        headerToolbar={{
-                            left: "prev next today",
-                            center: "title",
-                            right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth"
-                        }}
-                        initialView="dayGridMonth"
-                        editable={true}
-                        selectable={true}
-                        dayMaxEvents={true}
-                        select={onDateClickHandler}
-                        eventClick={onEventClickHandler}
-                        events={fetchEvents()}
-                        buttonText={{
-                            today: '오늘',
-                            month: '월',
-                            week: '주',
-                            day: '일',
-                            list: '목록'
-                        }}
-                    />
+                    <Grid item md>
+                        <FullCalendar
+                            locale="ko"
+                            height="100vh"
+                            eventColor='red'
+                            plugins={[
+                                dayGridPlugin,
+                                timeGridPlugin,
+                                interactionPlugin,
+                                listPlugin
+                            ]}
+                            headerToolbar={{
+                                left: "prev next today",
+                                center: "title",
+                                right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth"
+                            }}
+                            initialView="dayGridMonth"
+                            editable={true}
+                            selectable={true}
+                            dayMaxEvents={true}
+                            select={onDateClickHandler}
+                            eventClick={onEventClickHandler}
+                            // events={filteredScheduleList}
+                            events={transformedEvents}
+                            // events={fetchEvents()}
+                            buttonText={{
+                                today: '오늘',
+                                month: '월',
+                                week: '주',
+                                day: '일',
+                                list: '목록'
+                            }}
+                        />
+                    </Grid>
+                    <Grid container spacing={2}>
+                        <Grid maxWidth={'350px'}>
+                             <SubscriptionList
+                            subscribedMembers={subscribedMembers}
+                            setSubscribedMembers={setSubscribedMembers}
+                        />
+                        </Grid>
+
+                    </Grid>
                 </Box>
             )}
 
@@ -264,10 +360,13 @@ const Calendar = () => {
                     onInsertCancelHandler={onInsertCancelHandler}
                     handleSubmit={handleSubmit}
                     handleInputChange={handleInputChange}
+                    handleParticipantsChange={handleParticipantsChange}
                     skdNameError={skdNameError}
                     dateError={dateError}
                     setTouched={setTouched}
                     touched={touched}
+                    memberList={memberList}
+                    dptNo={dptNo}
                 />
             </Dialog>
 
@@ -280,6 +379,8 @@ const Calendar = () => {
                     handleUpdate={handleUpdateEvent}
                     closeDetailDialog={closeDetailDialog}
                     onCloseConfirmDelete={onCloseConfirmDelete}
+                    memberList={memberList}
+                    dptNo={dptNo}
                 />
             </Dialog>
         </main>

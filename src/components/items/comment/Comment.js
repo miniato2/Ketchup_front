@@ -106,6 +106,9 @@ function Comment({ boardNo }) {
                     <div className='float-left' style={{ marginLeft: formattedComment.parentMemberName ? '10px' : 'none', borderTop: 'none' }}>
                         <span>{formattedComment.memberName} {formattedComment.positionName}</span>&nbsp;&nbsp;
                         <span>{formattedComment.commentCreateDt}</span>
+                        {formattedComment.commentUpdateDt && (
+                                <span> | 수정일: {FormatDate(formattedComment.commentUpdateDt)}</span>
+                            )}
                     </div>
                     <div className='float-right'>
                         <button className='text-btn' onClick={() => handleReplyClick(comment)}>답글</button>

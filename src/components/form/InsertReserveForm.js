@@ -10,7 +10,6 @@ import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 
 
 export default function InsertReserveForm({ onInsertCancelHandler, selectedResource, existingReserves }) {
-
     const token = decodeJwt(window.localStorage.getItem("accessToken"));
     const reserverId = token?.memberNo;
     const reserverName = token?.memberName;
