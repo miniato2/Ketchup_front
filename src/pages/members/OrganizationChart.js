@@ -31,6 +31,7 @@ function OrganizationChart() {
                 children: departments.map((department) => ({
                     name: department.depName,
                     image: 'images/DepIcon2.png',
+
                     children: members
                         .filter((member) => member.department.depNo === department.depNo)
                         .filter((member) => member.department.leader === member.memberName)
@@ -58,14 +59,17 @@ function OrganizationChart() {
 
     const containerStyles = {
         width: '100%',
-        height: '200vh',
+        height: '100vh',
     };
 
-    const renderCustomNodeElement = ({ nodeDatum }) => (
+    const renderCustomNodeElement = ({ nodeDatum,toggleNode }) => (
         <g>
-            <rect width="150" height="100" x="-75" y="-45"
-                fill="white" stroke="black" strokeWidth="0.5" />
-            <text fill="black" x="0" y="-15" textAnchor="middle" alignmentBaseline="middle" >
+           
+            <rect width="150" height="100" x="-75" y="-45" rx="20" ry="20"
+                fill="white" stroke="#E80D06" strokeWidth="4" onClick={toggleNode}
+            >
+            </rect>
+            <text y="-15" textAnchor="middle" alignmentBaseline="middle"   >
                 {nodeDatum.name}
             </text>
             <image
@@ -89,10 +93,13 @@ function OrganizationChart() {
                             data={treeData}
                             orientation="vertical"
                             translate={{ x: 600, y: 200 }}
-                            pathFunc="elbow"
+                            collapsible={true}
+                            pathFunc= "step"
                             renderCustomNodeElement={renderCustomNodeElement}
                             nodeSize={{ x: 200, y: 150 }}
                             separation={{ siblings: 0.9, nonSiblings: 1 }}
+                          
+                            
                         />
                     )}
                 </div>
