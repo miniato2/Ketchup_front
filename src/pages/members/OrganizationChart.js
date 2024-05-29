@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { callMembersAPI, callDepartmentsAPI, callPositionsAPI,callAllPositionsAPI } from "../../apis/MemberAPICalls";
+import { callMembersAPI, callDepartmentsAPI, callPositionsAPI, callAllPositionsAPI } from "../../apis/MemberAPICalls";
 import Tree from 'react-d3-tree';
 
 
@@ -11,6 +11,8 @@ function OrganizationChart() {
     const positions = useSelector(state => state.positionReducer);
     const [treeData, setTreeData] = useState([]);
 
+
+
     useEffect(() => {
         dispatch(callMembersAPI());
         dispatch(callDepartmentsAPI());
@@ -18,25 +20,25 @@ function OrganizationChart() {
     }, []);
 
     useEffect(() => {
-      
+
 
 
         if (members.length > 0 && departments.length > 0 && positions.length > 0) {
-            const CEO = members?.find(member =>  member.position.positionNo === 3);
+            const CEO = members?.find(member => member.position.positionNo === 3);
             const data = {
-                name:  `${CEO.memberName}${CEO.position.positionName}`,
-                image: `img/${CEO.imgUrl}`, 
+                name: `${CEO.memberName}${CEO.position.positionName}`,
+                image: `img/${CEO.imgUrl}`,
                 children: departments.map((department) => ({
                     name: department.depName,
-                    image: 'images/DepIcon2.png', 
+                    image: 'images/DepIcon2.png',
                     children: members
                         .filter((member) => member.department.depNo === department.depNo)
                         .filter((member) => member.department.leader === member.memberName)
                         .map((teamLeader) => ({
                             name: `팀장 ${teamLeader.memberName}${teamLeader.position.positionName}`,
-                            image: `img/${teamLeader.imgUrl}`, 
+                            image: `img/${teamLeader.imgUrl}`,
                             children: members
-                                .filter((member) => member.department.depNo === department.depNo && member.position.positionName !='대표')
+                                .filter((member) => member.department.depNo === department.depNo && member.position.positionName != '대표')
                                 .sort((a, b) => {
                                     return b.position.positionLevel - a.position.positionLevel;
                                 })
@@ -44,11 +46,11 @@ function OrganizationChart() {
                                     name: `${member.memberName}${member.position.positionName}`,
                                     image: `img/${member.imgUrl}`,
                                 }))
-                               
+
                         }))
                 }))
             };
-    
+
             setTreeData([data]);
             console.log(data);
         }
@@ -61,7 +63,8 @@ function OrganizationChart() {
 
     const renderCustomNodeElement = ({ nodeDatum }) => (
         <g>
-            <rect width="150" height="100" x="-75" y="-45" fill="white" stroke="black" strokeWidth="0.5" />
+            <rect width="150" height="100" x="-75" y="-45"
+                fill="white" stroke="black" strokeWidth="0.5" />
             <text fill="black" x="0" y="-15" textAnchor="middle" alignmentBaseline="middle" >
                 {nodeDatum.name}
             </text>
@@ -77,8 +80,9 @@ function OrganizationChart() {
 
     return (
         <main id="main">
+            <h2 style={{ marginLeft: '70px', marginTop: 30 }}>조직도</h2>
             <div className="container">
-                <h2>조직도</h2>
+
                 <div style={containerStyles}>
                     {treeData.length > 0 && (
                         <Tree
@@ -88,7 +92,7 @@ function OrganizationChart() {
                             pathFunc="elbow"
                             renderCustomNodeElement={renderCustomNodeElement}
                             nodeSize={{ x: 200, y: 150 }}
-                            separation= {{ siblings: 0.9, nonSiblings: 1} }
+                            separation={{ siblings: 0.9, nonSiblings: 1 }}
                         />
                     )}
                 </div>

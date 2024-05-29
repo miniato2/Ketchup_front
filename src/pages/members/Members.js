@@ -73,7 +73,7 @@ function Members() {
 
                 <br></br><br></br>
                 <div style={{ display: "flex", margin: -15 }}>
-                    <h2>사원목록</h2>
+                    <h2 style={{marginLeft: 20}}>사원목록</h2>
                     <SearchBar onSearch={handleSearch} value={searchKeyword} name={'이름으로 검색'} />
                     
                 </div>

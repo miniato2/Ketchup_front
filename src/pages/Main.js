@@ -166,6 +166,7 @@ function Main() {
                                     <h1 className="display-1" style={{ fontSize: "45px" }}>안녕하세요, {loginToken.memberName} {loginToken.positionName}님!</h1>
                                     <h2 className="lead my-3" style={{ fontSize: "30px" }}>오늘 하루도 화이팅하세요🤩</h2>
                                 </div>
+                                {/* <img src="images/ketchupAni.gif" style={{ width: "300px", height: "240px", position: 'absolute', right: 50, bottom: 0 , marginRight: 580 }}></img> */}
                                 <img src="images/mainImage.png" style={{ width: "300px", height: "240px", position: 'absolute', right: 50, bottom: 0}}></img>
                             </div>
                         </div>
