@@ -21,7 +21,7 @@ function ReplyMailContent({replyMailNo, part}) {
             </div>
             <hr />
             <div>
-                {replyContent.mailContent}
+                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(replyContent.mailContent) }} />
             </div>
         </div>
     </>

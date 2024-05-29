@@ -7,8 +7,8 @@ import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import ButtonGroup from '../contents/ButtonGroup';
 
-export default function ScheduleForm({ newScheduleData, onInsertCancelHandler, handleSubmit, handleInputChange, skdNameError, setTouched, dateError, touched, memberList, handleParticipantsChange, dptNo }) {
-    const filteredMemberList = memberList.filter(member => member.department.depNo === dptNo);
+export default function ScheduleForm({ newScheduleData, onInsertCancelHandler, handleSubmit, handleInputChange, skdNameError, setTouched, dateError, touched, members, handleParticipantsChange, dptNo }) {
+    const filteredMemberList = Array.isArray(members) ? members.filter(member => member?.department?.depNo === dptNo) : [];
     const buttons = [
         { label: '취소', onClick: onInsertCancelHandler, styleClass: 'back' },
         { label: '등록', onClick: () => handleSubmit(newScheduleData), styleClass: 'move' }
@@ -80,7 +80,7 @@ export default function ScheduleForm({ newScheduleData, onInsertCancelHandler, h
                                     onChange={handleParticipantsChange}
                                     renderValue={(selected) => {
                                         const selectedNames = selected?.map(memberNo => {
-                                            const member = filteredMemberList?.find(member => member.memberNo === memberNo);
+                                            const member = filteredMemberList?.find(member => member?.memberNo === memberNo);
                                             return member ? member.memberName : '';
                                         }).filter(name => name !== '');
 
