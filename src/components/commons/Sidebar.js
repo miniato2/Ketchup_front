@@ -9,6 +9,10 @@ function Sidebar() {
     const isOrganizationActive = location.pathname.startsWith('/deparpments') || location.pathname.startsWith('/positions');
     const isResourceManagementNav = location.pathname.startsWith('/resources/conferences') ||  location.pathname.startsWith('/resources/vehicles');
 
+    const onClickApp = () => {
+        window.localStorage.setItem('category', 1);
+    }
+
     return (
         <aside id="sidebar" className="sidebar">
             <ul className="sidebar-nav" id="sidebar-nav">
@@ -18,7 +22,7 @@ function Sidebar() {
                     </NavLink >
                 </li>
                 <li class="nav-item">
-                    <NavLink className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link collapsed"} to="/approvals">
+                    <NavLink className={({ isActive }) => isActive ? "nav-link active-link" : "nav-link collapsed"} to="/approvals" onClick={() => onClickApp()}>
                         <i className="bi bi-pencil-square"></i><span>전자결재</span>
                     </NavLink>
                 </li>

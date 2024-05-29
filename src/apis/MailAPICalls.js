@@ -22,7 +22,7 @@ export function callGetReceiveMailAPI(currentPage, searchCondition, searchValue)
                 timeString = "읽음";
             }
 
-            return { ...mail, senderName: memberInfoResult?.data?.memberName, readTime: timeString };
+            return { ...mail, senderName: memberInfoResult?.data?.memberName + " " + memberInfoResult.data.position.positionName , readTime: timeString };
         }));
 
         dispatch(getReceivemail({mails: sendMailName, pageTotal: result?.data?.data?.totalElements}));
