@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { callAppAPI, callUpdateApprovalAPI } from "../../apis/ApprovalAPICalls";
 import { decodeJwt } from "../../utils/tokenUtils";
 import { Editor } from '@tinymce/tinymce-react';
-import { Dialog, Grow } from "@mui/material";
+import { Dialog } from "@mui/material";
 import AppAlert from "../../components/approvals/AppAlert";
 
 function ApprovalDetail() {
@@ -52,17 +52,14 @@ function ApprovalDetail() {
             refusal: refusal
         }
         if (appAction === '') {
-            // alert('승인 또는 반려를 선택해주세요');
             setAlertModal({ message: <>승인 또는 반려를 선택해주세요</>, isOn: true });
         } else if (appAction === "반려" && refusal.trim() === '') {
-            // alert('반려 사유를 입력해주세요');
             setAlertModal({ message: <>반려 사유를 입력해주세요.</>, isOn: true });
         } else {
             try {
                 dispatch(callUpdateApprovalAPI(appUpdate, approval.approvalNo))
                     .then(() => navigate(`/approvals`, { replace: false }));
             } catch {
-                // alert('에러');
                 setAlertModal({ message: <>등록에 실패하였습니다.</>, isOn: true });
             }
         }

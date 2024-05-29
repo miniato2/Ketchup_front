@@ -37,6 +37,10 @@ function Main() {
         { title: "수신 참조 문서", count: approvalCount?.refApp, categoryNo: 4 }
     ];
 
+    const onClickApp = (categoryNo) => {
+        window.localStorage.setItem('category', categoryNo);
+    }
+
     const convertToCalendarProps = (schedules) => {
         try {
             if (schedules && schedules.results && schedules.results.schedule) {
@@ -171,7 +175,7 @@ function Main() {
                     <div className="col-lg-12">
                         <div className="row">
                             {approvalData.map(({ title, count, categoryNo }) => (
-                                <Link to={`/approvals`} state={categoryNo} className="col-xxl-3 col-md-6" style={{ textDecorationLine: 'none' }}>
+                                <Link to={`/approvals`} state={categoryNo} className="col-xxl-3 col-md-6" style={{ textDecorationLine: 'none' }} onClick={() => onClickApp(categoryNo)}>
                                     <ApprovalBox title={title} count={count} />
                                 </Link>
                             ))}

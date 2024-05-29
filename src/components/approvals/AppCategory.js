@@ -39,7 +39,7 @@ function AppCategory({ category, setCategory, setCurrentPage, setStatus, setSear
     return (
         <div className={AppCatCss.appCategory}>
             {approvalData.map(({ title, count, categoryNo }) => (
-                <div className={category === categoryNo ? AppCatCss.selectedCategoryBox : AppCatCss.categoryBox}
+                <div className={category == categoryNo ? AppCatCss.selectedCategoryBox : AppCatCss.categoryBox}
                     onClick={() => onClickHandler(categoryNo)} key={categoryNo}>
                     <h5 className={AppCatCss.title}>{title}</h5>
                     <div className={AppCatCss.count}>
