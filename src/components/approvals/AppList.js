@@ -7,7 +7,6 @@ function AppList({ data }) {
     const column = ['상태', '구분', '제목', '기안자', '기안일자', '결재일자'];
     const navigate = useNavigate();
 
-    console.log('data', data);
     const onClickHandler = (approvalNo) => {
         navigate(`/approvals/${approvalNo}`, { replace: false })
     }

@@ -53,8 +53,6 @@ function InsertApproval() {
         isOn: false
     }) //confirm modal
 
-    console.log(appContents);
-
     const [appLine, setAppLine] = useState([{
         alMember: {
             memberNo: '', memberName: '',
