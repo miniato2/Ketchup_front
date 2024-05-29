@@ -24,7 +24,7 @@ function InsertMember() {
         privateEmail: '',
         memberName: '',
         phone: '',
-        companyEmail: '',
+        companyEmail: 'ok!',
         gender: '',
         department: '',
         position: '',

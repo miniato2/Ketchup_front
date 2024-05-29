@@ -16,10 +16,10 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import SubscriptionList from "../../components/lists/subscriptions/SubscriptionList";
 
 const Calendar = () => {
+    const scheduleStatuses = ["예정", "진행 중", "완료", "보류", "막힘"];
     const dispatch = useDispatch();
     const schedules = useSelector(state => state.scheduleReducer);
     const members = useSelector(state => state.memberReducer);
-    const memberList = members?.data?.content || [];
     const [calendarReady, setCalendarReady] = useState(false);
     const [newScheduleAdded, setNewScheduleAdded] = useState(false);
     const [insertScheduleDialogOpen, setInsertScheduleDialogOpen] = useState(false);
@@ -39,6 +39,7 @@ const Calendar = () => {
         skdEndDttm: false
     });
     const [subscribedMembers, setSubscribedMembers] = useState([]);
+    const [selectedStatus, setSelectedStatus] = useState(scheduleStatuses);
 
     useEffect(() => {
         const fetchSchedules = () => {
@@ -51,7 +52,7 @@ const Calendar = () => {
     const handleParticipantsChange = (event) => {
         const selectedValues = event.target.value;
         const selectedParticipants = selectedValues.map(value => {
-            const member = memberList.find(member => member.memberNo === value);
+            const member = members?.find(member => member?.memberNo === value);
             return { participantMemberNo: member?.memberNo, participantName: member?.memberName };
         });
 
@@ -211,6 +212,13 @@ const Calendar = () => {
     };
 
     const handleSubmit = (newScheduleData) => {
+        // 시도해보기
+        // event.preventDefault();
+        // setTouched({
+        //     skdName: true,
+        //     skdStartDttm: true,
+        //     skdEndDttm: true
+        // });
         validateInsert();
         if (skdNameError || dateError) {
             return;
@@ -219,7 +227,6 @@ const Calendar = () => {
         try {
             insertScheduleAPI(newScheduleData);
             alert("일정이 정상적으로 등록되었습니다.");
-            console.log("API로 등록할때의 newScheduleData", newScheduleData);
             setNewScheduleAdded(!newScheduleAdded);
         } catch (error) {
             console.error("일정 정보 등록하면서 오류가 발생했습니다 :", error);
@@ -293,8 +300,10 @@ const Calendar = () => {
         }));
     };
 
-    const filteredScheduleList = schedules.results?.schedule?.filter(schedule => 
-        subscribedMembers.includes(schedule.authorId)
+    const filteredScheduleList = schedules.results?.schedule?.filter(schedule =>
+        (subscribedMembers.includes(schedule.authorId) ||
+         schedule.participants.some(participant => subscribedMembers.includes(participant.participantMemberNo))) &&
+        (selectedStatus.length === 0 || selectedStatus.includes(schedule.skdStatus))
     ) || [];
 
     const transformedEvents = transformScheduleList(filteredScheduleList);
@@ -328,9 +337,7 @@ const Calendar = () => {
                             dayMaxEvents={true}
                             select={onDateClickHandler}
                             eventClick={onEventClickHandler}
-                            // events={filteredScheduleList}
                             events={transformedEvents}
-                            // events={fetchEvents()}
                             buttonText={{
                                 today: '오늘',
                                 month: '월',
@@ -342,10 +349,12 @@ const Calendar = () => {
                     </Grid>
                     <Grid container spacing={2}>
                         <Grid maxWidth={'350px'}>
-                             <SubscriptionList
-                            subscribedMembers={subscribedMembers}
-                            setSubscribedMembers={setSubscribedMembers}
-                        />
+                            <SubscriptionList
+                                subscribedMembers={subscribedMembers}
+                                setSubscribedMembers={setSubscribedMembers}
+                                selectedStatus={selectedStatus}
+                                setSelectedStatus={setSelectedStatus}
+                            />
                         </Grid>
 
                     </Grid>
@@ -364,7 +373,7 @@ const Calendar = () => {
                     dateError={dateError}
                     setTouched={setTouched}
                     touched={touched}
-                    memberList={memberList}
+                    members={members}
                     dptNo={dptNo}
                 />
             </Dialog>
@@ -378,7 +387,7 @@ const Calendar = () => {
                     handleUpdate={handleUpdateEvent}
                     closeDetailDialog={closeDetailDialog}
                     onCloseConfirmDelete={onCloseConfirmDelete}
-                    memberList={memberList}
+                    members={members}
                     dptNo={dptNo}
                 />
             </Dialog>
