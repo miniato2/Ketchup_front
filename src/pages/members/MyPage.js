@@ -16,8 +16,6 @@ function MyPage() {
     const memberDetail = member?.data;
     const [PWDialogOpen, setPWDialogOpen] = useState(false);
 
-    
-
 
 
 
