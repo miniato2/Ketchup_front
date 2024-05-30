@@ -1,6 +1,14 @@
 :root {
---fc-button-bg-color: red;
---fc-button-border-color: red;
---fc-button-hover-bg-color: #FFC300;
---fc-button-active-bg-color: #FF5733;
+--fc-button-bg-color: #EC090B;
+--fc-button-border-color: #EC090B;
+--fc-button-hover-bg-color: #EC090B;
+--fc-button-active-bg-color: #EC090B;
+}
+
+.fc-moreButton-button {
+    width: 75px !important;
+    height: 38px !important;
+    padding: 1px 6px !important;
+    border-radius: 5px !important;
+    color: rgb(255, 255, 255) !important;
 }

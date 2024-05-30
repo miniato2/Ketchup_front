@@ -96,19 +96,17 @@ const MailTable = ({ data, columns, onRowClick, part, checkedItems, setCheckedIt
                               <i className="bi bi-envelope m-icon"></i>
                             )
                           ) : (key === 'receiverName' ?
-                            (<span className="mail-cursor dropdown mail-receiver">
-                                {item.receiverName.map((receiver) => (
-                                  <a href="#" className="receiver-time" data-bs-toggle="dropdown">{receiver.name} {receiver.dep}, </a>
-                                ))}
-                              <ul className="dropdown-menu">
-                                {item.receiverName.map((receiver, receiverIndex) => (
-                                  <li key={receiverIndex} className="d-flex receiver-li">
-                                    <span>{receiver.name}</span>
-                                    <span className={receiver.readTime === '읽음' ? null : "un-read-color"}>{receiver.readTime}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </span>) : (key === 'sendCancelStatus' ? (
+                            (<div className="receiver-dropdown">
+                            <span className="receiver-list">{item.receiverName.map(receiver => receiver.name).join(', ')}</span>
+                            <div className="receiver-dropdown-content">
+                              {item.receiverName.map((receiver, receiverIndex) => (
+                                <div key={receiverIndex} className="receiver-li d-flex justify-content-between">
+                                  <span>{receiver.name}</span>
+                                  <span className={receiver.readTime === '읽음' ? null : "un-read-color"}>{receiver.readTime}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>) : (key === 'sendCancelStatus' ? (
                               item[key] === 'Y' ? 
                                 "발송 취소" : "-"
                              ) : item[key]))
