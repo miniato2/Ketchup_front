@@ -166,8 +166,8 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
                                         <Box display={"flex"} alignItems={"center"}>
                                             <CalendarMonthOutlined fontSize="medium" />
                                             <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>일정: </Typography>
-                                            <TextField sx={{ ml: 6.1, width: "23vw" }} type="datetime-local" variant="outlined" name="skdStartDttm" onChange={handleInputChange} value={updatedScheduleData.skdStartDttm} onBlur={() => { setTouched({ ...touched, skdStartDttm: true }) }} error={!!dateError} />
-                                            <span style={{ margin: '0 15px' }}>~</span>
+                                            <TextField sx={{ ml: 5.5, width: "18vw" }} type="datetime-local" variant="outlined" name="skdStartDttm" onChange={handleInputChange} value={updatedScheduleData.skdStartDttm} onBlur={() => { setTouched({ ...touched, skdStartDttm: true }) }} error={!!dateError} />
+                                            <span style={{ margin: '0 20px' }}>~</span>
                                             <TextField sx={{ width: "23vw" }} type="datetime-local" variant="outlined" name="skdEndDttm" onChange={handleInputChange} value={updatedScheduleData.skdEndDttm} onBlur={() => { setTouched({ ...touched, skdEndDttm: true }) }} error={!!dateError} />
                                         </Box>
                                     </Box>
@@ -197,7 +197,7 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
                                             <PersonOutlinedIcon fontSize="medium" />
                                             <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>일정 등록자:</Typography>
                                         </Box>
-                                        <Typography variant="body1" sx={{ ml: 6.3, width: '50vw' }}>{updatedScheduleData.authorName}</Typography>
+                                        <Typography variant="body1" sx={{ ml: 3.3, width: '50vw' }}>{updatedScheduleData.authorName}</Typography>
                                     </Box>
                                 </Grid>
                                 <Grid item xs={12}>
@@ -220,7 +220,7 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
 
                                                     return selectedNames.join(', ');
                                                 }}
-                                                sx={{ width: '50vw', ml: 2.5 }}
+                                                sx={{ width: '45vw', ml: 1.7 }}
                                             >
                                                 {filteredMemberList.map((member) => (
                                                     <MenuItem key={member.memberNo} value={member.memberNo}>
@@ -274,7 +274,7 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
                                         <Box display={'flex'} alignItems={'center'}>
                                             <CampaignIconOutlined fontSize='medium' />
                                             <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>일정 제목: </Typography>
-                                            <Typography sx={{ ml: 2 }} variant="body1">{scheduleDetail.title}</Typography>
+                                            <Typography sx={{ ml: 2.5 }} variant="body1">{scheduleDetail.title}</Typography>
                                         </Box>
                                     </Box>
                                 </Grid>
@@ -283,7 +283,7 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
                                         <Box display={"flex"} alignItems={"center"}>
                                             <CalendarMonthOutlined fontSize="medium" />
                                             <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>일정: </Typography>
-                                            <Typography sx={{ ml: 6 }} variant="body1">{moment(scheduleDetail.start).format("YYYY-MM-DD HH:mm")}</Typography>
+                                            <Typography sx={{ ml: 7.2 }} variant="body1">{moment(scheduleDetail.start).format("YYYY-MM-DD HH:mm")}</Typography>
                                             <span style={{ margin: '0 20px' }}>~</span>
                                             <Typography variant="body1">{moment(scheduleDetail.end).format("YYYY-MM-DD HH:mm")}</Typography>
                                         </Box>
@@ -294,7 +294,7 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
                                         <Box display="flex" alignItems="center">
                                             <LocationOnOutlined fontSize="medium" />
                                             <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>장소:</Typography>
-                                            <Typography sx={{ ml: 6 }} variant="body1">{scheduleDetail.extendedProps.skdLocation}</Typography>
+                                            <Typography sx={{ ml: 7 }} variant="body1">{scheduleDetail.extendedProps.skdLocation}</Typography>
                                         </Box>
                                     </Box>
                                 </Grid>
@@ -303,7 +303,7 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
                                         <Box display="flex" alignItems="center">
                                             <ArticleOutlinedIcon fontSize="medium" />
                                             <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>메모:</Typography>
-                                            <Typography sx={{ ml: 6 }} variant="body1">{scheduleDetail.extendedProps.skdMemo}</Typography>
+                                            <Typography sx={{ ml: 7.5 }} variant="body1">{scheduleDetail.extendedProps.skdMemo}</Typography>
                                         </Box>
                                     </Box>
                                 </Grid>
@@ -313,7 +313,7 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
                                             <PersonOutlinedIcon fontSize="medium" />
                                             <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>일정 등록자:</Typography>
                                         </Box>
-                                        <Typography variant="body1" sx={{ ml: 6.3, width: '50vw' }}>{scheduleDetail.extendedProps.authorName}</Typography>
+                                        <Typography variant="body1" sx={{ ml: 3.3, width: '50vw' }}>{scheduleDetail.extendedProps.authorName}</Typography>
                                     </Box>
                                 </Grid>
 
@@ -323,7 +323,7 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
             <PersonOutlinedIcon fontSize="medium" />
             <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>참여 인원:</Typography>
         </Box>
-        <Typography variant="body1" sx={{ ml: 6.3, width: '50vw' }}>
+        <Typography variant="body1" sx={{ ml: 4.9, width: '50vw' }}>
             {scheduleDetail?.extendedProps?.participants?.map(participant => participant.participantName).join(', ') || "참여 인원 없음"}
         </Typography>
     </Box>
