@@ -41,6 +41,17 @@ function Main() {
         window.localStorage.setItem('category', categoryNo);
     }
 
+    const getEventColor = (skdStatus) => {
+        switch (skdStatus) {
+            case '예정': return '#F5BF3C';
+            case '진행 중': return '#3CB479';
+            case '완료': return '#1B9CE3';
+            case '보류': return 'grey';
+            case '막힘': return '#F2522D';
+            default: return '#95A5A6';
+        }
+    };
+
     const convertToCalendarProps = (schedules) => {
         try {
             if (schedules && schedules.results && schedules.results.schedule) {
@@ -49,10 +60,9 @@ function Main() {
                     start: moment(schedule.skdStartDttm, "YYYY-MM-DD A h:mm").toISOString(),
                     end: moment(schedule.skdEndDttm, "YYYY-MM-DD A h:mm").toISOString(),
                     id: schedule.skdNo,
-                    extendedProps: {
-                        skdLocation: schedule.skdLocation,
-                        skdMemo: schedule.skdMemo
-                    }
+                    skdStatus: schedule.skdStatus,
+                    backgroundColor: getEventColor(schedule.skdStatus),
+                    borderColor: getEventColor(schedule.skdStatus)
                 }));
                 return events;
             } else {
@@ -152,6 +162,12 @@ function Main() {
         navigate(`/notices/${noticeNo}`);
     };
 
+    const businessHours = {
+        daysOfWeek: [1, 2, 3, 4, 5],
+        startTime: '09:00',
+        endTime: '19:00',
+    };
+
     return (
         <main id="main" className="main">
             {isLoading ? ( // 데이터 로딩 중이면 로딩 스피너를 표시합니다.
@@ -211,8 +227,9 @@ function Main() {
                             <FullCalendar
                                 locale="ko"
                                 events={events}
+                                allDaySlot={false}
                                 height="50vh"
-                                initialView="dayGridWeek"
+                                initialView="timeGridWeek"
                                 eventColor='red'
                                 plugins={[
                                     dayGridPlugin,
@@ -233,6 +250,8 @@ function Main() {
                                         }
                                     }
                                 }}
+                                businessHours={businessHours}
+                                slotMinTime="08:00"
                             />
                         </Box>
                     </div>

@@ -5,6 +5,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from '@fullcalendar/list';
+import googleCalendarPlugin from '@fullcalendar/google-calendar';
 import { Box, Dialog, DialogTitle, Grid, Typography } from "@mui/material";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Tooltip from '@mui/material/Tooltip';
@@ -167,6 +168,14 @@ const Calendar = () => {
     const openDetailDialog = () => { setDetailDialogOpen(true); };
     const closeDetailDialog = () => { setDetailDialogOpen(false); };
 
+    const handleEventClick = (info) => {
+        if (info.event.url && info.event.url.includes('google.com/calendar')) {
+            info.jsEvent.preventDefault();
+        } else {
+            onEventClickHandler(info);
+        }
+    };
+
     const onEventClickHandler = (selected) => {
         openDetailDialog();
         setSelectedEvent(selected.event);
@@ -262,6 +271,12 @@ const Calendar = () => {
         }
     };
 
+    const businessHours = {
+        daysOfWeek: [1, 2, 3, 4, 5],
+        startTime: '09:00',
+        endTime: '19:00',
+    };
+
     const getEventColor = (skdStatus) => {
         switch (skdStatus) {
             case '예정': return '#F5BF3C';
@@ -301,7 +316,7 @@ const Calendar = () => {
             });
             return events;
         } catch (error) {
-            console.error('Error fetching events:', error);  // 에러 로그 출력
+            console.error('Error fetching events:', error);
             return [];
         }
     };
@@ -391,7 +406,8 @@ const Calendar = () => {
                                 dayGridPlugin,
                                 timeGridPlugin,
                                 interactionPlugin,
-                                listPlugin
+                                listPlugin,
+                                googleCalendarPlugin
                             ]}
                             headerToolbar={{
                                 left: "prev next today",
@@ -403,15 +419,25 @@ const Calendar = () => {
                             selectable={true}
                             dayMaxEvents={true}
                             select={onDateClickHandler}
-                            eventClick={onEventClickHandler}
-                            events={transformedEvents}
-                            buttonText={{
+                            eventClick={handleEventClick}
+                            eventSources={[
+                                {
+                                    events: transformedEvents
+                                },
+                                {
+                                    googleCalendarApiKey: 'AIzaSyDcnW6WejpTOCffshGDDb4neIrXVUA1EAE',
+                                    googleCalendarId: 'ko.south_korea#holiday@group.v.calendar.google.com',
+                                    className: 'holiday'
+                                }
+                            ]} buttonText={{
                                 today: '오늘',
                                 month: '월',
                                 week: '주',
                                 day: '일',
                                 list: '목록'
                             }}
+                            businessHours={businessHours}
+                            slotMinTime="08:00"
                         />
                     </Grid>
                     <Grid container spacing={2}>
