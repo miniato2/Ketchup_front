@@ -8,6 +8,7 @@ import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 
 export default function ReserveDetail({ selectedReserve, closeDetailDialog, setOpenDeleteConfirm, existingReserves, newReserveAdded, setNewReserveAdded }) {
+    console.log("selectedReserve", selectedReserve);
     const token = decodeJwt(window.localStorage.getItem("accessToken"));
     const reserverId = token?.memberNo;
     const [updateChecked, setUpdateChecked] = useState(false);
@@ -66,14 +67,17 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog, setO
     };
 
     useEffect(() => {
-        setUpdatedReserveData({
-            rsvNo: selectedReserve.rsvNo,
-            reserverId: selectedReserve.extendedProps.reserver,
-            rsvDescr: selectedReserve.title,
-            rsvStartDttm: moment(selectedReserve.start).format("YYYY-MM-DDTHH:mm"),
-            rsvEndDttm: moment(selectedReserve.end).format("YYYY-MM-DDTHH:mm"),
-            resources: selectedReserve.extendedProps.resources
-        });
+        if (selectedReserve && selectedReserve.extendedProps) {
+            setUpdatedReserveData({
+                rsvNo: selectedReserve.rsvNo,
+                reserverId: selectedReserve.extendedProps.reserverId,
+                reserverName: selectedReserve.extendedProps.reserverName || "unknown",
+                rsvDescr: selectedReserve.title,
+                rsvStartDttm: moment(selectedReserve.start).format("YYYY-MM-DDTHH:mm"),
+                rsvEndDttm: moment(selectedReserve.end).format("YYYY-MM-DDTHH:mm"),
+                resources: selectedReserve.extendedProps.resources
+            });
+        }
     }, [selectedReserve]);
 
     useEffect(() => {
@@ -102,15 +106,20 @@ export default function ReserveDetail({ selectedReserve, closeDetailDialog, setO
             return;
         }
 
-        const hasConflict = existingReserves.some(reserve => {
-            const rsvStart = moment(reserve.start);
-            const rsvEnd = moment(reserve.end);
-            return start.isBetween(rsvStart, rsvEnd, null, '[)') || end.isBetween(rsvStart, rsvEnd, null, '(]') || (start.isSameOrBefore(rsvStart) && end.isSameOrAfter(rsvEnd));
-        });
-
-        if (hasConflict) {
-            setDateError("선택하신 시간에 이미 예약이 등록된 예약건이 있습니다. 다른 시간이나 다른 자원을 선택해주세요.");
-            return;
+        if (selectedReserve.start !== updatedReserveData.rsvStartDttm || selectedReserve.end !== updatedReserveData.rsvEndDttm) {
+            const hasConflict = existingReserves.some(reserve => {
+                if (reserve.id !== selectedReserve.id) {
+                    const rsvStart = moment(reserve.start);
+                    const rsvEnd = moment(reserve.end);
+                    return start.isBetween(rsvStart, rsvEnd, null, '[)') || end.isBetween(rsvStart, rsvEnd, null, '(]') || (start.isSameOrBefore(rsvStart) && end.isSameOrAfter(rsvEnd));
+                }
+                return false;
+            });
+    
+            if (hasConflict) {
+                setDateError("선택하신 시간에 이미 예약이 등록된 예약건이 있습니다. 다른 시간이나 다른 자원을 선택해주세요.");
+                return;
+            }
         }
 
         if (updatedReserveData.rsvDescr.length < 5) {
