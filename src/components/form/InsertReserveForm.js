@@ -6,14 +6,20 @@ import moment from "moment";
 import CalendarMonthOutlined from "@mui/icons-material/CalendarMonthOutlined";
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
+import PropTypes from 'prop-types';
 
+export default function InsertReserveForm({ onInsertCancelHandler, selectedResource, existingReserves, newReserveAdded, setNewReserveAdded, handleInsertReserveSuccess, resetForm }) {
+    InsertReserveForm.propTypes = {
+        onInsertCancelHandler: PropTypes.func.isRequired,
+        selectedResource: PropTypes.object.isRequired,
+        existingReserves: PropTypes.array.isRequired,
+        handleInsertReserveSuccess: PropTypes.func.isRequired,  // Add this line
+        resetForm: PropTypes.func.isRequired,
+    };
 
-
-export default function InsertReserveForm({ onInsertCancelHandler, selectedResource, existingReserves }) {
     const token = decodeJwt(window.localStorage.getItem("accessToken"));
     const reserverId = token?.memberNo;
     const reserverName = token?.memberName;
-
     const [newReserveData, setNewReserveData] = useState({
         reserverId: reserverId,
         reserverName: reserverName,
@@ -47,21 +53,15 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-
-        if (name === "rsvDescr" && value.length > 200) {
-            setDescrError("사용목적은 최대 200자까지 입력할 수 있습니다.");
-            return;
-        }
-
         setNewReserveData({
             ...newReserveData,
             [name]: value
         });
-
         setTouched({
             ...touched,
             [name]: value
         });
+        validate();
     };
 
     const validate = () => {
@@ -69,19 +69,19 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
         const start = moment(newReserveData.rsvStartDttm);
         const end = moment(newReserveData.rsvEndDttm);
 
+        let valid = true;
+
         if (!newReserveData.rsvStartDttm || !newReserveData.rsvEndDttm) {
             setDateError("예약 시작 일시와 종료 일시를 모두 입력해주세요.");
-            return;
-        }
-
-        if (start.isBefore(now)) {
+            valid = false;
+        } else if (start.isBefore(now)) {
             setDateError("예약 시작일시는 과거일 수 없습니다.");
-            return;
-        }
-
-        if (start.isSameOrAfter(end)) {
+            valid = false;
+        } else if (start.isSameOrAfter(end)) {
             setDateError("예약 시작일시는 종료일시보다 이전이어야 합니다.");
-            return;
+            valid = false;
+        } else {
+            setDateError("");
         }
 
         const hasConflict = existingReserves.some(reserve => {
@@ -92,37 +92,42 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
 
         if (hasConflict) {
             setDateError("선택하신 시간에 이미 예약이 등록된 예약건이 있습니다. 다른 시간이나 다른 자원을 선택해주세요.");
-            return;
+            valid = false;
+        } else if (!hasConflict && valid) {
+            setDateError("");
         }
 
         if (newReserveData.rsvDescr.length < 5) {
             setDescrError("사용목적은 공란일 수 없고 공백 포함 최소 5글자 이상이어야 합니다.");
-            return;
-        }
-
-        if (newReserveData.rsvDescr.length > 200) {
+            valid = false;
+        } else if (newReserveData.rsvDescr.length > 200) {
             setDescrError("사용목적은 공백 포함 최대 200자까지 입력할 수 있습니다.");
-            return;
+            valid = false;
+        } else {
+            setDescrError("");
         }
 
-        setDateError("");
-        setDescrError("");
+        return valid;
     };
 
     const handleSubmit = () => {
-        validate();
-        if (dateError || descrError) {
-            return;
+        setTouched({
+            rsvDescr: true,
+            rsvStartDttm: true,
+            rsvEndDttm: true
+        });
+        if (validate()) {
+            try {
+                insertReserveAPI(newReserveData);
+                alert("예약이 정상적으로 등록되었습니다.");
+                handleInsertReserveSuccess();
+            } catch (error) {
+                console.error("예약 등록 실패: ", error);
+                alert("예약 등록에 실패했습니다. 관리자에게 문의바랍니다.");
+            }
+            onInsertCancelHandler();
+            resetForm();
         }
-
-        try {
-            insertReserveAPI(newReserveData);
-            alert("예약이 정상적으로 등록되었습니다.");
-        } catch (error) {
-            console.error("예약 등록 실패: ", error);
-            alert("예약 등록에 실패했습니다. 관리자에게 문의바랍니다.");
-        }
-        onInsertCancelHandler();
     };
 
     return (

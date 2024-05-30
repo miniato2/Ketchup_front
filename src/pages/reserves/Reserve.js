@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Typography, Dialog, Snackbar, Alert, Table, TableCell, TableRow } from "@mui/material";
+import { Box, Grid, Typography, Dialog, Snackbar, Alert, Table, TableCell, TableRow } from "@mui/material";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -15,6 +15,11 @@ import ReserveDateSelect from "./ReserveDateSelect";
 import InsertReserveForm from "../../components/form/InsertReserveForm";
 import ReserveDetail from "../../components/form/ReserveDetail";
 import DeleteReserveForm from "../../components/form/DeleteReserveForm";
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Tooltip from '@mui/material/Tooltip';
+import EditCalendarIcon from '@mui/icons-material/EditCalendar';
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import { decodeJwt } from "../../utils/tokenUtils";
 
 export default function Reserve() {
     const dispatch = useDispatch();
@@ -22,6 +27,7 @@ export default function Reserve() {
     const [reserveData, setReserveData] = useState([]);
     const [showErrorAlertRscCategory, setShowErrorAlertRscCategory] = useState(false);
     const [showErrorAlertRsvDate, setShowErrorAlertRsvDate] = useState(false);
+    const [newReserveAdded, setNewReserveAdded] = useState(false);
     const [searchClicked, setSearchClicked] = useState(false);
     const [searchConditions, setSearchConditions] = useState({
         rscCategory: "",
@@ -50,8 +56,47 @@ export default function Reserve() {
         setSelectedResource(resource);
         setInsertReserveDialogOpen(true);
     };
-
-    const onInsertCancelHandler = () => { setInsertReserveDialogOpen(false) };
+    const token = decodeJwt(window.localStorage.getItem("accessToken"));
+    const reserverId = token?.memberNo;
+    const reserverName = token?.memberName;
+    const [newReserveData, setNewReserveData] = useState({
+        reserverId: reserverId,
+        reserverName: reserverName,
+        rsvDescr: "",
+        rsvStartDttm: "",
+        rsvEndDttm: "",
+        resources: {}
+    });
+    const [touched, setTouched] = useState({
+        rsvDescr: false,
+        rsvStartDttm: false,
+        rsvEndDttm: false
+    });
+    
+    const [dateError, setDateError] = useState("");
+    const [descrError, setDescrError] = useState("");
+    
+    const handleInsertReserveSuccess = () => {
+        setNewReserveAdded(!newReserveAdded);
+    };
+    const resetForm = () => {
+        setNewReserveData({
+            reserverId: reserverId,
+            reserverName: reserverName,
+            rsvDescr: "",
+            rsvStartDttm: "",
+            rsvEndDttm: "",
+            resources: {}
+        });
+        setTouched({
+            rsvDescr: false,
+            rsvStartDttm: false,
+            rsvEndDttm: false
+        });
+        setDateError("");
+        setDescrError("");
+    };
+    const onInsertCancelHandler = () => { setInsertReserveDialogOpen(false); resetForm(); };
     const closeDetailDialog = () => { setDetailDialogOpen(false); };
     const onCloseDeleteConfirm = () => {
         setOpenDeleteConfirm(false);
@@ -154,7 +199,7 @@ export default function Reserve() {
 
     useEffect(() => {
         fetchReserves();
-    }, [searchClicked]);
+    }, [searchClicked, newReserveAdded]);
 
     const groupReservesByRsc = (reserveData) => {
         const groupedReserves = {};
@@ -233,7 +278,48 @@ export default function Reserve() {
     return (
         <main id="main" className="main">
             <Box p={2}>
-                <h2>자원예약</h2>
+                <Box display="flex" alignItems="center">
+                    <h2 style={{ margin: 0 }}>자원예약</h2>
+                    <Tooltip
+                        placement="bottom"
+                        variant="solid"
+                        arrow
+                        color="neutral"
+                        title={
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    maxWidth: 320,
+                                    justifyContent: 'center',
+                                    p: 1,
+                                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                    borderRadius: '4px'
+                                }}
+                            >
+                                <Box sx={{ display: 'flex', gap: 1, width: '100%', mt: 1 }}>
+                                    <EventNoteIcon color="action" />
+                                    <div>
+                                        <Typography fontWeight="lg" fontSize="sm" color="textPrimary">
+                                            새로운 예약을 등록하시려면 날짜를 선택하세요.
+                                        </Typography>
+                                    </div>
+                                </Box>
+                                <Box sx={{ display: 'flex', gap: 1, width: '100%', mt: 1 }}>
+                                    <EditCalendarIcon color="action" />
+                                    <div>
+                                        <Typography textColor="text.secondary" fontSize="sm" color="textPrimary" sx={{ mb: 1 }}>
+                                            예약 수정, 삭제 또는 상세 조회를 원하시면, 해당 일정을 선택하세요.
+                                        </Typography>
+                                    </div>
+                                </Box>
+                            </Box>
+                        }
+                    >
+                        <HelpOutlineIcon sx={{ ml: 1 }} />
+                    </Tooltip>
+                </Box>
+
                 <Grid container spacing={3} alignItems="center" mt={1} mb={4} sx={{ backgroundColor: "rgb(236, 11, 11, 0.17)", borderRadius: "10px", height: "130px" }}>
                     <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" margin={'auto'}>
                         <ResourceCategorySelect value={searchConditions.rscCategory} onChange={(value) => setSearchConditions({ ...searchConditions, rscCategory: value })} />
@@ -272,6 +358,10 @@ export default function Reserve() {
                     onInsertCancelHandler={onInsertCancelHandler}
                     selectedResource={selectedResource}
                     existingReserves={reserveData.filter(reserve => reserve.extendedProps.resources.rscNo === selectedResource.rscNo)}
+                    newReserveAdded={newReserveAdded}
+                    setNewReserveAdded={setNewReserveAdded}
+                    handleInsertReserveSuccess={handleInsertReserveSuccess}
+                    resetForm={resetForm}
                 />
             </Dialog>
 
@@ -282,6 +372,8 @@ export default function Reserve() {
                     selectedReserve={selectedReserve}
                     setOpenDeleteConfirm={setOpenDeleteConfirm}
                     existingReserves={reserveData.filter(reserve => reserve.extendedProps.resources.rscNo === selectedResource.rscNo)}
+                    newReserveAdded={newReserveAdded}
+                    setNewReserveAdded={setNewReserveAdded}
                 />
             </Dialog>
 
@@ -290,8 +382,11 @@ export default function Reserve() {
                 <DeleteReserveForm
                     onCloseDeleteConfirm={onCloseDeleteConfirm}
                     selectedReserve={selectedReserve}
+                    newReserveAdded={newReserveAdded}
+                    setNewReserveAdded={setNewReserveAdded}
                 />
             </Dialog>
-        </main >
+        </main>
+
     );
 };

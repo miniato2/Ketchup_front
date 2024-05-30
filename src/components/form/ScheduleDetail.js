@@ -8,8 +8,8 @@ import LocationOnOutlined from '@mui/icons-material/LocationOnOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 
-export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, closeDetailDialog, handleUpdate, handleDelete, memberList, dptNo }) {
-    const filteredMemberList = memberList.filter(member => member.department.depNo === dptNo);
+export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, closeDetailDialog, handleUpdate, handleDelete, members, dptNo }) {
+    const filteredMemberList = Array.isArray(members) ? members.filter(member => member?.department?.depNo === dptNo) : [];
     const [dateError, setDateError] = useState("");
     const [skdNameError, setSkdNameError] = useState("");
     const [touched, setTouched] = useState({
@@ -21,7 +21,7 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
     const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
     const [updatedScheduleData, setUpdatedScheduleData] = useState({
         skdName: scheduleDetail?.title,
-        skdStartDttm: moment(scheduleDetail?.start).format("YYYY-MM-DD HH:mm"), // T 삭제할 수 있도록 slice 넣어야할 듯 // 등록 수정에 모두 적용 필요함
+        skdStartDttm: moment(scheduleDetail?.start).format("YYYY-MM-DD HH:mm"),
         skdEndDttm: moment(scheduleDetail?.end).format("YYYY-MM-DD HH:mm"),
         skdLocation: scheduleDetail?.extendedProps.skdLocation,
         skdMemo: scheduleDetail?.extendedProps.skdMemo,
@@ -33,10 +33,9 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
     const handleUpdatedParticipantsChange = (event) => {
         const selectedValues = event.target.value;
         const selectedParticipants = selectedValues.map(value => {
-            const member = memberList.find(member => member?.memberNo === value);
+            const member = members.find(member => member?.memberNo === value);
             return { participantMemberNo: member?.memberNo, participantName: member?.memberName };
         });
-
         setUpdatedScheduleData({
             ...updatedScheduleData,
             participants: selectedParticipants
@@ -211,10 +210,11 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
                                             <Select
                                                 multiple
                                                 value={updatedScheduleData.participants?.map(participant => participant.participantMemberNo) || []}
+
                                                 onChange={handleUpdatedParticipantsChange}
                                                 renderValue={(selected) => {
                                                     const selectedNames = selected.map(memberNo => {
-                                                        const member = filteredMemberList?.find(member => member.memberNo === memberNo);
+                                                        const member = filteredMemberList?.find(member => member?.memberNo === memberNo);
                                                         return member ? member.memberName : '';
                                                     }).filter(name => name !== '');
 
@@ -316,6 +316,21 @@ export default function ScheduleDetail({ inputChangeHandler, scheduleDetail, clo
                                         <Typography variant="body1" sx={{ ml: 6.3, width: '50vw' }}>{scheduleDetail.extendedProps.authorName}</Typography>
                                     </Box>
                                 </Grid>
+
+                                <Grid item xs={12}>
+    <Box display="flex" alignItems={'center'} justifyContent="flex-start">
+        <Box display="flex" alignItems="center">
+            <PersonOutlinedIcon fontSize="medium" />
+            <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>참여 인원:</Typography>
+        </Box>
+        <Typography variant="body1" sx={{ ml: 6.3, width: '50vw' }}>
+            {scheduleDetail?.extendedProps?.participants?.map(participant => participant.participantName).join(', ') || "참여 인원 없음"}
+        </Typography>
+    </Box>
+</Grid>
+
+
+
                                 <Grid item xs={12}>
                                     <Grid container justifyContent="flex-end">
                                         <Grid item>
