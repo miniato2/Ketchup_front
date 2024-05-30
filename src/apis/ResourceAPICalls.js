@@ -15,7 +15,7 @@ export function callGetResourcesAPI(part, currentPage) {
 export function callPostResourceAPI({rscDto}) {
     console.log("insertResource api call...");
 
-    const requestURL = 'http://3.36.27.34:8080/resources';
+    const requestURL = 'http://localhost:8080/resources';
 
     return async (dispatch, getState) => {
         try {
@@ -51,7 +51,7 @@ export function callGetResourceDetailAPI(rscNo) {
 export function callPutResourceAPI({selectRscNo, updateRscDto}) {
     console.log("putResource api call...");
 
-    const requestURL = `http://3.36.27.34:8080/resources/${selectRscNo}`;
+    const requestURL = `http://localhost:8080/resources/${selectRscNo}`;
 
     return async (dispatch, getState) => {
         try {

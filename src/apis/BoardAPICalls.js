@@ -50,7 +50,7 @@ export function callGetBoardAPI(boardNo) {
 
 
 export const callInsertBoardAPI = (formData) => {
-    const requestURL = `http://3.36.27.34:8080/boards`;
+    const requestURL = `http://localhost:8080/boards`;
 
     return async (dispatch, getState) => {
         try {
@@ -79,7 +79,7 @@ export const callInsertBoardAPI = (formData) => {
 };
 
 export function callUpdateBoardAPI(formData, boardNo, boardFileNo) {
-    const requestURL = `http://3.36.27.34:8080/boards/${boardNo}`;
+    const requestURL = `http://localhost:8080/boards/${boardNo}`;
 
     return async (dispatch, getState) => {
         try {
