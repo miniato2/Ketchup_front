@@ -23,6 +23,12 @@ const SubscriptionList = ({ subscribedMembers, setSubscribedMembers, selectedSta
     }, [members, dptNo]);
 
     const [searchKeyword, setSearchKeyword] = useState('');
+    const [allMemberChecked, setAllMemberChecked] = useState(false);
+    const [allStatusChecked, setAllStatusChecked] = useState(false);
+
+    useEffect(() => {
+        dispatch(callMembersAPI());
+    }, [dispatch]);
 
     useEffect(() => {
         const initialSubscribedMembers = filteredMemberList.map(member => member.memberNo);
@@ -30,12 +36,21 @@ const SubscriptionList = ({ subscribedMembers, setSubscribedMembers, selectedSta
     }, [filteredMemberList, setSubscribedMembers]);
 
     useEffect(() => {
-        dispatch(callMembersAPI());
-    }, [dispatch]);
+        setAllMemberChecked(
+            filteredMemberList.length > 0 &&
+            filteredMemberList.every(member => subscribedMembers.includes(member.memberNo))
+        );
+    }, [filteredMemberList, subscribedMembers]);
+
+    useEffect(() => {
+        setAllStatusChecked(
+            scheduleStatuses.length > 0 &&
+            scheduleStatuses.every(status => selectedStatus.includes(status))
+        );
+    }, [selectedStatus]);
 
     const handleSearch = (searchKeyword) => {
         setSearchKeyword(searchKeyword);
-        dispatch(callMembersAPI());
     };
 
     const handleSubscribeChange = (memberNo) => {
@@ -54,15 +69,49 @@ const SubscriptionList = ({ subscribedMembers, setSubscribedMembers, selectedSta
         }
     };
 
+    const handleAllMemberCheckChange = () => {
+        if (allMemberChecked) {
+            setSubscribedMembers([]);
+        } else {
+            setSubscribedMembers(filteredMemberList.map(member => member.memberNo));
+        }
+        setAllMemberChecked(!allMemberChecked);
+    };
+
+    const handleAllStatusCheckChange = () => {
+        if (allStatusChecked) {
+            setSelectedStatus([]);
+        } else {
+            setSelectedStatus(scheduleStatuses);
+        }
+        setAllStatusChecked(!allStatusChecked);
+    };
+
+    const filteredList = useMemo(() => {
+        if (!searchKeyword) {
+            return filteredMemberList;
+        }
+        const matchedMember = filteredMemberList.find(member =>
+            member.memberName === searchKeyword
+        );
+        return matchedMember ? [matchedMember] : [];
+    }, [searchKeyword, filteredMemberList]);
+
     const filterTableByMembers = (filteredList) => (
         <div style={{ maxHeight: '343px', overflowY: 'scroll' }}>
             <Table>
                 <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
                     <tr>
-                        <th>구독</th>
-                        <th>프로필 사진</th>
-                        <th>직급</th>
-                        <th>이름</th>
+                        <th>
+                            <Checkbox
+                                checked={allMemberChecked}
+                                onChange={handleAllMemberCheckChange}
+                                sx={{ color: red[800], '&.Mui-checked': { color: red[600] } }}
+                            />
+                        </th>
+                        <th style={{ textAlign: 'center', padding: '20px 0' }}>프로필 사진</th>
+                        <th style={{ textAlign: 'center', padding: '20px 0' }}>직급</th>
+                        <th style={{ textAlign: 'center', padding: '20px 0' }}>이름</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -101,9 +150,15 @@ const SubscriptionList = ({ subscribedMembers, setSubscribedMembers, selectedSta
         <Table>
             <thead>
                 <tr>
-                    <th>선택</th>
-                    <th>일정 상태</th>
-                    <th>구분색</th>
+                    <th>
+                        <Checkbox
+                            checked={allStatusChecked}
+                            onChange={handleAllStatusCheckChange}
+                            sx={{ color: red[800], '&.Mui-checked': { color: red[600] } }}
+                        />
+                    </th>
+                    <th style={{ textAlign: 'center', padding: '20px 0' }}>일정 상태</th>
+                    <th style={{ textAlign: 'center', padding: '20px 0' }}>구분색</th>
                 </tr>
             </thead>
             <tbody>
@@ -118,17 +173,17 @@ const SubscriptionList = ({ subscribedMembers, setSubscribedMembers, selectedSta
                         </td>
                         <td>{status}</td>
                         <td style={{ textAlign: 'center' }}>
-                        <Box
-                            component="span"
-                            sx={{
-                                display: 'inline-block',
-                                width: 20,
-                                height: 20,
-                                borderRadius: '50%',
-                                backgroundColor: scheduleStatusColors[index],
-                            }}
-                        />
-                    </td>
+                            <Box
+                                component="span"
+                                sx={{
+                                    display: 'inline-block',
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: '50%',
+                                    backgroundColor: scheduleStatusColors[index],
+                                }}
+                            />
+                        </td>
                     </tr>
                 ))}
             </tbody>
@@ -141,9 +196,9 @@ const SubscriptionList = ({ subscribedMembers, setSubscribedMembers, selectedSta
                 <Grid item xs={12} md={6}>
                     <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center' }}>
                         <h5 style={{ marginRight: '16px' }}>참여 인원별 일정</h5>
-                        <SearchBar onSearch={handleSearch} value={searchKeyword} name={'이름으로 검색'} />
+                        <SearchBar onSearch={handleSearch} name={'이름으로 검색'} />
                     </Grid>
-                    {filterTableByMembers(filteredMemberList)}
+                    {filterTableByMembers(filteredList)}
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <h5 style={{ marginBottom: 25 }}>진행상태별 일정</h5>
