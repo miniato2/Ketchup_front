@@ -142,10 +142,10 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
                             <Box display="flex" alignItems={"center"} justifyContent={"flex-start"}>
                                 <Box display={"flex"} alignItems={"center"}>
                                     <CalendarMonthOutlined fontSize="medium" />
-                                    <Typography variant="body1" sx={{ ml: 1 }}>예약 일정: </Typography>
-                                    <TextField sx={{ ml: 2 }} type="datetime-local" variant="outlined" name="rsvStartDttm" onChange={handleInputChange} value={newReserveData.rsvStartDttm} onBlur={() => setTouched({ ...touched, rsvStartDttm: true })} error={!!dateError} />
+                                    <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>예약 일정: </Typography>
+                                    <TextField sx={{ ml: 2, width: '21vw'}} type="datetime-local" variant="outlined" name="rsvStartDttm" onChange={handleInputChange} value={newReserveData.rsvStartDttm} onBlur={() => setTouched({ ...touched, rsvStartDttm: true })} error={!!dateError} />
                                     <span style={{ margin: '0 25px' }}>~</span>
-                                    <TextField type="datetime-local" variant="outlined" name="rsvEndDttm" onChange={handleInputChange} value={newReserveData.rsvEndDttm} onBlur={() => setTouched({ ...touched, rsvEndDttm: true })} error={!!dateError} />
+                                    <TextField  sx={{ width: '21vw'}} type="datetime-local" variant="outlined" name="rsvEndDttm" onChange={handleInputChange} value={newReserveData.rsvEndDttm} onBlur={() => setTouched({ ...touched, rsvEndDttm: true })} error={!!dateError} />
                                 </Box>
                             </Box>
                             {dateError && <Typography sx={{ color: "#D3302F", ml: 16, mt: 1 }}>{dateError}</Typography>}
@@ -156,7 +156,7 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
                                     <ArticleOutlinedIcon fontSize="medium" />
                                     <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>사용목적:</Typography>
                                 </Box>
-                                <TextField sx={{ ml: 2.5, width: '555px' }} multiline variant="outlined" name="rsvDescr" onChange={handleInputChange} value={newReserveData.rsvDescr} placeholder="사용목적을 작성해주세요. (공란 불가, 공백 포함 최소 5글자, 최대 200자)" onBlur={() => setTouched({ ...touched, rsvDescr: true })} error={!!descrError} helperText={descrError} FormHelperTextProps={{ sx: { fontSize: '1rem', mt: 1 } }} />
+                                <TextField sx={{ ml: 2.5, width: '45vw' }} multiline variant="outlined" name="rsvDescr" onChange={handleInputChange} value={newReserveData.rsvDescr} placeholder="사용목적을 작성해주세요. (공란 불가, 공백 포함 최소 5글자, 최대 200자)" onBlur={() => setTouched({ ...touched, rsvDescr: true })} error={!!descrError} helperText={descrError} FormHelperTextProps={{ sx: { fontSize: '1rem', mt: 1 } }} />
                             </Box>
                         </Grid>
                         <Grid item={12}>
@@ -165,7 +165,7 @@ export default function InsertReserveForm({ onInsertCancelHandler, selectedResou
                                     <PersonOutlinedIcon fontSize="medium" />
                                     <Typography variant="body1" sx={{ ml: 1 }}>예약자: </Typography>
                                 </Box>
-                                <Typography variant="body1" sx={{ ml: 3.7 }}>{reserverName}</Typography>
+                                <Typography variant="body1" sx={{ ml: 4 }}>{reserverName}</Typography>
                             </Box>
                         </Grid>
                         <Grid item xs={12}>

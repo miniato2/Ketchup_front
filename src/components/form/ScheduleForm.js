@@ -23,8 +23,9 @@ export default function ScheduleForm({ newScheduleData, onInsertCancelHandler, h
                             <Box display={"flex"} alignItems={"center"}>
                                 <CampaignIconOutlined fontSize='medium' />
                                 <Typography variant='body1' sx={{ ml: 1 }} flexShrink={0}>일정 제목: </Typography>
+                                
                             </Box>
-                            <TextField sx={{ ml: 1.7, width: "50vw" }} variant='outlined' name='skdName' onChange={handleInputChange} value={newScheduleData.skdName} onBlur={() => setTouched({ ...touched, skdName: true })} />
+                            <TextField sx={{ ml: 2.2, width: "50vw" }} variant='outlined' name='skdName' onChange={handleInputChange} value={newScheduleData.skdName} onBlur={() => setTouched({ ...touched, skdName: true })} />
                         </Box>
                         {skdNameError && <Typography sx={{ color: "red", ml: 15, mt: 1 }}>{skdNameError}</Typography>}
                     </Grid>
@@ -33,7 +34,7 @@ export default function ScheduleForm({ newScheduleData, onInsertCancelHandler, h
                             <Box display={"flex"} alignItems={"center"}>
                                 <CalendarMonthOutlined fontSize="medium" />
                                 <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>일정: </Typography>
-                                <TextField sx={{ ml: 5.5, width: "23vw" }} type="datetime-local" variant="outlined" name="skdStartDttm" onChange={handleInputChange} value={newScheduleData.skdStartDttm} onBlur={() => setTouched({ ...touched, skdStartDttm: true })} />
+                                <TextField sx={{ ml: 5.5, width: "18vw" }} type="datetime-local" variant="outlined" name="skdStartDttm" onChange={handleInputChange} value={newScheduleData.skdStartDttm} onBlur={() => setTouched({ ...touched, skdStartDttm: true })} />
                                 <span style={{ margin: '0 20px' }}>~</span>
                                 <TextField sx={{ width: "23vw" }} type="datetime-local" variant="outlined" name="skdEndDttm" onChange={handleInputChange} value={newScheduleData.skdEndDttm} onBlur={() => setTouched({ ...touched, skdEndDttm: true })} />
                             </Box>
@@ -64,7 +65,7 @@ export default function ScheduleForm({ newScheduleData, onInsertCancelHandler, h
                                 <PersonOutlinedIcon fontSize="medium" />
                                 <Typography variant="body1" sx={{ ml: 1 }} flexShrink={0}>일정 등록자:</Typography>
                             </Box>
-                            <Typography variant="body1" sx={{ ml: 6.3, width: '50vw' }}>{newScheduleData.authorName}</Typography>
+                            <Typography variant="body1" sx={{ ml: 3.3, width: '50vw' }}>{newScheduleData.authorName}</Typography>
                         </Box>
                     </Grid>
                     <Grid item xs={12}>
@@ -86,7 +87,7 @@ export default function ScheduleForm({ newScheduleData, onInsertCancelHandler, h
 
                                         return selectedNames.join(', ');
                                     }}
-                                    sx={{ width: '50vw', ml: 1.7 }}
+                                    sx={{ width: '45vw', ml: 1.7 }}
                                 >
                                     {filteredMemberList.map((member) => (
                                         <MenuItem key={member.memberNo} value={member.memberNo}>

@@ -91,7 +91,7 @@ export function callGetMailDetailAPI(mailNo, part) {
 export const callPostInsertMailAPI = ({ formData }) => {
     console.log("postInsertmail api call...");
 
-    const requestURL = `http://localhost:8080/mails`;
+    const requestURL = `http://3.36.27.34:8080/mails`;
 
     return async (dispatch, getState) => {
         try {
@@ -126,7 +126,7 @@ export const callPutDeleteMailAPI = (part, mailNos) => {
 export const callPutReadTimeAPI = (mailNo) => {
     console.log("putReadtime api call...");
 
-    const requestURL = `http://localhost:8080/mails/times/${mailNo}`;
+    const requestURL = `http://3.36.27.34:8080/mails/times/${mailNo}`;
 
     return async (dispatch, getState) => {
         try {
