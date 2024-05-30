@@ -79,7 +79,7 @@ function InsertBoardForm() {
                     <input type="file" id="formFile" multiple onChange={handleChangeFiles} />
                 </div>
             </div>
-            <div style={{height: '380px'}}>
+            <div style={{height: '400px'}}>
                 <Editor content={content} setContent={setContent} />
             </div>
             <div className="d-flex justify-content-end mt-4">
