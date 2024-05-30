@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 export const callGetMemberAPI = ({ memberNo }) => {
-    const requestURL = `http://3.36.27.34:8080/members/${memberNo}`;
+    const requestURL = `http://localhost:8080/members/${memberNo}`;
 
     return async (dispatch, getState) => {
         // 클라이언트 fetch mode : no-cors 사용시 application/json 방식으로 요청이 불가능
@@ -29,7 +29,7 @@ export const callGetMemberAPI = ({ memberNo }) => {
 
 export const callLoginAPI = ({ form }) => {
   
-    const requestURL = `http://3.36.27.34:8080/login`;
+    const requestURL = `http://localhost:8080/login`;
    
 
     return async (dispatch, getState) => {
