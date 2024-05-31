@@ -108,7 +108,8 @@ function Departments() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {Array.isArray(departmentsList) && departmentsList?.map((department) => (
+                                {Array.isArray(departmentsList) && departmentsList?.filter((department) => department.depName !== '대표')
+                                .map((department) => (
                                     <tr key={department.depNo} >
                                         <td>
                                             <Radio
