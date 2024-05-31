@@ -28,7 +28,8 @@ function OrganizationChart() {
             const data = {
                 name: `${CEO.memberName}${CEO.position.positionName}`,
                 image: `img/${CEO.imgUrl}`,
-                children: departments.map((department) => ({
+                children: departments .filter((department) => department.depName !== '대표')
+                .map((department) => ({
                     name: department.depName,
                     image: 'images/DepIcon2.png',
 
@@ -46,6 +47,7 @@ function OrganizationChart() {
                                 .map((member) => ({
                                     name: `${member.memberName}${member.position.positionName}`,
                                     image: `img/${member.imgUrl}`,
+                                    children: [] // 자식 노드가 없음을 나타내기 위해 빈 배열 할당
                                 }))
 
                         }))
@@ -97,7 +99,8 @@ function OrganizationChart() {
                             pathFunc= "step"
                             renderCustomNodeElement={renderCustomNodeElement}
                             nodeSize={{ x: 200, y: 150 }}
-                            separation={{ siblings: 0.9, nonSiblings: 1 }}
+                            separation={{ siblings: 0.9, nonSiblings: 0.8 }}
+                            initialDepth={2} 
                           
                             
                         />

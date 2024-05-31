@@ -53,7 +53,7 @@ export function callGetNoticeAPI(noticeNo) {
 
 
 export const callInsertNoticeAPI = (formData) => {
-    const requestURL = `http://3.36.27.34:8080/notices`;
+    const requestURL = `http://localhost:8080/notices`;
 
     return async (dispatch, getState) => {
         try {
