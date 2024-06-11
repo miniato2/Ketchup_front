@@ -14,11 +14,9 @@ function Header() {
 
     const onClickLogoutHandler = () => {
         window.localStorage.removeItem('accessToken');
-        //로그아웃
-        dispatch(callLogoutAPI());
-
         alert('로그아웃이 되어 로그인화면 으로 이동합니다.');
-        navigate("login", { replace: true })
+        //로그아웃
+        dispatch(callLogoutAPI()).then(navigate("login", {replace: true}))
     };
 
     return (
