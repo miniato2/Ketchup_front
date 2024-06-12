@@ -19,7 +19,6 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
             position: { positionName: '' },
             department: { depName: '' }
         },
-        alType: '',
         sequence: ''
     }
 
@@ -60,7 +59,6 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
     const onClickList = (member) => {
         setSelectedMember({
             alMember: member,
-            alType: '',
             sequence: ''
         });
     }
@@ -83,7 +81,6 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
                             positionName: member.position.positionName
                         }
                     },
-                    alType: '일반',
                     sequence: count
                 }
             ]);
@@ -109,25 +106,12 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
                             positionName: selectedMember.alMember.position.positionName
                         }
                     },
-                    alType: '일반',
                     sequence: count
                 }
             ]);
             setSelectedMember(initMember);
             setCount(count + 1);
         }
-    }
-    const onChangeType = (member, e) => { //결재 타입 변경
-        const updatedList = selectedAppList.map(item => {
-            if (item.sequence === member.sequence) {
-                return {
-                    ...item,
-                    alType: e.target.value
-                };
-            }
-            return item;
-        });
-        setSelectedAppList(updatedList);
     }
 
     const onClickRmvButton = () => { //삭제 버튼
@@ -221,10 +205,7 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
                                             <td>{item.alMember.memberName}</td>
                                             <td>{item.alMember.position.positionName}</td>
                                             <td>
-                                                <select onChange={(e) => onChangeType(item, e)} style={{ border: 'none' }}>
-                                                    <option value={'일반'}>일반</option>
-                                                    <option value={'전결'}>전결</option>
-                                                </select>
+                                                <input type='checkBox' checked={item.alMember.memberNo === selectedMember.alMember.memberNo? true : false} onClick={() => onClickTable(item)}/>
                                             </td>
                                         </tr>
                                     ))}
