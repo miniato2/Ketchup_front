@@ -9,7 +9,7 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
     const dispatch = useDispatch();
     const memberList = useSelector(state => state.memberReducer); //전체 사원
-    const column = ['순번', '부서', '이름', '직급', '구분'];
+    const column = ['순번', '부서', '이름', '직급'];
 
     const [search, setSearch] = useState('');
 
@@ -25,6 +25,11 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
     const [selectedMember, setSelectedMember] = useState(initMember) //선택된 사원 (추가 전)
     const [selectedAppList, setSelectedAppList] = useState([]); //결재선
     const [count, setCount] = useState(1); //결재순서
+
+
+    const [deleteMember, setDeleteMember] = useState(initMember) //삭제 선택 사원
+
+
 
     useEffect(() => {
         dispatch(callMembersAPI());
@@ -195,11 +200,12 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
                                         {column.map((item) => (
                                             <th scope='col' key={item} style={{ width: '20%' }}>{item}</th>
                                         ))}
+                                        <th scope='col' style={{width: '20%'}}><input type='checkBox'></input></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {!!selectedAppList && selectedAppList.map((item) => (
-                                        <tr onClick={() => onClickTable(item)} className={selectedMember.sequence === item.sequence ? AppModalCss.modalTr : ''}>
+                                        <tr onClick={() => onClickTable(item)}>
                                             <td>{item.sequence}</td>
                                             <td>{item.alMember.department.depName}</td>
                                             <td>{item.alMember.memberName}</td>
