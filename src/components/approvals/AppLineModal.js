@@ -200,7 +200,10 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
                                         {column.map((item) => (
                                             <th scope='col' key={item} style={{ width: '20%' }}>{item}</th>
                                         ))}
-                                        <th scope='col' style={{width: '20%'}}><input type='checkBox'></input></th>
+                                        <th scope='col' style={{width: '20%'}}>
+                                            <input type='checkBox' checked={{}}/>
+                                            {/* 추가된 멤버 전체가 선태되어 있을때 check */}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
