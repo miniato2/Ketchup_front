@@ -27,9 +27,8 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
     const [count, setCount] = useState(1); //결재순서
 
 
-    const [deleteMember, setDeleteMember] = useState(initMember) //삭제 선택 사원
-
-
+    const [deleteMember, setDeleteMember] = useState([]) //삭제 선택 사원
+    console.log(deleteMember, 'deleteMeber');
 
     useEffect(() => {
         dispatch(callMembersAPI());
@@ -68,8 +67,16 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
         });
     }
     const onClickTable = (item) => {
+        console.log('onClickTable',item);
+        setDeleteMember([
+            ...deleteMember,
+            {
+                memberNo: item.alMember.memberNo
+            }
+        ]);
+
         setSelectedMember(item);
-    }
+    } // 테이블클릭 멤버 삭제 선택
 
     const onDoubleClickList = (member) => {
         if (!selectedAppList.find(item => item.alMember.memberNo === member.memberNo) && member.memberNo !== loginToken.memberNo) {
