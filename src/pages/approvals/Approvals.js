@@ -15,29 +15,29 @@ function Approvals() {
     const [status, setStatus] = useState('전체'); //문서 상태 관리 초기값 전체 
     const [currentPage, setCurrentPage] = useState(1); //페이지
     const [search, setSearch] = useState('');
-    const [statusList, setStatusList] = useState([]);
+    // const [statusList, setStatusList] = useState([]);
 
     const dispatch = useDispatch();
 
     const apps = useSelector(state => state.approvalReducer);
     const appList = apps.data?.content;
 
-    // let statusList = [];
-    // switch(category){
-    //     case 1: statusList = ['대기', '진행']; break;
-    //     case 2: statusList = ['완료', '반려', '회수']; break;
-    //     case 3: statusList = ['대기', '진행']; break;
-    //     case 4: statusList = ['대기', '진행', '완료', '반려']; break;
-    //     default : break;
-    // };
-
+    let statusList = [];
     switch(category){
-        case 1: setStatusList(['대기','진행']); console.log('ㅇㅇ'); break;
-        case 2: setStatusList(['완료', '반려', '회수']); break;
-        case 3: setStatusList(['대기', '진행']); break;
-        case 4: setStatusList(['대기', '진행', '완료', '반려']); break;
-        default: break;
-    }
+        case 1: statusList = ['대기', '진행']; break;
+        case 2: statusList = ['완료', '반려', '회수']; break;
+        case 3: statusList = ['대기', '진행']; break;
+        case 4: statusList = ['대기', '진행', '완료', '반려']; break;
+        default : break;
+    };
+
+    // switch(category){
+    //     case 1: setStatusList(['대기','진행']); console.log('ㅇㅇ'); break;
+    //     case 2: setStatusList(['완료', '반려', '회수']); break;
+    //     case 3: setStatusList(['대기', '진행']); break;
+    //     case 4: setStatusList(['대기', '진행', '완료', '반려']); break;
+    //     default: break;
+    // }
 
     useEffect(() => {
         console.log('useEffect');
