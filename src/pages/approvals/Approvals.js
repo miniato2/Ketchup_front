@@ -1,5 +1,5 @@
 import AppCategory from "../../components/approvals/AppCategory";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { callAppListAPI } from "../../apis/ApprovalAPICalls";
@@ -11,36 +11,40 @@ import PaginationButtons from '../../components/contents/PaginationButtons';
 function Approvals() {
     const loginToken = decodeJwt(window.localStorage.getItem("accessToken"));
 
-    const [category, setCategory] = useState(window.localStorage.getItem('category')? window.localStorage.getItem('category'): 1);
+    const [category, setCategory] = useState(window.localStorage.getItem('category') ? window.localStorage.getItem('category') : 1);
     const [status, setStatus] = useState('전체'); //문서 상태 관리 초기값 전체 
     const [currentPage, setCurrentPage] = useState(1); //페이지
     const [search, setSearch] = useState('');
-    // const [statusList, setStatusList] = useState([]);
+    const [statusList, setStatusList] = useState([]);
 
     const dispatch = useDispatch();
 
     const apps = useSelector(state => state.approvalReducer);
     const appList = apps.data?.content;
 
-    let statusList = [];
-    switch(category){
-        case 1: statusList = ['대기', '진행']; break;
-        case 2: statusList = ['완료', '반려', '회수']; break;
-        case 3: statusList = ['대기', '진행']; break;
-        case 4: statusList = ['대기', '진행', '완료', '반려']; break;
-        default : break;
+    const getStatusList = (category) => {
+        switch (category) {
+            case 1:
+                return ['대기', '진행'];
+            case 2:
+                return ['완료', '반려', '회수'];
+            case 3:
+                return ['대기', '진행'];
+            case 4:
+                return ['대기', '진행', '완료', '반려'];
+            default:
+                return [];
+        }
     };
-
-    // switch(category){
-    //     case 1: setStatusList(['대기','진행']); console.log('ㅇㅇ'); break;
-    //     case 2: setStatusList(['완료', '반려', '회수']); break;
-    //     case 3: setStatusList(['대기', '진행']); break;
-    //     case 4: setStatusList(['대기', '진행', '완료', '반려']); break;
-    //     default: break;
-    // }
+    
 
     useEffect(() => {
-        console.log('useEffect');
+        const newStatusList = getStatusList(category);
+        setStatusList(newStatusList);
+    }, [category]);
+
+
+    useEffect(() => {
         window.localStorage.setItem('category', category);
         dispatch(
             callAppListAPI({
@@ -51,7 +55,7 @@ function Approvals() {
                 currentPage: currentPage
             })
         );
-    },[currentPage, status, category]);
+    }, [currentPage, status, category]);
 
     const onChangeHandler = (e) => {
         setSearch(e.target.value);
@@ -78,8 +82,8 @@ function Approvals() {
 
     return (
         <main id="main" className={'main'}>
-            <AppCategory category={category} setCategory={setCategory} setCurrentPage={setCurrentPage} setStatus={setStatus} setSearch={setSearch} appList={appList}/>
-            <div style={{ display: "flex", height: "60px", backgroundColor: "#f5f5f5", alignItems: "center", borderBottom: 'solid 0.5px black'}}>
+            <AppCategory category={category} setCategory={setCategory} setCurrentPage={setCurrentPage} setStatus={setStatus} setSearch={setSearch} appList={appList} />
+            <div style={{ display: "flex", height: "60px", backgroundColor: "#f5f5f5", alignItems: "center", borderBottom: 'solid 0.5px black' }}>
                 <select className={ApprovalCss.selectStatus} onChange={statusChangeHandler} value={status}>
                     <option>전체</option>
                     {statusList.map((item) => (
