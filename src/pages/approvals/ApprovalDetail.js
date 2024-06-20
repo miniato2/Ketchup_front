@@ -119,7 +119,7 @@ function ApprovalDetail() {
                     <h5>내용</h5>
 
                     <Editor
-                        apiKey='gpny7ynxol7wh1ohidmu4i9q5rb68uahrrop6uo0m4ixs78c'
+                        apiKey=''
                         initialValue={approval.appContents}
                         init={{
                             statusbar: false,
