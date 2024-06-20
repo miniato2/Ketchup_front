@@ -119,7 +119,7 @@ function ApprovalDetail() {
                     <h5>내용</h5>
 
                     <Editor
-                        apiKey=''
+                        
                         initialValue={approval.appContents}
                         init={{
                             statusbar: false,

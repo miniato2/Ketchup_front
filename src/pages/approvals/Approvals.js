@@ -15,34 +15,18 @@ function Approvals() {
     const [status, setStatus] = useState('전체'); //문서 상태 관리 초기값 전체 
     const [currentPage, setCurrentPage] = useState(1); //페이지
     const [search, setSearch] = useState('');
-    const [statusList, setStatusList] = useState([]);
+
+    const statusList = {
+        1: ['대기', '진행'],
+        2: ['완료', '반려', '회수'],
+        3: ['대기', '진행'],
+        4: ['대기', '진행', '완료', '반려']
+    } //상태옵션
 
     const dispatch = useDispatch();
 
     const apps = useSelector(state => state.approvalReducer);
     const appList = apps.data?.content;
-
-    const getStatusList = (category) => {
-        switch (category) {
-            case 1:
-                return ['대기', '진행'];
-            case 2:
-                return ['완료', '반려', '회수'];
-            case 3:
-                return ['대기', '진행'];
-            case 4:
-                return ['대기', '진행', '완료', '반려'];
-            default:
-                return [];
-        }
-    };
-    
-
-    useEffect(() => {
-        const newStatusList = getStatusList(category);
-        setStatusList(newStatusList);
-    }, [category]);
-
 
     useEffect(() => {
         window.localStorage.setItem('category', category);
@@ -86,7 +70,7 @@ function Approvals() {
             <div style={{ display: "flex", height: "60px", backgroundColor: "#f5f5f5", alignItems: "center", borderBottom: 'solid 0.5px black' }}>
                 <select className={ApprovalCss.selectStatus} onChange={statusChangeHandler} value={status}>
                     <option>전체</option>
-                    {statusList.map((item) => (
+                    {statusList[category].map((item) => (
                         <option>{item}</option>
                     ))}
                 </select>
