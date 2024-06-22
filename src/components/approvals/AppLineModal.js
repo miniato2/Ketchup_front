@@ -68,14 +68,15 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
     }
     const onClickTable = (item) => {
         console.log('onClickTable',item);
-        setDeleteMember([
-            ...deleteMember,
-            {
-                memberNo: item.alMember.memberNo
-            }
-        ]);
-
-        setSelectedMember(item);
+        if(deleteMember.includes(item.alMember.memberNo)){
+            const newDeleteMember = deleteMember.filter(memberNo => memberNo !== item.alMember.memberNo);
+            setDeleteMember(newDeleteMember);
+        }else{
+            setDeleteMember([
+                ...deleteMember,
+                item.alMember.memberNo
+            ]);
+        }
     } // 테이블클릭 멤버 삭제 선택
 
     const onDoubleClickList = (member) => {
@@ -127,25 +128,13 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
     }
 
     const onClickRmvButton = () => { //삭제 버튼
-        if(selectedAppList.length > 0){
-            let removeList = []
-            if(selectedMember.sequence === ''){
-                //일반삭제
-                removeList = selectedAppList.filter(app => app.sequence !== count - 1);
-            }else{
-                //선택삭제
-                removeList = selectedAppList.filter(app => app.alMember.memberNo !== selectedMember.alMember.memberNo);
-                removeList = removeList.map((item, index) => {
-                    return { 
-                        ...item, 
-                        sequence: index + 1 
-                    };
-                  });
-                  setSelectedMember(initMember); // selectedMember를 초기값으로 설정
-            }
-            setSelectedAppList(removeList);
-            setCount(count - 1);
-        }
+        const updateList = selectedAppList.filter(member => !deleteMember.includes(member.alMember.memberNo));
+        console.log(updateList);
+        setSelectedAppList(updateList); //총 추가된 결재선
+        setDeleteMember([]); //삭제후 삭제멤버 초기화
+        console.log('list length',updateList.length);
+        setCount(updateList.length + 1);
+        // 세팅할때 사원 결재순서 조정 로직필요
     }
 
     const onClickSubmit = () => { //저장 버튼
@@ -221,7 +210,7 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
                                             <td>{item.alMember.memberName}</td>
                                             <td>{item.alMember.position.positionName}</td>
                                             <td>
-                                                <input type='checkBox' checked={item.alMember.memberNo === selectedMember.alMember.memberNo? true : false} onClick={() => onClickTable(item)}/>
+                                                <input type='checkBox' checked={deleteMember.includes(item.alMember.memberNo)? true : false} onClick={() => onClickTable(item)}/>
                                             </td>
                                         </tr>
                                     ))}
