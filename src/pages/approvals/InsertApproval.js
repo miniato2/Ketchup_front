@@ -213,7 +213,7 @@ function InsertApproval() {
 
             <h5>내용</h5>
             <Editor
-                
+                apiKey=''
                 initialValue={formValue}
                 onInit={(evt, editor) => conref.current = editor}
                 init={{

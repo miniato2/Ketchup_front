@@ -67,7 +67,6 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
         });
     }
     const onClickTable = (item) => {
-        console.log('onClickTable',item);
         if(deleteMember.includes(item.alMember.memberNo)){
             const newDeleteMember = deleteMember.filter(memberNo => memberNo !== item.alMember.memberNo);
             setDeleteMember(newDeleteMember);
@@ -128,13 +127,15 @@ function AppLineModal({ setModalControl, appLine, setAppLine }) {
     }
 
     const onClickRmvButton = () => { //삭제 버튼
-        const updateList = selectedAppList.filter(member => !deleteMember.includes(member.alMember.memberNo));
-        console.log(updateList);
+        const updateList = selectedAppList
+            .filter(member => !deleteMember.includes(member.alMember.memberNo))
+            .map((member, index) => ({
+                ...member,
+                sequence: index + 1
+            }))
         setSelectedAppList(updateList); //총 추가된 결재선
         setDeleteMember([]); //삭제후 삭제멤버 초기화
-        console.log('list length',updateList.length);
         setCount(updateList.length + 1);
-        // 세팅할때 사원 결재순서 조정 로직필요
     }
 
     const onClickSubmit = () => { //저장 버튼
